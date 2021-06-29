@@ -1,0 +1,17 @@
+1. CalculateMotorNominalTorque
+2. SumKwhMwhGhwParameters
+3. Multiply
+4. SumKwhMwhParameters
+5. MaxPowerLimitByDSUType
+6. MaxCurrentLimitByDSUTypeAndNomSupplyVolt
+7. CumulativePower
+8. InvertParameter
+9. SumUpParameters
+10. WorkingMode
+11. AmountOfCharging
+12. MultiplyParameters
+13. CalculateMotorNominalPower
+14. LciMainStatusWord
+15. LciMainCoolingTemperature
+16. LciWaterConductivity
+17. LimitsFromPercentageUnit
