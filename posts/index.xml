@@ -1,4 +1,64 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/posts/</link><description>Recent content in Posts on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Wed, 30 Jun 2021 21:41:09 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>使用Github Pages+Hugo搭建个人博客</title><link>https://www.jonathanlin.top/posts/how-to-setup-hugo-github-page/</link><pubDate>Wed, 30 Jun 2021 21:41:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/how-to-setup-hugo-github-page/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/posts/</link><description>Recent content in Posts on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 01 Jul 2021 13:54:58 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Protocol Buffer Basics Go</title><link>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</link><pubDate>Thu, 01 Jul 2021 13:54:58 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</guid><description>
+&lt;p>原文链接：&lt;a href="https://developers.google.com/protocol-buffers/docs/gotutorial">Protocol Buffer Basics: Go | Protocol Buffers | Google Developers&lt;/a>&lt;/p>
+&lt;p>本教程使用proto3语言为Go程序员介绍了protocol buffers的基本使用。通过一步步创建一个简单的示例应用，你将会了解到：&lt;/p>
+&lt;ul>
+&lt;li>在&lt;code>.proto&lt;/code>文件中定义消息格式&lt;/li>
+&lt;li>使用protocol buffer编译器&lt;/li>
+&lt;li>使用Go protocol buffer API读写消息&lt;/li>
+&lt;/ul>
+&lt;p>这不是一个使用protocol buffers的完全手册。更多更细节的信息，请参看：&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3">Language Guide (proto3)&lt;/a>、&lt;a href="https://pkg.go.dev/google.golang.org/protobuf/proto">Go API Reference&lt;/a>、&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/go-generated">Go Generated Code&lt;/a>和&lt;a href="https://developers.google.com/protocol-buffers/docs/encoding">Encoding Reference&lt;/a>&lt;/p>
+&lt;h2 id="为什么使用protocol-buffers">为什么使用protocol buffers？&lt;/h2>
+&lt;p>我们将要创建一个简单的“地址簿”应用，该应用可以从文件中读和写联系人的信息。地址簿中的每一个联系人有名字，ID和联系电话。&lt;/p>
+&lt;p>你如何序列化和读取这种结构化数据？有这么几种方式可以解决这个问题：&lt;/p>
+&lt;ul>
+&lt;li>使用&lt;a href="https://golang.org/pkg/encoding/gob/">gobs&lt;/a>序列化Go数据结构。对于Go语言本身而言，这是一个很好的方案，但是如果你需要跨语言平台共享数据，那这种方式并不好&lt;/li>
+&lt;li>按照你期望的方式把数据编码成单一的字符串，例如4个int类型的数据编码成“12:3:-23:67”。这是一个简单且灵活的办法，但这要求你编写一次性的编码和转换的代码，同时转化代码会带来一定的运行时消耗。对于比较简单的数据，使用这种方式就比较好&lt;/li>
+&lt;li>将数据序列化成XML。XML对人类可读友好且各种语言都有对应的解析工具使得该方法有点吸引人。XML也能比较好的跨应用/项目共享数据。然而，众所周知，XML占用空间比较大，并且解析XML往往比较耗性能。此外，定位XML DOM树通常比直接访问类字段要复杂的多&lt;/li>
+&lt;/ul>
+&lt;p>Protocol buffers具有灵活、高效、自动化等特点可以解决上述问题。使用Protocol buffer，你需要把数据结构的描述定义在&lt;code>.proto&lt;/code>文件中，然后protocol buffer编译器会为你生成一个类，这个类实现了对protocol buffer二进制数据的编码和解析。这个类提供了对各个字段的getter和setter方法用于读写。protocol buffer很重要的一点是，如果将来数据格式扩展了，那么代码中依然可以读取由旧的格式编码的数据。&lt;/p>
+&lt;h2 id="哪里找示例代码">哪里找示例代码&lt;/h2>
+&lt;p>我们的例子是一系列的命令行程序，这些程序管理了由protocol buffers编码的地址簿数据文件。&lt;code>add_person_go&lt;/code>这个命令添加一条记录到数据文件。&lt;code>list_people_go&lt;/code>解析数据文件并把结果输出到控制台。&lt;/p>
+&lt;p>你可以从Github Repo中找到完整的示例：&lt;a href="https://github.com/protocolbuffers/protobuf/tree/master/examples">protobuf/examples at master · protocolbuffers/protobuf (github.com)&lt;/a>&lt;/p>
+&lt;h2 id="定义你的protocol格式">定义你的protocol格式&lt;/h2>
+&lt;p>创建你的地址簿应用的第一步是定义你的&lt;code>.proto&lt;/code>文件。&lt;code>.proto&lt;/code>文件中的定义很简单：你为你想要序列化的每一个数据结构添加一个消息，然后为消息中的每个字段指定一个名称和对应的类型。在我们的例子中，在&lt;code>.proto&lt;/code>中定义的消息请参考&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/addressbook.proto">addressbook.proto&lt;/a>。&lt;/p>
+&lt;p>&lt;code>.proto&lt;/code>文件是从一个包声明开始的，包声明用来防止在不同项目中的名字冲突。&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-protobuf" data-lang="protobuf">syntax &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;proto3&amp;#34;&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>&lt;span style="color:#f92672">package&lt;/span> tutorial;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>&lt;span style="color:#66d9ef">import&lt;/span> &lt;span style="color:#e6db74">&amp;#34;google/protobuf/timestamp.proto&amp;#34;&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>go_package&lt;/code>定义了代码生成所在的路径，包名即路径中的最后一个目录。例如，我们的例子的包名就是”tutorialpb“。&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span style="color:#66d9ef">option&lt;/span> go_package &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;github.com/protocolbuffers/protobuf/examples/go/tutorialpb&amp;#34;&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>接下来，你就可以定义你的消息了。一个小时是包含一组含有类型的字段的集合。许多标准的简单值类型都是支持的，例如&lt;code>bool&lt;/code> 、&lt;code>int32&lt;/code>、 &lt;code>float&lt;/code>、 &lt;code>double&lt;/code> 和&lt;code>string&lt;/code>。你也可以包含其他消息在你要定义的消息里。&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span style="color:#66d9ef">message&lt;/span> &lt;span style="color:#a6e22e">Person&lt;/span> {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> name &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">int32&lt;/span> id &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>; &lt;span style="color:#75715e">// Unique ID number for this person.
+&lt;/span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> email &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">3&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">enum&lt;/span> PhoneType {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> MOBILE &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> HOME &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> WORK &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> }&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">message&lt;/span> &lt;span style="color:#a6e22e">PhoneNumber&lt;/span> {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> number &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> PhoneType type &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> }&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">repeated&lt;/span> PhoneNumber phones &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">4&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> google.protobuf.Timestamp last_updated &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">5&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>}&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>&lt;span style="color:#75715e">// Our address book file is just one of these.
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">message&lt;/span> &lt;span style="color:#a6e22e">AddressBook&lt;/span> {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">repeated&lt;/span> Person people &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>}&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>上面的例子中，&lt;code>Person&lt;/code>这个消息体里包含了&lt;code>PhoneNumber&lt;/code>这个消息体，&lt;code>AddressBook&lt;/code>这个消息体包含了&lt;code>Person&lt;/code>这个消息。你甚至可以消息体里定义另一个消息体 - 正如你看到的，&lt;code>PhoneNumber&lt;/code>是定义在&lt;code>Person&lt;/code>里的。如果你希望你的取值是预先定义的一组值里的一个，那么你可以定义&lt;code>enum&lt;/code>类型 - 上面的例子中，你希望电话号码的类型是&lt;code>MOBILE&lt;/code>、 &lt;code>HOME&lt;/code>或者 &lt;code>WORK&lt;/code>。&lt;/p>
+&lt;p>在每一个字段上诸如&amp;quot;= 1&amp;quot; &amp;ldquo;= 2&amp;quot;的标记是用于在二进制编码的时候对字段指定一个唯一的标记。相对于更高的标记号码而言，1 -15号在编码的时候占用的空间小于一个字节，因此一个有优化手段是你可以把经常会用到的字段或者重复类型的字段（例如数组）标记为1 - 15，把高于15的留给那些不怎么常用到的字段或者可选的字段。重复类型字段里的每一个元素都需要重新编码标记号码，因此重复类型的字段往往都会用到这种优化 。（&lt;em>&lt;strong>这块后面需要再理解一下是什么意思&lt;/strong>&lt;/em>）&lt;/p>
+&lt;p>如果一个字段的值没有设置，那么将使用对应类型的&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3#default">默认值&lt;/a>：数字类型的默认值是0，字符串默认值是空字符串，布尔类型的默认值是false。对于嵌套的消息体，它的默认值是带有各个字段名的默认值。调用访问器（getter）去读取值的时候，如果对应的字段没有明确赋值，那么就返回对应的默认值。&lt;/p>
+&lt;p>如果一个字段是重复类型，那么元素的个数可能是任意数目（包括0个）。元素的顺序在protocol buffer中是被保留下来的。可以想象重复类型字段是动态数组。&lt;/p>
+&lt;p>你将在&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3">Protocol Buffer Language Guide&lt;/a>中找到如何编写&lt;code>.proto&lt;/code>文件的完整教程（包括所有的类型）。至于类似于类继承这种机制就不要找了，protocol buffer不支持。&lt;/p></description></item><item><title>使用Github Pages+Hugo搭建个人博客</title><link>https://www.jonathanlin.top/posts/how-to-setup-hugo-github-page/</link><pubDate>Wed, 30 Jun 2021 21:41:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/how-to-setup-hugo-github-page/</guid><description>
 &lt;p>本文通过一些列的步骤，来介绍一下如何通过Github Pages和Hugo来搭建一个个人博客。&lt;/p>
 &lt;h2 id="说明">说明&lt;/h2>
 &lt;p>首先需要你要有一个github账号。我的一个思路是：把markdown源文件放在一个私有的repo下，然后通过hugo build出来的静态html放在另一个公开的repo下，这个过程可以通过Github Action来触发。基于此，我的博客源文件是在私有repo jonlimx/blogs-src里，博客本身是在公开repo jonlimx/blogs下，如下图所示：&lt;/p>

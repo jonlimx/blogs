@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/</link><description>Recent content on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 01 Jul 2021 13:54:58 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/index.xml" rel="self" type="application/rss+xml"/><item><title>Protocol Buffer Basics Go</title><link>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</link><pubDate>Thu, 01 Jul 2021 13:54:58 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>golang on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/golang/</link><description>Recent content in golang on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 01 Jul 2021 13:54:58 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/golang/index.xml" rel="self" type="application/rss+xml"/><item><title>Protocol Buffer Basics Go</title><link>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</link><pubDate>Thu, 01 Jul 2021 13:54:58 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</guid><description>
 &lt;p>原文链接：&lt;a href="https://developers.google.com/protocol-buffers/docs/gotutorial">Protocol Buffer Basics: Go | Protocol Buffers | Google Developers&lt;/a>&lt;/p>
 &lt;p>本教程使用proto3语言为Go程序员介绍了protocol buffers的基本使用。通过一步步创建一个简单的示例应用，你将会了解到：&lt;/p>
 &lt;ul>
@@ -58,62 +58,4 @@
 &lt;p>在每一个字段上诸如&amp;quot;= 1&amp;quot; &amp;ldquo;= 2&amp;quot;的标记是用于在二进制编码的时候对字段指定一个唯一的标记。相对于更高的标记号码而言，1 -15号在编码的时候占用的空间小于一个字节，因此一个有优化手段是你可以把经常会用到的字段或者重复类型的字段（例如数组）标记为1 - 15，把高于15的留给那些不怎么常用到的字段或者可选的字段。重复类型字段里的每一个元素都需要重新编码标记号码，因此重复类型的字段往往都会用到这种优化 。（&lt;em>&lt;strong>这块后面需要再理解一下是什么意思&lt;/strong>&lt;/em>）&lt;/p>
 &lt;p>如果一个字段的值没有设置，那么将使用对应类型的&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3#default">默认值&lt;/a>：数字类型的默认值是0，字符串默认值是空字符串，布尔类型的默认值是false。对于嵌套的消息体，它的默认值是带有各个字段名的默认值。调用访问器（getter）去读取值的时候，如果对应的字段没有明确赋值，那么就返回对应的默认值。&lt;/p>
 &lt;p>如果一个字段是重复类型，那么元素的个数可能是任意数目（包括0个）。元素的顺序在protocol buffer中是被保留下来的。可以想象重复类型字段是动态数组。&lt;/p>
-&lt;p>你将在&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3">Protocol Buffer Language Guide&lt;/a>中找到如何编写&lt;code>.proto&lt;/code>文件的完整教程（包括所有的类型）。至于类似于类继承这种机制就不要找了，protocol buffer不支持。&lt;/p></description></item><item><title>使用Github Pages+Hugo搭建个人博客</title><link>https://www.jonathanlin.top/posts/how-to-setup-hugo-github-page/</link><pubDate>Wed, 30 Jun 2021 21:41:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/how-to-setup-hugo-github-page/</guid><description>
-&lt;p>本文通过一些列的步骤，来介绍一下如何通过Github Pages和Hugo来搭建一个个人博客。&lt;/p>
-&lt;h2 id="说明">说明&lt;/h2>
-&lt;p>首先需要你要有一个github账号。我的一个思路是：把markdown源文件放在一个私有的repo下，然后通过hugo build出来的静态html放在另一个公开的repo下，这个过程可以通过Github Action来触发。基于此，我的博客源文件是在私有repo jonlimx/blogs-src里，博客本身是在公开repo jonlimx/blogs下，如下图所示：&lt;/p>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/image-20210630232900924.png" alt="overview">&lt;/p>
-&lt;p>所以，如果你想跟我一样，你需要事先建好一个&lt;strong>私有repo&lt;/strong>和一个&lt;strong>公开repo&lt;/strong>。下文中提到的jonlimx/blogs-src就是特指我的私有repo，jonlimx/blogs就是特指我的公开repo。&lt;/p>
-&lt;p>此外，你最好对Hugo有一些基本的认识。你可以通过&lt;a href="https://gohugo.io/getting-started/quick-start/">Quick Start Hugo&lt;/a>来快速了解，&lt;strong>并且事先安装好hugo&lt;/strong>。&lt;/p>
-&lt;h2 id="配置jonlimxblogs-src和github-action">配置jonlimx/blogs-src和Github Action&lt;/h2>
-&lt;p>在github上创建好jonlimx/blogs-src之后，在本地创建一个名为blogs-src的文件夹（路径和名称可自行决定），然后初始化为hugo站点，最后和jonlimx/blogs-src关联即可。&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">hugo new site .
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>接着打开jonlimx/blogs-src，创建一个workflow &lt;strong>gh-pages.yml&lt;/strong>，完整内容如下：&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">github pages&lt;/span>
-&lt;span style="color:#f92672">on&lt;/span>:
-&lt;span style="color:#f92672">push&lt;/span>:
-&lt;span style="color:#f92672">branches&lt;/span>:
-- &lt;span style="color:#ae81ff">main &lt;/span> &lt;span style="color:#75715e"># Set a branch to deploy&lt;/span>
-&lt;span style="color:#f92672">pull_request&lt;/span>:
-&lt;span style="color:#f92672">jobs&lt;/span>:
-&lt;span style="color:#f92672">deploy&lt;/span>:
-&lt;span style="color:#f92672">runs-on&lt;/span>: &lt;span style="color:#ae81ff">ubuntu-20.04&lt;/span>
-&lt;span style="color:#f92672">steps&lt;/span>:
-- &lt;span style="color:#f92672">uses&lt;/span>: &lt;span style="color:#ae81ff">actions/checkout@v2&lt;/span>
-&lt;span style="color:#f92672">with&lt;/span>:
-&lt;span style="color:#f92672">submodules&lt;/span>: &lt;span style="color:#66d9ef">true&lt;/span> &lt;span style="color:#75715e"># Fetch Hugo themes (true OR recursive)&lt;/span>
-&lt;span style="color:#f92672">fetch-depth&lt;/span>: &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#75715e"># Fetch all history for .GitInfo and .Lastmod&lt;/span>
-- &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">Setup Hugo&lt;/span>
-&lt;span style="color:#f92672">uses&lt;/span>: &lt;span style="color:#ae81ff">peaceiris/actions-hugo@v2&lt;/span>
-&lt;span style="color:#f92672">with&lt;/span>:
-&lt;span style="color:#f92672">hugo-version&lt;/span>: &lt;span style="color:#e6db74">&amp;#39;latest&amp;#39;&lt;/span>
-&lt;span style="color:#75715e"># extended: true&lt;/span>
-- &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">Build&lt;/span>
-&lt;span style="color:#f92672">run&lt;/span>: &lt;span style="color:#ae81ff">hugo --minify&lt;/span>
-- &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">Deploy&lt;/span>
-&lt;span style="color:#f92672">uses&lt;/span>: &lt;span style="color:#ae81ff">peaceiris/actions-gh-pages@v3&lt;/span>
-&lt;span style="color:#f92672">if&lt;/span>: &lt;span style="color:#ae81ff">github.ref == &amp;#39;refs/heads/main&amp;#39;&lt;/span>
-&lt;span style="color:#f92672">with&lt;/span>:
-&lt;span style="color:#f92672">personal_token&lt;/span>: &lt;span style="color:#ae81ff">${{ secrets.PERSONAL_TOKEN }}&lt;/span>
-&lt;span style="color:#f92672">external_repository&lt;/span>: &lt;span style="color:#ae81ff">jonlimx/blogs&lt;/span>
-&lt;span style="color:#f92672">publish_dir&lt;/span>: &lt;span style="color:#ae81ff">./public&lt;/span>
-&lt;span style="color:#f92672">cname&lt;/span>: &lt;span style="color:#ae81ff">www.jonathanlin.top&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>其中，Deploy部分使用了&lt;a href="https://github.com/peaceiris/actions-gh-pages">peaceiris/actions-gh-pages&lt;/a>这个Action，配置的相应部分需要替换成你自己相应的内容，具体说明如下：&lt;/p>
-&lt;ul>
-&lt;li>personal_token: ${{ secrets.PERSONAL_TOKEN }} - 由于我是将jonlimx/blogs-src下的markdown源文件build出来的静态文件发布到jonlimx/blogs下，这种跨repo的发布，只能使用personal_token或者deploy_key。我这里使用的是personal_token。所以在&lt;a href="https://github.com/settings/tokens">Personal Access Tokens (github.com)&lt;/a>上生成一个personal_token，接着将这个token配置到jonlimx/blogs-src到Action secrets，最后使得workflow中能通过secrets.PERSONAL_TOKEN获取到这个token进而有权限发布到jonlimx/blogs。&lt;/li>
-&lt;li>external_repository: jonlimx/blogs - 这个很明显，指定了要发布到哪个repo&lt;/li>
-&lt;li>cname: &lt;a href="http://www.jonathanlin.top">www.jonathanlin.top&lt;/a> - 为jonlimx/blogs这个repo对应的Github Pages配置自定义域名&lt;/li>
-&lt;/ul>
-&lt;p>&lt;strong>特别说明&lt;/strong>，如果基于上面这个配置，这个worklow会将markdown build出来的静态文件发布到jonlimx/blogs的&lt;strong>gh-pages&lt;/strong>分支，因此后面在配置Github Pages的时候要选个&lt;strong>gh-pages&lt;/strong>这个分支。&lt;/p>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/images/image-20210701103429278.png" alt="github-action">&lt;/p>
-&lt;h2 id="配置github-pages">配置Github Pages&lt;/h2>
-&lt;p>关于Github Pages的介绍请参考&lt;a href="https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages">About GitHub Pages - GitHub Docs&lt;/a>。配置Github Pages比较简单。如下图所示，在Github上打开你的公开repo，参考下图红框部分配置，然后保存即可。这里有两点需要注意一下：&lt;/p>
-&lt;ul>
-&lt;li>分支这块我选的是gh-pages，这是因为我的Github Action跑完是把静态文件发布到jonlimx/blogs的gh-pages分支。&lt;/li>
-&lt;/ul>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/images/image-20210630231109086.png" alt="github配置">&lt;/p>
-&lt;ul>
-&lt;li>路径是可选/(root)或者/docs。这二者的区别是你把这个repo都配置为Github Pages，还是说仅仅是/doc目录。这个在官方资料里有说明，请自行查阅。&lt;/li>
-&lt;li>自定义域名这个是可选的。如果你跟我想配置自定义域名，请参考：&lt;a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages">About custom domains and GitHub Pages - GitHub Docs&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;p>至此，基于Github Pages和Hugo的个人博客基本搭建完成。&lt;/p></description></item></channel></rss>
+&lt;p>你将在&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3">Protocol Buffer Language Guide&lt;/a>中找到如何编写&lt;code>.proto&lt;/code>文件的完整教程（包括所有的类型）。至于类似于类继承这种机制就不要找了，protocol buffer不支持。&lt;/p></description></item></channel></rss>
