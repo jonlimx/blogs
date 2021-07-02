@@ -58,7 +58,85 @@
 &lt;p>在每一个字段上诸如&amp;quot;= 1&amp;quot; &amp;ldquo;= 2&amp;quot;的标记是用于在二进制编码的时候对字段指定一个唯一的标记。相对于更高的标记号码而言，1 -15号在编码的时候占用的空间小于一个字节，因此一个有优化手段是你可以把经常会用到的字段或者重复类型的字段（例如数组）标记为1 - 15，把高于15的留给那些不怎么常用到的字段或者可选的字段。重复类型字段里的每一个元素都需要重新编码标记号码，因此重复类型的字段往往都会用到这种优化 。（&lt;em>&lt;strong>这块后面需要再理解一下是什么意思&lt;/strong>&lt;/em>）&lt;/p>
 &lt;p>如果一个字段的值没有设置，那么将使用对应类型的&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3#default">默认值&lt;/a>：数字类型的默认值是0，字符串默认值是空字符串，布尔类型的默认值是false。对于嵌套的消息体，它的默认值是带有各个字段名的默认值。调用访问器（getter）去读取值的时候，如果对应的字段没有明确赋值，那么就返回对应的默认值。&lt;/p>
 &lt;p>如果一个字段是重复类型，那么元素的个数可能是任意数目（包括0个）。元素的顺序在protocol buffer中是被保留下来的。可以想象重复类型字段是动态数组。&lt;/p>
-&lt;p>你将在&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3">Protocol Buffer Language Guide&lt;/a>中找到如何编写&lt;code>.proto&lt;/code>文件的完整教程（包括所有的类型）。至于类似于类继承这种机制就不要找了，protocol buffer不支持。&lt;/p></description></item><item><title>使用Github Pages+Hugo搭建个人博客</title><link>https://www.jonathanlin.top/posts/how-to-setup-hugo-github-page/</link><pubDate>Wed, 30 Jun 2021 21:41:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/how-to-setup-hugo-github-page/</guid><description>
+&lt;p>你将在&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3">Protocol Buffer Language Guide&lt;/a>中找到如何编写&lt;code>.proto&lt;/code>文件的完整教程（包括所有的类型）。至于类似于类继承这种机制就不要找了，protocol buffer不支持。&lt;/p>
+&lt;h2 id="编译protocol-buffers">编译protocol buffers&lt;/h2>
+&lt;p>现在你已经有&lt;code>.proto&lt;/code>文件了，接下来你需要基于这个文件去生成访问&lt;code>AddresBook&lt;/code>消息体（&lt;code>Person&lt;/code>和&lt;code>PhoneNumber&lt;/code>也是）的类了。你将要使用protocol buffer编译器&lt;code>protoc&lt;/code>来编译你的&lt;code>.proto&lt;/code>文件：&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>如果你还未安装编译器，请先&lt;a href="https://developers.google.com/protocol-buffers/docs/downloads">Download Protocol Buffers&lt;/a>，然后参考README进行安装&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>运行下面的命令安装Go protocol buffers plugin：&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">go get github.com/golang/protobuf/protoc-gen-go
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>编译器plugin &lt;code>protoc-gen-to&lt;/code>将被安装在&lt;code>$GOBIN&lt;/code>目录，该目录默认是在&lt;code>$GOPATH/bin&lt;/code>。这个目录必须包含在你的&lt;code>$PATH&lt;/code>中。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>现在你可以运行编译器，指定源目录（就是你的源文件所在的目录，如果没有指定就是指当前目录）和目标目录（生成的代码所在的目录）以及&lt;code>.proto&lt;/code>所在的目录。在我们的例子中，你应该运行下面命令：&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">protoc -I&lt;span style="color:#f92672">=&lt;/span>$SRC_DIR --go_out&lt;span style="color:#f92672">=&lt;/span>$DST_DIR $SRC_DIR/addressbook.proto
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>由于你是需要生成Go代码，你应该使用&lt;code>--go-out&lt;/code>选项，其他语言则使用对应的选项。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>运行后，你将会在特定的目录看到生成的代码：&lt;code>github.com/protocolbuffers/protobuf/examples/go/tutorialpb/addressbook.pb.go&lt;/code>。&lt;/p>
+&lt;h2 id="protocol-buffer-api">Protocol Buffer API&lt;/h2>
+&lt;p>生成的&lt;code>addressbook.pb.go&lt;/code>提供了以下有用的类型：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;code>AddressBook&lt;/code>结构体包含了&lt;code>People&lt;/code>类型的字段&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>Person&lt;/code>结构体包含了&lt;code>Name&lt;/code>、&lt;code>Id&lt;/code>、&lt;code>Email&lt;/code>和 &lt;code>Phones&lt;/code>字段&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>Person_PhoneNumber&lt;/code>结构体包含了&lt;code>Number&lt;/code>和&lt;code>Type&lt;/code>字段&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>Person_PhoneType&lt;/code>结构体和&lt;code>Person.PhoneType&lt;/code>枚举&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>你可以从&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/go-generated">Go Generated Code guide&lt;/a>了解到代码生成的细节，对于大部分代码你只需要像对待Go类型一样。&lt;/p>
+&lt;p>&lt;code>list_people&lt;/code>的单元测试&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people_test.go">command&amp;rsquo;s unit tests&lt;/a>中展示了你应该如何创建&lt;code>Person&lt;/code>的实例：&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-go" data-lang="go">&lt;span style="color:#a6e22e">p&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">pb&lt;/span>.&lt;span style="color:#a6e22e">Person&lt;/span>{
+&lt;span style="color:#a6e22e">Id&lt;/span>: &lt;span style="color:#ae81ff">1234&lt;/span>,
+&lt;span style="color:#a6e22e">Name&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;John Doe&amp;#34;&lt;/span>,
+&lt;span style="color:#a6e22e">Email&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;jdoe@example.com&amp;#34;&lt;/span>,
+&lt;span style="color:#a6e22e">Phones&lt;/span>: []&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">pb&lt;/span>.&lt;span style="color:#a6e22e">Person_PhoneNumber&lt;/span>{
+{&lt;span style="color:#a6e22e">Number&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;555-4321&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">Type&lt;/span>: &lt;span style="color:#a6e22e">pb&lt;/span>.&lt;span style="color:#a6e22e">Person_HOME&lt;/span>},
+},
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="写消息">写消息&lt;/h2>
+&lt;p>使用proptocol buffers的目的是序列化你的数据，而后能够在任何地方解析。Go语言中，你可以使用&lt;code>proto&lt;/code>库的&lt;a href="https://pkg.go.dev/google.golang.org/protobuf/proto?tab=doc#Marshal">Marshal&lt;/a>方法序列化你的protocol buffer数据。protocol buffer消息体的指针类型实现了&lt;code>proto.Message&lt;/code>接口。调用&lt;code>proto.Marshal&lt;/code>返回序列化后的编码成wire格式的protocol buffer数据。例如，我们在&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/add_person.go">&lt;code>add_person&lt;/code> command&lt;/a>中使用了这个方法：&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-go" data-lang="go">&lt;span style="color:#a6e22e">book&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">pb&lt;/span>.&lt;span style="color:#a6e22e">AddressBook&lt;/span>{}
+&lt;span style="color:#75715e">// ...
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>
+&lt;span style="color:#75715e">// Write the new address book back to disk.
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">out&lt;/span>, &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">proto&lt;/span>.&lt;span style="color:#a6e22e">Marshal&lt;/span>(&lt;span style="color:#a6e22e">book&lt;/span>)
+&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#66d9ef">nil&lt;/span> {
+&lt;span style="color:#a6e22e">log&lt;/span>.&lt;span style="color:#a6e22e">Fatalln&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Failed to encode address book:&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">err&lt;/span>)
+}
+&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">ioutil&lt;/span>.&lt;span style="color:#a6e22e">WriteFile&lt;/span>(&lt;span style="color:#a6e22e">fname&lt;/span>, &lt;span style="color:#a6e22e">out&lt;/span>, &lt;span style="color:#ae81ff">0644&lt;/span>); &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#66d9ef">nil&lt;/span> {
+&lt;span style="color:#a6e22e">log&lt;/span>.&lt;span style="color:#a6e22e">Fatalln&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Failed to write address book:&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">err&lt;/span>)
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="读数据">读数据&lt;/h2>
+&lt;p>你可以使用&lt;code>proto&lt;/code>库中的&lt;a href="https://pkg.go.dev/google.golang.org/protobuf/proto?tab=doc#Unmarshal">Unmarshal&lt;/a>方法来解析编码过的数据。调用这个方法将&lt;code>buf&lt;/code>中的protocol buffer数据解析出来存放在&lt;code>pb&lt;/code>中。因此我们使用下面的代码在&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people.go">&lt;code>list_people&lt;/code> command&lt;/a>中进行解析：&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-go" data-lang="go">&lt;span style="color:#75715e">// Read the existing address book.
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">in&lt;/span>, &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">ioutil&lt;/span>.&lt;span style="color:#a6e22e">ReadFile&lt;/span>(&lt;span style="color:#a6e22e">fname&lt;/span>)
+&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#66d9ef">nil&lt;/span> {
+&lt;span style="color:#a6e22e">log&lt;/span>.&lt;span style="color:#a6e22e">Fatalln&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Error reading file:&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">err&lt;/span>)
+}
+&lt;span style="color:#a6e22e">book&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">pb&lt;/span>.&lt;span style="color:#a6e22e">AddressBook&lt;/span>{}
+&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">proto&lt;/span>.&lt;span style="color:#a6e22e">Unmarshal&lt;/span>(&lt;span style="color:#a6e22e">in&lt;/span>, &lt;span style="color:#a6e22e">book&lt;/span>); &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#66d9ef">nil&lt;/span> {
+&lt;span style="color:#a6e22e">log&lt;/span>.&lt;span style="color:#a6e22e">Fatalln&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Failed to parse address book:&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">err&lt;/span>)
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="扩展protocol-buffer">扩展Protocol Buffer&lt;/h2>
+&lt;p>在你使用protocol buffer的代码发布之后，或早或晚你总是希望改进你的protocol buffer定义。如果你希望你新的定义能向后兼容，且你的老的定义能向前兼容（你一定总是希望这样），那么你需要遵循一些规则。在新版本的protocol buffer中：&lt;/p>
+&lt;ul>
+&lt;li>你一定不能修改现在的字段的标签号码&lt;/li>
+&lt;li>你可能会删除某些字段&lt;/li>
+&lt;li>你可能会新增字段，但是新增的字段一定要使用全新的标签号码（一定是没有被使用过的，包括那些被删除的字段曾经使用过的）。&lt;/li>
+&lt;/ul>
+&lt;p>（使用这些规则有一些例外&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3#updating">some exceptions&lt;/a>，但这些很少使用到）&lt;/p>
+&lt;p>如果你遵循了这些规则，你会发现老代码也可以读取新的消息，只是会忽略新的字段。对于老代码，被删除的非数组字段会有它们的默认值，数组类型为空。新的代码可以透明的读取老的消息。&lt;/p>
+&lt;p>需要注意的是，新的字段不会出现在老消息里，因此你需要添加合理的逻辑处理默认值&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3#default">default value&lt;/a>。&lt;/p></description></item><item><title>使用Github Pages+Hugo搭建个人博客</title><link>https://www.jonathanlin.top/posts/how-to-setup-hugo-github-page/</link><pubDate>Wed, 30 Jun 2021 21:41:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/how-to-setup-hugo-github-page/</guid><description>
 &lt;p>本文通过一些列的步骤，来介绍一下如何通过Github Pages和Hugo来搭建一个个人博客。&lt;/p>
 &lt;h2 id="说明">说明&lt;/h2>
 &lt;p>首先需要你要有一个github账号。我的一个思路是：把markdown源文件放在一个私有的repo下，然后通过hugo build出来的静态html放在另一个公开的repo下，这个过程可以通过Github Action来触发。基于此，我的博客源文件是在私有repo jonlimx/blogs-src里，博客本身是在公开repo jonlimx/blogs下，如下图所示：&lt;/p>
