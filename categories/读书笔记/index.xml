@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>读书笔记 on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</link><description>Recent content in 读书笔记 on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Mon, 05 Jul 2021 19:41:09 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus读书笔记</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes/</link><pubDate>Mon, 05 Jul 2021 19:41:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes/</guid><description>
+&lt;p>&lt;em>本文是《C Primer Plus》读书笔记，持续更新中。&lt;/em>&lt;/p>
+&lt;h2 id="ch03-数据和c">ch03. 数据和C&lt;/h2>
+&lt;blockquote>
+&lt;p>思考问题：&lt;/p>
+&lt;ol>
+&lt;li>各种类型的数据占用多少空间&lt;/li>
+&lt;li>各种类型的数据是如何格式化输出的&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>一般而言，存储int需要占用一个机器字长&lt;/li>
+&lt;li>C语言中的byte不是8个bit，而是和一个char占用的位长一样&lt;/li>
+&lt;li>char根据编译器不同，可能被处理成有符号也可能被处理成无符号。具体可以查看头文件limits.h&lt;/li>
+&lt;li>整数类型一般都被存储为int类型，当超过int最大范围，编译器会自动将其视为高一个等级的类型，直到越界&lt;/li>
+&lt;li>2^16 = 65536 / 2^8 = 256&lt;/li>
+&lt;li>浮点数的存储：有效数和指数部分（包括符号），3.16e^7，有效数部分就是3.16&lt;/li>
+&lt;li>float至少能表示6位有效数字，double至少能表示10位有效数字&lt;/li>
+&lt;li>表达式中，float会自动转化成double&lt;/li>
+&lt;li>浮点数和整型数在计算机内部，虽然都是二进制表示，但是二进制的表示形式不一样，浮点数是把有效数字和指数部分分别表示。因此，在处理浮点数和整型的时候，计算机会做自动的转换，这个很危险&lt;/li>
+&lt;/ul>
+&lt;h2 id="ch04-字符串和格式化输入输出">ch04. 字符串和格式化输入/输出&lt;/h2>
+&lt;blockquote>
+&lt;p>思考问题：&lt;/p>
+&lt;ol>
+&lt;li>字符串是如何存取的&lt;/li>
+&lt;li>字符串底层的数据结构是怎样的&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>C语言中，没有专门的数据结构存放字符串。字符串是存放在char数组中，且数组的末尾是存放占位符'\0'，这个占位符是自动添加到数组末尾&lt;/li>
+&lt;li>使用scanf读取字符串的时候，输入空格则停止读取&lt;/li>
+&lt;li>&amp;ldquo;x&amp;quot;和&amp;rsquo;x&amp;rsquo;的区别：前者是char数组，实际占用两个字符，后者是char类型，一个字符&lt;/li>
+&lt;li>sizeof - 字节长度 / strlen - 字符串长度&lt;/li>
+&lt;li>使用sizeof计算字符串，会把结束字符（空字符'\0'）也算进去得到总共占用的字节数；而strlen计算字符串长度的时候，不会把末尾的结束字符计算进去&lt;/li>
+&lt;li>limits.h和float.h中分别定义了各种类型的最大值和最小值，这个会由于操作系统以及其字长的不同而不同&lt;/li>
+&lt;li>#define NAME value - 使用预处理器定义了一个明示常量，通常用大写来命名；const定义的实际是变量，可读变量&lt;/li>
+&lt;li>&lt;em>&lt;strong>转换说明：把以二进制格式存储在计算机中的值转换成一系列字符串然后打印&lt;/strong>&lt;/em>&lt;/li>
+&lt;li>转换如果和底层的数据类型不匹配会发生很奇怪的事情，如下代码：
+&lt;ol>
+&lt;li>n1是float类型，但是在存储的时候会自动转换成double，因此占用8个字节，但是&lt;code>%ld&lt;/code>导致在转换说明的时候，只读取了前4个字节&lt;/li>
+&lt;li>以上，导致每一次&lt;code>%ld&lt;/code>的转换都发生错位，四次的&lt;code>%ld&lt;/code>仅读取了16个字节，但是&lt;code>n1&lt;/code>到&lt;code>n4&lt;/code>一共占用了24个字节&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-c" data-lang="c">printf(&lt;span style="color:#e6db74">&amp;#34;%ld %ld %ld %ld&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, n1, n2, n3, n4);
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/printf-incompatiable.png" alt="转换不匹配">&lt;/p>
+&lt;/li>
+&lt;li>格式化字符串转换说明 （关于转换说明符修饰符P71）
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>转换说明&lt;/th>
+&lt;th>输出&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>%a %A&lt;/td>
+&lt;td>浮点数、十六进制数和p记数法&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%c&lt;/td>
+&lt;td>单个字符&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%d&lt;/td>
+&lt;td>有符号十进制整数&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%e %E&lt;/td>
+&lt;td>浮点数，e&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%f&lt;/td>
+&lt;td>浮点数，十进制记数法&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%g %G&lt;/td>
+&lt;td>根据值的不同，自动选择%f或%e。%e格式用于指数小于-4或者大于或等于精度时&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%i&lt;/td>
+&lt;td>有符号十进制整数（与%d相同）&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%o&lt;/td>
+&lt;td>无符号八进制整数&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%p&lt;/td>
+&lt;td>指针&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%s&lt;/td>
+&lt;td>字符串&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%u&lt;/td>
+&lt;td>无符号十进制整数&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%x&lt;/td>
+&lt;td>无符号十六进制整数，使用十六进制数0f&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%X&lt;/td>
+&lt;td>无符号十六进制整数，使用十六进制数0F&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%%&lt;/td>
+&lt;td>打印一个百分号&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;/li>
+&lt;/ul></description></item></channel></rss>
