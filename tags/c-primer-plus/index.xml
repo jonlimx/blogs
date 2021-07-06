@@ -25,18 +25,36 @@
 &lt;ol>
 &lt;li>字符串是如何存取的&lt;/li>
 &lt;li>字符串底层的数据结构是怎样的&lt;/li>
+&lt;li>输入输出函数如何格式化？&lt;/li>
 &lt;/ol>
 &lt;/blockquote>
 &lt;ul>
-&lt;li>C语言中，没有专门的数据结构存放字符串。字符串是存放在char数组中，且数组的末尾是存放占位符'\0'，这个占位符是自动添加到数组末尾&lt;/li>
-&lt;li>使用scanf读取字符串的时候，输入空格则停止读取&lt;/li>
-&lt;li>&amp;ldquo;x&amp;quot;和&amp;rsquo;x&amp;rsquo;的区别：前者是char数组，实际占用两个字符，后者是char类型，一个字符&lt;/li>
-&lt;li>sizeof - 字节长度 / strlen - 字符串长度&lt;/li>
-&lt;li>使用sizeof计算字符串，会把结束字符（空字符'\0'）也算进去得到总共占用的字节数；而strlen计算字符串长度的时候，不会把末尾的结束字符计算进去&lt;/li>
-&lt;li>limits.h和float.h中分别定义了各种类型的最大值和最小值，这个会由于操作系统以及其字长的不同而不同&lt;/li>
-&lt;li>#define NAME value - 使用预处理器定义了一个明示常量，通常用大写来命名；const定义的实际是变量，可读变量&lt;/li>
-&lt;li>&lt;em>&lt;strong>转换说明：把以二进制格式存储在计算机中的值转换成一系列字符串然后打印&lt;/strong>&lt;/em>&lt;/li>
-&lt;li>转换如果和底层的数据类型不匹配会发生很奇怪的事情，如下代码：
+&lt;li>
+&lt;p>C语言中，没有专门的数据结构存放字符串。字符串是存放在char数组中，且数组的末尾是存放占位符'\0'，这个占位符是自动添加到数组末尾&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>使用scanf读取字符串的时候，输入空格则停止读取&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&amp;ldquo;x&amp;quot;和&amp;rsquo;x&amp;rsquo;的区别：前者是char数组，实际占用两个字符，后者是char类型，一个字符&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>sizeof - 字节长度 / strlen - 字符串长度&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>使用sizeof计算字符串，会把结束字符（空字符'\0'）也算进去得到总共占用的字节数；而strlen计算字符串长度的时候，不会把末尾的结束字符计算进去&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>limits.h和float.h中分别定义了各种类型的最大值和最小值，这个会由于操作系统以及其字长的不同而不同&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>#define NAME value - 使用预处理器定义了一个明示常量，通常用大写来命名；const定义的实际是变量，可读变量&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>printf&lt;em>&lt;strong>转换说明：把以二进制格式存储在计算机中的值转换成一系列字符串然后打印&lt;/strong>&lt;/em>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>转换如果和底层的数据类型不匹配会发生很奇怪的事情，如下代码：&lt;/p>
 &lt;ol>
 &lt;li>n1是float类型，但是在存储的时候会自动转换成double，因此占用8个字节，但是&lt;code>%ld&lt;/code>导致在转换说明的时候，只读取了前4个字节&lt;/li>
 &lt;li>以上，导致每一次&lt;code>%ld&lt;/code>的转换都发生错位，四次的&lt;code>%ld&lt;/code>仅读取了16个字节，但是&lt;code>n1&lt;/code>到&lt;code>n4&lt;/code>一共占用了24个字节&lt;/li>
@@ -44,7 +62,8 @@
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-c" data-lang="c">printf(&lt;span style="color:#e6db74">&amp;#34;%ld %ld %ld %ld&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, n1, n2, n3, n4);
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/printf-incompatiable.png" alt="转换不匹配">&lt;/p>
 &lt;/li>
-&lt;li>格式化字符串转换说明 （关于转换说明符修饰符P71）
+&lt;li>
+&lt;p>格式化字符串转换说明 （关于转换说明符修饰符P71）&lt;/p>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -111,5 +130,33 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
+&lt;/li>
+&lt;li>
+&lt;p>scanf与printf正好相反，从键盘输入的都是字符串，scanf通过制定数据类型然后将字符串转换成对应的数据类型。注意：&lt;strong>除了字符串类型及char数组，其他所有的类型都要通过指针来接收值&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>scanf通过空格或者回车将输入分割成多个字段（%c是例外，也会把空字符作为输入存储）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>*修饰符&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>对于printf而言，*修饰符用于代替字段。如下面代码所示，*修饰符用与替换width和precision表示宽度和精度&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>对于scanf而言，把*放在%和转换字符之间，则会跳过相应的输入项。下面代码所示，scanf跳过了第一个和第二个输入，把第三个输入赋值给n&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-c" data-lang="c">&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(&lt;span style="color:#66d9ef">void&lt;/span>) {
+&lt;span style="color:#66d9ef">unsigned&lt;/span> width &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">6&lt;/span>, precision &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">3&lt;/span>;
+&lt;span style="color:#66d9ef">int&lt;/span> number &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">256&lt;/span>;
+&lt;span style="color:#66d9ef">double&lt;/span> weight &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">242.5&lt;/span>;
+printf(&lt;span style="color:#e6db74">&amp;#34;%*d&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, width, number);
+printf(&lt;span style="color:#e6db74">&amp;#34;%*.*f&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, width, precision, weight);
+&lt;span style="color:#66d9ef">int&lt;/span> n;
+scanf(&lt;span style="color:#e6db74">&amp;#34;%*d %*d %d&amp;#34;&lt;/span>,&lt;span style="color:#f92672">&amp;amp;&lt;/span>n);
+printf(&lt;span style="color:#e6db74">&amp;#34;%d&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, n);
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ul>
 &lt;/li>
 &lt;/ul></description></item></channel></rss>
