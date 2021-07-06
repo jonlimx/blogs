@@ -1,4 +1,290 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/posts/</link><description>Recent content in Posts on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Mon, 05 Jul 2021 19:41:09 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus读书笔记</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes/</link><pubDate>Mon, 05 Jul 2021 19:41:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/posts/</link><description>Recent content in Posts on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Tue, 06 Jul 2021 14:49:22 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Protocol Buffer Language Guide (proto3)</title><link>https://www.jonathanlin.top/posts/protocol-buffer-language-guide/</link><pubDate>Tue, 06 Jul 2021 14:49:22 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-language-guide/</guid><description>
+&lt;p>原文链接：&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3">Language Guide (proto3) | Protocol Buffers | Google Developers&lt;/a>&lt;/p>
+&lt;p>本指导文档描述了如何使用protocol buffer语言来构建你的protocol buffer数据，包括&lt;code>.proto&lt;/code>文件的语法规则，包括如何从你的&lt;code>.proto&lt;/code>文件中生成数据访问类。本文介绍的是&lt;strong>proto3&lt;/strong>版本的语言规则，关于&lt;strong>proto2&lt;/strong>版本的信息，请参考： &lt;a href="https://developers.google.com/protocol-buffers/docs/proto">Proto2 Language Guide&lt;/a>。&lt;/p>
+&lt;p>本文是一个指导性的参考文档，关于如何使用本文中提及的特性的例子，请参考&lt;a href="https://developers.google.com/protocol-buffers/docs/tutorials">tutorial&lt;/a> 并选择你想要的特定编程语言的例子。&lt;/p>
+&lt;h2 id="定义一个消息类型">定义一个消息类型&lt;/h2>
+&lt;p>首先让我们来看一个非常简单的例子。比如说你想要定义一个搜索请求这样一个消息体，这个消息体里包含一个查询字符串（query string）、你所感兴趣页面的数量以及每个页面包含的结果。如下是你的&lt;code>.proto&lt;/code>文件定义：&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-protobuf" data-lang="protobuf">syntax &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;proto3&amp;#34;&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>&lt;span style="color:#66d9ef">message&lt;/span> &lt;span style="color:#a6e22e">SearchRequest&lt;/span> {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> query &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">int32&lt;/span> page_number &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">int32&lt;/span> result_per_page &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">3&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>}&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>
+&lt;p>第一行说明你使用的是&lt;code>proto3&lt;/code>版本的语言规则。如果没有这一行，那么protocol buffer编译器会认为你是使用&lt;code>proto2&lt;/code> 版本的语言规则。&lt;code>syntax&lt;/code>定义必须是在&lt;code>.proto&lt;/code>文件的第一行&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>SearchRequest&lt;/code>包含了三个字段（键值对），每个字段都有一个名字和对应的数据类型&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="指定字段类型">指定字段类型&lt;/h3>
+&lt;p>上面的例子中，三个字段都是&lt;a href="#%E6%A0%87%E9%87%8F%E7%B1%BB%E5%9E%8B">标量类型&lt;/a>（相对与复合类型，比如struct而言)：两个整型变量（&lt;code>page_number&lt;/code>和&lt;code>result_per_page&lt;/code>）和一个字符串变量（&lt;code>query&lt;/code>)。当然，你可以定义你的字段为复合类型，比如&lt;a href="#%E6%9E%9A%E4%B8%BE">枚举&lt;/a>和其他消息类型。&lt;/p>
+&lt;h3 id="分配字段号码">分配字段号码&lt;/h3>
+&lt;p>正如你所见，消息体定义中的每一个字段都一个唯一的号码。这些字段号码是在二进制消息格式中（&lt;a href="https://developers.google.com/protocol-buffers/docs/encoding">message binary format&lt;/a>）的标识，一旦你开始使用你定义的消息体，这些字段号码都不应该再改变。注意，字段号码为1到15的字段在编码的时候占用一个字节（包括字段号码和字段类型，关于这点的更多细节，请参看：&lt;a href="https://developers.google.com/protocol-buffers/docs/encoding#structure">Protocol Buffer Encoding&lt;/a>）。字段号码从16到2047的字段会占用两个字节。因此你应该将1到15范围的号码留给那些在消息体里经常用到的字段。并且要考虑预留一些该范围的号码，以便将来扩展你的消息体。&lt;/p>
+&lt;p>你可以使用的最小字段号码是1，最大字段2&lt;!-- raw HTML omitted -->29&lt;!-- raw HTML omitted --> - 1或者536,870,911。你不可以使用字段号码为19000到19999的部分（&lt;code>FieldDescriptor::kFirstReservedNumber&lt;/code> 到 &lt;code>FieldDescriptor::kLastReservedNumber&lt;/code>），这些是为protocol buffer本身的实现所保留的 - 如果你在&lt;code>.proto&lt;/code>文件中使用了这些保留范围内的字段号码，编译器报错。同样的，如果你使用了那些被标记为&lt;code>reserved&lt;/code>的字段号码，编译器也会报错。&lt;/p>
+&lt;h3 id="指定字段规则">指定字段规则&lt;/h3>
+&lt;p>消息体的字段可以是下面两种形式：&lt;/p>
+&lt;ul>
+&lt;li>单数形式：一个良好组织的消息体可以有零个或者一个这种字段（不能超过一个）。这是&lt;code>proto3&lt;/code>版本的默认字段规则。（个人理解，这里不是说只能定义零个或者一个这种单数形式的字段，而是说定义为单数形式的字段里最多包含一个元素。这个要对应&lt;code>repeated&lt;/code>来理解）&lt;/li>
+&lt;li>&lt;code>repeated&lt;/code>：这种字段对应的元素在一个消息体里可以重复任意多次。&lt;code>repeated&lt;/code>中的元素的顺序是固定的。&lt;/li>
+&lt;/ul>
+&lt;p>在&lt;code>proto3&lt;/code>中，标量类型的&lt;code>repeated&lt;/code>字段是默认是使用&lt;code>packed&lt;/code>来编码的。你可以从&lt;a href="https://developers.google.com/protocol-buffers/docs/encoding#packed">Protocol Buffer Encoding&lt;/a>中了解更多关于&lt;code>packed&lt;/code>编码的信息。&lt;/p>
+&lt;h3 id="添加更多的消息体类型">添加更多的消息体类型&lt;/h3>
+&lt;p>在一个&lt;code>.proto&lt;/code>文件中你可以定义多种不同的消息体类型，如果你奥定义多个相关的消息体，这就非常有用 - 比如你想要定义和&lt;code>SearchRequest&lt;/code>相对应的&lt;code>SearchResponse&lt;/code>消息体，你可以在同一个&lt;code>.proto&lt;/code>文件中添加：&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span style="color:#66d9ef">message&lt;/span> &lt;span style="color:#a6e22e">SearchRequest&lt;/span> {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> query &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">int32&lt;/span> page_number &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">int32&lt;/span> result_per_page &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">3&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>}&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>&lt;span style="color:#66d9ef">message&lt;/span> &lt;span style="color:#a6e22e">SearchResponse&lt;/span> {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#f92672">...&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>}&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="添加注释">添加注释&lt;/h3>
+&lt;p>在&lt;code>.proto&lt;/code>中添加注释，你可以使用C/C++风格的语法：&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span style="color:#75715e">/* SearchRequest represents a search query, with pagination options to
+&lt;/span>&lt;span style="color:#75715e"> * indicate which results to include in the response. */&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>&lt;span style="color:#66d9ef">message&lt;/span> &lt;span style="color:#a6e22e">SearchRequest&lt;/span> {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> query &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">int32&lt;/span> page_number &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>; &lt;span style="color:#75715e">// Which page number do we want?
+&lt;/span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int32&lt;/span> result_per_page &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">3&lt;/span>; &lt;span style="color:#75715e">// Number of results to return per page.
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>}&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="保留字段">保留字段&lt;/h3>
+&lt;p>如果你&lt;a href="#%E6%9B%B4%E6%96%B0%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B">更新息类型&lt;/a>的时候删除了一个字段，或者把一个字段注释掉，将来其他人在更新相同的消息体的时候是可以重用之前字段的号码。之后在他们使用老版本的&lt;code>.proto&lt;/code>时将会导致许多问题，包括数据出错，privacy bugs等。为了确保这些问题不会发生，有一个办法是把那些你删除的字段的使用过的字段号码（和/或名称）标记为&lt;code>reserved&lt;/code>。如果你使用了这些被&lt;code>reserved&lt;/code>标记的号码，编译器会报错。&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span style="color:#66d9ef">message&lt;/span> &lt;span style="color:#a6e22e">Foo&lt;/span> {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> reserved &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">15&lt;/span>, &lt;span style="color:#ae81ff">9&lt;/span> &lt;span style="color:#66d9ef">to&lt;/span> &lt;span style="color:#ae81ff">11&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> reserved &lt;span style="color:#e6db74">&amp;#34;foo&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;bar&amp;#34;&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>}&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>注意，你不可以在同一个&lt;code>reserved&lt;/code>语句中同时制定字段号码和字段名称。&lt;/p>
+&lt;h3 id="从proto文件中生成的代码">从&lt;code>.proto&lt;/code>文件中生成的代码&lt;/h3>
+&lt;p>当你编译&lt;code>.proto&lt;/code>文件时，编译器会生成你指定的语言代码来和你定义在&lt;code>.proto&lt;/code>文件中消息体交互，包括访问和设置字段的值、序列化你的消息问输出流以及从输入流中解析为消息体。&lt;/p>
+&lt;ul>
+&lt;li>**C++**语言：生成&lt;code>.h&lt;/code>和&lt;code>.cc&lt;/code>文件，每个消息体都会生成一个对应的类&lt;/li>
+&lt;li>&lt;strong>Java&lt;/strong>语言，每个消息体都会生成一个包含对应类的&lt;code>.java&lt;/code>文件，以及创建对应类实例的&lt;code>Builder&lt;/code>类&lt;/li>
+&lt;li>&lt;strong>Kotlin&lt;/strong>语言，除了和Java语言生成的一样的代码以外，还会生成一个&lt;code>.kt&lt;/code>文件包含一个用例创建类型实例的DSL&lt;/li>
+&lt;li>&lt;strong>Pytyon&lt;/strong>语言少许不同，生成一个包含了每个消息体对应的静态描述器的模块，这些被用来在运行时创建必要的Python数据访问类&lt;/li>
+&lt;li>&lt;strong>Go&lt;/strong>语言，生成一个包含所有消息体的&lt;code>.pb.go&lt;/code>代码文件&lt;/li>
+&lt;li>&lt;strong>Ruby&lt;/strong>语言，生成一个包含所有消息体的&lt;code>.rb&lt;/code>代码文件&lt;/li>
+&lt;li>&lt;strong>Object-C&lt;/strong>语言，生成一个&lt;code>probjc.h&lt;/code>和&lt;code>projc.m&lt;/code>文件，每一个消息体对应了一个类&lt;/li>
+&lt;li>**C#**语言，生成一个&lt;code>.cs&lt;/code>文件，每一个消息体对应了一个类&lt;/li>
+&lt;li>&lt;strong>Dart&lt;/strong>，生成一个&lt;code>.pb.dart&lt;/code>文件，每一个消息体对应了一个类&lt;/li>
+&lt;/ul>
+&lt;p>关于特定语言的API的使用，你可以参考：&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/overview">API reference&lt;/a>。&lt;/p>
+&lt;h2 id="标量类型">标量类型&lt;/h2>
+&lt;p>标量类型即下表中的一种类型。下表展示了&lt;code>.proto&lt;/code>中支持的标量类型和特定语言标量类型的对应关系（原文有更多的编程语言的对应关系，译文中我只选取我关心的语言☺）：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">.proto Type&lt;/th>
+&lt;th style="text-align:left">Notes&lt;/th>
+&lt;th style="text-align:left">C++ Type&lt;/th>
+&lt;th style="text-align:left">Java/Kotlin Type[1]&lt;/th>
+&lt;th style="text-align:left">Python Type[3]&lt;/th>
+&lt;th style="text-align:left">Go Type&lt;/th>
+&lt;th style="text-align:left">C# Type&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">double&lt;/td>
+&lt;td style="text-align:left">&lt;/td>
+&lt;td style="text-align:left">double&lt;/td>
+&lt;td style="text-align:left">double&lt;/td>
+&lt;td style="text-align:left">float&lt;/td>
+&lt;td style="text-align:left">float64&lt;/td>
+&lt;td style="text-align:left">double&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">float&lt;/td>
+&lt;td style="text-align:left">&lt;/td>
+&lt;td style="text-align:left">float&lt;/td>
+&lt;td style="text-align:left">float&lt;/td>
+&lt;td style="text-align:left">float&lt;/td>
+&lt;td style="text-align:left">float32&lt;/td>
+&lt;td style="text-align:left">float&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">int32&lt;/td>
+&lt;td style="text-align:left">Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead.&lt;/td>
+&lt;td style="text-align:left">int32&lt;/td>
+&lt;td style="text-align:left">int&lt;/td>
+&lt;td style="text-align:left">int&lt;/td>
+&lt;td style="text-align:left">int32&lt;/td>
+&lt;td style="text-align:left">int&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">int64&lt;/td>
+&lt;td style="text-align:left">Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead.&lt;/td>
+&lt;td style="text-align:left">int64&lt;/td>
+&lt;td style="text-align:left">long&lt;/td>
+&lt;td style="text-align:left">int/long[4]&lt;/td>
+&lt;td style="text-align:left">int64&lt;/td>
+&lt;td style="text-align:left">long&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">uint32&lt;/td>
+&lt;td style="text-align:left">Uses variable-length encoding.&lt;/td>
+&lt;td style="text-align:left">uint32&lt;/td>
+&lt;td style="text-align:left">int[2]&lt;/td>
+&lt;td style="text-align:left">int/long[4]&lt;/td>
+&lt;td style="text-align:left">uint32&lt;/td>
+&lt;td style="text-align:left">uint&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">uint64&lt;/td>
+&lt;td style="text-align:left">Uses variable-length encoding.&lt;/td>
+&lt;td style="text-align:left">uint64&lt;/td>
+&lt;td style="text-align:left">long[2]&lt;/td>
+&lt;td style="text-align:left">int/long[4]&lt;/td>
+&lt;td style="text-align:left">uint64&lt;/td>
+&lt;td style="text-align:left">ulong&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">sint32&lt;/td>
+&lt;td style="text-align:left">Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s.&lt;/td>
+&lt;td style="text-align:left">int32&lt;/td>
+&lt;td style="text-align:left">int&lt;/td>
+&lt;td style="text-align:left">int&lt;/td>
+&lt;td style="text-align:left">int32&lt;/td>
+&lt;td style="text-align:left">int&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">sint64&lt;/td>
+&lt;td style="text-align:left">Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s.&lt;/td>
+&lt;td style="text-align:left">int64&lt;/td>
+&lt;td style="text-align:left">long&lt;/td>
+&lt;td style="text-align:left">int/long[4]&lt;/td>
+&lt;td style="text-align:left">int64&lt;/td>
+&lt;td style="text-align:left">long&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">fixed32&lt;/td>
+&lt;td style="text-align:left">Always four bytes. More efficient than uint32 if values are often greater than 228.&lt;/td>
+&lt;td style="text-align:left">uint32&lt;/td>
+&lt;td style="text-align:left">int[2]&lt;/td>
+&lt;td style="text-align:left">int/long[4]&lt;/td>
+&lt;td style="text-align:left">uint32&lt;/td>
+&lt;td style="text-align:left">uint&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">fixed64&lt;/td>
+&lt;td style="text-align:left">Always eight bytes. More efficient than uint64 if values are often greater than 256.&lt;/td>
+&lt;td style="text-align:left">uint64&lt;/td>
+&lt;td style="text-align:left">long[2]&lt;/td>
+&lt;td style="text-align:left">int/long[4]&lt;/td>
+&lt;td style="text-align:left">uint64&lt;/td>
+&lt;td style="text-align:left">ulong&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">sfixed32&lt;/td>
+&lt;td style="text-align:left">Always four bytes.&lt;/td>
+&lt;td style="text-align:left">int32&lt;/td>
+&lt;td style="text-align:left">int&lt;/td>
+&lt;td style="text-align:left">int&lt;/td>
+&lt;td style="text-align:left">int32&lt;/td>
+&lt;td style="text-align:left">int&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">sfixed64&lt;/td>
+&lt;td style="text-align:left">Always eight bytes.&lt;/td>
+&lt;td style="text-align:left">int64&lt;/td>
+&lt;td style="text-align:left">long&lt;/td>
+&lt;td style="text-align:left">int/long[4]&lt;/td>
+&lt;td style="text-align:left">int64&lt;/td>
+&lt;td style="text-align:left">long&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">bool&lt;/td>
+&lt;td style="text-align:left">&lt;/td>
+&lt;td style="text-align:left">bool&lt;/td>
+&lt;td style="text-align:left">boolean&lt;/td>
+&lt;td style="text-align:left">bool&lt;/td>
+&lt;td style="text-align:left">bool&lt;/td>
+&lt;td style="text-align:left">bool&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">string&lt;/td>
+&lt;td style="text-align:left">A string must always contain UTF-8 encoded or 7-bit ASCII text, and cannot be longer than 232.&lt;/td>
+&lt;td style="text-align:left">string&lt;/td>
+&lt;td style="text-align:left">String&lt;/td>
+&lt;td style="text-align:left">str/unicode[5]&lt;/td>
+&lt;td style="text-align:left">string&lt;/td>
+&lt;td style="text-align:left">string&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">bytes&lt;/td>
+&lt;td style="text-align:left">May contain any arbitrary sequence of bytes no longer than 232.&lt;/td>
+&lt;td style="text-align:left">string&lt;/td>
+&lt;td style="text-align:left">ByteString&lt;/td>
+&lt;td style="text-align:left">str&lt;/td>
+&lt;td style="text-align:left">[]byte&lt;/td>
+&lt;td style="text-align:left">ByteString&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>你可以从&lt;a href="https://developers.google.com/protocol-buffers/docs/encoding">Protocol Buffer Encoding&lt;/a>了解更多关于消息序列化时的编码相关的信息。&lt;/p>
+&lt;h2 id="默认值">默认值&lt;/h2>
+&lt;p>解析消息的时候，如果原先经过编码的消息里没有包含特定的单数形式的元素（原文很拗口，个人觉得这里就是说从编码的消息里解析的时候找不到特定的字段），那些这些字段就被赋值成对应类型的默认值，规则如下：&lt;/p>
+&lt;ul>
+&lt;li>strings类型的默认值是空字符串&lt;/li>
+&lt;li>bytes类型的默认值是空字节&lt;/li>
+&lt;li>bools类型的默认值是false&lt;/li>
+&lt;li>数字类型的默认值是0&lt;/li>
+&lt;li>&lt;a href="#%E6%9E%9A%E4%B8%BE">枚举类型&lt;/a>类型的默认值是枚举的第一个元素，也就是枚举值为0的元素&lt;/li>
+&lt;li>如果字段类型是其他的消息体，那么其默认值跟特定的语言相关，详见：&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/overview">generated code guide&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>repeated&lt;/code>类型的字段的默认值一般是对应语言里的空列表。&lt;/p>
+&lt;p>对于标量类型的字段，实际上消息解析以后是没办法确定字段的值是人为设置的还是由于根本就没有赋值，而后解析的时候被解析成了默认值 - 你在定义消息体的时候需要牢记这一点。例如说，不要定义一个boolean类型的开关是的当值为false的时候执行某些动作（如果你不希望这个动作默认是要执行的，因为boolean类型的默认值就是false）。同时还需要注意，当一个标量字段被设置为默认值的时候，值是不会被序列化的。&lt;/p>
+&lt;h2 id="枚举">枚举&lt;/h2>
+&lt;p>当你定义你的消息体的时候，你可能希望某些字段的值只能从一些预先定义好的值里来。例如，你想为你的&lt;code>SearchRequest&lt;/code>添加一个&lt;code>corpus&lt;/code>字段，这个字段的值可以是&lt;code>UNIVERSAL&lt;/code>, &lt;code>WEB&lt;/code>, &lt;code>IMAGES&lt;/code>, &lt;code>LOCAL&lt;/code>, &lt;code>NEWS&lt;/code>, &lt;code>PRODUCTS&lt;/code> 或者 &lt;code>VIDEO&lt;/code>。你可以通过定义枚举类满足你的需求，枚举中所有可能的值都是一个常量。&lt;/p>
+&lt;p>下面的例子中我们添加了一个名为&lt;code>Corpus&lt;/code>的枚举，这个枚举中定义了它可能的值，同时也定义类型为&lt;code>Corpus&lt;/code>的字段：&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span style="color:#66d9ef">message&lt;/span> &lt;span style="color:#a6e22e">SearchRequest&lt;/span> {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> query &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">int32&lt;/span> page_number &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">int32&lt;/span> result_per_page &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">3&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">enum&lt;/span> Corpus {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> UNIVERSAL &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> WEB &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> IMAGES &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> LOCAL &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">3&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> NEWS &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">4&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> PRODUCTS &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">5&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> VIDEO &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">6&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> }&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> Corpus corpus &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">4&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>}&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>如你所见，枚举&lt;code>Corpus&lt;/code>中的第一个值&lt;code>UNIVERSAL&lt;/code>是常量0：实际上所有的枚举的第一个常量值都应该是0，这是因为：&lt;/p>
+&lt;ul>
+&lt;li>一定得有0值，这样枚举可以当成数字类型，默认值就是0&lt;/li>
+&lt;li>0值作为枚举的第一个元素，这个和&lt;code>proto2&lt;/code>的语言兼容，即第一个元素的值总是默认值&lt;/li>
+&lt;/ul>
+&lt;p>你可以通过给不同的枚举元素赋相同的值来定义别名，前提是你需要把&lt;code>allow_alias&lt;/code>选项设置为&lt;code>true&lt;/code>，否者编译器遇到这样的别名设置会报错。&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span style="color:#66d9ef">message&lt;/span> &lt;span style="color:#a6e22e">MyMessage1&lt;/span> {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">enum&lt;/span> EnumAllowingAlias {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">option&lt;/span> allow_alias &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> UNKNOWN &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> STARTED &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> RUNNING &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> }&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>}&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>&lt;span style="color:#66d9ef">message&lt;/span> &lt;span style="color:#a6e22e">MyMessage2&lt;/span> {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">enum&lt;/span> EnumNotAllowingAlias {&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> UNKNOWN &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> STARTED &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#75715e">// RUNNING = 1; // Uncommenting this line will cause a compile error inside Google and a warning message outside.
+&lt;/span>&lt;span style="color:#75715e">&lt;/span> }&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>}&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>枚举元素的值不能超过32位整型的范围。由于枚举值是使用&lt;a href="https://developers.google.com/protocol-buffers/docs/encoding">varint encoding&lt;/a> 编码，负值是无效的因此也不建议使用负值。你可以在一个消息体内部定义枚举（如上面的例子所示）或者外部定义，然后可以在&lt;code>.proto&lt;/code>中定义的任意消息体里使用内部或者外部定义的枚举。你可以像使用消息体里的字段一样来使用定义在一个消息体内部的枚举：&lt;code>_MessageType_._EnumType_&lt;/code>。&lt;/p>
+&lt;p>在&lt;code>.proto&lt;/code>中定义的&lt;code>enum&lt;/code>，对应生成的代码中，比如Java，Kotlin，C++也会有对应的&lt;code>enum&lt;/code>，Pyton语言是&lt;code>EnumDescriptor&lt;/code>类。&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>注意:&lt;/strong> 对于枚举类型的值的个数限制，这个是和编程语言本身相关，关于这个限制请查看特定的语言说明。&lt;/p>
+&lt;/blockquote>
+&lt;p>在反序列化的时候，对于无法识别的枚举值，也会在消息中保留下来，至于保留下来以何种方式展现，这个就和语言相关了。对于那些允许枚举值越界的变成语言，比如C++和Go，这些未知的枚举值就是被简单的以整型形式保留。对于不允许枚举值越界的语言，比如Java，可以通过特定的访问器来访问底层的整型值。不管何种情况，消息序列化的时候，会把无法识别的枚举值包含进去。&lt;/p>
+&lt;p>更多关于如何使用&lt;code>enum&lt;/code>的信息，请参考：&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/overview">generated code guide&lt;/a>中特定编程语言的部分。&lt;/p>
+&lt;h3 id="枚举保留值">枚举保留值&lt;/h3></description></item><item><title>C Primer Plus读书笔记</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes/</link><pubDate>Mon, 05 Jul 2021 19:41:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch03-数据和c">ch03. 数据和C&lt;/h2>
 &lt;blockquote>
@@ -194,18 +480,10 @@
 &lt;h2 id="protocol-buffer-api">Protocol Buffer API&lt;/h2>
 &lt;p>生成的&lt;code>addressbook.pb.go&lt;/code>提供了以下有用的类型：&lt;/p>
 &lt;ul>
-&lt;li>
-&lt;p>&lt;code>AddressBook&lt;/code>结构体包含了&lt;code>People&lt;/code>类型的字段&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;code>Person&lt;/code>结构体包含了&lt;code>Name&lt;/code>、&lt;code>Id&lt;/code>、&lt;code>Email&lt;/code>和 &lt;code>Phones&lt;/code>字段&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;code>Person_PhoneNumber&lt;/code>结构体包含了&lt;code>Number&lt;/code>和&lt;code>Type&lt;/code>字段&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;code>Person_PhoneType&lt;/code>结构体和&lt;code>Person.PhoneType&lt;/code>枚举&lt;/p>
-&lt;/li>
+&lt;li>&lt;code>AddressBook&lt;/code>结构体包含了&lt;code>People&lt;/code>类型的字段&lt;/li>
+&lt;li>&lt;code>Person&lt;/code>结构体包含了&lt;code>Name&lt;/code>、&lt;code>Id&lt;/code>、&lt;code>Email&lt;/code>和 &lt;code>Phones&lt;/code>字段&lt;/li>
+&lt;li>&lt;code>Person_PhoneNumber&lt;/code>结构体包含了&lt;code>Number&lt;/code>和&lt;code>Type&lt;/code>字段&lt;/li>
+&lt;li>&lt;code>Person_PhoneType&lt;/code>结构体和&lt;code>Person.PhoneType&lt;/code>枚举&lt;/li>
 &lt;/ul>
 &lt;p>你可以从&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/go-generated">Go Generated Code guide&lt;/a>了解到代码生成的细节，对于大部分代码你只需要像对待Go类型一样。&lt;/p>
 &lt;p>&lt;code>list_people&lt;/code>的单元测试&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people_test.go">command&amp;rsquo;s unit tests&lt;/a>中展示了你应该如何创建&lt;code>Person&lt;/code>的实例：&lt;/p>
