@@ -510,7 +510,173 @@
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;a href="https://grpc.io/">gRPC&lt;/a>是最直接使用protocol buffer的RPC系统：Google开发的一个语言和平台中立的开源的RPC系统。gRPC能非常好的和protocol buffer工作，使用一个特殊的protocol buffer插件能完美的生成gRPC代码。&lt;/p>
 &lt;p>如果你不使用gRPC，也是可以在你自己的RPC实现中使用protocol buffers，你可以参考：&lt;a href="https://developers.google.com/protocol-buffers/docs/proto#services">Proto2 Language Guide&lt;/a>&lt;/p>
 &lt;p>有许多基于protocol buffers的RPC项目正在开发中，这里有一个我们所知道的项目的列表：&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/docs/third_party.md">third-party add-ons wiki page&lt;/a>&lt;/p>
-&lt;h2 id="json-mapping">Json Mapping&lt;/h2></description></item><item><title>Protocol Buffer Basics Go</title><link>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</link><pubDate>Thu, 01 Jul 2021 13:54:58 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</guid><description>
+&lt;h2 id="json-mapping">Json Mapping&lt;/h2>
+&lt;p>&lt;code>proto3&lt;/code>支持通用的Json编码，这使得它可以很方便地跨系统共享数据。如下表所示，Json编译是按照&lt;code>type-by-type&lt;/code>的方式进行。&lt;/p>
+&lt;p>如果在Json编码的数据中缺少值，或者值是&lt;code>null&lt;/code>，那么在解析成protocol buffre数据的时候将被解释成默认值。如果protocol buffer编码的字段的值是对应类型的默认值，那么编码成Json的时候，为了节省空间这些值会被忽略。一种实现或许可以提供选项给用户使得把默认值也包括在Json编码的数据中。&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">proto3&lt;/th>
+&lt;th style="text-align:left">JSON&lt;/th>
+&lt;th style="text-align:left">JSON example&lt;/th>
+&lt;th style="text-align:left">Notes&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">message&lt;/td>
+&lt;td style="text-align:left">object&lt;/td>
+&lt;td style="text-align:left">&lt;code>{&amp;quot;fooBar&amp;quot;: v, &amp;quot;g&amp;quot;: null, …}&lt;/code>&lt;/td>
+&lt;td style="text-align:left">Generates JSON objects. Message field names are mapped to lowerCamelCase and become JSON object keys. If the &lt;code>json_name&lt;/code> field option is specified, the specified value will be used as the key instead. Parsers accept both the lowerCamelCase name (or the one specified by the &lt;code>json_name&lt;/code> option) and the original proto field name. &lt;code>null&lt;/code> is an accepted value for all field types and treated as the default value of the corresponding field type.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">enum&lt;/td>
+&lt;td style="text-align:left">string&lt;/td>
+&lt;td style="text-align:left">&lt;code>&amp;quot;FOO_BAR&amp;quot;&lt;/code>&lt;/td>
+&lt;td style="text-align:left">The name of the enum value as specified in proto is used. Parsers accept both enum names and integer values.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">map&amp;lt;K,V&amp;gt;&lt;/td>
+&lt;td style="text-align:left">object&lt;/td>
+&lt;td style="text-align:left">&lt;code>{&amp;quot;k&amp;quot;: v, …}&lt;/code>&lt;/td>
+&lt;td style="text-align:left">All keys are converted to strings.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">repeated V&lt;/td>
+&lt;td style="text-align:left">array&lt;/td>
+&lt;td style="text-align:left">&lt;code>[v, …]&lt;/code>&lt;/td>
+&lt;td style="text-align:left">&lt;code>null&lt;/code> is accepted as the empty list &lt;code>[]&lt;/code>.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">bool&lt;/td>
+&lt;td style="text-align:left">true, false&lt;/td>
+&lt;td style="text-align:left">&lt;code>true, false&lt;/code>&lt;/td>
+&lt;td style="text-align:left">&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">string&lt;/td>
+&lt;td style="text-align:left">string&lt;/td>
+&lt;td style="text-align:left">&lt;code>&amp;quot;Hello World!&amp;quot;&lt;/code>&lt;/td>
+&lt;td style="text-align:left">&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">bytes&lt;/td>
+&lt;td style="text-align:left">base64 string&lt;/td>
+&lt;td style="text-align:left">&lt;code>&amp;quot;YWJjMTIzIT8kKiYoKSctPUB+&amp;quot;&lt;/code>&lt;/td>
+&lt;td style="text-align:left">JSON value will be the data encoded as a string using standard base64 encoding with paddings. Either standard or URL-safe base64 encoding with/without paddings are accepted.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">int32, fixed32, uint32&lt;/td>
+&lt;td style="text-align:left">number&lt;/td>
+&lt;td style="text-align:left">&lt;code>1, -10, 0&lt;/code>&lt;/td>
+&lt;td style="text-align:left">JSON value will be a decimal number. Either numbers or strings are accepted.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">int64, fixed64, uint64&lt;/td>
+&lt;td style="text-align:left">string&lt;/td>
+&lt;td style="text-align:left">&lt;code>&amp;quot;1&amp;quot;, &amp;quot;-10&amp;quot;&lt;/code>&lt;/td>
+&lt;td style="text-align:left">JSON value will be a decimal string. Either numbers or strings are accepted.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">float, double&lt;/td>
+&lt;td style="text-align:left">number&lt;/td>
+&lt;td style="text-align:left">&lt;code>1.1, -10.0, 0, &amp;quot;NaN&amp;quot;, &amp;quot;Infinity&amp;quot;&lt;/code>&lt;/td>
+&lt;td style="text-align:left">JSON value will be a number or one of the special string values &amp;quot;NaN&amp;quot;, &amp;quot;Infinity&amp;quot;, and &amp;quot;-Infinity&amp;quot;. Either numbers or strings are accepted. Exponent notation is also accepted. -0 is considered equivalent to 0.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Any&lt;/td>
+&lt;td style="text-align:left">&lt;code>object&lt;/code>&lt;/td>
+&lt;td style="text-align:left">&lt;code>{&amp;quot;@type&amp;quot;: &amp;quot;url&amp;quot;, &amp;quot;f&amp;quot;: v, … }&lt;/code>&lt;/td>
+&lt;td style="text-align:left">If the Any contains a value that has a special JSON mapping, it will be converted as follows: &lt;code>{&amp;quot;@type&amp;quot;: xxx, &amp;quot;value&amp;quot;: yyy}&lt;/code>. Otherwise, the value will be converted into a JSON object, and the &lt;code>&amp;quot;@type&amp;quot;&lt;/code> field will be inserted to indicate the actual data type.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Timestamp&lt;/td>
+&lt;td style="text-align:left">string&lt;/td>
+&lt;td style="text-align:left">&lt;code>&amp;quot;1972-01-01T10:00:20.021Z&amp;quot;&lt;/code>&lt;/td>
+&lt;td style="text-align:left">Uses RFC 3339, where generated output will always be Z-normalized and uses 0, 3, 6 or 9 fractional digits. Offsets other than &amp;quot;Z&amp;quot; are also accepted.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Duration&lt;/td>
+&lt;td style="text-align:left">string&lt;/td>
+&lt;td style="text-align:left">&lt;code>&amp;quot;1.000340012s&amp;quot;, &amp;quot;1s&amp;quot;&lt;/code>&lt;/td>
+&lt;td style="text-align:left">Generated output always contains 0, 3, 6, or 9 fractional digits, depending on required precision, followed by the suffix &amp;quot;s&amp;quot;. Accepted are any fractional digits (also none) as long as they fit into nano-seconds precision and the suffix &amp;quot;s&amp;quot; is required.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Struct&lt;/td>
+&lt;td style="text-align:left">&lt;code>object&lt;/code>&lt;/td>
+&lt;td style="text-align:left">&lt;code>{ … }&lt;/code>&lt;/td>
+&lt;td style="text-align:left">Any JSON object. See &lt;code>struct.proto&lt;/code>.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Wrapper types&lt;/td>
+&lt;td style="text-align:left">various types&lt;/td>
+&lt;td style="text-align:left">&lt;code>2, &amp;quot;2&amp;quot;, &amp;quot;foo&amp;quot;, true, &amp;quot;true&amp;quot;, null, 0, …&lt;/code>&lt;/td>
+&lt;td style="text-align:left">Wrappers use the same representation in JSON as the wrapped primitive type, except that &lt;code>null&lt;/code> is allowed and preserved during data conversion and transfer.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">FieldMask&lt;/td>
+&lt;td style="text-align:left">string&lt;/td>
+&lt;td style="text-align:left">&lt;code>&amp;quot;f.fooBar,h&amp;quot;&lt;/code>&lt;/td>
+&lt;td style="text-align:left">See &lt;code>field_mask.proto&lt;/code>.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">ListValue&lt;/td>
+&lt;td style="text-align:left">array&lt;/td>
+&lt;td style="text-align:left">&lt;code>[foo, bar, …]&lt;/code>&lt;/td>
+&lt;td style="text-align:left">&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Value&lt;/td>
+&lt;td style="text-align:left">value&lt;/td>
+&lt;td style="text-align:left">&lt;/td>
+&lt;td style="text-align:left">Any JSON value. Check &lt;a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#google.protobuf.Value">google.protobuf.Value&lt;/a> for details.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">NullValue&lt;/td>
+&lt;td style="text-align:left">null&lt;/td>
+&lt;td style="text-align:left">&lt;/td>
+&lt;td style="text-align:left">JSON null&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Empty&lt;/td>
+&lt;td style="text-align:left">object&lt;/td>
+&lt;td style="text-align:left">&lt;code>{}&lt;/code>&lt;/td>
+&lt;td style="text-align:left">An empty JSON object&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="json-选项">JSON 选项&lt;/h3>
+&lt;p>&lt;code>proto3&lt;/code>的JSON实现可能提供以下选项（&lt;em>这下面说的选项原文也没有说明是什么以及怎么使用&lt;/em>）：&lt;/p>
+&lt;ul>
+&lt;li>**包含默认值在JSON编码中：**默认情况下，具有默认值的字段在编码成JSON的时候其值被忽略。一种实现或许可以提供一个选项来覆盖这种默认行为使得把默认值包含进去&lt;/li>
+&lt;li>**忽略未知字段：**Proto3 JSON解析器默认会拒绝未知的字段，但是可能可以提供一个选项在解析的时候忽略未知字段&lt;/li>
+&lt;li>**使用字段名称来代替lowerCamelCase格式的：**默认情况，proto3 JSON printer会把字段名称转换为lowerCamelCase格式作为Json名称。一种实现可能可以提供一个选项来直接使用字段名称作为Json名称。proto3 JSON解析器应该都要接受字段名称和lowerCamelCase格式的名称&lt;/li>
+&lt;li>**把枚举解释成值而不是枚举项：**默认情况下，枚举项被解释成Json。一种实现可能可以提供一个选项来直接使用枚举值还是枚举项（枚举项就是枚举名称，枚举值就是枚举项对应的数值）&lt;/li>
+&lt;/ul>
+&lt;h2 id="选项option">选项option&lt;/h2>
+&lt;p>&lt;code>.proto&lt;/code>文件中的声明可以用一些列的&lt;code>option&lt;/code>来标记。&lt;code>option&lt;/code>不会改变这些声明的整体的含义，但是可能会按照某种方式影响这些声明被处理的方式。完整可用的&lt;code>option&lt;/code>是定义在&lt;code>google/protobuf/descriptor.proto&lt;/code>中。&lt;/p>
+&lt;p>有些&lt;code>option&lt;/code>是文件级别的，意味着他们应该放在作用范围的顶层而不是放在任何一个消息、枚举或者服务的定义里。有些&lt;code>option&lt;/code>是消息级别的，意味着这些应该放在消息里面。有些则是字段级别的，应该放在字段的定义里。除此之外，还可以放在&lt;code>enum&lt;/code>类型、&lt;code>enum&lt;/code>值、&lt;code>oneof&lt;/code>字段、服务类型和服务方法里，只是目前还有有用的&lt;code>option&lt;/code>作用这以上这些（那原文说这个干啥？！）。&lt;/p>
+&lt;p>&lt;em>（原文中列举了一些最重要的&lt;code>option&lt;/code>适用于Java，C++等我不使用的语言我就没有放进来，偷个懒省点翻译的时间）&lt;/em>&lt;/p>
+&lt;h3 id="自定义option">自定义Option&lt;/h3>
+&lt;p>Protocol Buffers允许你自定义选项然后使用。这是一个大多数人都不需要用到的&lt;strong>高级选项&lt;/strong>。如果你确实觉得你需要这些自定义选项，你可以参考&lt;a href="https://developers.google.com/protocol-buffers/docs/proto#customoptions">Proto2 Language Guide&lt;/a>。注意，创建自定义选项需要扩展&lt;a href="https://developers.google.com/protocol-buffers/docs/proto#extensions">extensions&lt;/a>的支持，这些扩展只能用于在&lt;code>proto3&lt;/code>中自定义选项。&lt;/p>
+&lt;h2 id="生成你的类">生成你的类&lt;/h2>
+&lt;p>你需要运行Protocol buffer编译器&lt;code>.protoc&lt;/code>来编译你的&lt;code>.proto&lt;/code>文件来生成和消息交互的Java/Kotlin/Python/C++/Go/Ruby/Objective-C/C# 代码。如果你还没哟uanzhuang编译器，&lt;a href="https://developers.google.com/protocol-buffers/docs/downloads">请先下载&lt;/a>然后参考README的说明来安装。对Go语言，你需要安装一个特定的代码生成器插件：你可以从&lt;a href="https://github.com/golang/protobuf/">golang/protobuf&lt;/a> 找到这个插件以及这个插件的安装说明。&lt;/p>
+&lt;p>Protocol编译器是按照以下的方式来调用：&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">protoc&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">proto_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">IMPORT_PATH&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">cpp_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">java_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">python_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">go_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">ruby_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">objc_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">csharp_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="n">path&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="k">to&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">file.proto&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>
+&lt;p>&lt;code>IMPORT_PATH&lt;/code>指定了从什么位置导入&lt;code>.proto&lt;/code>文件。如果没有指定，默认从当前位置导入。如果有多个导入位置，可以多次指定&lt;code>--proto_path&lt;/code>并设置路径，这些路径将被按顺序查找和导入。&lt;code>-I=_IMPORT_PATH_&lt;/code>是&lt;code>--proto_path&lt;/code>的简短形式。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>你可以提供以下一个或者多个导出目录（这里我只列举了生成Go语言的目录，其他语言请参考原文）&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>--go_out&lt;/code>指定生成Go代码于&lt;code>DST_DIR&lt;/code>目录。更多细节请参考&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/go-generated">Go generated code reference&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>你必须指定一个或者多个&lt;code>.proto&lt;/code>文件作为输入。可以同时指定多个&lt;code>.proto&lt;/code>文件，前提是这些文件都位于&lt;code>IMPORT_PATH&lt;/code>，这样编译器才能根据名字找到这些文件。&lt;/p>
+&lt;/li>
+&lt;/ul></description></item><item><title>Protocol Buffer Basics Go</title><link>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</link><pubDate>Thu, 01 Jul 2021 13:54:58 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</guid><description>
 &lt;p>原文链接：&lt;a href="https://developers.google.com/protocol-buffers/docs/gotutorial">Protocol Buffer Basics: Go | Protocol Buffers | Google Developers&lt;/a>&lt;/p>
 &lt;p>本教程使用proto3语言为Go程序员介绍了protocol buffers的基本使用。通过一步步创建一个简单的示例应用，你将会了解到：&lt;/p>
 &lt;ul>
