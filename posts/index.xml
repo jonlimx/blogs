@@ -1,4 +1,291 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/posts/</link><description>Recent content in Posts on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Mon, 12 Jul 2021 09:15:19 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[译]Concurrency Trap #2: Incomplete Work</title><link>https://www.jonathanlin.top/posts/concurrency-trap-2-incomplete-work/</link><pubDate>Mon, 12 Jul 2021 09:15:19 +0800</pubDate><guid>https://www.jonathanlin.top/posts/concurrency-trap-2-incomplete-work/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/posts/</link><description>Recent content in Posts on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Mon, 12 Jul 2021 15:22:05 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[译]Go Concurrency Best Practice</title><link>https://www.jonathanlin.top/posts/go-concurrency-best-practice/</link><pubDate>Mon, 12 Jul 2021 15:22:05 +0800</pubDate><guid>https://www.jonathanlin.top/posts/go-concurrency-best-practice/</guid><description>
+&lt;p>Dave Cheney 2019年在QCon上分享的一些Go编程的原则很有参考价值。我摘录了关于并发的部分，这部分是关于Go编发编程的一些原则和思想。&lt;/p>
+&lt;p>原文链接：&lt;a href="https://dave.cheney.net/practical-go/presentations/qcon-china.html#_concurrency">Practical Go: Real world advice for writing maintainable Go programs (cheney.net)&lt;/a>&lt;/p>
+&lt;p>通常选择Go来做项目，往往是因为它的并发特性。Go团队已经不遗余力的让Go在并发方面即能节省资源又能满足性能要求。然而，使用Go的并发特性写出低性能或者不稳定的代码是完全可能的。在最后我想留给你们一些我关于如何避免使用Go并发特定带来的一些隐患的建议。&lt;/p>
+&lt;p>支持并发特性的语句&lt;code>channel&lt;/code>，&lt;code>select&lt;/code>和&lt;code>go&lt;/code>在Go特性中是一等公民。如果你在一本书或者培训教程中正式的学习过Go，你可能注意到了并发的部分总是在最后你要学习的。今天这个Workshop（工作坊）也是一样，我也是把并发相关的内容放在最后，这样会让人觉得无论怎样Go并发是一个Go程序员除了常规技能之外一定要掌握的内容。&lt;/p>
+&lt;p>凡事都有其两面性：Go的头等特性是它简单、轻量的并发模型。作为一个产品，Go语言几乎是以这个特性作为卖点。但是从另一个方面来说，有一个说法是Go并发并没有那么容易使用，否则那些作者也不会把这个特性放在他们的书的最后一个章节，我们也不会遗憾的回顾我们曾经做的努力（&lt;em>这里不是很理解想表达什么意思&lt;/em>）。&lt;/p>
+&lt;p>这个部分我们会讨论一些Go并发特性的天真（随意）用法所带来的隐患。&lt;/p>
+&lt;h2 id="keep-your-self-busy-or-do-the-work-yourself">Keep your self busy or do the work yourself&lt;/h2>
+&lt;p>&lt;em>我理解作者的意思是：让你自己保持忙碌有事情可做（而不是干等），或者你自己来做这个工作&lt;/em>&lt;/p>
+&lt;p>下面的这段程度有什么问题：&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;span class="ln"> 2&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="s">&amp;#34;log&amp;#34;&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="s">&amp;#34;net/http&amp;#34;&lt;/span>
+&lt;span class="ln"> 7&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 8&lt;/span>
+&lt;span class="ln"> 9&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">w&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">r&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">w&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, GopherCon SG&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ListenAndServe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;:8080&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kc">nil&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatal&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="p">}()&lt;/span>
+&lt;span class="ln">18&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">21&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>这个程序的预期就是一个很简单的web服务。然而它同时也做了其他事情，它在一个无限循环中浪费CPU资源。这是因为&lt;code>main&lt;/code>函数最后通过&lt;code>for{}&lt;/code>阻止main Goroutine退出，而不是等待任何IO，也不是在锁上面等待，也不是发送数据到channel或者从channel接收，也不是和调度器通信。&lt;/p>
+&lt;p>由于 Go 运行时大部分是协作调度的，因此该程序将在单个 CPU 上徒劳无功，最终可能会以活锁结束。&lt;/p>
+&lt;p>我们应该如何解决这个问题？这里有一个建议。&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;span class="ln"> 2&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="s">&amp;#34;log&amp;#34;&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="s">&amp;#34;net/http&amp;#34;&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="s">&amp;#34;runtime&amp;#34;&lt;/span>
+&lt;span class="ln"> 8&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 9&lt;/span>
+&lt;span class="ln">10&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">w&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">r&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">w&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, GopherCon SG&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ListenAndServe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;:8080&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kc">nil&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatal&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="p">}()&lt;/span>
+&lt;span class="ln">19&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">21&lt;/span> &lt;span class="nx">runtime&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Gosched&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">22&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">23&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>这或许看起来很傻，但这是我在外面看到的常见解决方案。 这明显是不了解潜在问题的症状。&lt;/p>
+&lt;p>现在，如果你与一点点go方面的经验，你可能会写出下面的代码。&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;span class="ln"> 2&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="s">&amp;#34;log&amp;#34;&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="s">&amp;#34;net/http&amp;#34;&lt;/span>
+&lt;span class="ln"> 7&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 8&lt;/span>
+&lt;span class="ln"> 9&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">w&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">r&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">w&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, GopherCon SG&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ListenAndServe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;:8080&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kc">nil&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatal&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="p">}()&lt;/span>
+&lt;span class="ln">18&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="k">select&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;span class="ln">20&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>空的 select 语句将永远阻塞。 这是一个有用的属性，因为现在我们不是为了调用 &lt;code>runtime.GoSched()&lt;/code> 而轮转整个 CPU。然而我们只是治标不治本。&lt;/p>
+&lt;p>我想给你展示另一个方案，我希望你也想到这个方案了。简单的在main goroutine上直接运行&lt;code>http.ListenAndServe&lt;/code>，而不是在一个新的goroutine上运行&lt;code>http.ListenAndServe&lt;/code>然后把要在main goroutine上做什么这个事情留给我们。&lt;/p>
+&lt;blockquote>
+&lt;p>TIP - Go程序中，如果&lt;code>main.main&lt;/code>函数返回了那么程序也就无条件退出了，不论程序启动的其他goroutine在正在做什么。&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;span class="ln"> 2&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="s">&amp;#34;log&amp;#34;&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="s">&amp;#34;net/http&amp;#34;&lt;/span>
+&lt;span class="ln"> 7&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 8&lt;/span>
+&lt;span class="ln"> 9&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">w&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">r&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">w&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, GopherCon SG&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ListenAndServe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;:8080&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kc">nil&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatal&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">16&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>所以这是我的第一个小小的建议：在你的goroutine从其他goroutine获取到结果之前，如果你的goroutine没有任何一点点进展（只能干等），那么这种情况下，你自己的goroutine来做这个工作更合适些，而不是把这个工作代理给其他goroutine。&lt;/p>
+&lt;p>这通常消除了将结果从 goroutine 返回到其发起者所需的大量状态跟踪和channel操作。&lt;/p>
+&lt;blockquote>
+&lt;p>TIP - 许多 Go 程序员过度使用 goroutine，尤其是在他们刚开始的时候。 与生活中的所有事情一样，适度是成功的关键。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="leave-concurrency-to-caller">Leave concurrency to caller&lt;/h2>
+&lt;p>&lt;em>把并发的权利留给调用者&lt;/em>&lt;/p>
+&lt;p>下面这两个API有什么差别？&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// ListDirectory returns the contents of dir.
+&lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">ListDirectory&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">dir&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">([]&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">error&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="c1">// ListDirectory returns a channel over which
+&lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="c1">// directory entries will be published. When the list
+&lt;/span>&lt;span class="ln">5&lt;/span>&lt;span class="c1">// of entries is exhausted, the channel will be closed.
+&lt;/span>&lt;span class="ln">6&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">ListDirectory&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">dir&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kd">chan&lt;/span> &lt;span class="kt">string&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>首先，明显的区别是：第一例子是把整个目录都读到一个切片里然后返回这个切片，或者发生错误了就返回错误。这是一个同步操作，&lt;code>ListDirectory&lt;/code>的调用者在读取完所有目录项之前是出于阻塞状态。这就取决于目录本身有多大，可能会耗费大量的时间，可能需要大量的内存存放目录项。&lt;/p>
+&lt;p>我们来看看第二个例子。这个就有点Go风格了，&lt;code>ListDirectory&lt;/code>返回了一个channel，读取的目录项是通过这个channel传递。当这个channel关闭的时候，说明没有更多的目录项要读取了。由于通道的填充发生在 ListDirectory 返回之后，ListDirectory 可能正在启动一个 goroutine 来填充通道。&lt;/p>
+&lt;blockquote>
+&lt;p>NOTE - 第二个版本没有必要实际使用 goroutine。它可以分配一个足以容纳所有目录条目而不会阻塞的通道，填充channel，关闭它，然后将channel返回给调用者。 但这不太可能，因为这样做也是有一样的问题 - 在channel上缓存所有的目录项一样会耗费大量的内存。&lt;/p>
+&lt;/blockquote>
+&lt;p>使用channel版本的&lt;code>ListDirectory&lt;/code>还有两个额外的问题：&lt;/p>
+&lt;ul>
+&lt;li>通过关闭的channel作为没有更多目录项要处理的信号，ListDirectory 无法告诉调用者通过channel返回的目录项不完整，因为在获取目录项的中途可能就遇到错误了。调用者也无法区分是空目录还是读取目录时遇到了错误，因为是哪种情况都会导致从&lt;code>ListDirectory&lt;/code>返回channel时就立即关闭了&lt;/li>
+&lt;li>调用者必须继续从channel读取直到它关闭，因为这是调用者知道用于填充channel的 goroutine 已停止的唯一方法。这是使用 ListDirectory 的严重限制，调用者必须花时间从channel读取，即使它可能已经得到了它想要的答案&lt;/li>
+&lt;/ul>
+&lt;p>结果上述问题的方案是使用一个回调函数，该函数在执行时在每个目录条目的上下文中调用。&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">ListDirectory&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">dir&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">fn&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>这一点也不奇怪，这就是&lt;code>filepath.WalkDir&lt;/code>函数的工作原理。&lt;/p>
+&lt;blockquote>
+&lt;p>TIP - 如果你的函数启动了一个 goroutine，你必须为调用者提供一种明确停止该 goroutine 的方法。 将异步执行函数的决定留给该函数的调用者通常更容易。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="never-start-a-goroutine-without-knowning-when-it-will-stop">Never start a goroutine without knowning when it will stop&lt;/h2>
+&lt;p>&lt;em>如果不知道一个goroutine何时会停止，那么你最好永远也不要启动它&lt;/em>&lt;/p>
+&lt;p>前面的例子展示了在没有必要的情况下使用了 goroutine。 但是使用 Go 的一个驱因是该语言提供的一流并发特性。 事实上，在许多情况下，你希望利用硬件提供的可用的并行性。 为此，你必须使用 goroutines。&lt;/p>
+&lt;p>这个简单的应用程序在两个不同的端口上提供 http 服务，端口 8080 用于应用程序流量，端口 8001 用于访问&lt;code>/debug/pprof&lt;/code>端点。&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;span class="ln"> 2&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="s">&amp;#34;net/http&amp;#34;&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="nx">_&lt;/span> &lt;span class="s">&amp;#34;net/http/pprof&amp;#34;&lt;/span>
+&lt;span class="ln"> 7&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 8&lt;/span>
+&lt;span class="ln"> 9&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="nx">mux&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewServeMux&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, QCon!&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ListenAndServe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;127.0.0.1:8001&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DefaultServeMux&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// debug
+&lt;/span>&lt;span class="ln">15&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ListenAndServe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;0.0.0.0:8080&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// app traffic
+&lt;/span>&lt;span class="ln">16&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>虽然上面的程序并没有多么复杂，但一个真正的应用基本上就是这样子了。&lt;/p>
+&lt;p>应用程序目前存在一些问题，这些问题会随着应用程序的增长而显现出来，所以现在让我们解决其中的一些问题。&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="nx">mux&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewServeMux&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, QCon!&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ListenAndServe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;0.0.0.0:8080&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 7&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln"> 8&lt;/span>
+&lt;span class="ln"> 9&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveDebug&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ListenAndServe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;127.0.0.1:8001&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DefaultServeMux&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">11&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">12&lt;/span>
+&lt;span class="ln">13&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="nf">serveDebug&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">16&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>通过将handler分解为他们自己的函数以解耦。同时我们也遵守了上面的建议，也就是确保把函数的并发性留给他们的调用者&lt;code>main.main&lt;/code>。&lt;/p>
+&lt;p>但是这个程序依然存在一些可操作性问题。如果程序返回了那么返回导致程序关闭，接着程序由你使用的进程管理器重新启动。&lt;/p>
+&lt;blockquote>
+&lt;p>TIP - 正如在Go中应该把函数的并发性留给函数的调用者一样，应用程序应该把其状态监控和应用重启的职责留给启动这个应该程序的程序。不要让你的应用程序自己负责自己的重启，这个过程应该留给应用程序本身以外的其他程序来控制。&lt;/p>
+&lt;/blockquote>
+&lt;p>然而在一个单独的goroutine中运行，如果它返回了那么只有该goroutine会退出，程序的其余部分会继续。你们的运维人员可能会不高兴的发现他们无法在需要时从你的应用中获取统计信息，因为获取统计信息的handler早就停止工作了。&lt;/p>
+&lt;p>我们需要确保当任何一个提供服务的goroutine停止时，那么整个应用程序都要被停止。&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="nx">mux&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewServeMux&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, QCon!&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ListenAndServe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;0.0.0.0:8080&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatal&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln"> 9&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">10&lt;/span>
+&lt;span class="ln">11&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveDebug&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ListenAndServe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;127.0.0.1:8001&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DefaultServeMux&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatal&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">15&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">16&lt;/span>
+&lt;span class="ln">17&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="nf">serveDebug&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="k">select&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;span class="ln">21&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>现在，&lt;code>serverApp&lt;/code>和&lt;code>serveDebug&lt;/code>检查从&lt;code>ListenAndServe&lt;/code>返回的错误，如果发生了错误则调用&lt;code>log.Fatal&lt;/code>。因为这两个handlers都在各自的goroutine中运行，main goroutine通过&lt;code>select{}&lt;/code>阻塞。这种方式有这些问题：&lt;/p>
+&lt;ol>
+&lt;li>如果&lt;code>ListenAndServe&lt;/code>返回的错误是&lt;code>nil&lt;/code>，&lt;code>log.Fatal&lt;/code>就不会调用，这样监听在对应端口上的HTTP服务会停止但是应该程序并不会停止&lt;/li>
+&lt;li>&lt;code>log.Fatal&lt;/code>会调用&lt;code>os.Exit&lt;/code>这将无条件使程序突出，&lt;code>defer&lt;/code>语句也不会执行，其他goroutine也不会被通知要关闭，程序就这样停止了。这使得给这些函数写测试用例变的很困难&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>TIP - 只在&lt;code>init&lt;/code>函数和&lt;code>main.main&lt;/code>函数中使用&lt;code>log.Fatal&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;p>我们真正想要的是将发生的任何错误传递回 goroutine 的发起者，以便它知道 goroutine 停止的原因，可以干净地关闭进程。&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="nx">mux&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewServeMux&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, QCon!&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ListenAndServe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;0.0.0.0:8080&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 7&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln"> 8&lt;/span>
+&lt;span class="ln"> 9&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveDebug&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ListenAndServe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;127.0.0.1:8001&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DefaultServeMux&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">11&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">12&lt;/span>
+&lt;span class="ln">13&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="nx">done&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kt">error&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="nx">done&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span> &lt;span class="nf">serveDebug&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="p">}()&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="nx">done&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="p">}()&lt;/span>
+&lt;span class="ln">21&lt;/span>
+&lt;span class="ln">22&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="nx">i&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">i&lt;/span> &lt;span class="p">&amp;lt;&lt;/span> &lt;span class="nb">cap&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">done&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">i&lt;/span>&lt;span class="o">++&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">23&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">done&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">24&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;error: %v&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">25&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">26&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">27&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">28&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>我们可以使用一个通道来收集 goroutine 的返回状态。 通道的大小等于我们要管理的 goroutine 的数量，这样发送到通道就不会阻塞，因为这会阻塞 goroutine 的关闭，导致它泄漏。&lt;/p>
+&lt;p>由于没有办法安全地关闭通道，我们不能使用&lt;code>for ... range ...&lt;/code>来循环的通道直到所有 goroutines 都报告完成，而是循环循环我们启动的 goroutines，数量等于channel的容量。&lt;/p>
+&lt;p>现在我们有一种方法可以等待每个 goroutine 干净地退出并记录它们遇到的任何错误。 所需要的只是一种将关闭信号从第一个退出的 goroutine 转发给其他 goroutine 的方法。&lt;/p>
+&lt;p>事实证明，让一个&lt;code>http.Server&lt;/code>关闭有一些牵强，因此我把关闭的逻辑分离出来放在一个helper函数&lt;code>serve&lt;/code>里。helper函数接收一个地址参数和&lt;code>http.Handler&lt;/code>参数（跟&lt;code>http.ListenAndServe&lt;/code>类似)，同时还有一个用来触发关闭函数&lt;code>Shutdown&lt;/code>的channel。&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serve&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">addr&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">handler&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Handler&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">stop&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{})&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="nx">s&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Server&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="nx">Addr&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nx">addr&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="nx">Handler&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nx">handler&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln"> 6&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">stop&lt;/span> &lt;span class="c1">// wait for stop signal
+&lt;/span>&lt;span class="ln"> 9&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="nx">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Shutdown&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Background&lt;/span>&lt;span class="p">())&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="p">}()&lt;/span>
+&lt;span class="ln">11&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ListenAndServe&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">13&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">14&lt;/span>
+&lt;span class="ln">15&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">stop&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{})&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="nx">mux&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewServeMux&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, QCon!&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nf">serve&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;0.0.0.0:8080&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">stop&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">21&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">22&lt;/span>
+&lt;span class="ln">23&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveDebug&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">stop&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{})&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">24&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nf">serve&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;127.0.0.1:8001&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DefaultServeMux&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">stop&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">25&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">26&lt;/span>
+&lt;span class="ln">27&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">28&lt;/span> &lt;span class="nx">done&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kt">error&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">29&lt;/span> &lt;span class="nx">stop&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{})&lt;/span>
+&lt;span class="ln">30&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">31&lt;/span> &lt;span class="nx">done&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span> &lt;span class="nf">serveDebug&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">stop&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">32&lt;/span> &lt;span class="p">}()&lt;/span>
+&lt;span class="ln">33&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">34&lt;/span> &lt;span class="nx">done&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">stop&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">35&lt;/span> &lt;span class="p">}()&lt;/span>
+&lt;span class="ln">36&lt;/span>
+&lt;span class="ln">37&lt;/span> &lt;span class="kd">var&lt;/span> &lt;span class="nx">stopped&lt;/span> &lt;span class="kt">bool&lt;/span>
+&lt;span class="ln">38&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="nx">i&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">i&lt;/span> &lt;span class="p">&amp;lt;&lt;/span> &lt;span class="nb">cap&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">done&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">i&lt;/span>&lt;span class="o">++&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">39&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">done&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">40&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;error: %v&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">41&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">42&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">!&lt;/span>&lt;span class="nx">stopped&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">43&lt;/span> &lt;span class="nx">stopped&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
+&lt;span class="ln">44&lt;/span> &lt;span class="nb">close&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">stop&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">45&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">46&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">47&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>现在，每当我们从channel上接收到值（&lt;code>serveDebug&lt;/code>或者&lt;code>serveApp&lt;/code>返回的错误），我们就关闭channel &lt;code>stop&lt;/code>，这导致所有等待在&lt;code>stop&lt;/code>上的goroutine调用&lt;code>Shutdown&lt;/code>方法以关闭HTTP服务进而停止启动HTTP服务的goroutine，最终所有的goroutine都将停止。一旦我们启动的goroutine都停止了，程序也就优雅的停止了。&lt;/p>
+&lt;blockquote>
+&lt;p>TIP - 自己编写这个逻辑就有些重复了。 可以考虑像这个包 &lt;a href="https://github.com/heptio/workgroup">https://github.com/heptio/workgroup&lt;/a>这样的东西，它将为你完成大部分工作。&lt;/p>
+&lt;/blockquote></description></item><item><title>[译]Concurrency Trap #2: Incomplete Work</title><link>https://www.jonathanlin.top/posts/concurrency-trap-2-incomplete-work/</link><pubDate>Mon, 12 Jul 2021 09:15:19 +0800</pubDate><guid>https://www.jonathanlin.top/posts/concurrency-trap-2-incomplete-work/</guid><description>
 &lt;p>原文链接：&lt;a href="https://www.ardanlabs.com/blog/2019/04/concurrency-trap-2-incomplete-work.html">Concurrency Trap #2: Incomplete Work (ardanlabs.com)&lt;/a>&lt;/p>
 &lt;h2 id="简介">简介&lt;/h2>
 &lt;p>在我的上一篇博文[&lt;a href="https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/">译]Goroutine Leaks - The Forgotten Sender&lt;/a>中，我提到了并发是一个非常有用的工具，但是并发往往伴随着特定的陷阱，而这些不会在同步编程中出现。本文会继续这个主题，在本文中我将介绍一个名为未完成的工作的陷阱。未完成的工作发生于在仍然有未完成的Goroutine（非main goroutine）存在的时候程序终止退出了。发生这种情况时，Goroutine的本质使得它会被强制退出，这可能是一个严重的问题。&lt;/p>
