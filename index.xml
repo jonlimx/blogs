@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/</link><description>Recent content on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 07 Jul 2021 23:24:02 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/index.xml" rel="self" type="application/rss+xml"/><item><title>Goroutine Leaks - The Forgotten Sender</title><link>https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/</link><pubDate>Wed, 07 Jul 2021 23:24:02 +0800</pubDate><guid>https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/</link><description>Recent content on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 07 Jul 2021 23:24:02 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/index.xml" rel="self" type="application/rss+xml"/><item><title>[译]Goroutine Leaks - The Forgotten Sender</title><link>https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/</link><pubDate>Wed, 07 Jul 2021 23:24:02 +0800</pubDate><guid>https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/</guid><description>
 &lt;p>原文链接：&lt;a href="https://www.ardanlabs.com/blog/2018/11/goroutine-leaks-the-forgotten-sender.html">Goroutine Leaks - The Forgotten Sender (ardanlabs.com)&lt;/a>&lt;/p>
 &lt;h2 id="简介">简介&lt;/h2>
 &lt;p>并发编程可以让程序员以多个执行路径来解决问题，而且通常是试图提高程序性能。并发并不意味着这些执行路径是以并行的方式执行，而是说这些执行路径以无序异步的方式执行而不是同步顺序执行。历史上这种编程模型是通过标准款或者第三方库来实现的。&lt;/p>
@@ -110,7 +110,7 @@
 &lt;li>它何时会终止？&lt;/li>
 &lt;li>有哪些情况会阻碍它终止？&lt;/li>
 &lt;/ul>
-&lt;p>&lt;em>&lt;strong>并发是非常有用的工具，但是你一定要非常小心的使用它。&lt;/strong>&lt;/em>&lt;/p></description></item><item><title>Protocol Buffer Language Guide (proto3)</title><link>https://www.jonathanlin.top/posts/protocol-buffer-language-guide/</link><pubDate>Tue, 06 Jul 2021 14:49:22 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-language-guide/</guid><description>
+&lt;p>&lt;em>&lt;strong>并发是非常有用的工具，但是你一定要非常小心的使用它。&lt;/strong>&lt;/em>&lt;/p></description></item><item><title>[译]Protocol Buffer Language Guide (proto3)</title><link>https://www.jonathanlin.top/posts/protocol-buffer-language-guide/</link><pubDate>Tue, 06 Jul 2021 14:49:22 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-language-guide/</guid><description>
 &lt;p>原文链接：&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3">Language Guide (proto3) | Protocol Buffers | Google Developers&lt;/a>&lt;/p>
 &lt;p>本指导文档描述了如何使用protocol buffer语言来构建你的protocol buffer数据，包括&lt;code>.proto&lt;/code>文件的语法规则，包括如何从你的&lt;code>.proto&lt;/code>文件中生成数据访问类。本文介绍的是&lt;strong>proto3&lt;/strong>版本的语言规则，关于&lt;strong>proto2&lt;/strong>版本的信息，请参考： &lt;a href="https://developers.google.com/protocol-buffers/docs/proto">Proto2 Language Guide&lt;/a>。&lt;/p>
 &lt;p>本文是一个指导性的参考文档，关于如何使用本文中提及的特性的例子，请参考&lt;a href="https://developers.google.com/protocol-buffers/docs/tutorials">tutorial&lt;/a> 并选择你想要的特定编程语言的例子。&lt;/p>
@@ -952,7 +952,7 @@
 &lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul></description></item><item><title>Protocol Buffer Basics Go</title><link>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</link><pubDate>Thu, 01 Jul 2021 13:54:58 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</guid><description>
+&lt;/ul></description></item><item><title>[译]Protocol Buffer Basics Go</title><link>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</link><pubDate>Thu, 01 Jul 2021 13:54:58 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</guid><description>
 &lt;p>原文链接：&lt;a href="https://developers.google.com/protocol-buffers/docs/gotutorial">Protocol Buffer Basics: Go | Protocol Buffers | Google Developers&lt;/a>&lt;/p>
 &lt;p>本教程使用proto3语言为Go程序员介绍了protocol buffers的基本使用。通过一步步创建一个简单的示例应用，你将会了解到：&lt;/p>
 &lt;ul>
