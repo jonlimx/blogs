@@ -1,4 +1,161 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>外文翻译 on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/categories/%E5%A4%96%E6%96%87%E7%BF%BB%E8%AF%91/</link><description>Recent content in 外文翻译 on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 07 Jul 2021 23:24:02 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/categories/%E5%A4%96%E6%96%87%E7%BF%BB%E8%AF%91/index.xml" rel="self" type="application/rss+xml"/><item><title>[译]Goroutine Leaks - The Forgotten Sender</title><link>https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/</link><pubDate>Wed, 07 Jul 2021 23:24:02 +0800</pubDate><guid>https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>外文翻译 on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/categories/%E5%A4%96%E6%96%87%E7%BF%BB%E8%AF%91/</link><description>Recent content in 外文翻译 on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Mon, 12 Jul 2021 09:15:19 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/categories/%E5%A4%96%E6%96%87%E7%BF%BB%E8%AF%91/index.xml" rel="self" type="application/rss+xml"/><item><title>[译]Concurrency Trap #2: Incomplete Work</title><link>https://www.jonathanlin.top/posts/concurrency-trap-2-incomplete-work/</link><pubDate>Mon, 12 Jul 2021 09:15:19 +0800</pubDate><guid>https://www.jonathanlin.top/posts/concurrency-trap-2-incomplete-work/</guid><description>
+&lt;p>原文链接：&lt;a href="https://www.ardanlabs.com/blog/2019/04/concurrency-trap-2-incomplete-work.html">Concurrency Trap #2: Incomplete Work (ardanlabs.com)&lt;/a>&lt;/p>
+&lt;h2 id="简介">简介&lt;/h2>
+&lt;p>在我的上一篇博文[&lt;a href="https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/">译]Goroutine Leaks - The Forgotten Sender&lt;/a>中，我提到了并发是一个非常有用的工具，但是并发往往伴随着特定的陷阱，而这些不会在同步编程中出现。本文会继续这个主题，在本文中我将介绍一个名为未完成的工作的陷阱。未完成的工作发生于在仍然有未完成的Goroutine（非main goroutine）存在的时候程序终止退出了。发生这种情况时，Goroutine的本质使得它会被强制退出，这可能是一个严重的问题。&lt;/p>
+&lt;h2 id="未完成的工作">未完成的工作&lt;/h2>
+&lt;p>为了说明什么是未完成的工作，请观察下面的例子。&lt;/p>
+&lt;p>&lt;strong>Listing 1&lt;/strong>&lt;/p>
+&lt;p>&lt;a href="https://play.golang.org/p/VORJoAD2oAh">https://play.golang.org/p/VORJoAD2oAh&lt;/a>&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">2&lt;/span>&lt;span class="mi">6&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Hello&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="mi">7&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Goodbye&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="mi">8&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Listing 1中的程序在第6行打印了”Hello“，第7行在另一个Goroutine里再次调用了&lt;code>fmt.Println&lt;/code>，在这个Goroutine之后，程序立即到达了&lt;code>main&lt;/code>函数的尾部接着终止退出。如果你运行这个程序，你不会看到”Goodbye“打印出来，这是基于 &lt;a href="https://golang.org/ref/spec#Program_execution">Go specification&lt;/a>中的一个规则：&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;em>”程序的运行始于main包的初始化和main函数的调用。当main方法的调用返回后，程序就退出了，它并不会等待其他非main Goroutine完成以后才退出。“&lt;/em>&lt;/p>
+&lt;/blockquote>
+&lt;p>这个说明已经非常清晰了 - 程序并不会等待未完成的Goroutine，main函数返回以后程序就退出了。这是一个好事情！考虑一下，让一个Goroutine泄露或者让一个Goroutine运行很长一段时间是多么容易发生。如果程序在可以突出之前一直等待非main Goroutine运行，它可能在某种僵尸状态卡住一直无法退出。&lt;/p>
+&lt;p>然而，当你启动一个Goroutine去做一些很重要的工作时，程序这种退出的行为就造成问题了，因为main函数不知道要等待Goroutine完成。这种情景会导致完整性问题，比如数据库或者文件系统错误，或者数据丢失。&lt;/p>
+&lt;h2 id="一个真实的例子">一个真实的例子&lt;/h2>
+&lt;p>在Ardan Labs，我的团队构建了一个Web服务提供给那些需要追踪特定的事件的客户端使用。用于记录事件的那个系统有一个方法，类似于如下Listing 2中所示定义在&lt;code>Tracker&lt;/code>类型上的方法：&lt;/p>
+&lt;p>&lt;strong>Listing 2&lt;/strong>&lt;/p>
+&lt;p>&lt;a href="https://play.golang.org/p/8LoUoCdrT7T">https://play.golang.org/p/8LoUoCdrT7T&lt;/a>&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span> &lt;span class="mi">9&lt;/span> &lt;span class="c1">// Tracker knows how to track events for the application.
+&lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">10&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">Tracker&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{}&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="mi">11&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="mi">12&lt;/span> &lt;span class="c1">// Event records an event to a database or stream.
+&lt;/span>&lt;span class="ln">5&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">13&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">t&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Tracker&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">Event&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">data&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">6&lt;/span>&lt;span class="mi">14&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Sleep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Millisecond&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// Simulate network write latency.
+&lt;/span>&lt;span class="ln">7&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">15&lt;/span> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">data&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">8&lt;/span>&lt;span class="mi">16&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>客户端担心追踪这些事件会带来不必要的响应时延增大，所以想以异步的方式追踪。&lt;strong>对性能做假设实际上是不明智的&lt;/strong>，因此我们的第一个任务是用直接的、同步的方式来追踪事件然后观察服务的时延。在我们的例子中，我们观察到这个时延太长无法接受，因此团队决定用异步方式来实现。如果同步的方式足够快那么这个故事也就结束了，接着我们就把注意力放在更重要的事情上。&lt;/p>
+&lt;p>基于上面判断，用于追踪事件的handler最初的实现如下：&lt;/p>
+&lt;p>&lt;strong>Listing 3&lt;/strong>&lt;/p>
+&lt;p>&lt;a href="https://play.golang.org/p/8LoUoCdrT7T">https://play.golang.org/p/8LoUoCdrT7T&lt;/a>&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">18&lt;/span> &lt;span class="c1">// App holds application state.
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">19&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">App&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="mi">20&lt;/span> &lt;span class="nx">track&lt;/span> &lt;span class="nx">Tracker&lt;/span>
+&lt;span class="ln"> 4&lt;/span>&lt;span class="mi">21&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln"> 5&lt;/span>&lt;span class="mi">22&lt;/span>
+&lt;span class="ln"> 6&lt;/span>&lt;span class="mi">23&lt;/span> &lt;span class="c1">// Handle represents an example handler for the web service.
+&lt;/span>&lt;span class="ln"> 7&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">24&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">App&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">Handle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">w&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">r&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 8&lt;/span>&lt;span class="mi">25&lt;/span>
+&lt;span class="ln"> 9&lt;/span>&lt;span class="mi">26&lt;/span> &lt;span class="c1">// Do some actual work.
+&lt;/span>&lt;span class="ln">10&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">27&lt;/span>
+&lt;span class="ln">11&lt;/span>&lt;span class="mi">28&lt;/span> &lt;span class="c1">// Respond to the client.
+&lt;/span>&lt;span class="ln">12&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">29&lt;/span> &lt;span class="nx">w&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">WriteHeader&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">StatusCreated&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">13&lt;/span>&lt;span class="mi">30&lt;/span>
+&lt;span class="ln">14&lt;/span>&lt;span class="mi">31&lt;/span> &lt;span class="c1">// Fire and Hope.
+&lt;/span>&lt;span class="ln">15&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">32&lt;/span> &lt;span class="c1">// BUG: We are not managing this goroutine.
+&lt;/span>&lt;span class="ln">16&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">33&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">track&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Event&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;this event&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">17&lt;/span>&lt;span class="mi">34&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>最重要的代码是在Listing 3中的第33行 - 在一个新的Goroutine中调用&lt;code>a.track.Event&lt;/code>的地方。这个效果和预期一样即不给请求增加时延的前提下异步的追踪事件。然而这个代码会调入未完成的工作陷阱，因此必须要重构。任何像第33行那种创建的Goroutine，无论是运行还是结束都是没有保障的。这就是一个完成性问题，因为由于服务器关闭，事件有可能会丢失。&lt;/p>
+&lt;h2 id="重构来获取保障">重构来获取保障&lt;/h2>
+&lt;p>为了避开这个陷阱，我们团队修改了&lt;code>Tracker&lt;/code>类型来自我管理Goroutine。现在这个类型使用了&lt;code>sync.WaitGroup&lt;/code>来记录启动的Goroutine，并且提供了一个&lt;code>Shutdown&lt;/code>函数给&lt;code>main&lt;/code>，这样&lt;code>main&lt;/code>就可以等待所有Goroutine完成。&lt;/p>
+&lt;p>首先，handler被修改为不直接创建Goroutine - 唯一的变化就是Listing 4中第53行去掉了&lt;code>go&lt;/code>关键字。&lt;/p>
+&lt;p>&lt;strong>Listing 4&lt;/strong>&lt;/p>
+&lt;p>&lt;a href="https://play.golang.org/p/BMah6_C57-l">https://play.golang.org/p/BMah6_C57-l&lt;/a>&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">44&lt;/span> &lt;span class="c1">// Handle represents an example handler for the web service.
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">45&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">App&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">Handle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">w&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">r&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="mi">46&lt;/span>
+&lt;span class="ln"> 4&lt;/span>&lt;span class="mi">47&lt;/span> &lt;span class="c1">// Do some actual work.
+&lt;/span>&lt;span class="ln"> 5&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">48&lt;/span>
+&lt;span class="ln"> 6&lt;/span>&lt;span class="mi">49&lt;/span> &lt;span class="c1">// Respond to the client.
+&lt;/span>&lt;span class="ln"> 7&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">50&lt;/span> &lt;span class="nx">w&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">WriteHeader&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">StatusCreated&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 8&lt;/span>&lt;span class="mi">51&lt;/span>
+&lt;span class="ln"> 9&lt;/span>&lt;span class="mi">52&lt;/span> &lt;span class="c1">// Track the event.
+&lt;/span>&lt;span class="ln">10&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">53&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">track&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Event&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;this event&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">11&lt;/span>&lt;span class="mi">54&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>接下来，修改&lt;code>Tracker&lt;/code>类型使得它能自己管理Goroutine。&lt;/p>
+&lt;p>&lt;strong>Listing 5&lt;/strong>&lt;/p>
+&lt;p>&lt;a href="https://play.golang.org/p/BMah6_C57-l">https://play.golang.org/p/BMah6_C57-l&lt;/a>&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">10&lt;/span> &lt;span class="c1">// Tracker knows how to track events for the application.
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">11&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">Tracker&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="mi">12&lt;/span> &lt;span class="nx">wg&lt;/span> &lt;span class="nx">sync&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">WaitGroup&lt;/span>
+&lt;span class="ln"> 4&lt;/span>&lt;span class="mi">13&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln"> 5&lt;/span>&lt;span class="mi">14&lt;/span>
+&lt;span class="ln"> 6&lt;/span>&lt;span class="mi">15&lt;/span> &lt;span class="c1">// Event starts tracking an event. It runs asynchronously to
+&lt;/span>&lt;span class="ln"> 7&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">16&lt;/span> &lt;span class="c1">// not block the caller. Be sure to call the Shutdown function
+&lt;/span>&lt;span class="ln"> 8&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">17&lt;/span> &lt;span class="c1">// before the program exits so all tracked events finish.
+&lt;/span>&lt;span class="ln"> 9&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">18&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">t&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Tracker&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">Event&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">data&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">10&lt;/span>&lt;span class="mi">19&lt;/span>
+&lt;span class="ln">11&lt;/span>&lt;span class="mi">20&lt;/span> &lt;span class="c1">// Increment counter so Shutdown knows to wait for this event.
+&lt;/span>&lt;span class="ln">12&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">21&lt;/span> &lt;span class="nx">t&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">wg&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">13&lt;/span>&lt;span class="mi">22&lt;/span>
+&lt;span class="ln">14&lt;/span>&lt;span class="mi">23&lt;/span> &lt;span class="c1">// Track event in a goroutine so caller is not blocked.
+&lt;/span>&lt;span class="ln">15&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">24&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">16&lt;/span>&lt;span class="mi">25&lt;/span>
+&lt;span class="ln">17&lt;/span>&lt;span class="mi">26&lt;/span> &lt;span class="c1">// Decrement counter to tell Shutdown this goroutine finished.
+&lt;/span>&lt;span class="ln">18&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">27&lt;/span> &lt;span class="k">defer&lt;/span> &lt;span class="nx">t&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">wg&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Done&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">19&lt;/span>&lt;span class="mi">28&lt;/span>
+&lt;span class="ln">20&lt;/span>&lt;span class="mi">29&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Sleep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Millisecond&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// Simulate network write latency.
+&lt;/span>&lt;span class="ln">21&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">30&lt;/span> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">data&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">22&lt;/span>&lt;span class="mi">31&lt;/span> &lt;span class="p">}()&lt;/span>
+&lt;span class="ln">23&lt;/span>&lt;span class="mi">32&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">24&lt;/span>&lt;span class="mi">33&lt;/span>
+&lt;span class="ln">25&lt;/span>&lt;span class="mi">34&lt;/span> &lt;span class="c1">// Shutdown waits for all tracked events to finish processing.
+&lt;/span>&lt;span class="ln">26&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">35&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">t&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Tracker&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">Shutdown&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">27&lt;/span>&lt;span class="mi">36&lt;/span> &lt;span class="nx">t&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">wg&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Wait&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">28&lt;/span>&lt;span class="mi">37&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">29&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Listing 5中第12行，在&lt;code>Tracker&lt;/code>类型中添加了&lt;code>sync.WaitGroup&lt;/code>。在&lt;code>Event&lt;/code>方法中第21行调用了&lt;code>t.wg.Add(1)&lt;/code>，这使得Goroutine（第24行创建）计数器加1。一旦Goroutine被创建，&lt;code>Event&lt;/code>方法就返回了，这符合客户端想减少事件追踪的时延的需求。创建出来的Goroutine就去做它该做的工作，然后在做完以后在第27行调用&lt;code>t.wg.Done()&lt;/code>。调用&lt;code>Done&lt;/code>方法就减少了Goroutine计数器，因此WaitGroup知道这个Goroutine结束了。&lt;/p>
+&lt;p>&lt;code>Add&lt;/code>和&lt;code>Done&lt;/code>对于跟踪Goroutine的数量是非常有用的，但我们依然需要告诉程序去等待所有的Goroutine完成。为了达成这个目的，&lt;code>Tracker&lt;/code>类型在第35行添加了一个新的方法&lt;code>Shutdown&lt;/code> - 最简单的一个实现就是调用&lt;code>t.wg.Wait()&lt;/code>，这会阻塞程序知道Goroutine计数器变为0。最后，这个方法会再&lt;code>func main&lt;/code>中调用，如下面的Listing 6：&lt;/p>
+&lt;p>&lt;strong>Listing 6&lt;/strong>&lt;/p>
+&lt;p>&lt;a href="https://play.golang.org/p/BMah6_C57-l">https://play.golang.org/p/BMah6_C57-l&lt;/a>&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">56&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 2&lt;/span>&lt;span class="mi">57&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="mi">58&lt;/span> &lt;span class="c1">// Start a server.
+&lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">59&lt;/span> &lt;span class="c1">// Details not shown...
+&lt;/span>&lt;span class="ln"> 5&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">60&lt;/span> &lt;span class="kd">var&lt;/span> &lt;span class="nx">a&lt;/span> &lt;span class="nx">App&lt;/span>
+&lt;span class="ln"> 6&lt;/span>&lt;span class="mi">61&lt;/span>
+&lt;span class="ln"> 7&lt;/span>&lt;span class="mi">62&lt;/span> &lt;span class="c1">// Shut the server down.
+&lt;/span>&lt;span class="ln"> 8&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">63&lt;/span> &lt;span class="c1">// Details not shown...
+&lt;/span>&lt;span class="ln"> 9&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">64&lt;/span>
+&lt;span class="ln">10&lt;/span>&lt;span class="mi">65&lt;/span> &lt;span class="c1">// Wait for all event goroutines to finish.
+&lt;/span>&lt;span class="ln">11&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">66&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">track&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Shutdown&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">12&lt;/span>&lt;span class="mi">67&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Listing 6中很重要的部分就是第66行，它阻塞了程序退出直到&lt;code>a.track.Shutdown()&lt;/code>完成。&lt;/p>
+&lt;h2 id="或许不要等待太久">或许不要等待太久&lt;/h2>
+&lt;p>&lt;code>Shown&lt;/code>方法的实现很简单，但确实也做了它该做的事情 - 它等待所有的Goroutine执行完成。但不幸的是，这里面无法限制要等待多久。如果是生产环境，你不能不会愿意看要无限制的等待你的程序退出。为了给&lt;code>Shutdown&lt;/code>方法一个等待的期限，我们团队修改成如下方式：&lt;/p>
+&lt;p>&lt;strong>Listing 7&lt;/strong>&lt;/p>
+&lt;p>&lt;a href="https://play.golang.org/p/p4gsDkpw1Gh">https://play.golang.org/p/p4gsDkpw1Gh&lt;/a>&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">36&lt;/span> &lt;span class="c1">// Shutdown waits for all tracked events to finish processing
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">37&lt;/span> &lt;span class="c1">// or for the provided context to be canceled.
+&lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">38&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">t&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Tracker&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">Shutdown&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Context&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 4&lt;/span>&lt;span class="mi">39&lt;/span>
+&lt;span class="ln"> 5&lt;/span>&lt;span class="mi">40&lt;/span> &lt;span class="c1">// Create a channel to signal when the waitgroup is finished.
+&lt;/span>&lt;span class="ln"> 6&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">41&lt;/span> &lt;span class="nx">ch&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{})&lt;/span>
+&lt;span class="ln"> 7&lt;/span>&lt;span class="mi">42&lt;/span>
+&lt;span class="ln"> 8&lt;/span>&lt;span class="mi">43&lt;/span> &lt;span class="c1">// Create a goroutine to wait for all other goroutines to
+&lt;/span>&lt;span class="ln"> 9&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">44&lt;/span> &lt;span class="c1">// be done then close the channel to unblock the select.
+&lt;/span>&lt;span class="ln">10&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">45&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">11&lt;/span>&lt;span class="mi">46&lt;/span> &lt;span class="nx">t&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">wg&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Wait&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">12&lt;/span>&lt;span class="mi">47&lt;/span> &lt;span class="nb">close&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ch&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">13&lt;/span>&lt;span class="mi">48&lt;/span> &lt;span class="p">}()&lt;/span>
+&lt;span class="ln">14&lt;/span>&lt;span class="mi">49&lt;/span>
+&lt;span class="ln">15&lt;/span>&lt;span class="mi">50&lt;/span> &lt;span class="c1">// Block this function from returning. Wait for either the
+&lt;/span>&lt;span class="ln">16&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">51&lt;/span> &lt;span class="c1">// waitgroup to finish or the context to expire.
+&lt;/span>&lt;span class="ln">17&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">52&lt;/span> &lt;span class="k">select&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">18&lt;/span>&lt;span class="mi">53&lt;/span> &lt;span class="k">case&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">ch&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;span class="ln">19&lt;/span>&lt;span class="mi">54&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="kc">nil&lt;/span>
+&lt;span class="ln">20&lt;/span>&lt;span class="mi">55&lt;/span> &lt;span class="k">case&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">ctx&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Done&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;span class="ln">21&lt;/span>&lt;span class="mi">56&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">errors&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">New&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;timeout&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">22&lt;/span>&lt;span class="mi">57&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">23&lt;/span>&lt;span class="mi">58&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>现在Listing 7中第38行，&lt;code>Shutdown&lt;/code>方法接收一个&lt;code>context.context&lt;/code>参数。这就是调用者用于限制&lt;code>Shutdown&lt;/code>等待的时长。第41行，创建了一个channel，第45行启动了一个Goroutine。这个Goroutine的唯一工作就是等待WaitGroup进而关闭channel。第52行，通过一个&lt;code>select&lt;/code>块阻塞程序，最终程序退出要么是因为等待时间超时要么通道被关闭了（注：所有Goroutine都执行完成）。&lt;/p>
+&lt;p>接下来，我们团队在&lt;code>func main&lt;/code>中修改了调用方式：&lt;/p>
+&lt;p>&lt;strong>Listing 8&lt;/strong>&lt;/p>
+&lt;p>&lt;a href="https://play.golang.org/p/p4gsDkpw1Gh">https://play.golang.org/p/p4gsDkpw1Gh&lt;/a>&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">86&lt;/span> &lt;span class="c1">// Wait up to 5 seconds for all event goroutines to finish.
+&lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">87&lt;/span> &lt;span class="kd">const&lt;/span> &lt;span class="nx">timeout&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="mi">5&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Second&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="mi">88&lt;/span> &lt;span class="nx">ctx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cancel&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">WithTimeout&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Background&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="nx">timeout&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="mi">89&lt;/span> &lt;span class="k">defer&lt;/span> &lt;span class="nf">cancel&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">5&lt;/span>&lt;span class="mi">90&lt;/span>
+&lt;span class="ln">6&lt;/span>&lt;span class="mi">91&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">track&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Shutdown&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>在Listing 8中创建了一个超时时间为5秒的context，然后这个context传递给&lt;code>a.track.Shutdown&lt;/code>以设置&lt;code>main&lt;/code>函数期望等待的时间。&lt;/p>
+&lt;h2 id="结论">结论&lt;/h2>
+&lt;p>随着Goroutine的引入，这个服务器的handler能够最小化跟踪事件的API调用的时延。最简单的方式就是使用&lt;code>go&lt;/code>关键字在后台运行但是这会有完整性问题。合适的方法是要确保在程序终止前所有的相关Goroutine完成各自的工作然后退出。&lt;/p>
+&lt;p>&lt;em>&lt;strong>并发是非常有用的工具，但是你一定要非常小心的使用它。&lt;/strong>&lt;/em>&lt;/p></description></item><item><title>[译]Goroutine Leaks - The Forgotten Sender</title><link>https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/</link><pubDate>Wed, 07 Jul 2021 23:24:02 +0800</pubDate><guid>https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/</guid><description>
 &lt;p>原文链接：&lt;a href="https://www.ardanlabs.com/blog/2018/11/goroutine-leaks-the-forgotten-sender.html">Goroutine Leaks - The Forgotten Sender (ardanlabs.com)&lt;/a>&lt;/p>
 &lt;h2 id="简介">简介&lt;/h2>
 &lt;p>并发编程可以让程序员以多个执行路径来解决问题，而且通常是试图提高程序性能。并发并不意味着这些执行路径是以并行的方式执行，而是说这些执行路径以无序异步的方式执行而不是同步顺序执行。历史上这种编程模型是通过标准款或者第三方库来实现的。&lt;/p>
