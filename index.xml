@@ -1410,6 +1410,7 @@
 &lt;ol>
 &lt;li>C语言中有哪些运算符和表达符，运算符的优先级是怎么样的&lt;/li>
 &lt;li>C语言中有哪些特殊的语句&lt;/li>
+&lt;li>自动类型转换和强制类型转换&lt;/li>
 &lt;/ol>
 &lt;/blockquote>
 &lt;ul>
@@ -1471,6 +1472,34 @@
 &lt;li>前缀模式：&lt;strong>先完成自增或者自减&lt;/strong>，然后再用结果参与同一语句中的其他运算&lt;/li>
 &lt;li>后缀模式：先完成同一语句的其他预算，&lt;strong>然后再完成自增或者自减&lt;/strong>&lt;/li>
 &lt;li>如果只是单独使用，也就是不和其他运算对象以及运算符一起的时候，前缀和后缀模式都没有区别，就是要完成自增或者自减&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>下面两种情况不要使用自增后者自减（由于可能指令重排导致计算没有按预期的顺序进行）&lt;/p>
+&lt;ul>
+&lt;li>一个变量出现在一个函数的多个参数中，那么不要对该变量使用自增或者自减&lt;/li>
+&lt;li>一个变量多次出现表达式中，那么不要对该变量使用自增或者自减 - ans = num/2 + 5*(1+num++)，&lt;em>这里可能因为指令重排导致num++先算，那么前面的num/2就和预期不一样了&lt;/em>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>序列点：程序执行的点，在一个语句中，赋值运算符、自增自减运算符对运算对象做的改变必须在程序执行下一条语句之前完成&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>自动类型转换（&lt;strong>通常应该要避免&lt;/strong>）：&lt;/p>
+&lt;ul>
+&lt;li>升级：较小类型转换成较大类型&lt;/li>
+&lt;li>降级：较大类型转换成较小类型 - &lt;strong>这种情况可能会发生数据截断&lt;/strong>&lt;/li>
+&lt;li>升级发生在表达式中运算对象数据类型不同，这时候发生自动自动类型转换。运算结束后，会根据目标类型可能会发生降级，这时候可能就会发生数据截断&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>强制类型转换：(type)variable&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>实参和形参&lt;/p>
+&lt;ul>
+&lt;li>实参 argument - 调用函数时传递给形参的实际的值&lt;/li>
+&lt;li>形参 parameter - 变量&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul></description></item><item><title>[译]Protocol Buffer Basics Go</title><link>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</link><pubDate>Thu, 01 Jul 2021 13:54:58 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</guid><description>
