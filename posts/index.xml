@@ -1232,7 +1232,7 @@
 &lt;li>
 &lt;p>你必须指定一个或者多个&lt;code>.proto&lt;/code>文件作为输入。可以同时指定多个&lt;code>.proto&lt;/code>文件，前提是这些文件都位于&lt;code>IMPORT_PATH&lt;/code>，这样编译器才能根据名字找到这些文件。&lt;/p>
 &lt;/li>
-&lt;/ul></description></item><item><title>C Primer Plus读书笔记</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes/</link><pubDate>Mon, 05 Jul 2021 19:41:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes/</guid><description>
+&lt;/ul></description></item><item><title>C Primer Plus读书笔记（一）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-01/</link><pubDate>Mon, 05 Jul 2021 19:41:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-01/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch03-数据和c">ch03. 数据和C&lt;/h2>
 &lt;blockquote>
