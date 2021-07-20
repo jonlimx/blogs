@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>读书笔记 on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</link><description>Recent content in 读书笔记 on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Mon, 19 Jul 2021 21:24:20 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus Notes 02</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>读书笔记 on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</link><description>Recent content in 读书笔记 on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Mon, 19 Jul 2021 21:24:20 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus读书笔记（二）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第六章至第九章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch06c控制语句循环">ch06.C控制语句：循环&lt;/h2>
 &lt;blockquote>
@@ -312,4 +312,7 @@
 &lt;p>在C语言中，许多类型转换都是自动进行的。当&lt;code>char&lt;/code>和&lt;code>short&lt;/code>类型出现在表达式里或者作为函数的参数（函数原型除外）时，都会被升级为&lt;code>int&lt;/code>类型；当&lt;code>float&lt;/code>类型在函数参数中时，会被升级为&lt;code>double&lt;/code>类型&lt;/p>
 &lt;p>当把一种值赋给另一种类型的变量时，值将被转换成与变量的类型相同&lt;/p>
 &lt;p>当把较大类型转换成较小类型时，可能会丢失数据&lt;/p>
-&lt;/blockquote></description></item></channel></rss>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>函数声明 - 在调用函数的时候，编译器首先需要知道函数的返回类型，所以需要先声明函数，至于函数的实现可以放在后面&lt;/li>
+&lt;/ul></description></item></channel></rss>
