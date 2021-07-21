@@ -54,10 +54,8 @@
 &lt;h2 id="配置github-pages">配置Github Pages&lt;/h2>
 &lt;p>关于Github Pages的介绍请参考&lt;a href="https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages">About GitHub Pages - GitHub Docs&lt;/a>。配置Github Pages比较简单。如下图所示，在Github上打开你的公开repo，参考下图红框部分配置，然后保存即可。这里有两点需要注意一下：&lt;/p>
 &lt;ul>
-&lt;li>分支这块我选的是gh-pages，这是因为我的Github Action跑完是把静态文件发布到jonlimx/blogs的gh-pages分支。&lt;/li>
-&lt;/ul>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/images/image-20210630231109086.png" alt="github配置">&lt;/p>
-&lt;ul>
+&lt;li>分支这块我选的是gh-pages，这是因为我的Github Action跑完是把静态文件发布到jonlimx/blogs的gh-pages分支。
+&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/images/image-20210630231109086.png" alt="github配置">&lt;/li>
 &lt;li>路径是可选/(root)或者/docs。这二者的区别是你把这个repo都配置为Github Pages，还是说仅仅是/doc目录。这个在官方资料里有说明，请自行查阅。&lt;/li>
 &lt;li>自定义域名这个是可选的。如果你跟我想配置自定义域名，请参考：&lt;a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages">About custom domains and GitHub Pages - GitHub Docs&lt;/a>&lt;/li>
 &lt;/ul>
