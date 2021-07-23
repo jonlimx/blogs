@@ -8,7 +8,7 @@
 &lt;h2 id="keep-your-self-busy-or-do-the-work-yourself">Keep your self busy or do the work yourself&lt;/h2>
 &lt;p>&lt;em>我理解作者的意思是：让你自己保持忙碌有事情可做（而不是干等），或者你自己来做这个工作&lt;/em>&lt;/p>
 &lt;p>下面的这段程度有什么问题：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
 &lt;span class="ln"> 2&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
@@ -32,7 +32,7 @@
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>这个程序的预期就是一个很简单的web服务。然而它同时也做了其他事情，它在一个无限循环中浪费CPU资源。这是因为&lt;code>main&lt;/code>函数最后通过&lt;code>for{}&lt;/code>阻止main Goroutine退出，而不是等待任何IO，也不是在锁上面等待，也不是发送数据到channel或者从channel接收，也不是和调度器通信。&lt;/p>
 &lt;p>由于 Go 运行时大部分是协作调度的，因此该程序将在单个 CPU 上徒劳无功，最终可能会以活锁结束。&lt;/p>
 &lt;p>我们应该如何解决这个问题？这里有一个建议。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
 &lt;span class="ln"> 2&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
@@ -57,7 +57,7 @@
 &lt;span class="ln">23&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>这或许看起来很傻，但这是我在外面看到的常见解决方案。 这明显是不了解潜在问题的症状。&lt;/p>
 &lt;p>现在，如果你与一点点go方面的经验，你可能会写出下面的代码。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
 &lt;span class="ln"> 2&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
@@ -82,7 +82,7 @@
 &lt;blockquote>
 &lt;p>TIP - Go程序中，如果&lt;code>main.main&lt;/code>函数返回了那么程序也就无条件退出了，不论程序启动的其他goroutine在正在做什么。&lt;/p>
 &lt;/blockquote>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
 &lt;span class="ln"> 2&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
@@ -106,7 +106,7 @@
 &lt;h2 id="leave-concurrency-to-caller">Leave concurrency to caller&lt;/h2>
 &lt;p>&lt;em>把并发的权利留给调用者&lt;/em>&lt;/p>
 &lt;p>下面这两个API有什么差别？&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// ListDirectory returns the contents of dir.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// ListDirectory returns the contents of dir.
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">ListDirectory&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">dir&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">([]&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">error&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="c1">// ListDirectory returns a channel over which
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="c1">// directory entries will be published. When the list
@@ -123,7 +123,7 @@
 &lt;li>调用者必须继续从channel读取直到它关闭，因为这是调用者知道用于填充channel的 goroutine 已停止的唯一方法。这是使用 ListDirectory 的严重限制，调用者必须花时间从channel读取，即使它可能已经得到了它想要的答案&lt;/li>
 &lt;/ul>
 &lt;p>结果上述问题的方案是使用一个回调函数，该函数在执行时在每个目录条目的上下文中调用。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">ListDirectory&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">dir&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">fn&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">ListDirectory&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">dir&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">fn&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">))&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>这一点也不奇怪，这就是&lt;code>filepath.WalkDir&lt;/code>函数的工作原理。&lt;/p>
 &lt;blockquote>
 &lt;p>TIP - 如果你的函数启动了一个 goroutine，你必须为调用者提供一种明确停止该 goroutine 的方法。 将异步执行函数的决定留给该函数的调用者通常更容易。&lt;/p>
@@ -132,7 +132,7 @@
 &lt;p>&lt;em>如果不知道一个goroutine何时会停止，那么你最好永远也不要启动它&lt;/em>&lt;/p>
 &lt;p>前面的例子展示了在没有必要的情况下使用了 goroutine。 但是使用 Go 的一个驱因是该语言提供的一流并发特性。 事实上，在许多情况下，你希望利用硬件提供的可用的并行性。 为此，你必须使用 goroutines。&lt;/p>
 &lt;p>这个简单的应用程序在两个不同的端口上提供 http 服务，端口 8080 用于应用程序流量，端口 8001 用于访问&lt;code>/debug/pprof&lt;/code>端点。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
 &lt;span class="ln"> 2&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
@@ -150,7 +150,7 @@
 &lt;/span>&lt;span class="ln">16&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>虽然上面的程序并没有多么复杂，但一个真正的应用基本上就是这样子了。&lt;/p>
 &lt;p>应用程序目前存在一些问题，这些问题会随着应用程序的增长而显现出来，所以现在让我们解决其中的一些问题。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 2&lt;/span> &lt;span class="nx">mux&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewServeMux&lt;/span>&lt;span class="p">()&lt;/span>
 &lt;span class="ln"> 3&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, QCon!&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
@@ -173,7 +173,7 @@
 &lt;/blockquote>
 &lt;p>然而在一个单独的goroutine中运行，如果它返回了那么只有该goroutine会退出，程序的其余部分会继续。你们的运维人员可能会不高兴的发现他们无法在需要时从你的应用中获取统计信息，因为获取统计信息的handler早就停止工作了。&lt;/p>
 &lt;p>我们需要确保当任何一个提供服务的goroutine停止时，那么整个应用程序都要被停止。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 2&lt;/span> &lt;span class="nx">mux&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewServeMux&lt;/span>&lt;span class="p">()&lt;/span>
 &lt;span class="ln"> 3&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, QCon!&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
@@ -203,7 +203,7 @@
 &lt;p>TIP - 只在&lt;code>init&lt;/code>函数和&lt;code>main.main&lt;/code>函数中使用&lt;code>log.Fatal&lt;/code>&lt;/p>
 &lt;/blockquote>
 &lt;p>我们真正想要的是将发生的任何错误传递回 goroutine 的发起者，以便它知道 goroutine 停止的原因，可以干净地关闭进程。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 2&lt;/span> &lt;span class="nx">mux&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewServeMux&lt;/span>&lt;span class="p">()&lt;/span>
 &lt;span class="ln"> 3&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, QCon!&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
@@ -235,7 +235,7 @@
 &lt;p>由于没有办法安全地关闭通道，我们不能使用&lt;code>for ... range ...&lt;/code>来循环的通道直到所有 goroutines 都报告完成，而是循环循环我们启动的 goroutines，数量等于channel的容量。&lt;/p>
 &lt;p>现在我们有一种方法可以等待每个 goroutine 干净地退出并记录它们遇到的任何错误。 所需要的只是一种将关闭信号从第一个退出的 goroutine 转发给其他 goroutine 的方法。&lt;/p>
 &lt;p>事实证明，让一个&lt;code>http.Server&lt;/code>关闭有一些牵强，因此我把关闭的逻辑分离出来放在一个helper函数&lt;code>serve&lt;/code>里。helper函数接收一个地址参数和&lt;code>http.Handler&lt;/code>参数（跟&lt;code>http.ListenAndServe&lt;/code>类似)，同时还有一个用来触发关闭函数&lt;code>Shutdown&lt;/code>的channel。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serve&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">addr&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">handler&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Handler&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">stop&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{})&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serve&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">addr&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">handler&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Handler&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">stop&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{})&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 2&lt;/span> &lt;span class="nx">s&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Server&lt;/span>&lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 3&lt;/span> &lt;span class="nx">Addr&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nx">addr&lt;/span>&lt;span class="p">,&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="nx">Handler&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nx">handler&lt;/span>&lt;span class="p">,&lt;/span>
@@ -293,7 +293,7 @@
 &lt;p>为了说明什么是未完成的工作，请观察下面的例子。&lt;/p>
 &lt;p>&lt;strong>Listing 1&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/VORJoAD2oAh">https://play.golang.org/p/VORJoAD2oAh&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="mi">6&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Hello&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="mi">7&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Goodbye&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="mi">8&lt;/span> &lt;span class="p">}&lt;/span>
@@ -307,7 +307,7 @@
 &lt;p>在Ardan Labs，我的团队构建了一个Web服务提供给那些需要追踪特定的事件的客户端使用。用于记录事件的那个系统有一个方法，类似于如下Listing 2中所示定义在&lt;code>Tracker&lt;/code>类型上的方法：&lt;/p>
 &lt;p>&lt;strong>Listing 2&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/8LoUoCdrT7T">https://play.golang.org/p/8LoUoCdrT7T&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span> &lt;span class="mi">9&lt;/span> &lt;span class="c1">// Tracker knows how to track events for the application.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span> &lt;span class="mi">9&lt;/span> &lt;span class="c1">// Tracker knows how to track events for the application.
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">10&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">Tracker&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{}&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="mi">11&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="mi">12&lt;/span> &lt;span class="c1">// Event records an event to a database or stream.
@@ -319,7 +319,7 @@
 &lt;p>基于上面判断，用于追踪事件的handler最初的实现如下：&lt;/p>
 &lt;p>&lt;strong>Listing 3&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/8LoUoCdrT7T">https://play.golang.org/p/8LoUoCdrT7T&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">18&lt;/span> &lt;span class="c1">// App holds application state.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">18&lt;/span> &lt;span class="c1">// App holds application state.
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">19&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">App&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="mi">20&lt;/span> &lt;span class="nx">track&lt;/span> &lt;span class="nx">Tracker&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">21&lt;/span> &lt;span class="p">}&lt;/span>
@@ -342,7 +342,7 @@
 &lt;p>首先，handler被修改为不直接创建Goroutine - 唯一的变化就是Listing 4中第53行去掉了&lt;code>go&lt;/code>关键字。&lt;/p>
 &lt;p>&lt;strong>Listing 4&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/BMah6_C57-l">https://play.golang.org/p/BMah6_C57-l&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">44&lt;/span> &lt;span class="c1">// Handle represents an example handler for the web service.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">44&lt;/span> &lt;span class="c1">// Handle represents an example handler for the web service.
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">45&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">App&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">Handle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">w&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">r&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="mi">46&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">47&lt;/span> &lt;span class="c1">// Do some actual work.
@@ -356,7 +356,7 @@
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>接下来，修改&lt;code>Tracker&lt;/code>类型使得它能自己管理Goroutine。&lt;/p>
 &lt;p>&lt;strong>Listing 5&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/BMah6_C57-l">https://play.golang.org/p/BMah6_C57-l&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">10&lt;/span> &lt;span class="c1">// Tracker knows how to track events for the application.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">10&lt;/span> &lt;span class="c1">// Tracker knows how to track events for the application.
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">11&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">Tracker&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="mi">12&lt;/span> &lt;span class="nx">wg&lt;/span> &lt;span class="nx">sync&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">WaitGroup&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">13&lt;/span> &lt;span class="p">}&lt;/span>
@@ -389,7 +389,7 @@
 &lt;p>&lt;code>Add&lt;/code>和&lt;code>Done&lt;/code>对于跟踪Goroutine的数量是非常有用的，但我们依然需要告诉程序去等待所有的Goroutine完成。为了达成这个目的，&lt;code>Tracker&lt;/code>类型在第35行添加了一个新的方法&lt;code>Shutdown&lt;/code> - 最简单的一个实现就是调用&lt;code>t.wg.Wait()&lt;/code>，这会阻塞程序知道Goroutine计数器变为0。最后，这个方法会再&lt;code>func main&lt;/code>中调用，如下面的Listing 6：&lt;/p>
 &lt;p>&lt;strong>Listing 6&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/BMah6_C57-l">https://play.golang.org/p/BMah6_C57-l&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">56&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">56&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 2&lt;/span>&lt;span class="mi">57&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="mi">58&lt;/span> &lt;span class="c1">// Start a server.
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">59&lt;/span> &lt;span class="c1">// Details not shown...
@@ -406,7 +406,7 @@
 &lt;p>&lt;code>Shown&lt;/code>方法的实现很简单，但确实也做了它该做的事情 - 它等待所有的Goroutine执行完成。但不幸的是，这里面无法限制要等待多久。如果是生产环境，你不能不会愿意看要无限制的等待你的程序退出。为了给&lt;code>Shutdown&lt;/code>方法一个等待的期限，我们团队修改成如下方式：&lt;/p>
 &lt;p>&lt;strong>Listing 7&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/p4gsDkpw1Gh">https://play.golang.org/p/p4gsDkpw1Gh&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">36&lt;/span> &lt;span class="c1">// Shutdown waits for all tracked events to finish processing
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">36&lt;/span> &lt;span class="c1">// Shutdown waits for all tracked events to finish processing
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">37&lt;/span> &lt;span class="c1">// or for the provided context to be canceled.
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">38&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">t&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Tracker&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">Shutdown&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Context&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">39&lt;/span>
@@ -433,7 +433,7 @@
 &lt;p>接下来，我们团队在&lt;code>func main&lt;/code>中修改了调用方式：&lt;/p>
 &lt;p>&lt;strong>Listing 8&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/p4gsDkpw1Gh">https://play.golang.org/p/p4gsDkpw1Gh&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">86&lt;/span> &lt;span class="c1">// Wait up to 5 seconds for all event goroutines to finish.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">86&lt;/span> &lt;span class="c1">// Wait up to 5 seconds for all event goroutines to finish.
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">87&lt;/span> &lt;span class="kd">const&lt;/span> &lt;span class="nx">timeout&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="mi">5&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Second&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="mi">88&lt;/span> &lt;span class="nx">ctx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cancel&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">WithTimeout&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Background&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="nx">timeout&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="mi">89&lt;/span> &lt;span class="k">defer&lt;/span> &lt;span class="nf">cancel&lt;/span>&lt;span class="p">()&lt;/span>
@@ -454,7 +454,7 @@
 &lt;p>下面的代码演示了一种非常常见的Goroutine泄漏。&lt;/p>
 &lt;p>&lt;strong>Listing 1&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/dsu3PARM24K">https://play.golang.org/p/dsu3PARM24K&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">31&lt;/span> &lt;span class="c1">// leak is a buggy function. It launches a goroutine that
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">31&lt;/span> &lt;span class="c1">// leak is a buggy function. It launches a goroutine that
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">32&lt;/span> &lt;span class="c1">// blocks receiving from a channel. Nothing will ever be
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">33&lt;/span> &lt;span class="c1">// sent on that channel and the channel is never closed so
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">34&lt;/span> &lt;span class="c1">// that goroutine will be blocked forever.
@@ -474,7 +474,7 @@
 &lt;p>我们将看到的这个程序 - 基于关键字查找记录然后打印。该程序围绕一个&lt;code>search&lt;/code>函数构建：&lt;/p>
 &lt;p>&lt;strong>Listing 2&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/o6_eMjxMVFv">https://play.golang.org/p/o6_eMjxMVFv&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">29&lt;/span> &lt;span class="c1">// search simulates a function that finds a record based
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">29&lt;/span> &lt;span class="c1">// search simulates a function that finds a record based
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">30&lt;/span> &lt;span class="c1">// on a search term. It takes 200ms to perform this work.
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">31&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">search&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">term&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">error&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="mi">32&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Sleep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">200&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Millisecond&lt;/span>&lt;span class="p">)&lt;/span>
@@ -482,7 +482,7 @@
 &lt;span class="ln">6&lt;/span>&lt;span class="mi">34&lt;/span> &lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>Listing 2中的&lt;code>search&lt;/code>函数的第31行，模拟了一个长时间运行的耗时操作，比如数据库查询或者Web调用。在这里，假设这个耗时操作为200ms。调用&lt;code>search&lt;/code>函数的代码在Listing 3中，如下所示：&lt;/p>
 &lt;p>&lt;strong>Listing 3&lt;/strong>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">17&lt;/span> &lt;span class="c1">// process is the work for the program. It finds a record
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">17&lt;/span> &lt;span class="c1">// process is the work for the program. It finds a record
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">18&lt;/span> &lt;span class="c1">// then prints it.
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">19&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">process&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">term&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">20&lt;/span> &lt;span class="nx">record&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">search&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">term&lt;/span>&lt;span class="p">)&lt;/span>
@@ -497,7 +497,7 @@
 &lt;p>对于一些应用而言，串行的调用&lt;code>search&lt;/code>带来的时延或许无法接受。假设&lt;code>search&lt;/code>无法更快的运行了，&lt;code>processs&lt;/code>函数可以修改成不必完全消耗在等待&lt;code>search&lt;/code>返回结果。为了达到这个目的，如下面Listing 4所示，可以使用一个Goroutine来解决这个问题。不幸的是，这个尝试是有问题的，它带来了潜在的Goroutine泄漏。&lt;/p>
 &lt;p>&lt;strong>Listing 4&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/m0DHuchgX0A">https://play.golang.org/p/m0DHuchgX0A&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">38&lt;/span> &lt;span class="c1">// result wraps the return values from search. It allows us
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">38&lt;/span> &lt;span class="c1">// result wraps the return values from search. It allows us
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">39&lt;/span> &lt;span class="c1">// to pass both values across a single channel.
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">40&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">result&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">41&lt;/span> &lt;span class="nx">record&lt;/span> &lt;span class="kt">string&lt;/span>
@@ -543,7 +543,7 @@
 &lt;p>上面的泄漏问题，最简单的解决方式就是 - 把原先的非缓冲（阻塞）channel修改为容量为1的缓冲（非阻塞）channel。&lt;/p>
 &lt;p>&lt;strong>Listing 5&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/u3xtQ48G3qK">https://play.golang.org/p/u3xtQ48G3qK&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">53&lt;/span> &lt;span class="c1">// Make a channel for the goroutine to report its result.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">53&lt;/span> &lt;span class="c1">// Make a channel for the goroutine to report its result.
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">54&lt;/span> &lt;span class="c1">// Give it capacity so sending doesn&amp;#39;t block.
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">55&lt;/span> &lt;span class="nx">ch&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="nx">result&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>现在在超时的那个分支，即使由于超时导致&lt;code>select&lt;/code>块结束等待往下进行（&lt;code>case &amp;lt;-ctx.Done()&lt;/code>分支)，启动&lt;code>search&lt;/code>的那个Goroutine最终也会得到搜索结果并发送到channel进而执行完成返回而不阻塞。最终Goroutine以及channel占用的内存都会被释放掉。所有事情自然而然的都解决了。&lt;/p>

@@ -1,4 +1,79 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>C on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/c/</link><description>Recent content in C on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Mon, 19 Jul 2021 21:24:20 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/c/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus读书笔记（二）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>C on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/c/</link><description>Recent content in C on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Fri, 23 Jul 2021 23:35:03 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/c/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus 编程练习</title><link>https://www.jonathanlin.top/posts/c-primer-plus-handson/</link><pubDate>Fri, 23 Jul 2021 23:35:03 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-handson/</guid><description>
+&lt;h2 id="ch06-c控制语句循环">ch06. C控制语句：循环&lt;/h2>
+&lt;blockquote>
+&lt;ol start="5">
+&lt;li>
+&lt;p>编写一个程序，提示用户输入大写字母。使用嵌套循环以下面金字塔型的格式打印字母：&lt;/p>
+&lt;p>​ A
+​ ABA
+​ ABCBA
+ABCDCBA
+ABCDEDCBA&lt;/p>
+&lt;p>提示：用外层循环处理行，每行使用3个内层循环，分别处理空格、以升序打印字母、以降序打印字母。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;p>思考：外层循环处理行容易实现，但是使用3个内层循环控制空格、升序字母和降序空格字母似乎有点多。这里可以结合条件判断，是的内层只需要一个循环搞定空格、升降序字母的打印。这里有几点比较关键&lt;/p>
+&lt;ul>
+&lt;li>每行有多少个空格&lt;/li>
+&lt;li>每个一共要打印的字符是多少个，是包括每行的空格加上字符&lt;/li>
+&lt;li>每行都是对称的，要找到每行对称中心的字符&lt;/li>
+&lt;li>每行的空格数、字符数和对称中心的字符都是不一样的，这个要内循环中处理好&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;stdio.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="cp">&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 4&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">middle&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">start&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="sc">&amp;#39;A&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Please input a char (A - Z):&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="n">scanf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%c&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">middle&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">middle&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="sc">&amp;#39;A&amp;#39;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">middle&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="sc">&amp;#39;Z&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">lines&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">middle&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">start&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 总的行数
+&lt;/span>&lt;span class="ln">12&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">spaces&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">chars&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 定义变量保存内循环里的空格数以及自字符。字符数实际上是等差数列 - 1，3，5，7...
+&lt;/span>&lt;span class="ln">13&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">lines&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="o">++&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="n">spaces&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">lines&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 计算每行的空格数
+&lt;/span>&lt;span class="ln">16&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="n">chars&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 计算每行的字符数
+&lt;/span>&lt;span class="ln">18&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">asc_start&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">start&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 每行升序部分的起始字符
+&lt;/span>&lt;span class="ln">19&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">middle_of_line&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">middle&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">spaces&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 每行的对称中心的字符
+&lt;/span>&lt;span class="ln">20&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">desc_start&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">middle_of_line&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 每行的降序部分起始字符
+&lt;/span>&lt;span class="ln">21&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">j&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">j&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">spaces&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">chars&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="o">++&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">22&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">23&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">j&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">spaces&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">24&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34; &amp;#34;&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 打印空格
+&lt;/span>&lt;span class="ln">25&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="k">else&lt;/span>
+&lt;span class="ln">26&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">27&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">asc_start&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">middle_of_line&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">28&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%c&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">asc_start&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 打印升序部分
+&lt;/span>&lt;span class="ln">29&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="k">else&lt;/span>
+&lt;span class="ln">30&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%c&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">desc_start&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 打印降序部分
+&lt;/span>&lt;span class="ln">31&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">32&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">33&lt;/span>
+&lt;span class="ln">34&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">35&lt;/span>
+&lt;span class="ln">36&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">37&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">38&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">39&lt;/span> &lt;span class="k">else&lt;/span>
+&lt;span class="ln">40&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">41&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Your input is invalid!&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">42&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">43&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">44&lt;/span>
+&lt;span class="ln">45&lt;/span>&lt;span class="c1">// 结果输出
+&lt;/span>&lt;span class="ln">46&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="n">Please&lt;/span> &lt;span class="n">input&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">A&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="n">G&lt;/span>
+&lt;span class="ln">47&lt;/span> &lt;span class="n">A&lt;/span>
+&lt;span class="ln">48&lt;/span> &lt;span class="n">ABA&lt;/span>
+&lt;span class="ln">49&lt;/span> &lt;span class="n">ABCBA&lt;/span>
+&lt;span class="ln">50&lt;/span> &lt;span class="n">ABCDCBA&lt;/span>
+&lt;span class="ln">51&lt;/span> &lt;span class="n">ABCDEDCBA&lt;/span>
+&lt;span class="ln">52&lt;/span> &lt;span class="n">ABCDEFEDCBA&lt;/span>
+&lt;span class="ln">53&lt;/span>&lt;span class="n">ABCDEFGFEDCBA&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>C Primer Plus读书笔记（二）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第六章至第九章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch06c控制语句循环">ch06.C控制语句：循环&lt;/h2>
 &lt;blockquote>
@@ -13,11 +88,11 @@
 &lt;/li>
 &lt;li>
 &lt;p>&lt;code>while&lt;/code>循环部分要点：&lt;strong>只有测试条件之后的单独语句（简单或者符合语句）才是循环部分&lt;/strong> （一般编程习惯好的都不会出现这种情况，但是也得了解如果出现这种情况到底是因为什么。现代高级的IDE都会有相应的提醒）&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">n&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">3&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;n is %d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln">4&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 这里的n++已经不是循环体的一部分了，这个程序会陷入死循环
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="o">++&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 这里的分号是一个完整的语句了，一个空语句，只有这个空语句是while的循环体，因此这个程序只会打印 - n is 4
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;n is %d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;/li>
@@ -27,13 +102,13 @@
 &lt;/ul>
 &lt;blockquote>
 &lt;p>TIP - 在构建是否相等的关系表示式的时候，可以如果是比价是否和一个常量相等，这时候可以把常量放左边，这可以避免误把赋值操作当做了比较操作&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">canoes&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 语法错误，编译器不允许这么做
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">canoes&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 语法错误，编译器不允许这么做
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">canose&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;/blockquote>
 &lt;ul>
 &lt;li>
 &lt;p>C语言中，数值可以作为测试表达式（真值），但是C语言的真值的逻辑是：&lt;strong>所有非0都视为真，只有0被视为假&lt;/strong>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln"> 2&lt;/span>&lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln"> 3&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%2d is true. | &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%2d is false.&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">);&lt;/span>
@@ -98,7 +173,7 @@
 &lt;li>n1是float类型，但是在存储的时候会自动转换成double，因此占用8个字节，但是&lt;code>%ld&lt;/code>导致在转换说明的时候，只读取了前4个字节&lt;/li>
 &lt;li>以上，导致每一次&lt;code>%ld&lt;/code>的转换都发生错位，四次的&lt;code>%ld&lt;/code>仅读取了16个字节，但是&lt;code>n1&lt;/code>到&lt;code>n4&lt;/code>一共占用了24个字节&lt;/li>
 &lt;/ol>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%ld %ld %ld %ld&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n4&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%ld %ld %ld %ld&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n4&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/printf-incompatiable.png" alt="转换不匹配">&lt;/p>
 &lt;/li>
 &lt;li>格式化字符串转换说明 （关于转换说明符修饰符P71）
@@ -182,7 +257,7 @@
 &lt;/li>
 &lt;li>
 &lt;p>对于scanf而言，把*放在%和转换字符之间，则会跳过相应的输入项。下面代码所示，scanf跳过了第一个和第二个输入，把第三个输入赋值给n&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 2&lt;/span> &lt;span class="kt">unsigned&lt;/span> &lt;span class="n">width&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">6&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">precision&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln"> 3&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">number&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">256&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">weight&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">242.5&lt;/span>&lt;span class="p">;&lt;/span>

@@ -4,7 +4,7 @@
 &lt;p>本文是一个指导性的参考文档，关于如何使用本文中提及的特性的例子，请参考&lt;a href="https://developers.google.com/protocol-buffers/docs/tutorials">tutorial&lt;/a> 并选择你想要的特定编程语言的例子。&lt;/p>
 &lt;h2 id="定义一个消息类型">定义一个消息类型&lt;/h2>
 &lt;p>首先让我们来看一个非常简单的例子。比如说你想要定义一个搜索请求这样一个消息，这个消息里包含一个查询字符串（query string）、你所感兴趣页面的数量以及每个页面包含的结果。如下是你的&lt;code>.proto&lt;/code>文件定义：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">syntax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;proto3&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">syntax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;proto3&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchRequest&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">query&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -33,7 +33,7 @@
 &lt;p>在&lt;code>proto3&lt;/code>中，标量类型的&lt;code>repeated&lt;/code>字段是默认是使用&lt;code>packed&lt;/code>来编码的。你可以从&lt;a href="https://developers.google.com/protocol-buffers/docs/encoding#packed">Protocol Buffer Encoding&lt;/a>中了解更多关于&lt;code>packed&lt;/code>编码的信息。&lt;/p>
 &lt;h3 id="添加更多的消息类型">添加更多的消息类型&lt;/h3>
 &lt;p>在一个&lt;code>.proto&lt;/code>文件中你可以定义多种不同的消息类型，如果你奥定义多个相关的消息，这就非常有用 - 比如你想要定义和&lt;code>SearchRequest&lt;/code>相对应的&lt;code>SearchResponse&lt;/code>消息，你可以在同一个&lt;code>.proto&lt;/code>文件中添加：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchRequest&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchRequest&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">query&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="n">page_number&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="n">result_per_page&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -44,7 +44,7 @@
 &lt;/span>&lt;span class="ln">9&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="添加注释">添加注释&lt;/h3>
 &lt;p>在&lt;code>.proto&lt;/code>中添加注释，你可以使用C/C++风格的语法：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="cm">/* SearchRequest represents a search query, with pagination options to
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="cm">/* SearchRequest represents a search query, with pagination options to
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="cm"> * indicate which results to include in the response. */&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchRequest&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
@@ -54,7 +54,7 @@
 &lt;/span>&lt;span class="ln">8&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="保留字段">保留字段&lt;/h3>
 &lt;p>如果你&lt;a href="#%E6%9B%B4%E6%96%B0%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B">更新息类型&lt;/a>的时候删除了一个字段，或者把一个字段注释掉，将来其他人在更新相同的消息的时候是可以重用之前字段的号码。之后在他们使用老版本的&lt;code>.proto&lt;/code>时将会导致许多问题，包括数据出错，privacy bugs等。为了确保这些问题不会发生，有一个办法是把那些你删除的字段的使用过的字段号码（和/或名称）标记为&lt;code>reserved&lt;/code>。如果你使用了这些被&lt;code>reserved&lt;/code>标记的号码，编译器会报错。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Foo&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Foo&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">reserved&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">15&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">9&lt;/span> &lt;span class="k">to&lt;/span> &lt;span class="mi">11&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">reserved&lt;/span> &lt;span class="s">&amp;#34;foo&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;bar&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
@@ -241,7 +241,7 @@
 &lt;h2 id="枚举">枚举&lt;/h2>
 &lt;p>当你定义你的消息的时候，你可能希望某些字段的值只能从一些预先定义好的值里来。例如，你想为你的&lt;code>SearchRequest&lt;/code>添加一个&lt;code>corpus&lt;/code>字段，这个字段的值可以是&lt;code>UNIVERSAL&lt;/code>, &lt;code>WEB&lt;/code>, &lt;code>IMAGES&lt;/code>, &lt;code>LOCAL&lt;/code>, &lt;code>NEWS&lt;/code>, &lt;code>PRODUCTS&lt;/code> 或者 &lt;code>VIDEO&lt;/code>。你可以通过定义枚举类满足你的需求，枚举中所有可能的值都是一个常量。&lt;/p>
 &lt;p>下面的例子中我们添加了一个名为&lt;code>Corpus&lt;/code>的枚举，这个枚举中定义了它可能的值，同时也定义类型为&lt;code>Corpus&lt;/code>的字段：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchRequest&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchRequest&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">query&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="n">page_number&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="n">result_per_page&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -262,7 +262,7 @@
 &lt;li>0值作为枚举的第一个元素，这个和&lt;code>proto2&lt;/code>的语言兼容，即第一个元素的值总是默认值&lt;/li>
 &lt;/ul>
 &lt;p>你可以通过给不同的枚举元素赋相同的值来定义别名，前提是你需要把&lt;code>allow_alias&lt;/code>选项设置为&lt;code>true&lt;/code>，否者编译器遇到这样的别名设置会报错。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">MyMessage1&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">MyMessage1&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kd">enum&lt;/span> &lt;span class="n">EnumAllowingAlias&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="k">option&lt;/span> &lt;span class="n">allow_alias&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">UNKNOWN&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -286,14 +286,14 @@
 &lt;p>更多关于如何使用&lt;code>enum&lt;/code>的信息，请参考：&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/overview">generated code guide&lt;/a>中特定编程语言的部分。&lt;/p>
 &lt;h3 id="枚举保留值">枚举保留值&lt;/h3>
 &lt;p>如果你&lt;a href="#%E6%9B%B4%E6%96%B0%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B">更新消息类型&lt;/a>的时候删除了一个枚举项或者注释掉，后面其他人在更新这个枚举的时候可以重用原枚举项对应的数值。之后在他们使用老版本的&lt;code>.proto&lt;/code>时将会导致许多问题，包括数据出错，privacy bugs等。为了确保这些问题不会发生，有一个办法是把那些你删除的枚举项的使用过的数值（和/或名称）标记为&lt;code>reserved&lt;/code>。如果你使用了这些被&lt;code>reserved&lt;/code>标记的号码，编译器会报错。你可以指定你保留的枚举数值的范围，你可以使用&lt;code>max&lt;/code>关键字来指定范围的最大值。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">enum&lt;/span> &lt;span class="n">Foo&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">enum&lt;/span> &lt;span class="n">Foo&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">reserved&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">15&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">9&lt;/span> &lt;span class="k">to&lt;/span> &lt;span class="mi">11&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">40&lt;/span> &lt;span class="k">to&lt;/span> &lt;span class="k">max&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">reserved&lt;/span> &lt;span class="s">&amp;#34;FOO&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;BAR&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>注意，你不可以在同一个&lt;code>reserved&lt;/code>语句中同时指定枚举项的名称和枚举值。&lt;/p>
 &lt;h2 id="使用其他消息类型">使用其他消息类型&lt;/h2>
 &lt;p>你可以使用其他消息作为你的字段的类型。例如，你希望你的&lt;code>SearchResponse&lt;/code>中包含&lt;code>Result&lt;/code>类型的字段 - 你可以在同一个&lt;code>.proto&lt;/code>文件找那个定义&lt;code>Result&lt;/code>消息，然后指定&lt;code>SearchResponse&lt;/code>的字段为&lt;code>Result&lt;/code>类型：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchResponse&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchResponse&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="k">repeated&lt;/span> &lt;span class="n">Result&lt;/span> &lt;span class="n">results&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">
@@ -306,15 +306,15 @@
 &lt;p>&lt;strong>注意，这个特性不适用于Java&lt;/strong>&lt;/p>
 &lt;p>在上面的例子中，&lt;code>Result&lt;/code>是和&lt;code>SearchResponse&lt;/code>位于相同的&lt;code>.proto&lt;/code>文件中 - 如果你想要使用的消息类型是定义在其他&lt;code>.proto&lt;/code>文件中呢？&lt;/p>
 &lt;p>你可以通过导入&lt;code>.proto&lt;/code>文件来使用定义在其他&lt;code>.proto&lt;/code>文件中的消息类型。你可以在文件头部添加import语句来导入：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;myproject/other_protos.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;myproject/other_protos.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>默认情况下，你只能使用直接导入的&lt;code>.proto&lt;/code>文件中定义的消息类型。但是，有时候你可能需要把&lt;code>.proto&lt;/code>文件移动到一个新的位置。你可以直接移动&lt;code>.proto&lt;/code>文件到一个新的位置，然后然后更新所有的import语句指向&lt;code>.proto&lt;/code>的新位置，你现在也可以在原来的位置放一个”假“的&lt;code>.proto&lt;/code>然后使用&lt;code>import public&lt;/code>语句把老的&lt;code>.proto&lt;/code>中的import语句重定向到新的位置。任何导入了包含&lt;code>import public&lt;/code>的&lt;code>.proto&lt;/code>文件也就把&lt;code>import public&lt;/code>的依赖也导入了。例如：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// new.proto
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// new.proto
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">// All definitions are moved here
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// old.proto
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// old.proto
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">// This is the proto that all clients are importing.
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="n">public&lt;/span> &lt;span class="s">&amp;#34;new.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;other.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// client.proto
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// client.proto
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;old.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="c1">// You use definitions from old.proto and new.proto, but not other.proto
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>protocol buffer编译器从命令行参数&lt;code>-I&lt;/code>/&lt;code>--proto_path&lt;/code>指定的一系列路径中查找导入的&lt;code>.proto&lt;/code>文件。如果这个参数没有指定一个值，编译器就从运行的目录里查找。通常地，你应该把&lt;code>--proto_path&lt;/code>的值设置为你项目的根目录，然后在import语句中使用完整的名称。&lt;/p>
@@ -322,7 +322,7 @@
 &lt;p>在&lt;code>proto3&lt;/code>的消息中导入并使用&lt;code>proto2&lt;/code>的消息类型是可以的，相反也是可以。但是&lt;code>proto2&lt;/code>的枚举是无法在&lt;code>proto3&lt;/code>中使用（如果&lt;code>proto2&lt;/code>的消息体中使用&lt;code>proto2&lt;/code>枚举是可以的）&lt;/p>
 &lt;h2 id="嵌套类型">嵌套类型&lt;/h2>
 &lt;p>你可以在一个消息类型里定义嵌套的消息类型并使用它，如下面的例子所示 - &lt;code>Result&lt;/code>消息是定义在&lt;code>SearchResponse&lt;/code>里的：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchResponse&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchResponse&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kd">message&lt;/span> &lt;span class="nc">Result&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">url&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">title&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -331,11 +331,11 @@
 &lt;/span>&lt;span class="ln">7&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="k">repeated&lt;/span> &lt;span class="n">Result&lt;/span> &lt;span class="n">results&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">8&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果你想在定义嵌套消息的父消息外使用，你可以通过&lt;code>_Parent_._Type_&lt;/code>来使用：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SomeOtherMessage&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SomeOtherMessage&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">SearchResponse.Result&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>你可以多层嵌套消息，如下所示：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Outer&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// Level 0
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Outer&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// Level 0
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kd">message&lt;/span> &lt;span class="nc">MiddleAA&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// Level 1
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kd">message&lt;/span> &lt;span class="nc">Inner&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// Level 2
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kt">int64&lt;/span> &lt;span class="n">ival&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -369,7 +369,7 @@
 &lt;p>原先proto3消息在解析的时候总是丢弃未知字段，但是在版本3.5我们重新引入了对未知字段的保留以匹配proto2的行为。在版本3.5以及之后未知字段在解析和序列化的时候又重新保留了下来。&lt;/p>
 &lt;h2 id="any">Any&lt;/h2>
 &lt;p>&lt;code>Any&lt;/code>消息类型能让你像使用嵌套类型一样来使用一个消息而不需要有&lt;code>.proto&lt;/code>的定义。一个&lt;code>Any&lt;/code>消息包含一个序列化为&lt;code>bytes&lt;/code>的消息以及用来解释成对应消息类型的一个全局唯一标识符URL。你需要&lt;a href="#%E4%BD%BF%E7%94%A8%E5%85%B6%E4%BB%96%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B">导入&lt;/a>&lt;code>google/protobuf/any.proto&lt;/code>来使用&lt;code>Any&lt;/code>类型。（注：说白了，这个Any类型就是一种序列化，把一种特定类型按照某种方式序列化为字节数组）&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;google/protobuf/any.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;google/protobuf/any.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">ErrorStatus&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="kd">message&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -377,7 +377,7 @@
 &lt;/span>&lt;span class="ln">6&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>默认的类型URL是&lt;code>type.googleapis.com/_packagename_._messagename_&lt;/code>。&lt;/p>
 &lt;p>不同的语言实现会提供类型安全的运行时库来打包和解包&lt;code>Any&lt;/code>类型的值 - 例如在Java中，&lt;code>Any&lt;/code>类型提供了&lt;code>pack()&lt;/code>和&lt;code>unpack()&lt;/code>访问器，在C++中提供了&lt;code>PackFrom()&lt;/code>和&lt;code>UnpackTo()&lt;/code>方法：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln"> 1&lt;/span>&lt;span class="c1">// Storing an arbitrary message type in Any.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln"> 1&lt;/span>&lt;span class="c1">// Storing an arbitrary message type in Any.
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="n">NetworkErrorDetails&lt;/span> &lt;span class="n">details&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">...;&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="n">ErrorStatus&lt;/span> &lt;span class="n">status&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="n">status&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">add_details&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">PackFrom&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">details&lt;/span>&lt;span class="p">);&lt;/span>
@@ -398,7 +398,7 @@
 &lt;p>&lt;code>oneof&lt;/code>字段和常规字段一样，只是&lt;code>oneof&lt;/code>里所有的成员是共享内存的，且同一时刻最多只有一个字段被赋值。设置任何一个&lt;code>oneof&lt;/code>里的成员将自动清空其他的成员。你可以一个特殊的&lt;code>case()&lt;/code>或者&lt;code>WhichOneof()&lt;/code>方法（取决特定的语言）来判断&lt;code>oneof&lt;/code>里的成员是否被赋值了。&lt;/p>
 &lt;h3 id="使用oneof">使用&lt;code>oneof&lt;/code>&lt;/h3>
 &lt;p>你可以使用&lt;code>oneof&lt;/code>关键字跟上你的&lt;code>oneof&lt;/code>名称来定义一个&lt;code>oneof&lt;/code>，比如在&lt;code>test_oneof&lt;/code>中：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SampleMessage&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SampleMessage&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="k">oneof&lt;/span> &lt;span class="n">test_oneof&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">SubMessage&lt;/span> &lt;span class="n">sub_message&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">9&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -409,7 +409,7 @@
 &lt;ul>
 &lt;li>
 &lt;p>设置任何一个&lt;code>oneof&lt;/code>里的成员将自动清空其他的成员。如果你设置了多个成员，只有最后一个设置的成员才有值。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="o">;&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">set_name&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="n">CHECK&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">has_name&lt;/span>&lt;span class="o">());&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">mutable_sub_message&lt;/span>&lt;span class="o">();&lt;/span> &lt;span class="c1">// Will clear name field.
@@ -429,21 +429,21 @@
 &lt;/li>
 &lt;li>
 &lt;p>如果你使用C++，确保你的代码不会引发内存泄漏。下面的代码会奔溃原因是因为&lt;code>sub_message&lt;/code>在调用了&lt;code>set_name()&lt;/code>后就被删除了&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="n">SubMessage&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">sub_message&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">mutable_sub_message&lt;/span>&lt;span class="p">();&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">set_name&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// Will delete sub_message
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="n">sub_message&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">set_&lt;/span>&lt;span class="p">...&lt;/span> &lt;span class="c1">// Crashes here
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;li>
 &lt;p>还是C++，&lt;code>Swap()&lt;/code>两个&lt;code>oneof&lt;/code>消息后，每个消息的&lt;code>oneof&lt;/code>字段发生互换。在下面的例子中，&lt;code>msg1&lt;/code>将会有&lt;code>sub_message&lt;/code>成员而&lt;code>msg2&lt;/code>将会有&lt;code>name&lt;/code>成员：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">msg1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">msg1&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="n">msg1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">set_name&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">msg2&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="n">msg2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">mutable_sub_message&lt;/span>&lt;span class="p">();&lt;/span>
 &lt;span class="ln">5&lt;/span>&lt;span class="n">msg1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">swap&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">msg2&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln">6&lt;/span>&lt;span class="n">CHECK&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">msg1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">has_sub_message&lt;/span>&lt;span class="p">());&lt;/span>
 &lt;span class="ln">7&lt;/span>&lt;span class="n">CHECK&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">msg2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">has_name&lt;/span>&lt;span class="p">());&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">msg1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">msg1&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="n">msg1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">set_name&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">msg2&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="n">msg2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">mutable_sub_message&lt;/span>&lt;span class="p">();&lt;/span>
@@ -462,9 +462,9 @@
 &lt;/ul>
 &lt;h2 id="maps">Maps&lt;/h2>
 &lt;p>如果你希望在你的数据定义中创建&lt;code>map&lt;/code>，protocol buffer提供了一个方便的语法：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="n">key_type&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">value_type&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="n">map_field&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="n">key_type&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">value_type&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="n">map_field&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>key_type&lt;/code>可以是任何整型或者字符串类型（也就是说除了浮点和&lt;code>bytes&lt;/code>之外的标量类型）。因此，如果你希望创建一个键为字符串类型值为&lt;code>Project&lt;/code>消息的&lt;code>map&lt;/code>，你可以定义如下：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Project&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="n">projects&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Project&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="n">projects&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
 &lt;li>&lt;code>map&lt;/code>类型的字段是不可以定义为&lt;code>repeated&lt;/code>&lt;/li>
 &lt;li>Wire格式的顺序不固定，迭代&lt;code>map&lt;/code>也是无序的，因此你不能依赖&lt;code>map&lt;/code>为你提供有序的成员&lt;/li>
@@ -474,7 +474,7 @@
 &lt;p>访问&lt;code>map&lt;/code>的API目前已对&lt;code>proto3&lt;/code>支持。你可以从 &lt;a href="https://developers.google.com/protocol-buffers/docs/reference/overview">API reference&lt;/a>中查找特定语言相关的说明。&lt;/p>
 &lt;h3 id="向后兼容">向后兼容&lt;/h3>
 &lt;p>&lt;code>map&lt;/code>的语法和下面的定义等价，因此对那些不支持&lt;code>map&lt;/code>的protocol buffer实现依然可以处理你的数据。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">MapFieldEntry&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">MapFieldEntry&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">key_type&lt;/span> &lt;span class="n">key&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">value_type&lt;/span> &lt;span class="n">value&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
@@ -483,10 +483,10 @@
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>任何支持&lt;code>map&lt;/code>的protocol buffer的实现必须能够基于上面的定义生成和接受数据。&lt;/p>
 &lt;h2 id="包">包&lt;/h2>
 &lt;p>你可以在&lt;code>.proto&lt;/code>中添加一个可选的&lt;code>package&lt;/code>指示符，这样可以防止不同的消息类型间名字冲突。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nn">foo&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bar&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nn">foo&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bar&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Open&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="o">...&lt;/span> &lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>你可以在定义你的消息类型的时候使用&lt;code>package&lt;/code>指示符：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Foo&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Foo&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="o">...&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">foo.bar.Open&lt;/span> &lt;span class="n">open&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="o">...&lt;/span>&lt;span class="err">
@@ -504,7 +504,7 @@
 &lt;p>protocol buffer编译器通过解析导入的&lt;code>.proto&lt;/code>文件来解析所有的类型名称。即使不同语言有不同的范围规则，不同语言的代码生成器知道如何找到特定的类型。&lt;/p>
 &lt;h2 id="定义服务">定义服务&lt;/h2>
 &lt;p>如果你希望在你的RPC服务中使用你定义的消息，你可以在&lt;code>.proto&lt;/code>文件中定义RPC服务接口，而后protocol buffer会生成特定语言的服务接口代码和mock实现。因此，假如你需要定义个RPC服务的方法接受&lt;code>SearchRequest&lt;/code>参数返回&lt;code>SearchResponse&lt;/code>，你可以按如下方式定义：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">service&lt;/span> &lt;span class="n">SearchService&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">service&lt;/span> &lt;span class="n">SearchService&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="k">rpc&lt;/span> &lt;span class="n">Search&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">SearchRequest&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">returns&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">SearchResponse&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;a href="https://grpc.io/">gRPC&lt;/a>是最直接使用protocol buffer的RPC系统：Google开发的一个语言和平台中立的开源的RPC系统。gRPC能非常好的和protocol buffer工作，使用一个特殊的protocol buffer插件能完美的生成gRPC代码。&lt;/p>
@@ -662,7 +662,7 @@
 &lt;h2 id="生成你的类">生成你的类&lt;/h2>
 &lt;p>你需要运行Protocol buffer编译器&lt;code>.protoc&lt;/code>来编译你的&lt;code>.proto&lt;/code>文件来生成和消息交互的Java/Kotlin/Python/C++/Go/Ruby/Objective-C/C# 代码。如果你还没哟uanzhuang编译器，&lt;a href="https://developers.google.com/protocol-buffers/docs/downloads">请先下载&lt;/a>然后参考README的说明来安装。对Go语言，你需要安装一个特定的代码生成器插件：你可以从&lt;a href="https://github.com/golang/protobuf/">golang/protobuf&lt;/a> 找到这个插件以及这个插件的安装说明。&lt;/p>
 &lt;p>Protocol编译器是按照以下的方式来调用：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">protoc&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">proto_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">IMPORT_PATH&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">cpp_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">java_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">python_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">go_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">ruby_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">objc_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">csharp_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="n">path&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="k">to&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">file.proto&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">protoc&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">proto_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">IMPORT_PATH&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">cpp_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">java_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">python_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">go_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">ruby_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">objc_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">csharp_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="n">path&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="k">to&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">file.proto&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
 &lt;li>
 &lt;p>&lt;code>IMPORT_PATH&lt;/code>指定了从什么位置导入&lt;code>.proto&lt;/code>文件。如果没有指定，默认从当前位置导入。如果有多个导入位置，可以多次指定&lt;code>--proto_path&lt;/code>并设置路径，这些路径将被按顺序查找和导入。&lt;code>-I=_IMPORT_PATH_&lt;/code>是&lt;code>--proto_path&lt;/code>的简短形式。&lt;/p>
@@ -700,14 +700,14 @@
 &lt;h2 id="定义你的protocol格式">定义你的protocol格式&lt;/h2>
 &lt;p>创建你的地址簿应用的第一步是定义你的&lt;code>.proto&lt;/code>文件。&lt;code>.proto&lt;/code>文件中的定义很简单：你为你想要序列化的每一个数据结构添加一个消息，然后为消息中的每个字段指定一个名称和对应的类型。在我们的例子中，在&lt;code>.proto&lt;/code>中定义的消息请参考&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/addressbook.proto">addressbook.proto&lt;/a>。&lt;/p>
 &lt;p>&lt;code>.proto&lt;/code>文件是从一个包声明开始的，包声明用来防止在不同项目中的名字冲突。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">syntax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;proto3&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">syntax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;proto3&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nn">tutorial&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;google/protobuf/timestamp.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>go_package&lt;/code>定义了代码生成所在的路径，包名即路径中的最后一个目录。例如，我们的例子的包名就是”tutorialpb“。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="k">option&lt;/span> &lt;span class="n">go_package&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;github.com/protocolbuffers/protobuf/examples/go/tutorialpb&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="k">option&lt;/span> &lt;span class="n">go_package&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;github.com/protocolbuffers/protobuf/examples/go/tutorialpb&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>接下来，你就可以定义你的消息了。一个小时是包含一组含有类型的字段的集合。许多标准的简单值类型都是支持的，例如&lt;code>bool&lt;/code> 、&lt;code>int32&lt;/code>、 &lt;code>float&lt;/code>、 &lt;code>double&lt;/code> 和&lt;code>string&lt;/code>。你也可以包含其他消息在你要定义的消息里。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Person&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Person&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="n">id&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// Unique ID number for this person.
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">email&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -745,14 +745,14 @@
 &lt;/li>
 &lt;li>
 &lt;p>运行下面的命令安装Go protocol buffers plugin：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>go get github.com/golang/protobuf/protoc-gen-go
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>go get github.com/golang/protobuf/protoc-gen-go
 &lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;/ol>
 &lt;p>编译器plugin &lt;code>protoc-gen-to&lt;/code>将被安装在&lt;code>$GOBIN&lt;/code>目录，该目录默认是在&lt;code>$GOPATH/bin&lt;/code>。这个目录必须包含在你的&lt;code>$PATH&lt;/code>中。&lt;/p>
 &lt;ol start="3">
 &lt;li>
 &lt;p>现在你可以运行编译器，指定源目录（就是你的源文件所在的目录，如果没有指定就是指当前目录）和目标目录（生成的代码所在的目录）以及&lt;code>.proto&lt;/code>所在的目录。在我们的例子中，你应该运行下面命令：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>protoc -I&lt;span class="o">=&lt;/span>&lt;span class="nv">$SRC_DIR&lt;/span> --go_out&lt;span class="o">=&lt;/span>&lt;span class="nv">$DST_DIR&lt;/span> &lt;span class="nv">$SRC_DIR&lt;/span>/addressbook.proto
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>protoc -I&lt;span class="o">=&lt;/span>&lt;span class="nv">$SRC_DIR&lt;/span> --go_out&lt;span class="o">=&lt;/span>&lt;span class="nv">$DST_DIR&lt;/span> &lt;span class="nv">$SRC_DIR&lt;/span>/addressbook.proto
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>由于你是需要生成Go代码，你应该使用&lt;code>--go-out&lt;/code>选项，其他语言则使用对应的选项。&lt;/p>
 &lt;/li>
 &lt;/ol>
@@ -767,7 +767,7 @@
 &lt;/ul>
 &lt;p>你可以从&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/go-generated">Go Generated Code guide&lt;/a>了解到代码生成的细节，对于大部分代码你只需要像对待Go类型一样。&lt;/p>
 &lt;p>&lt;code>list_people&lt;/code>的单元测试&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people_test.go">command's unit tests&lt;/a>中展示了你应该如何创建&lt;code>Person&lt;/code>的实例：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="nx">p&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Person&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="nx">p&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Person&lt;/span>&lt;span class="p">{&lt;/span>
 &lt;span class="ln">2&lt;/span> &lt;span class="nx">Id&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1234&lt;/span>&lt;span class="p">,&lt;/span>
 &lt;span class="ln">3&lt;/span> &lt;span class="nx">Name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;John Doe&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
 &lt;span class="ln">4&lt;/span> &lt;span class="nx">Email&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;jdoe@example.com&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
@@ -777,7 +777,7 @@
 &lt;span class="ln">8&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="写消息">写消息&lt;/h2>
 &lt;p>使用proptocol buffers的目的是序列化你的数据，而后能够在任何地方解析。Go语言中，你可以使用&lt;code>proto&lt;/code>库的&lt;a href="https://pkg.go.dev/google.golang.org/protobuf/proto?tab=doc#Marshal">Marshal&lt;/a>方法序列化你的protocol buffer数据。protocol buffer消息的指针类型实现了&lt;code>proto.Message&lt;/code>接口。调用&lt;code>proto.Marshal&lt;/code>返回序列化后的编码成wire格式的protocol buffer数据。例如，我们在&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/add_person.go">&lt;code>add_person&lt;/code> command&lt;/a>中使用了这个方法：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="nx">book&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">AddressBook&lt;/span>&lt;span class="p">{}&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="nx">book&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">AddressBook&lt;/span>&lt;span class="p">{}&lt;/span>
 &lt;span class="ln"> 2&lt;/span>&lt;span class="c1">// ...
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="c1">// Write the new address book back to disk.
@@ -790,7 +790,7 @@
 &lt;span class="ln">11&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="读数据">读数据&lt;/h2>
 &lt;p>你可以使用&lt;code>proto&lt;/code>库中的&lt;a href="https://pkg.go.dev/google.golang.org/protobuf/proto?tab=doc#Unmarshal">Unmarshal&lt;/a>方法来解析编码过的数据。调用这个方法将&lt;code>buf&lt;/code>中的protocol buffer数据解析出来存放在&lt;code>pb&lt;/code>中。因此我们使用下面的代码在&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people.go">&lt;code>list_people&lt;/code> command&lt;/a>中进行解析：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// Read the existing address book.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// Read the existing address book.
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">in&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ioutil&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ReadFile&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">fname&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln">4&lt;/span> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatalln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Error reading file:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>

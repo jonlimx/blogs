@@ -6,7 +6,7 @@
 &lt;p>为了说明什么是未完成的工作，请观察下面的例子。&lt;/p>
 &lt;p>&lt;strong>Listing 1&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/VORJoAD2oAh">https://play.golang.org/p/VORJoAD2oAh&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="mi">6&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Hello&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="mi">7&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Goodbye&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="mi">8&lt;/span> &lt;span class="p">}&lt;/span>
@@ -20,7 +20,7 @@
 &lt;p>在Ardan Labs，我的团队构建了一个Web服务提供给那些需要追踪特定的事件的客户端使用。用于记录事件的那个系统有一个方法，类似于如下Listing 2中所示定义在&lt;code>Tracker&lt;/code>类型上的方法：&lt;/p>
 &lt;p>&lt;strong>Listing 2&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/8LoUoCdrT7T">https://play.golang.org/p/8LoUoCdrT7T&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span> &lt;span class="mi">9&lt;/span> &lt;span class="c1">// Tracker knows how to track events for the application.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span> &lt;span class="mi">9&lt;/span> &lt;span class="c1">// Tracker knows how to track events for the application.
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">10&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">Tracker&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{}&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="mi">11&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="mi">12&lt;/span> &lt;span class="c1">// Event records an event to a database or stream.
@@ -32,7 +32,7 @@
 &lt;p>基于上面判断，用于追踪事件的handler最初的实现如下：&lt;/p>
 &lt;p>&lt;strong>Listing 3&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/8LoUoCdrT7T">https://play.golang.org/p/8LoUoCdrT7T&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">18&lt;/span> &lt;span class="c1">// App holds application state.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">18&lt;/span> &lt;span class="c1">// App holds application state.
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">19&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">App&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="mi">20&lt;/span> &lt;span class="nx">track&lt;/span> &lt;span class="nx">Tracker&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">21&lt;/span> &lt;span class="p">}&lt;/span>
@@ -55,7 +55,7 @@
 &lt;p>首先，handler被修改为不直接创建Goroutine - 唯一的变化就是Listing 4中第53行去掉了&lt;code>go&lt;/code>关键字。&lt;/p>
 &lt;p>&lt;strong>Listing 4&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/BMah6_C57-l">https://play.golang.org/p/BMah6_C57-l&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">44&lt;/span> &lt;span class="c1">// Handle represents an example handler for the web service.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">44&lt;/span> &lt;span class="c1">// Handle represents an example handler for the web service.
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">45&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">App&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">Handle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">w&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">r&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="mi">46&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">47&lt;/span> &lt;span class="c1">// Do some actual work.
@@ -69,7 +69,7 @@
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>接下来，修改&lt;code>Tracker&lt;/code>类型使得它能自己管理Goroutine。&lt;/p>
 &lt;p>&lt;strong>Listing 5&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/BMah6_C57-l">https://play.golang.org/p/BMah6_C57-l&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">10&lt;/span> &lt;span class="c1">// Tracker knows how to track events for the application.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">10&lt;/span> &lt;span class="c1">// Tracker knows how to track events for the application.
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">11&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">Tracker&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="mi">12&lt;/span> &lt;span class="nx">wg&lt;/span> &lt;span class="nx">sync&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">WaitGroup&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">13&lt;/span> &lt;span class="p">}&lt;/span>
@@ -102,7 +102,7 @@
 &lt;p>&lt;code>Add&lt;/code>和&lt;code>Done&lt;/code>对于跟踪Goroutine的数量是非常有用的，但我们依然需要告诉程序去等待所有的Goroutine完成。为了达成这个目的，&lt;code>Tracker&lt;/code>类型在第35行添加了一个新的方法&lt;code>Shutdown&lt;/code> - 最简单的一个实现就是调用&lt;code>t.wg.Wait()&lt;/code>，这会阻塞程序知道Goroutine计数器变为0。最后，这个方法会再&lt;code>func main&lt;/code>中调用，如下面的Listing 6：&lt;/p>
 &lt;p>&lt;strong>Listing 6&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/BMah6_C57-l">https://play.golang.org/p/BMah6_C57-l&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">56&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">56&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 2&lt;/span>&lt;span class="mi">57&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="mi">58&lt;/span> &lt;span class="c1">// Start a server.
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">59&lt;/span> &lt;span class="c1">// Details not shown...
@@ -119,7 +119,7 @@
 &lt;p>&lt;code>Shown&lt;/code>方法的实现很简单，但确实也做了它该做的事情 - 它等待所有的Goroutine执行完成。但不幸的是，这里面无法限制要等待多久。如果是生产环境，你不能不会愿意看要无限制的等待你的程序退出。为了给&lt;code>Shutdown&lt;/code>方法一个等待的期限，我们团队修改成如下方式：&lt;/p>
 &lt;p>&lt;strong>Listing 7&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/p4gsDkpw1Gh">https://play.golang.org/p/p4gsDkpw1Gh&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">36&lt;/span> &lt;span class="c1">// Shutdown waits for all tracked events to finish processing
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">36&lt;/span> &lt;span class="c1">// Shutdown waits for all tracked events to finish processing
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">37&lt;/span> &lt;span class="c1">// or for the provided context to be canceled.
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">38&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">t&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Tracker&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">Shutdown&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Context&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">39&lt;/span>
@@ -146,7 +146,7 @@
 &lt;p>接下来，我们团队在&lt;code>func main&lt;/code>中修改了调用方式：&lt;/p>
 &lt;p>&lt;strong>Listing 8&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/p4gsDkpw1Gh">https://play.golang.org/p/p4gsDkpw1Gh&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">86&lt;/span> &lt;span class="c1">// Wait up to 5 seconds for all event goroutines to finish.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">86&lt;/span> &lt;span class="c1">// Wait up to 5 seconds for all event goroutines to finish.
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">87&lt;/span> &lt;span class="kd">const&lt;/span> &lt;span class="nx">timeout&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="mi">5&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Second&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="mi">88&lt;/span> &lt;span class="nx">ctx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cancel&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">WithTimeout&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Background&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="nx">timeout&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="mi">89&lt;/span> &lt;span class="k">defer&lt;/span> &lt;span class="nf">cancel&lt;/span>&lt;span class="p">()&lt;/span>
@@ -167,7 +167,7 @@
 &lt;p>下面的代码演示了一种非常常见的Goroutine泄漏。&lt;/p>
 &lt;p>&lt;strong>Listing 1&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/dsu3PARM24K">https://play.golang.org/p/dsu3PARM24K&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">31&lt;/span> &lt;span class="c1">// leak is a buggy function. It launches a goroutine that
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">31&lt;/span> &lt;span class="c1">// leak is a buggy function. It launches a goroutine that
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">32&lt;/span> &lt;span class="c1">// blocks receiving from a channel. Nothing will ever be
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">33&lt;/span> &lt;span class="c1">// sent on that channel and the channel is never closed so
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">34&lt;/span> &lt;span class="c1">// that goroutine will be blocked forever.
@@ -187,7 +187,7 @@
 &lt;p>我们将看到的这个程序 - 基于关键字查找记录然后打印。该程序围绕一个&lt;code>search&lt;/code>函数构建：&lt;/p>
 &lt;p>&lt;strong>Listing 2&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/o6_eMjxMVFv">https://play.golang.org/p/o6_eMjxMVFv&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">29&lt;/span> &lt;span class="c1">// search simulates a function that finds a record based
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">29&lt;/span> &lt;span class="c1">// search simulates a function that finds a record based
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">30&lt;/span> &lt;span class="c1">// on a search term. It takes 200ms to perform this work.
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">31&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">search&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">term&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">error&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="mi">32&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Sleep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">200&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Millisecond&lt;/span>&lt;span class="p">)&lt;/span>
@@ -195,7 +195,7 @@
 &lt;span class="ln">6&lt;/span>&lt;span class="mi">34&lt;/span> &lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>Listing 2中的&lt;code>search&lt;/code>函数的第31行，模拟了一个长时间运行的耗时操作，比如数据库查询或者Web调用。在这里，假设这个耗时操作为200ms。调用&lt;code>search&lt;/code>函数的代码在Listing 3中，如下所示：&lt;/p>
 &lt;p>&lt;strong>Listing 3&lt;/strong>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">17&lt;/span> &lt;span class="c1">// process is the work for the program. It finds a record
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">17&lt;/span> &lt;span class="c1">// process is the work for the program. It finds a record
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">18&lt;/span> &lt;span class="c1">// then prints it.
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">19&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">process&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">term&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">20&lt;/span> &lt;span class="nx">record&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">search&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">term&lt;/span>&lt;span class="p">)&lt;/span>
@@ -210,7 +210,7 @@
 &lt;p>对于一些应用而言，串行的调用&lt;code>search&lt;/code>带来的时延或许无法接受。假设&lt;code>search&lt;/code>无法更快的运行了，&lt;code>processs&lt;/code>函数可以修改成不必完全消耗在等待&lt;code>search&lt;/code>返回结果。为了达到这个目的，如下面Listing 4所示，可以使用一个Goroutine来解决这个问题。不幸的是，这个尝试是有问题的，它带来了潜在的Goroutine泄漏。&lt;/p>
 &lt;p>&lt;strong>Listing 4&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/m0DHuchgX0A">https://play.golang.org/p/m0DHuchgX0A&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">38&lt;/span> &lt;span class="c1">// result wraps the return values from search. It allows us
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">38&lt;/span> &lt;span class="c1">// result wraps the return values from search. It allows us
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">39&lt;/span> &lt;span class="c1">// to pass both values across a single channel.
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">40&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">result&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">41&lt;/span> &lt;span class="nx">record&lt;/span> &lt;span class="kt">string&lt;/span>
@@ -256,7 +256,7 @@
 &lt;p>上面的泄漏问题，最简单的解决方式就是 - 把原先的非缓冲（阻塞）channel修改为容量为1的缓冲（非阻塞）channel。&lt;/p>
 &lt;p>&lt;strong>Listing 5&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/u3xtQ48G3qK">https://play.golang.org/p/u3xtQ48G3qK&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">53&lt;/span> &lt;span class="c1">// Make a channel for the goroutine to report its result.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">53&lt;/span> &lt;span class="c1">// Make a channel for the goroutine to report its result.
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">54&lt;/span> &lt;span class="c1">// Give it capacity so sending doesn&amp;#39;t block.
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">55&lt;/span> &lt;span class="nx">ch&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="nx">result&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>现在在超时的那个分支，即使由于超时导致&lt;code>select&lt;/code>块结束等待往下进行（&lt;code>case &amp;lt;-ctx.Done()&lt;/code>分支)，启动&lt;code>search&lt;/code>的那个Goroutine最终也会得到搜索结果并发送到channel进而执行完成返回而不阻塞。最终Goroutine以及channel占用的内存都会被释放掉。所有事情自然而然的都解决了。&lt;/p>

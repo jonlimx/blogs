@@ -1,18 +1,157 @@
-<!doctype html><html lang=zh data-figures class=page><head><title>[译]Protocol Buffer Basics Go | Standing on the Shoulder of Giants</title><meta charset=utf-8><meta property="og:title" content="[译]Protocol Buffer Basics Go | Standing on the Shoulder of Giants"><meta itemprop=name content="[译]Protocol Buffer Basics Go | Standing on the Shoulder of Giants"><meta name=application-name content="[译]Protocol Buffer Basics Go | Standing on the Shoulder of Giants"><meta property="og:site_name" content="Jonathan Lin"><meta name=description content><meta itemprop=description content><meta property="og:description" content><meta name=twitter:description content><base href=https://www.jonathanlin.top/posts/protocol-buffer-basics-go/><link rel=canonical href=https://www.jonathanlin.top/posts/protocol-buffer-basics-go/ itemprop=url><meta name=url content="https://www.jonathanlin.top/posts/protocol-buffer-basics-go/"><meta property="og:url" content="https://www.jonathanlin.top/posts/protocol-buffer-basics-go/"><meta property="og:locale" content="zh-cn"><meta name=language content="Chinese"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta http-equiv=x-ua-compatible content="IE=edge"><script>var _hmt=_hmt||[];(function(){var a=document.createElement("script"),b;a.src="https://hm.baidu.com/hm.js?d60a5d9f17547c322bf9ce50cc9b5954",b=document.getElementsByTagName("script")[0],b.parentNode.insertBefore(a,b)})()</script><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta name=description content="原文链接：Protocol Buffer Basics: Go | Protocol Buffers | Google Developers
+<!doctype html><html lang=zh data-figures class=page>
+<head>
+<title>[译]Protocol Buffer Basics Go | Standing on the Shoulder of Giants</title>
+<meta charset=utf-8>
+<meta property="og:title" content="[译]Protocol Buffer Basics Go | Standing on the Shoulder of Giants">
+<meta itemprop=name content="[译]Protocol Buffer Basics Go | Standing on the Shoulder of Giants">
+<meta name=application-name content="[译]Protocol Buffer Basics Go | Standing on the Shoulder of Giants">
+<meta property="og:site_name" content="Jonathan Lin">
+<meta name=description content>
+<meta itemprop=description content>
+<meta property="og:description" content>
+<meta name=twitter:description content>
+<base href=https://www.jonathanlin.top/posts/protocol-buffer-basics-go/>
+<link rel=canonical href=https://www.jonathanlin.top/posts/protocol-buffer-basics-go/ itemprop=url>
+<meta name=url content="https://www.jonathanlin.top/posts/protocol-buffer-basics-go/">
+<meta property="og:url" content="https://www.jonathanlin.top/posts/protocol-buffer-basics-go/">
+<meta property="og:locale" content="zh-cn">
+<meta name=language content="Chinese">
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<script>var _hmt=_hmt||[];(function(){var a=document.createElement("script"),b;a.src="https://hm.baidu.com/hm.js?d60a5d9f17547c322bf9ce50cc9b5954",b=document.getElementsByTagName("script")[0],b.parentNode.insertBefore(a,b)})()</script>
+<meta property="og:locale" content="zh">
+<meta property="og:type" content="article">
+<meta name=description content="原文链接：Protocol Buffer Basics: Go | Protocol Buffers | Google Developers
 本教程使用proto3语言为Go程序员介绍了protocol buffers的基本使用。通过一步步创建一个简单的示例应用，你将会了解到：
- 在.proto文件中定义消息格式 使 …"><meta name=twitter:card content="summary"><meta name=twitter:creator content><meta name=twitter:title content="[译]Protocol Buffer Basics Go"><meta property="og:url" content="https://www.jonathanlin.top/posts/protocol-buffer-basics-go/"><meta property="og:title" content="[译]Protocol Buffer Basics Go"><meta property="og:description" content="原文链接：Protocol Buffer Basics: Go | Protocol Buffers | Google Developers
+ 在.proto文件中定义消息格式 使 …">
+<meta name=twitter:card content="summary">
+<meta name=twitter:creator content>
+<meta name=twitter:title content="[译]Protocol Buffer Basics Go">
+<meta property="og:url" content="https://www.jonathanlin.top/posts/protocol-buffer-basics-go/">
+<meta property="og:title" content="[译]Protocol Buffer Basics Go">
+<meta property="og:description" content="原文链接：Protocol Buffer Basics: Go | Protocol Buffers | Google Developers
 本教程使用proto3语言为Go程序员介绍了protocol buffers的基本使用。通过一步步创建一个简单的示例应用，你将会了解到：
- 在.proto文件中定义消息格式 使 …"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/protobuf.png"><link rel=apple-touch-icon sizes=180x180 href=https://www.jonathanlin.top/icons/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://www.jonathanlin.top/icons/favicon-32x32.png><link rel=manifest href=https://www.jonathanlin.top/icons/site.webmanifest><link rel=canonical href=https://www.jonathanlin.top/posts/protocol-buffer-basics-go/><link rel=preload href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" as=style crossorigin=anonymous><link rel=preload href=https://www.jonathanlin.top/js/bundle.min.617c4c3549a10c9fe7e1bb91e87f0722f6a285b59e742c7123c755df9fb33530bae76060ebd303966dd0e1c09813e679f8042802b7fd059315ef1345f0429ad2.js as=script integrity="sha512-YXxMNUmhDJ/n4buR6H8HIvaihbWedCxxI8dV35+zNTC652Bg69MDlm3Q4cCYE+Z5+AQoArf9BZMV7xNF8EKa0g==" crossorigin=anonymous><link rel=stylesheet type=text/css href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" crossorigin=anonymous></head><body data-code=10 data-lines=true id=documentTop><header class=nav_header><nav class=nav><a href=https://www.jonathanlin.top/ class="nav_brand nav_item" title="Standing on the Shoulder of Giants">Standing on the Shoulder of Giants<div class=nav_close><div><svg class="icon"><use xlink:href="#open-menu"/></svg><svg class="icon"><use xlink:href="#closeme"/></svg></div></div></a><div class="nav_body nav_body_left"><div class=nav_parent><a href=https://www.jonathanlin.top/ class=nav_item title=Home>Home</a></div><div class=nav_parent><a href=https://www.jonathanlin.top/post/rich-content/ class=nav_item title=Archives>Archives</a></div><div class=nav_parent><a href=https://www.jonathanlin.top/ class=nav_item title=Links>Links <img src=https://www.jonathanlin.top/icons/caret-icon.svg alt=icon class=nav_icon></a><div class=nav_sub><span class=nav_child></span><a href=https://www.linkedin.com/ class="nav_child nav_item" title=LinkedIn>LinkedIn</a>
-<a href=https://twitter.com/ class="nav_child nav_item" title=Twitter>Twitter</a></div></div><div class=nav_parent><a href=https://www.jonathanlin.top/about/ class=nav_item title=About>About</a></div><div class=follow><a href=https://github.com/jonlimx><svg class="icon"><use xlink:href="#github"/></svg></a><a href=https://twitter.com/#><svg class="icon"><use xlink:href="#twitter"/></svg></a><a href=https://www.linkedin.com/in/#><svg class="icon"><use xlink:href="#linkedin"/></svg></a><a href=https://www.jonathanlin.top/index.xml><svg class="icon"><use xlink:href="#rss"/></svg></a><div class=color_mode><input type=checkbox class=color_choice id=mode></div></div></div></nav></header><main><div class="grid-inverse wrap content"><article class=post_content><h1 class=post_title>[译]Protocol Buffer Basics Go</h1><div class=post_meta><span><svg class="icon"><use xlink:href="#calendar"/></svg></span><span class=post_date>Jul 1, 2021</span>
-<span class=post_time>· 2 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/golang title=golang class="post_tag button button_translucent">golang
-</a><a href=https://www.jonathanlin.top/tags/protobuf title=protobuf class="post_tag button button_translucent">protobuf</a></span>
-<span class=page_only>&nbsp;·<div class=post_share>分享到:
-<a href="https://twitter.com/intent/tweet?text=%5b%e8%af%91%5dProtocol%20Buffer%20Basics%20Go&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fprotocol-buffer-basics-go%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg></a><a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fprotocol-buffer-basics-go%2f&t=%5b%e8%af%91%5dProtocol%20Buffer%20Basics%20Go" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg></a><a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg></a><a href=https://www.jonathanlin.top/posts/protocol-buffer-basics-go/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg></a></div></span></div><h2>文章目录</h2><nav id=TableOfContents><ul><li><a href=#为什么使用protocol-buffers>为什么使用protocol buffers？</a></li><li><a href=#哪里找示例代码>哪里找示例代码</a></li><li><a href=#定义你的protocol格式>定义你的protocol格式</a></li><li><a href=#编译protocol-buffers>编译protocol buffers</a></li><li><a href=#protocol-buffer-api>Protocol Buffer API</a></li><li><a href=#写消息>写消息</a></li><li><a href=#读数据>读数据</a></li><li><a href=#扩展protocol-buffer>扩展Protocol Buffer</a></li></ul></nav><p>原文链接：<a href=https://developers.google.com/protocol-buffers/docs/gotutorial>Protocol Buffer Basics: Go | Protocol Buffers | Google Developers</a></p><p>本教程使用proto3语言为Go程序员介绍了protocol buffers的基本使用。通过一步步创建一个简单的示例应用，你将会了解到：</p><ul><li>在<code>.proto</code>文件中定义消息格式</li><li>使用protocol buffer编译器</li><li>使用Go protocol buffer API读写消息</li></ul><p>这不是一个使用protocol buffers的完全手册。更多更细节的信息，请参看：<a href=https://developers.google.com/protocol-buffers/docs/proto3>Language Guide (proto3)</a>、<a href=https://pkg.go.dev/google.golang.org/protobuf/proto>Go API Reference</a>、<a href=https://developers.google.com/protocol-buffers/docs/reference/go-generated>Go Generated Code</a>和<a href=https://developers.google.com/protocol-buffers/docs/encoding>Encoding Reference</a></p><h2 id=为什么使用protocol-buffers>为什么使用protocol buffers？</h2><p>我们将要创建一个简单的“地址簿”应用，该应用可以从文件中读和写联系人的信息。地址簿中的每一个联系人有名字，ID和联系电话。</p><p>你如何序列化和读取这种结构化数据？有这么几种方式可以解决这个问题：</p><ul><li>使用<a href=https://golang.org/pkg/encoding/gob/>gobs</a>序列化Go数据结构。对于Go语言本身而言，这是一个很好的方案，但是如果你需要跨语言平台共享数据，那这种方式并不好</li><li>按照你期望的方式把数据编码成单一的字符串，例如4个int类型的数据编码成“12:3:-23:67”。这是一个简单且灵活的办法，但这要求你编写一次性的编码和转换的代码，同时转化代码会带来一定的运行时消耗。对于比较简单的数据，使用这种方式就比较好</li><li>将数据序列化成XML。XML对人类可读友好且各种语言都有对应的解析工具使得该方法有点吸引人。XML也能比较好的跨应用/项目共享数据。然而，众所周知，XML占用空间比较大，并且解析XML往往比较耗性能。此外，定位XML DOM树通常比直接访问类字段要复杂的多</li></ul><p>Protocol buffers具有灵活、高效、自动化等特点可以解决上述问题。使用Protocol buffer，你需要把数据结构的描述定义在<code>.proto</code>文件中，然后protocol buffer编译器会为你生成一个类，这个类实现了对protocol buffer二进制数据的编码和解析。这个类提供了对各个字段的getter和setter方法用于读写。protocol buffer很重要的一点是，如果将来数据格式扩展了，那么代码中依然可以读取由旧的格式编码的数据。</p><h2 id=哪里找示例代码>哪里找示例代码</h2><p>我们的例子是一系列的命令行程序，这些程序管理了由protocol buffers编码的地址簿数据文件。<code>add_person_go</code>这个命令添加一条记录到数据文件。<code>list_people_go</code>解析数据文件并把结果输出到控制台。</p><p>你可以从Github Repo中找到完整的示例：<a href=https://github.com/protocolbuffers/protobuf/tree/master/examples>protobuf/examples at master · protocolbuffers/protobuf (github.com)</a></p><h2 id=定义你的protocol格式>定义你的protocol格式</h2><p>创建你的地址簿应用的第一步是定义你的<code>.proto</code>文件。<code>.proto</code>文件中的定义很简单：你为你想要序列化的每一个数据结构添加一个消息，然后为消息中的每个字段指定一个名称和对应的类型。在我们的例子中，在<code>.proto</code>中定义的消息请参考<a href=https://github.com/protocolbuffers/protobuf/blob/master/examples/addressbook.proto>addressbook.proto</a>。</p><p><code>.proto</code>文件是从一个包声明开始的，包声明用来防止在不同项目中的名字冲突。</p><div class=highlight><pre class=chroma><code class=language-protobuf data-lang=protobuf><span class=ln>1</span><span class=n>syntax</span> <span class=o>=</span> <span class=s>&#34;proto3&#34;</span><span class=p>;</span><span class=err>
+ 在.proto文件中定义消息格式 使 …">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/protobuf.png">
+<link rel=apple-touch-icon sizes=180x180 href=https://www.jonathanlin.top/icons/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=https://www.jonathanlin.top/icons/favicon-32x32.png>
+<link rel=manifest href=https://www.jonathanlin.top/icons/site.webmanifest>
+<link rel=canonical href=https://www.jonathanlin.top/posts/protocol-buffer-basics-go/>
+<link rel=preload href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" as=style crossorigin=anonymous>
+<link rel=preload href=https://www.jonathanlin.top/js/bundle.min.617c4c3549a10c9fe7e1bb91e87f0722f6a285b59e742c7123c755df9fb33530bae76060ebd303966dd0e1c09813e679f8042802b7fd059315ef1345f0429ad2.js as=script integrity="sha512-YXxMNUmhDJ/n4buR6H8HIvaihbWedCxxI8dV35+zNTC652Bg69MDlm3Q4cCYE+Z5+AQoArf9BZMV7xNF8EKa0g==" crossorigin=anonymous>
+<link rel=stylesheet type=text/css href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" crossorigin=anonymous>
+</head>
+<body data-code=10 data-lines=true id=documentTop>
+<header class=nav_header>
+<nav class=nav><a href=https://www.jonathanlin.top/ class="nav_brand nav_item" title="Standing on the Shoulder of Giants">Standing on the Shoulder of Giants
+<div class=nav_close>
+<div><svg class="icon"><use xlink:href="#open-menu"/></svg><svg class="icon"><use xlink:href="#closeme"/></svg></div>
+</div>
+</a>
+<div class="nav_body nav_body_left">
+<div class=nav_parent>
+<a href=https://www.jonathanlin.top/ class=nav_item title=Home>Home </a>
+</div>
+<div class=nav_parent>
+<a href=https://www.jonathanlin.top/post/rich-content/ class=nav_item title=Archives>Archives </a>
+</div>
+<div class=nav_parent>
+<a href=https://www.jonathanlin.top/ class=nav_item title=Links>Links <img src=https://www.jonathanlin.top/icons/caret-icon.svg alt=icon class=nav_icon></a>
+<div class=nav_sub>
+<span class=nav_child></span>
+<a href=https://www.linkedin.com/ class="nav_child nav_item" title=LinkedIn>LinkedIn</a>
+<a href=https://twitter.com/ class="nav_child nav_item" title=Twitter>Twitter</a>
+</div>
+</div>
+<div class=nav_parent>
+<a href=https://www.jonathanlin.top/about/ class=nav_item title=About>About </a>
+</div>
+<div class=follow>
+<a href=https://github.com/jonlimx><svg class="icon"><use xlink:href="#github"/></svg>
+</a>
+<a href=https://twitter.com/#><svg class="icon"><use xlink:href="#twitter"/></svg>
+</a>
+<a href=https://www.linkedin.com/in/#><svg class="icon"><use xlink:href="#linkedin"/></svg>
+</a>
+<a href=https://www.jonathanlin.top/index.xml><svg class="icon"><use xlink:href="#rss"/></svg>
+</a>
+<div class=color_mode>
+<input type=checkbox class=color_choice id=mode>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<main>
+<div class="grid-inverse wrap content">
+<article class=post_content>
+<h1 class=post_title>[译]Protocol Buffer Basics Go</h1>
+<div class=post_meta>
+<span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
+<span class=post_date>
+Jul 1, 2021</span>
+<span class=post_time> · 2 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/golang title=golang class="post_tag button button_translucent">golang
+</a><a href=https://www.jonathanlin.top/tags/protobuf title=protobuf class="post_tag button button_translucent">protobuf
+</a>
+</span>
+<span class=page_only>&nbsp;·
+<div class=post_share>
+分享到:
+<a href="https://twitter.com/intent/tweet?text=%5b%e8%af%91%5dProtocol%20Buffer%20Basics%20Go&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fprotocol-buffer-basics-go%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
+</a>
+<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fprotocol-buffer-basics-go%2f&t=%5b%e8%af%91%5dProtocol%20Buffer%20Basics%20Go" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
+</a>
+<a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
+</a>
+<a href=https://www.jonathanlin.top/posts/protocol-buffer-basics-go/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
+</a>
+</div>
+</span>
+</div>
+<h2>文章目录</h2>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#为什么使用protocol-buffers>为什么使用protocol buffers？</a></li>
+<li><a href=#哪里找示例代码>哪里找示例代码</a></li>
+<li><a href=#定义你的protocol格式>定义你的protocol格式</a></li>
+<li><a href=#编译protocol-buffers>编译protocol buffers</a></li>
+<li><a href=#protocol-buffer-api>Protocol Buffer API</a></li>
+<li><a href=#写消息>写消息</a></li>
+<li><a href=#读数据>读数据</a></li>
+<li><a href=#扩展protocol-buffer>扩展Protocol Buffer</a></li>
+</ul>
+</nav>
+<p>原文链接：<a href=https://developers.google.com/protocol-buffers/docs/gotutorial>Protocol Buffer Basics: Go | Protocol Buffers | Google Developers</a></p>
+<p>本教程使用proto3语言为Go程序员介绍了protocol buffers的基本使用。通过一步步创建一个简单的示例应用，你将会了解到：</p>
+<ul>
+<li>在<code>.proto</code>文件中定义消息格式</li>
+<li>使用protocol buffer编译器</li>
+<li>使用Go protocol buffer API读写消息</li>
+</ul>
+<p>这不是一个使用protocol buffers的完全手册。更多更细节的信息，请参看：<a href=https://developers.google.com/protocol-buffers/docs/proto3>Language Guide (proto3)</a>、<a href=https://pkg.go.dev/google.golang.org/protobuf/proto>Go API Reference</a>、<a href=https://developers.google.com/protocol-buffers/docs/reference/go-generated>Go Generated Code</a>和<a href=https://developers.google.com/protocol-buffers/docs/encoding>Encoding Reference</a></p>
+<h2 id=为什么使用protocol-buffers>为什么使用protocol buffers？</h2>
+<p>我们将要创建一个简单的“地址簿”应用，该应用可以从文件中读和写联系人的信息。地址簿中的每一个联系人有名字，ID和联系电话。</p>
+<p>你如何序列化和读取这种结构化数据？有这么几种方式可以解决这个问题：</p>
+<ul>
+<li>使用<a href=https://golang.org/pkg/encoding/gob/>gobs</a>序列化Go数据结构。对于Go语言本身而言，这是一个很好的方案，但是如果你需要跨语言平台共享数据，那这种方式并不好</li>
+<li>按照你期望的方式把数据编码成单一的字符串，例如4个int类型的数据编码成“12:3:-23:67”。这是一个简单且灵活的办法，但这要求你编写一次性的编码和转换的代码，同时转化代码会带来一定的运行时消耗。对于比较简单的数据，使用这种方式就比较好</li>
+<li>将数据序列化成XML。XML对人类可读友好且各种语言都有对应的解析工具使得该方法有点吸引人。XML也能比较好的跨应用/项目共享数据。然而，众所周知，XML占用空间比较大，并且解析XML往往比较耗性能。此外，定位XML DOM树通常比直接访问类字段要复杂的多</li>
+</ul>
+<p>Protocol buffers具有灵活、高效、自动化等特点可以解决上述问题。使用Protocol buffer，你需要把数据结构的描述定义在<code>.proto</code>文件中，然后protocol buffer编译器会为你生成一个类，这个类实现了对protocol buffer二进制数据的编码和解析。这个类提供了对各个字段的getter和setter方法用于读写。protocol buffer很重要的一点是，如果将来数据格式扩展了，那么代码中依然可以读取由旧的格式编码的数据。</p>
+<h2 id=哪里找示例代码>哪里找示例代码</h2>
+<p>我们的例子是一系列的命令行程序，这些程序管理了由protocol buffers编码的地址簿数据文件。<code>add_person_go</code>这个命令添加一条记录到数据文件。<code>list_people_go</code>解析数据文件并把结果输出到控制台。</p>
+<p>你可以从Github Repo中找到完整的示例：<a href=https://github.com/protocolbuffers/protobuf/tree/master/examples>protobuf/examples at master · protocolbuffers/protobuf (github.com)</a></p>
+<h2 id=定义你的protocol格式>定义你的protocol格式</h2>
+<p>创建你的地址簿应用的第一步是定义你的<code>.proto</code>文件。<code>.proto</code>文件中的定义很简单：你为你想要序列化的每一个数据结构添加一个消息，然后为消息中的每个字段指定一个名称和对应的类型。在我们的例子中，在<code>.proto</code>中定义的消息请参考<a href=https://github.com/protocolbuffers/protobuf/blob/master/examples/addressbook.proto>addressbook.proto</a>。</p>
+<p><code>.proto</code>文件是从一个包声明开始的，包声明用来防止在不同项目中的名字冲突。</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-protobuf data-lang=protobuf><span class=ln>1</span><span class=n>syntax</span> <span class=o>=</span> <span class=s>&#34;proto3&#34;</span><span class=p>;</span><span class=err>
 </span><span class=ln>2</span><span class=err></span><span class=kn>package</span> <span class=nn>tutorial</span><span class=p>;</span><span class=err>
 </span><span class=ln>3</span><span class=err>
 </span><span class=ln>4</span><span class=err></span><span class=k>import</span> <span class=s>&#34;google/protobuf/timestamp.proto&#34;</span><span class=p>;</span><span class=err>
-</span></code></pre></div><p><code>go_package</code>定义了代码生成所在的路径，包名即路径中的最后一个目录。例如，我们的例子的包名就是”tutorialpb“。</p><div class=highlight><pre class=chroma><code class=language-protobuf data-lang=protobuf><span class=ln>1</span><span class=k>option</span> <span class=n>go_package</span> <span class=o>=</span> <span class=s>&#34;github.com/protocolbuffers/protobuf/examples/go/tutorialpb&#34;</span><span class=p>;</span><span class=err>
-</span></code></pre></div><p>接下来，你就可以定义你的消息了。一个小时是包含一组含有类型的字段的集合。许多标准的简单值类型都是支持的，例如<code>bool</code> 、<code>int32</code>、 <code>float</code>、 <code>double</code> 和<code>string</code>。你也可以包含其他消息在你要定义的消息里。</p><div class=highlight><pre class=chroma><code class=language-protobuf data-lang=protobuf><span class=ln> 1</span><span class=kd>message</span> <span class=nc>Person</span> <span class=p>{</span><span class=err>
+</span></code></pre></div><p><code>go_package</code>定义了代码生成所在的路径，包名即路径中的最后一个目录。例如，我们的例子的包名就是”tutorialpb“。</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-protobuf data-lang=protobuf><span class=ln>1</span><span class=k>option</span> <span class=n>go_package</span> <span class=o>=</span> <span class=s>&#34;github.com/protocolbuffers/protobuf/examples/go/tutorialpb&#34;</span><span class=p>;</span><span class=err>
+</span></code></pre></div><p>接下来，你就可以定义你的消息了。一个小时是包含一组含有类型的字段的集合。许多标准的简单值类型都是支持的，例如<code>bool</code> 、<code>int32</code>、 <code>float</code>、 <code>double</code> 和<code>string</code>。你也可以包含其他消息在你要定义的消息里。</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-protobuf data-lang=protobuf><span class=ln> 1</span><span class=kd>message</span> <span class=nc>Person</span> <span class=p>{</span><span class=err>
 </span><span class=ln> 2</span><span class=err></span>  <span class=kt>string</span> <span class=n>name</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span><span class=err>
 </span><span class=ln> 3</span><span class=err></span>  <span class=kt>int32</span> <span class=n>id</span> <span class=o>=</span> <span class=mi>2</span><span class=p>;</span>  <span class=c1>// Unique ID number for this person.
 </span><span class=ln> 4</span><span class=c1></span>  <span class=kt>string</span> <span class=n>email</span> <span class=o>=</span> <span class=mi>3</span><span class=p>;</span><span class=err>
@@ -37,9 +176,42 @@
 </span><span class=ln>23</span><span class=c1></span><span class=kd>message</span> <span class=nc>AddressBook</span> <span class=p>{</span><span class=err>
 </span><span class=ln>24</span><span class=err></span>  <span class=k>repeated</span> <span class=n>Person</span> <span class=n>people</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span><span class=err>
 </span><span class=ln>25</span><span class=err></span><span class=p>}</span><span class=err>
-</span></code></pre></div><p>上面的例子中，<code>Person</code>这个消息里包含了<code>PhoneNumber</code>这个消息，<code>AddressBook</code>这个消息包含了<code>Person</code>这个消息。你甚至可以消息里定义另一个消息 - 正如你看到的，<code>PhoneNumber</code>是定义在<code>Person</code>里的。如果你希望你的取值是预先定义的一组值里的一个，那么你可以定义<code>enum</code>类型 - 上面的例子中，你希望电话号码的类型是<code>MOBILE</code>、 <code>HOME</code>或者 <code>WORK</code>。</p><p>在每一个字段上诸如"= 1" "= 2"的标记是用于在二进制编码的时候对字段指定一个唯一的标记。相对于更高的标记号码而言，1 -15号在编码的时候占用的空间小于一个字节，因此一个有优化手段是你可以把经常会用到的字段或者重复类型的字段（例如数组）标记为1 - 15，把高于15的留给那些不怎么常用到的字段或者可选的字段。重复类型字段里的每一个元素都需要重新编码标记号码，因此重复类型的字段往往都会用到这种优化 。（<em><strong>这块后面需要再理解一下是什么意思</strong></em>）</p><p>如果一个字段的值没有设置，那么将使用对应类型的<a href=https://developers.google.com/protocol-buffers/docs/proto3#default>默认值</a>：数字类型的默认值是0，字符串默认值是空字符串，布尔类型的默认值是false。对于嵌套的消息，它的默认值是带有各个字段名的默认值。调用访问器（getter）去读取值的时候，如果对应的字段没有明确赋值，那么就返回对应的默认值。</p><p>如果一个字段是重复类型，那么元素的个数可能是任意数目（包括0个）。元素的顺序在protocol buffer中是被保留下来的。可以想象重复类型字段是动态数组。</p><p>你将在<a href=https://developers.google.com/protocol-buffers/docs/proto3>Protocol Buffer Language Guide</a>中找到如何编写<code>.proto</code>文件的完整教程（包括所有的类型）。至于类似于类继承这种机制就不要找了，protocol buffer不支持。</p><h2 id=编译protocol-buffers>编译protocol buffers</h2><p>现在你已经有<code>.proto</code>文件了，接下来你需要基于这个文件去生成访问<code>AddresBook</code>消息（<code>Person</code>和<code>PhoneNumber</code>也是）的类了。你将要使用protocol buffer编译器<code>protoc</code>来编译你的<code>.proto</code>文件：</p><ol><li><p>如果你还未安装编译器，请先<a href=https://developers.google.com/protocol-buffers/docs/downloads>Download Protocol Buffers</a>，然后参考README进行安装</p></li><li><p>运行下面的命令安装Go protocol buffers plugin：</p><div class=highlight><pre class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>go get github.com/golang/protobuf/protoc-gen-go
-</code></pre></div></li></ol><p>编译器plugin <code>protoc-gen-to</code>将被安装在<code>$GOBIN</code>目录，该目录默认是在<code>$GOPATH/bin</code>。这个目录必须包含在你的<code>$PATH</code>中。</p><ol start=3><li><p>现在你可以运行编译器，指定源目录（就是你的源文件所在的目录，如果没有指定就是指当前目录）和目标目录（生成的代码所在的目录）以及<code>.proto</code>所在的目录。在我们的例子中，你应该运行下面命令：</p><div class=highlight><pre class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>protoc -I<span class=o>=</span><span class=nv>$SRC_DIR</span> --go_out<span class=o>=</span><span class=nv>$DST_DIR</span> <span class=nv>$SRC_DIR</span>/addressbook.proto
-</code></pre></div><p>由于你是需要生成Go代码，你应该使用<code>--go-out</code>选项，其他语言则使用对应的选项。</p></li></ol><p>运行后，你将会在特定的目录看到生成的代码：<code>github.com/protocolbuffers/protobuf/examples/go/tutorialpb/addressbook.pb.go</code>。</p><h2 id=protocol-buffer-api>Protocol Buffer API</h2><p>生成的<code>addressbook.pb.go</code>提供了以下有用的类型：</p><ul><li><code>AddressBook</code>结构体包含了<code>People</code>类型的字段</li><li><code>Person</code>结构体包含了<code>Name</code>、<code>Id</code>、<code>Email</code>和 <code>Phones</code>字段</li><li><code>Person_PhoneNumber</code>结构体包含了<code>Number</code>和<code>Type</code>字段</li><li><code>Person_PhoneType</code>结构体和<code>Person.PhoneType</code>枚举</li></ul><p>你可以从<a href=https://developers.google.com/protocol-buffers/docs/reference/go-generated>Go Generated Code guide</a>了解到代码生成的细节，对于大部分代码你只需要像对待Go类型一样。</p><p><code>list_people</code>的单元测试<a href=https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people_test.go>command's unit tests</a>中展示了你应该如何创建<code>Person</code>的实例：</p><div class=highlight><pre class=chroma><code class=language-go data-lang=go><span class=ln>1</span><span class=nx>p</span> <span class=o>:=</span> <span class=nx>pb</span><span class=p>.</span><span class=nx>Person</span><span class=p>{</span>
+</span></code></pre></div><p>上面的例子中，<code>Person</code>这个消息里包含了<code>PhoneNumber</code>这个消息，<code>AddressBook</code>这个消息包含了<code>Person</code>这个消息。你甚至可以消息里定义另一个消息 - 正如你看到的，<code>PhoneNumber</code>是定义在<code>Person</code>里的。如果你希望你的取值是预先定义的一组值里的一个，那么你可以定义<code>enum</code>类型 - 上面的例子中，你希望电话号码的类型是<code>MOBILE</code>、 <code>HOME</code>或者 <code>WORK</code>。</p>
+<p>在每一个字段上诸如"= 1" "= 2"的标记是用于在二进制编码的时候对字段指定一个唯一的标记。相对于更高的标记号码而言，1 -15号在编码的时候占用的空间小于一个字节，因此一个有优化手段是你可以把经常会用到的字段或者重复类型的字段（例如数组）标记为1 - 15，把高于15的留给那些不怎么常用到的字段或者可选的字段。重复类型字段里的每一个元素都需要重新编码标记号码，因此重复类型的字段往往都会用到这种优化 。（<em><strong>这块后面需要再理解一下是什么意思</strong></em>）</p>
+<p>如果一个字段的值没有设置，那么将使用对应类型的<a href=https://developers.google.com/protocol-buffers/docs/proto3#default>默认值</a>：数字类型的默认值是0，字符串默认值是空字符串，布尔类型的默认值是false。对于嵌套的消息，它的默认值是带有各个字段名的默认值。调用访问器（getter）去读取值的时候，如果对应的字段没有明确赋值，那么就返回对应的默认值。</p>
+<p>如果一个字段是重复类型，那么元素的个数可能是任意数目（包括0个）。元素的顺序在protocol buffer中是被保留下来的。可以想象重复类型字段是动态数组。</p>
+<p>你将在<a href=https://developers.google.com/protocol-buffers/docs/proto3>Protocol Buffer Language Guide</a>中找到如何编写<code>.proto</code>文件的完整教程（包括所有的类型）。至于类似于类继承这种机制就不要找了，protocol buffer不支持。</p>
+<h2 id=编译protocol-buffers>编译protocol buffers</h2>
+<p>现在你已经有<code>.proto</code>文件了，接下来你需要基于这个文件去生成访问<code>AddresBook</code>消息（<code>Person</code>和<code>PhoneNumber</code>也是）的类了。你将要使用protocol buffer编译器<code>protoc</code>来编译你的<code>.proto</code>文件：</p>
+<ol>
+<li>
+<p>如果你还未安装编译器，请先<a href=https://developers.google.com/protocol-buffers/docs/downloads>Download Protocol Buffers</a>，然后参考README进行安装</p>
+</li>
+<li>
+<p>运行下面的命令安装Go protocol buffers plugin：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>go get github.com/golang/protobuf/protoc-gen-go
+</code></pre></div></li>
+</ol>
+<p>编译器plugin <code>protoc-gen-to</code>将被安装在<code>$GOBIN</code>目录，该目录默认是在<code>$GOPATH/bin</code>。这个目录必须包含在你的<code>$PATH</code>中。</p>
+<ol start=3>
+<li>
+<p>现在你可以运行编译器，指定源目录（就是你的源文件所在的目录，如果没有指定就是指当前目录）和目标目录（生成的代码所在的目录）以及<code>.proto</code>所在的目录。在我们的例子中，你应该运行下面命令：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>protoc -I<span class=o>=</span><span class=nv>$SRC_DIR</span> --go_out<span class=o>=</span><span class=nv>$DST_DIR</span> <span class=nv>$SRC_DIR</span>/addressbook.proto
+</code></pre></div><p>由于你是需要生成Go代码，你应该使用<code>--go-out</code>选项，其他语言则使用对应的选项。</p>
+</li>
+</ol>
+<p>运行后，你将会在特定的目录看到生成的代码：<code>github.com/protocolbuffers/protobuf/examples/go/tutorialpb/addressbook.pb.go</code>。</p>
+<h2 id=protocol-buffer-api>Protocol Buffer API</h2>
+<p>生成的<code>addressbook.pb.go</code>提供了以下有用的类型：</p>
+<ul>
+<li><code>AddressBook</code>结构体包含了<code>People</code>类型的字段</li>
+<li><code>Person</code>结构体包含了<code>Name</code>、<code>Id</code>、<code>Email</code>和 <code>Phones</code>字段</li>
+<li><code>Person_PhoneNumber</code>结构体包含了<code>Number</code>和<code>Type</code>字段</li>
+<li><code>Person_PhoneType</code>结构体和<code>Person.PhoneType</code>枚举</li>
+</ul>
+<p>你可以从<a href=https://developers.google.com/protocol-buffers/docs/reference/go-generated>Go Generated Code guide</a>了解到代码生成的细节，对于大部分代码你只需要像对待Go类型一样。</p>
+<p><code>list_people</code>的单元测试<a href=https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people_test.go>command's unit tests</a>中展示了你应该如何创建<code>Person</code>的实例：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=ln>1</span><span class=nx>p</span> <span class=o>:=</span> <span class=nx>pb</span><span class=p>.</span><span class=nx>Person</span><span class=p>{</span>
 <span class=ln>2</span>        <span class=nx>Id</span><span class=p>:</span>    <span class=mi>1234</span><span class=p>,</span>
 <span class=ln>3</span>        <span class=nx>Name</span><span class=p>:</span>  <span class=s>&#34;John Doe&#34;</span><span class=p>,</span>
 <span class=ln>4</span>        <span class=nx>Email</span><span class=p>:</span> <span class=s>&#34;jdoe@example.com&#34;</span><span class=p>,</span>
@@ -47,7 +219,9 @@
 <span class=ln>6</span>                <span class=p>{</span><span class=nx>Number</span><span class=p>:</span> <span class=s>&#34;555-4321&#34;</span><span class=p>,</span> <span class=nx>Type</span><span class=p>:</span> <span class=nx>pb</span><span class=p>.</span><span class=nx>Person_HOME</span><span class=p>},</span>
 <span class=ln>7</span>        <span class=p>},</span>
 <span class=ln>8</span><span class=p>}</span>
-</code></pre></div><h2 id=写消息>写消息</h2><p>使用proptocol buffers的目的是序列化你的数据，而后能够在任何地方解析。Go语言中，你可以使用<code>proto</code>库的<a href="https://pkg.go.dev/google.golang.org/protobuf/proto?tab=doc#Marshal">Marshal</a>方法序列化你的protocol buffer数据。protocol buffer消息的指针类型实现了<code>proto.Message</code>接口。调用<code>proto.Marshal</code>返回序列化后的编码成wire格式的protocol buffer数据。例如，我们在<a href=https://github.com/protocolbuffers/protobuf/blob/master/examples/add_person.go><code>add_person</code> command</a>中使用了这个方法：</p><div class=highlight><pre class=chroma><code class=language-go data-lang=go><span class=ln> 1</span><span class=nx>book</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>pb</span><span class=p>.</span><span class=nx>AddressBook</span><span class=p>{}</span>
+</code></pre></div><h2 id=写消息>写消息</h2>
+<p>使用proptocol buffers的目的是序列化你的数据，而后能够在任何地方解析。Go语言中，你可以使用<code>proto</code>库的<a href="https://pkg.go.dev/google.golang.org/protobuf/proto?tab=doc#Marshal">Marshal</a>方法序列化你的protocol buffer数据。protocol buffer消息的指针类型实现了<code>proto.Message</code>接口。调用<code>proto.Marshal</code>返回序列化后的编码成wire格式的protocol buffer数据。例如，我们在<a href=https://github.com/protocolbuffers/protobuf/blob/master/examples/add_person.go><code>add_person</code> command</a>中使用了这个方法：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=ln> 1</span><span class=nx>book</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>pb</span><span class=p>.</span><span class=nx>AddressBook</span><span class=p>{}</span>
 <span class=ln> 2</span><span class=c1>// ...
 </span><span class=ln> 3</span><span class=c1></span>
 <span class=ln> 4</span><span class=c1>// Write the new address book back to disk.
@@ -58,7 +232,9 @@
 <span class=ln> 9</span><span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>ioutil</span><span class=p>.</span><span class=nf>WriteFile</span><span class=p>(</span><span class=nx>fname</span><span class=p>,</span> <span class=nx>out</span><span class=p>,</span> <span class=mo>0644</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
 <span class=ln>10</span>        <span class=nx>log</span><span class=p>.</span><span class=nf>Fatalln</span><span class=p>(</span><span class=s>&#34;Failed to write address book:&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
 <span class=ln>11</span><span class=p>}</span>
-</code></pre></div><h2 id=读数据>读数据</h2><p>你可以使用<code>proto</code>库中的<a href="https://pkg.go.dev/google.golang.org/protobuf/proto?tab=doc#Unmarshal">Unmarshal</a>方法来解析编码过的数据。调用这个方法将<code>buf</code>中的protocol buffer数据解析出来存放在<code>pb</code>中。因此我们使用下面的代码在<a href=https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people.go><code>list_people</code> command</a>中进行解析：</p><div class=highlight><pre class=chroma><code class=language-go data-lang=go><span class=ln>1</span><span class=c1>// Read the existing address book.
+</code></pre></div><h2 id=读数据>读数据</h2>
+<p>你可以使用<code>proto</code>库中的<a href="https://pkg.go.dev/google.golang.org/protobuf/proto?tab=doc#Unmarshal">Unmarshal</a>方法来解析编码过的数据。调用这个方法将<code>buf</code>中的protocol buffer数据解析出来存放在<code>pb</code>中。因此我们使用下面的代码在<a href=https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people.go><code>list_people</code> command</a>中进行解析：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=ln>1</span><span class=c1>// Read the existing address book.
 </span><span class=ln>2</span><span class=c1></span><span class=nx>in</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>ioutil</span><span class=p>.</span><span class=nf>ReadFile</span><span class=p>(</span><span class=nx>fname</span><span class=p>)</span>
 <span class=ln>3</span><span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
 <span class=ln>4</span>        <span class=nx>log</span><span class=p>.</span><span class=nf>Fatalln</span><span class=p>(</span><span class=s>&#34;Error reading file:&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
@@ -67,30 +243,135 @@
 <span class=ln>7</span><span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>proto</span><span class=p>.</span><span class=nf>Unmarshal</span><span class=p>(</span><span class=nx>in</span><span class=p>,</span> <span class=nx>book</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
 <span class=ln>8</span>        <span class=nx>log</span><span class=p>.</span><span class=nf>Fatalln</span><span class=p>(</span><span class=s>&#34;Failed to parse address book:&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
 <span class=ln>9</span><span class=p>}</span>
-</code></pre></div><h2 id=扩展protocol-buffer>扩展Protocol Buffer</h2><p>在你使用protocol buffer的代码发布之后，或早或晚你总是希望改进你的protocol buffer定义。如果你希望你新的定义能向后兼容，且你的老的定义能向前兼容（你一定总是希望这样），那么你需要遵循一些规则。在新版本的protocol buffer中：</p><ul><li>你一定不能修改现在的字段的标签号码</li><li>你可能会删除某些字段</li><li>你可能会新增字段，但是新增的字段一定要使用全新的标签号码（一定是没有被使用过的，包括那些被删除的字段曾经使用过的）。</li></ul><p>（使用这些规则有一些例外<a href=https://developers.google.com/protocol-buffers/docs/proto3#updating>some exceptions</a>，但这些很少使用到）</p><p>如果你遵循了这些规则，你会发现老代码也可以读取新的消息，只是会忽略新的字段。对于老代码，被删除的非数组字段会有它们的默认值，数组类型为空。新的代码可以透明的读取老的消息。</p><p>需要注意的是，新的字段不会出现在老消息里，因此你需要添加合理的逻辑处理默认值<a href=https://developers.google.com/protocol-buffers/docs/proto3#default>default value</a>。</p><style>.utterances{max-width:100%}</style><script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script></article><aside class=sidebar><section class=sidebar_inner><div class=author_header><img src=https://www.jonathanlin.top/images/jonathanlin.png alt="Jonathan Lin photo"><h2>Jonathan Lin</h2></div><div class=author_bio>大龄编程爱好者，摄影爱好者。喜欢徒步喜欢户外，喜欢有事没事拍拍孩子，记录生活记录孩子成长</div><a href=https://www.jonathanlin.top/about/ class="button mt-1" role=button title=阅读更多>阅读更多</a><h2 class=mt-4>最新文章</h2><ul class=flex-column><li><a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-02/ class=nav-link title="C Primer Plus读书笔记（二）">C Primer Plus读书笔记（二）</a></li><li><a href=https://www.jonathanlin.top/posts/go-concurrency-best-practice/ class=nav-link title="[译]Go Concurrency Best Practice">[译]Go Concurrency Best Practice</a></li><li><a href=https://www.jonathanlin.top/posts/concurrency-trap-2-incomplete-work/ class=nav-link title="[译]Concurrency Trap #2: Incomplete Work">[译]Concurrency Trap #2: Incomplete Work</a></li><li><a href=https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/ class=nav-link title="[译]Goroutine Leaks - The Forgotten Sender">[译]Goroutine Leaks - The Forgotten Sender</a></li><li><a href=https://www.jonathanlin.top/posts/protocol-buffer-language-guide/ class=nav-link title="[译]Protocol Buffer Language Guide (proto3)">[译]Protocol Buffer Language Guide (proto3)</a></li><li><a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-01/ class=nav-link title="C Primer Plus读书笔记（一）">C Primer Plus读书笔记（一）</a></li><li><a href=https://www.jonathanlin.top/posts/how-to-setup-hugo-github-page/ class=nav-link title="使用Github Pages+Hugo搭建个人博客">使用Github Pages+Hugo搭建个人博客</a></li></ul><div><h2 class="mt-4 taxonomy" id=categories-section>分类</h2><nav class=tags_nav><a href=https://www.jonathanlin.top/categories/%E5%A4%96%E6%96%87%E7%BF%BB%E8%AF%91/ class="post_tag button button_translucent" title=外文翻译>外文翻译
-<span class=button_tally>5</span></a>
-<a href=https://www.jonathanlin.top/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/ class="post_tag button button_translucent" title=读书笔记>读书笔记
-<span class=button_tally>2</span></a>
-<a href=https://www.jonathanlin.top/categories/how-to/ class="post_tag button button_translucent" title=how-to>HOW-TO
-<span class=button_tally>1</span></a></nav></div><div><h2 class="mt-4 taxonomy" id=tags-section>标签</h2><nav class=tags_nav><a href=https://www.jonathanlin.top/tags/golang/ class="post_tag button button_translucent" title=golang>GOLANG
-<span class=button_tally>5</span></a>
-<a href=https://www.jonathanlin.top/tags/goroutine/ class="post_tag button button_translucent" title=goroutine>GOROUTINE
-<span class=button_tally>3</span></a>
-<a href=https://www.jonathanlin.top/tags/c/ class="post_tag button button_translucent" title=c>C
-<span class=button_tally>2</span></a>
-<a href=https://www.jonathanlin.top/tags/c-primer-plus/ class="post_tag button button_translucent" title=c-primer-plus>C-PRIMER-PLUS
-<span class=button_tally>2</span></a>
-<a href=https://www.jonathanlin.top/tags/concurrency-trap/ class="post_tag button button_translucent" title=concurrency-trap>CONCURRENCY-TRAP
-<span class=button_tally>2</span></a>
-<a href=https://www.jonathanlin.top/tags/protobuf/ class="post_tag button button_translucent" title=protobuf>PROTOBUF
-<span class=button_tally>2</span></a>
-<a href=https://www.jonathanlin.top/tags/concurrency/ class="post_tag button button_translucent" title=concurrency>CONCURRENCY
-<span class=button_tally>1</span></a>
-<a href=https://www.jonathanlin.top/tags/github-action/ class="post_tag button button_translucent" title=github-action>GITHUB-ACTION
-<span class=button_tally>1</span></a>
-<a href=https://www.jonathanlin.top/tags/github-pages/ class="post_tag button button_translucent" title=github-pages>GITHUB-PAGES
-<span class=button_tally>1</span></a>
-<a href=https://www.jonathanlin.top/tags/hugo/ class="post_tag button button_translucent" title=hugo>HUGO
-<span class=button_tally>1</span></a></nav></div></section></aside></div></main><svg width="0" height="0" class="hidden"><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook"><path d="M437 0H75C33.648.0.0 33.648.0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352.0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.001 18.001" id="twitter"><path d="M15.891 4.013c.808-.496 1.343-1.173 1.605-2.034a8.68 8.68.0 01-2.351.861c-.703-.756-1.593-1.14-2.66-1.14-1.043.0-1.924.366-2.643 1.078A3.56 3.56.0 008.766 5.383c0 .309.039.585.117.819-3.076-.105-5.622-1.381-7.628-3.837-.34.601-.51 1.213-.51 1.846.0 1.301.549 2.332 1.645 3.089-.625-.053-1.176-.211-1.645-.47.0.929.273 1.705.82 2.388a3.623 3.623.0 002.115 1.291c-.312.08-.641.118-.979.118-.312.0-.533-.026-.664-.083.23.757.664 1.371 1.291 1.841a3.652 3.652.0 002.152.743C4.148 14.173 2.625 14.69.902 14.69c-.422.0-.721-.006-.902-.038 1.697 1.102 3.586 1.649 5.676 1.649 2.139.0 4.029-.542 5.674-1.626 1.645-1.078 2.859-2.408 3.639-3.974a10.77 10.77.0 001.172-4.892v-.468a7.788 7.788.0 001.84-1.921 8.142 8.142.0 01-2.11.593z"/></symbol><symbol aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="mail"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V4e2c0 26.5-21.5 48-48 48H48c-26.5.0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5.0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="calendar"><path d="M452 40h-24V0h-40v40H124V0H84v40H60C26.916 40 0 66.916.0 1e2v352c0 33.084 26.916 60 60 60h392c33.084.0 60-26.916 60-60V1e2c0-33.084-26.916-60-60-60zm20 412c0 11.028-8.972 20-20 20H60c-11.028.0-20-8.972-20-20V188h432v264zm0-304H40v-48c0-11.028 8.972-20 20-20h24v40h40V80h264v40h40V80h24c11.028.0 20 8.972 20 20v48z"/><path d="M76 230h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 310h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 390h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80-80h40v40h-40z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="github"><path d="M255.968 5.329C114.624 5.329.0 120.401.0 262.353c0 113.536 73.344 209.856 175.104 243.872 12.8 2.368 17.472-5.568 17.472-12.384.0-6.112-.224-22.272-.352-43.712-71.2 15.52-86.24-34.464-86.24-34.464-11.616-29.696-28.416-37.6-28.416-37.6-23.264-15.936 1.728-15.616 1.728-15.616 25.696 1.824 39.2 26.496 39.2 26.496 22.848 39.264 59.936 27.936 74.528 21.344 2.304-16.608 8.928-27.936 16.256-34.368-56.832-6.496-116.608-28.544-116.608-127.008.0-28.064 9.984-51.008 26.368-68.992-2.656-6.496-11.424-32.64 2.496-68 0 0 21.504-6.912 70.4 26.336 20.416-5.696 42.304-8.544 64.096-8.64 21.728.128 43.648 2.944 64.096 8.672 48.864-33.248 70.336-26.336 70.336-26.336 13.952 35.392 5.184 61.504 2.56 68 16.416 17.984 26.304 40.928 26.304 68.992.0 98.72-59.84 120.448-116.864 126.816 9.184 7.936 17.376 23.616 17.376 47.584.0 34.368-.32 62.08-.32 70.496.0 6.88 4.608 14.88 17.6 12.352C438.72 472.145 512 375.857 512 262.353 512 120.401 397.376 5.329 255.968 5.329z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212" id="gitlab"><path d="M12.3 74.7h54L43.3 3c-1-3.6-6.4-3.6-7.6.0L12.3 74.8z"/><path d="M12.3 74.7.5 111c-1 3.2.0 6.8 3 8.8l101.6 74-92.5-119z"/><path d="M105 193.7l-38.6-119h-54l92.7 119z"/><path d="M105 193.7l38.7-119H66.4l38.7 119z"/><path d="M105 193.7l38.7-119H198l-93 119z"/><path d="M198 74.7l11.6 36.2c1 3 0 6.6-3 8.6l-101.5 74 93-119z"/><path d="M198 74.7h-54.3L167 3c1.2-3.6 6.4-3.6 7.6.0L198 74.8z"/></symbol><symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="rss"><circle cx="3.429" cy="20.571" r="3.429"/><path d="M11.429 24h4.57C15.999 15.179 8.821 8.001.0 8v4.572c6.302.001 11.429 5.126 11.429 11.428z"/><path d="M24 24C24 10.766 13.234.0.0.0v4.571c10.714.0 19.43 8.714 19.43 19.429z"/></symbol><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="linkedin"><path d="M437 0H75C33.648.0.0 33.648.0 75v362c0 41.352 33.648 75 75 75h362c41.352.0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zM181 406h-60V196h60zm0-240h-60v-60h60zm210 240h-60V286c0-16.54-13.46-30-30-30s-30 13.46-30 30v120h-60V196h60v11.309C286.719 202.422 296.93 196 316 196c40.691.043 75 36.547 75 79.688zm0 0"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612" id="arrow"><path d="M604.501 440.509 325.398 134.956c-5.331-5.357-12.423-7.627-19.386-7.27-6.989-.357-14.056 1.913-19.387 7.27L7.499 440.509c-9.999 10.024-9.999 26.298.0 36.323s26.223 10.024 36.222.0l262.293-287.164L568.28 476.832c9.999 10.024 26.222 10.024 36.221.0 9.999-10.023 9.999-26.298.0-36.323z"/></symbol><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="carly"><path d="M504.971 239.029 448 182.059V84c0-46.317-37.682-84-84-84h-44c-13.255.0-24 10.745-24 24s10.745 24 24 24h44c19.851.0 36 16.149 36 36v108c0 6.365 2.529 12.47 7.029 16.971L454.059 256l-47.029 47.029A24.002 24.002.0 004e2 320v108c0 19.851-16.149 36-36 36h-44c-13.255.0-24 10.745-24 24s10.745 24 24 24h44c46.318.0 84-37.683 84-84v-98.059l56.971-56.971c9.372-9.372 9.372-24.568.0-33.941zM112 192V84c0-19.851 16.149-36 36-36h44c13.255.0 24-10.745 24-24S205.255.0 192 0h-44c-46.318.0-84 37.683-84 84v98.059l-56.971 56.97c-9.373 9.373-9.373 24.568.0 33.941L64 329.941V428c0 46.317 37.682 84 84 84h44c13.255.0 24-10.745 24-24s-10.745-24-24-24h-44c-19.851.0-36-16.149-36-36V320c0-6.365-2.529-12.47-7.029-16.971L57.941 256l47.029-47.029A24.002 24.002.0 00112 192z"/></symbol><symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="copy"><path d="M23 2.75A2.75 2.75.0 0020.25.0H8.75A2.75 2.75.0 006 2.75v13.5A2.75 2.75.0 008.75 19h11.5A2.75 2.75.0 0023 16.25zM18.25 14.5h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5zm0-3h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5zm0-3h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5z"/><path d="M8.75 20.5A4.255 4.255.0 014.5 16.25V2.75c0-.086.02-.166.025-.25H3.75A2.752 2.752.0 001 5.25v16A2.752 2.752.0 003.75 24h12a2.752 2.752.0 002.75-2.75v-.75z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.001 512.001" id="closeme"><path d="M284.286 256.002 506.143 34.144c7.811-7.811 7.811-20.475.0-28.285-7.811-7.81-20.475-7.811-28.285.0L256 227.717 34.143 5.859c-7.811-7.811-20.475-7.811-28.285.0-7.81 7.811-7.811 20.475.0 28.285l221.857 221.857L5.858 477.859c-7.811 7.811-7.811 20.475.0 28.285a19.938 19.938.0 0014.143 5.857 19.94 19.94.0 0014.143-5.857L256 284.287l221.857 221.857c3.905 3.905 9.024 5.857 14.143 5.857s10.237-1.952 14.143-5.857c7.811-7.811 7.811-20.475.0-28.285L284.286 256.002z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="open-menu"><path d="M492 236H20c-11.046.0-20 8.954-20 20s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20zm0-160H20C8.954 76 0 84.954.0 96s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20zm0 320H20c-11.046.0-20 8.954-20 20s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="instagram"><path d="M12 2.163c3.204.0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849.0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204.0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849.0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741.0 8.333.014 7.053.072c-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403.0-6.162 2.759-6.162 6.162S8.597 18.163 12 18.163s6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zM12 16c-2.209.0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796.0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795.0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="youtube"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23.0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23.0C23.512 20.55 23.971 18.196 24 12c-.029-6.185-.484-8.549-4.385-8.816zM9 16V8l8 3.993L9 16z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="stackoverflow"><path d="M21 27v-8h3v11H0V19h3v8h18z"/><path d="M17.1.2 15 1.8l7.9 10.6 2.1-1.6L17.1.2zm3.7 14.7L10.6 6.4l1.7-2 10.2 8.5-1.7 2zM7.2 12.3l12 5.6 1.1-2.4-12-5.6-1.1 2.4zm-1.8 6.8 13.56 1.96.17-2.38-13.26-2.55-.47 2.97zM19 25H5v-3h14v3z"/></symbol></svg><footer class=footer><div class="footer_inner wrap pale"><img src=https://www.jonathanlin.top/icons/apple-touch-icon.png class="icon icon_2 transparent" alt="Standing on the Shoulder of Giants">
-<span class=copyright>Copyright © 2021 Jonathan Lin. All rights reserved.
-</span><a class=to_top href=#documentTop><svg class="icon"><use xlink:href="#arrow"/></svg></a></div></footer><script type=text/javascript src=https://www.jonathanlin.top/js/bundle.min.617c4c3549a10c9fe7e1bb91e87f0722f6a285b59e742c7123c755df9fb33530bae76060ebd303966dd0e1c09813e679f8042802b7fd059315ef1345f0429ad2.js integrity="sha512-YXxMNUmhDJ/n4buR6H8HIvaihbWedCxxI8dV35+zNTC652Bg69MDlm3Q4cCYE+Z5+AQoArf9BZMV7xNF8EKa0g==" crossorigin=anonymous></script></body></html>
+</code></pre></div><h2 id=扩展protocol-buffer>扩展Protocol Buffer</h2>
+<p>在你使用protocol buffer的代码发布之后，或早或晚你总是希望改进你的protocol buffer定义。如果你希望你新的定义能向后兼容，且你的老的定义能向前兼容（你一定总是希望这样），那么你需要遵循一些规则。在新版本的protocol buffer中：</p>
+<ul>
+<li>你一定不能修改现在的字段的标签号码</li>
+<li>你可能会删除某些字段</li>
+<li>你可能会新增字段，但是新增的字段一定要使用全新的标签号码（一定是没有被使用过的，包括那些被删除的字段曾经使用过的）。</li>
+</ul>
+<p>（使用这些规则有一些例外<a href=https://developers.google.com/protocol-buffers/docs/proto3#updating>some exceptions</a>，但这些很少使用到）</p>
+<p>如果你遵循了这些规则，你会发现老代码也可以读取新的消息，只是会忽略新的字段。对于老代码，被删除的非数组字段会有它们的默认值，数组类型为空。新的代码可以透明的读取老的消息。</p>
+<p>需要注意的是，新的字段不会出现在老消息里，因此你需要添加合理的逻辑处理默认值<a href=https://developers.google.com/protocol-buffers/docs/proto3#default>default value</a>。</p>
+<style>.utterances{max-width:100%}</style>
+<script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
+</article>
+<aside class=sidebar>
+<section class=sidebar_inner>
+<div class=author_header>
+<img src=https://www.jonathanlin.top/images/jonathanlin.png alt="Jonathan Lin photo">
+<h2>Jonathan Lin</h2>
+</div>
+<div class=author_bio>
+大龄编程爱好者，摄影爱好者。喜欢徒步喜欢户外，喜欢有事没事拍拍孩子，记录生活记录孩子成长
+</div>
+<a href=https://www.jonathanlin.top/about/ class="button mt-1" role=button title=阅读更多>阅读更多</a>
+<h2 class=mt-4>最新文章</h2>
+<ul class=flex-column>
+<li>
+<a href=https://www.jonathanlin.top/posts/c-primer-plus-handson/ class=nav-link title="C Primer Plus 编程练习">C Primer Plus 编程练习</a>
+</li>
+<li>
+<a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-02/ class=nav-link title="C Primer Plus读书笔记（二）">C Primer Plus读书笔记（二）</a>
+</li>
+<li>
+<a href=https://www.jonathanlin.top/posts/go-concurrency-best-practice/ class=nav-link title="[译]Go Concurrency Best Practice">[译]Go Concurrency Best Practice</a>
+</li>
+<li>
+<a href=https://www.jonathanlin.top/posts/concurrency-trap-2-incomplete-work/ class=nav-link title="[译]Concurrency Trap #2: Incomplete Work">[译]Concurrency Trap #2: Incomplete Work</a>
+</li>
+<li>
+<a href=https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/ class=nav-link title="[译]Goroutine Leaks - The Forgotten Sender">[译]Goroutine Leaks - The Forgotten Sender</a>
+</li>
+<li>
+<a href=https://www.jonathanlin.top/posts/protocol-buffer-language-guide/ class=nav-link title="[译]Protocol Buffer Language Guide (proto3)">[译]Protocol Buffer Language Guide (proto3)</a>
+</li>
+<li>
+<a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-01/ class=nav-link title="C Primer Plus读书笔记（一）">C Primer Plus读书笔记（一）</a>
+</li>
+<li>
+<a href=https://www.jonathanlin.top/posts/how-to-setup-hugo-github-page/ class=nav-link title="使用Github Pages+Hugo搭建个人博客">使用Github Pages+Hugo搭建个人博客</a>
+</li>
+</ul>
+<div>
+<h2 class="mt-4 taxonomy" id=categories-section>分类</h2>
+<nav class=tags_nav>
+<a href=https://www.jonathanlin.top/categories/%E5%A4%96%E6%96%87%E7%BF%BB%E8%AF%91/ class="post_tag button button_translucent" title=外文翻译>
+外文翻译
+<span class=button_tally>5</span>
+</a>
+<a href=https://www.jonathanlin.top/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/ class="post_tag button button_translucent" title=读书笔记>
+读书笔记
+<span class=button_tally>2</span>
+</a>
+<a href=https://www.jonathanlin.top/categories/how-to/ class="post_tag button button_translucent" title=how-to>
+HOW-TO
+<span class=button_tally>1</span>
+</a>
+<a href=https://www.jonathanlin.top/categories/%E7%BC%96%E7%A8%8B%E7%BB%83%E4%B9%A0/ class="post_tag button button_translucent" title=编程练习>
+编程练习
+<span class=button_tally>1</span>
+</a>
+</nav>
+</div>
+<div>
+<h2 class="mt-4 taxonomy" id=tags-section>标签</h2>
+<nav class=tags_nav>
+<a href=https://www.jonathanlin.top/tags/golang/ class="post_tag button button_translucent" title=golang>
+GOLANG
+<span class=button_tally>5</span>
+</a>
+<a href=https://www.jonathanlin.top/tags/c/ class="post_tag button button_translucent" title=c>
+C
+<span class=button_tally>3</span>
+</a>
+<a href=https://www.jonathanlin.top/tags/c-primer-plus/ class="post_tag button button_translucent" title=c-primer-plus>
+C-PRIMER-PLUS
+<span class=button_tally>3</span>
+</a>
+<a href=https://www.jonathanlin.top/tags/goroutine/ class="post_tag button button_translucent" title=goroutine>
+GOROUTINE
+<span class=button_tally>3</span>
+</a>
+<a href=https://www.jonathanlin.top/tags/concurrency-trap/ class="post_tag button button_translucent" title=concurrency-trap>
+CONCURRENCY-TRAP
+<span class=button_tally>2</span>
+</a>
+<a href=https://www.jonathanlin.top/tags/protobuf/ class="post_tag button button_translucent" title=protobuf>
+PROTOBUF
+<span class=button_tally>2</span>
+</a>
+<a href=https://www.jonathanlin.top/tags/concurrency/ class="post_tag button button_translucent" title=concurrency>
+CONCURRENCY
+<span class=button_tally>1</span>
+</a>
+<a href=https://www.jonathanlin.top/tags/github-action/ class="post_tag button button_translucent" title=github-action>
+GITHUB-ACTION
+<span class=button_tally>1</span>
+</a>
+<a href=https://www.jonathanlin.top/tags/github-pages/ class="post_tag button button_translucent" title=github-pages>
+GITHUB-PAGES
+<span class=button_tally>1</span>
+</a>
+<a href=https://www.jonathanlin.top/tags/hugo/ class="post_tag button button_translucent" title=hugo>
+HUGO
+<span class=button_tally>1</span>
+</a>
+</nav>
+</div>
+</section>
+</aside>
+</div>
+</main><svg width="0" height="0" class="hidden"><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook"><path d="M437 0H75C33.648.0.0 33.648.0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352.0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.001 18.001" id="twitter"><path d="M15.891 4.013c.808-.496 1.343-1.173 1.605-2.034a8.68 8.68.0 01-2.351.861c-.703-.756-1.593-1.14-2.66-1.14-1.043.0-1.924.366-2.643 1.078A3.56 3.56.0 008.766 5.383c0 .309.039.585.117.819-3.076-.105-5.622-1.381-7.628-3.837-.34.601-.51 1.213-.51 1.846.0 1.301.549 2.332 1.645 3.089-.625-.053-1.176-.211-1.645-.47.0.929.273 1.705.82 2.388a3.623 3.623.0 002.115 1.291c-.312.08-.641.118-.979.118-.312.0-.533-.026-.664-.083.23.757.664 1.371 1.291 1.841a3.652 3.652.0 002.152.743C4.148 14.173 2.625 14.69.902 14.69c-.422.0-.721-.006-.902-.038 1.697 1.102 3.586 1.649 5.676 1.649 2.139.0 4.029-.542 5.674-1.626 1.645-1.078 2.859-2.408 3.639-3.974a10.77 10.77.0 001.172-4.892v-.468a7.788 7.788.0 001.84-1.921 8.142 8.142.0 01-2.11.593z"/></symbol><symbol aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="mail"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V4e2c0 26.5-21.5 48-48 48H48c-26.5.0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5.0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="calendar"><path d="M452 40h-24V0h-40v40H124V0H84v40H60C26.916 40 0 66.916.0 1e2v352c0 33.084 26.916 60 60 60h392c33.084.0 60-26.916 60-60V1e2c0-33.084-26.916-60-60-60zm20 412c0 11.028-8.972 20-20 20H60c-11.028.0-20-8.972-20-20V188h432v264zm0-304H40v-48c0-11.028 8.972-20 20-20h24v40h40V80h264v40h40V80h24c11.028.0 20 8.972 20 20v48z"/><path d="M76 230h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 310h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 390h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80-80h40v40h-40z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="github"><path d="M255.968 5.329C114.624 5.329.0 120.401.0 262.353c0 113.536 73.344 209.856 175.104 243.872 12.8 2.368 17.472-5.568 17.472-12.384.0-6.112-.224-22.272-.352-43.712-71.2 15.52-86.24-34.464-86.24-34.464-11.616-29.696-28.416-37.6-28.416-37.6-23.264-15.936 1.728-15.616 1.728-15.616 25.696 1.824 39.2 26.496 39.2 26.496 22.848 39.264 59.936 27.936 74.528 21.344 2.304-16.608 8.928-27.936 16.256-34.368-56.832-6.496-116.608-28.544-116.608-127.008.0-28.064 9.984-51.008 26.368-68.992-2.656-6.496-11.424-32.64 2.496-68 0 0 21.504-6.912 70.4 26.336 20.416-5.696 42.304-8.544 64.096-8.64 21.728.128 43.648 2.944 64.096 8.672 48.864-33.248 70.336-26.336 70.336-26.336 13.952 35.392 5.184 61.504 2.56 68 16.416 17.984 26.304 40.928 26.304 68.992.0 98.72-59.84 120.448-116.864 126.816 9.184 7.936 17.376 23.616 17.376 47.584.0 34.368-.32 62.08-.32 70.496.0 6.88 4.608 14.88 17.6 12.352C438.72 472.145 512 375.857 512 262.353 512 120.401 397.376 5.329 255.968 5.329z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212" id="gitlab"><path d="M12.3 74.7h54L43.3 3c-1-3.6-6.4-3.6-7.6.0L12.3 74.8z"/><path d="M12.3 74.7.5 111c-1 3.2.0 6.8 3 8.8l101.6 74-92.5-119z"/><path d="M105 193.7l-38.6-119h-54l92.7 119z"/><path d="M105 193.7l38.7-119H66.4l38.7 119z"/><path d="M105 193.7l38.7-119H198l-93 119z"/><path d="M198 74.7l11.6 36.2c1 3 0 6.6-3 8.6l-101.5 74 93-119z"/><path d="M198 74.7h-54.3L167 3c1.2-3.6 6.4-3.6 7.6.0L198 74.8z"/></symbol><symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="rss"><circle cx="3.429" cy="20.571" r="3.429"/><path d="M11.429 24h4.57C15.999 15.179 8.821 8.001.0 8v4.572c6.302.001 11.429 5.126 11.429 11.428z"/><path d="M24 24C24 10.766 13.234.0.0.0v4.571c10.714.0 19.43 8.714 19.43 19.429z"/></symbol><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="linkedin"><path d="M437 0H75C33.648.0.0 33.648.0 75v362c0 41.352 33.648 75 75 75h362c41.352.0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zM181 406h-60V196h60zm0-240h-60v-60h60zm210 240h-60V286c0-16.54-13.46-30-30-30s-30 13.46-30 30v120h-60V196h60v11.309C286.719 202.422 296.93 196 316 196c40.691.043 75 36.547 75 79.688zm0 0"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612" id="arrow"><path d="M604.501 440.509 325.398 134.956c-5.331-5.357-12.423-7.627-19.386-7.27-6.989-.357-14.056 1.913-19.387 7.27L7.499 440.509c-9.999 10.024-9.999 26.298.0 36.323s26.223 10.024 36.222.0l262.293-287.164L568.28 476.832c9.999 10.024 26.222 10.024 36.221.0 9.999-10.023 9.999-26.298.0-36.323z"/></symbol><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="carly"><path d="M504.971 239.029 448 182.059V84c0-46.317-37.682-84-84-84h-44c-13.255.0-24 10.745-24 24s10.745 24 24 24h44c19.851.0 36 16.149 36 36v108c0 6.365 2.529 12.47 7.029 16.971L454.059 256l-47.029 47.029A24.002 24.002.0 004e2 320v108c0 19.851-16.149 36-36 36h-44c-13.255.0-24 10.745-24 24s10.745 24 24 24h44c46.318.0 84-37.683 84-84v-98.059l56.971-56.971c9.372-9.372 9.372-24.568.0-33.941zM112 192V84c0-19.851 16.149-36 36-36h44c13.255.0 24-10.745 24-24S205.255.0 192 0h-44c-46.318.0-84 37.683-84 84v98.059l-56.971 56.97c-9.373 9.373-9.373 24.568.0 33.941L64 329.941V428c0 46.317 37.682 84 84 84h44c13.255.0 24-10.745 24-24s-10.745-24-24-24h-44c-19.851.0-36-16.149-36-36V320c0-6.365-2.529-12.47-7.029-16.971L57.941 256l47.029-47.029A24.002 24.002.0 00112 192z"/></symbol><symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="copy"><path d="M23 2.75A2.75 2.75.0 0020.25.0H8.75A2.75 2.75.0 006 2.75v13.5A2.75 2.75.0 008.75 19h11.5A2.75 2.75.0 0023 16.25zM18.25 14.5h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5zm0-3h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5zm0-3h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5z"/><path d="M8.75 20.5A4.255 4.255.0 014.5 16.25V2.75c0-.086.02-.166.025-.25H3.75A2.752 2.752.0 001 5.25v16A2.752 2.752.0 003.75 24h12a2.752 2.752.0 002.75-2.75v-.75z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.001 512.001" id="closeme"><path d="M284.286 256.002 506.143 34.144c7.811-7.811 7.811-20.475.0-28.285-7.811-7.81-20.475-7.811-28.285.0L256 227.717 34.143 5.859c-7.811-7.811-20.475-7.811-28.285.0-7.81 7.811-7.811 20.475.0 28.285l221.857 221.857L5.858 477.859c-7.811 7.811-7.811 20.475.0 28.285a19.938 19.938.0 0014.143 5.857 19.94 19.94.0 0014.143-5.857L256 284.287l221.857 221.857c3.905 3.905 9.024 5.857 14.143 5.857s10.237-1.952 14.143-5.857c7.811-7.811 7.811-20.475.0-28.285L284.286 256.002z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="open-menu"><path d="M492 236H20c-11.046.0-20 8.954-20 20s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20zm0-160H20C8.954 76 0 84.954.0 96s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20zm0 320H20c-11.046.0-20 8.954-20 20s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="instagram"><path d="M12 2.163c3.204.0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849.0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204.0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849.0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741.0 8.333.014 7.053.072c-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403.0-6.162 2.759-6.162 6.162S8.597 18.163 12 18.163s6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zM12 16c-2.209.0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796.0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795.0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="youtube"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23.0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23.0C23.512 20.55 23.971 18.196 24 12c-.029-6.185-.484-8.549-4.385-8.816zM9 16V8l8 3.993L9 16z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="stackoverflow"><path d="M21 27v-8h3v11H0V19h3v8h18z"/><path d="M17.1.2 15 1.8l7.9 10.6 2.1-1.6L17.1.2zm3.7 14.7L10.6 6.4l1.7-2 10.2 8.5-1.7 2zM7.2 12.3l12 5.6 1.1-2.4-12-5.6-1.1 2.4zm-1.8 6.8 13.56 1.96.17-2.38-13.26-2.55-.47 2.97zM19 25H5v-3h14v3z"/></symbol></svg>
+<footer class=footer>
+<div class="footer_inner wrap pale">
+<img src=https://www.jonathanlin.top/icons/apple-touch-icon.png class="icon icon_2 transparent" alt="Standing on the Shoulder of Giants">
+<span class=copyright>
+Copyright © 2021 Jonathan Lin. All rights reserved.
+</span><a class=to_top href=#documentTop><svg class="icon"><use xlink:href="#arrow"/></svg>
+</a>
+</div>
+</footer>
+<script type=text/javascript src=https://www.jonathanlin.top/js/bundle.min.617c4c3549a10c9fe7e1bb91e87f0722f6a285b59e742c7123c755df9fb33530bae76060ebd303966dd0e1c09813e679f8042802b7fd059315ef1345f0429ad2.js integrity="sha512-YXxMNUmhDJ/n4buR6H8HIvaihbWedCxxI8dV35+zNTC652Bg69MDlm3Q4cCYE+Z5+AQoArf9BZMV7xNF8EKa0g==" crossorigin=anonymous></script>
+</body>
+</html>

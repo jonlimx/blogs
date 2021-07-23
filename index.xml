@@ -1,4 +1,79 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/</link><description>Recent content on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Mon, 19 Jul 2021 21:24:20 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus读书笔记（二）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/</link><description>Recent content on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Fri, 23 Jul 2021 23:35:03 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus 编程练习</title><link>https://www.jonathanlin.top/posts/c-primer-plus-handson/</link><pubDate>Fri, 23 Jul 2021 23:35:03 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-handson/</guid><description>
+&lt;h2 id="ch06-c控制语句循环">ch06. C控制语句：循环&lt;/h2>
+&lt;blockquote>
+&lt;ol start="5">
+&lt;li>
+&lt;p>编写一个程序，提示用户输入大写字母。使用嵌套循环以下面金字塔型的格式打印字母：&lt;/p>
+&lt;p>​ A
+​ ABA
+​ ABCBA
+ABCDCBA
+ABCDEDCBA&lt;/p>
+&lt;p>提示：用外层循环处理行，每行使用3个内层循环，分别处理空格、以升序打印字母、以降序打印字母。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;p>思考：外层循环处理行容易实现，但是使用3个内层循环控制空格、升序字母和降序空格字母似乎有点多。这里可以结合条件判断，是的内层只需要一个循环搞定空格、升降序字母的打印。这里有几点比较关键&lt;/p>
+&lt;ul>
+&lt;li>每行有多少个空格&lt;/li>
+&lt;li>每个一共要打印的字符是多少个，是包括每行的空格加上字符&lt;/li>
+&lt;li>每行都是对称的，要找到每行对称中心的字符&lt;/li>
+&lt;li>每行的空格数、字符数和对称中心的字符都是不一样的，这个要内循环中处理好&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;stdio.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="cp">&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 4&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">middle&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">start&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="sc">&amp;#39;A&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Please input a char (A - Z):&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="n">scanf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%c&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">middle&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">middle&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="sc">&amp;#39;A&amp;#39;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">middle&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="sc">&amp;#39;Z&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">lines&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">middle&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">start&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 总的行数
+&lt;/span>&lt;span class="ln">12&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">spaces&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">chars&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 定义变量保存内循环里的空格数以及自字符。字符数实际上是等差数列 - 1，3，5，7...
+&lt;/span>&lt;span class="ln">13&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">lines&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="o">++&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="n">spaces&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">lines&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 计算每行的空格数
+&lt;/span>&lt;span class="ln">16&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="n">chars&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 计算每行的字符数
+&lt;/span>&lt;span class="ln">18&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">asc_start&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">start&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 每行升序部分的起始字符
+&lt;/span>&lt;span class="ln">19&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">middle_of_line&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">middle&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">spaces&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 每行的对称中心的字符
+&lt;/span>&lt;span class="ln">20&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">desc_start&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">middle_of_line&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 每行的降序部分起始字符
+&lt;/span>&lt;span class="ln">21&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">j&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">j&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">spaces&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">chars&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="o">++&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">22&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">23&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">j&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">spaces&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">24&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34; &amp;#34;&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 打印空格
+&lt;/span>&lt;span class="ln">25&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="k">else&lt;/span>
+&lt;span class="ln">26&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">27&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">asc_start&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">middle_of_line&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">28&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%c&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">asc_start&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 打印升序部分
+&lt;/span>&lt;span class="ln">29&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="k">else&lt;/span>
+&lt;span class="ln">30&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%c&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">desc_start&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 打印降序部分
+&lt;/span>&lt;span class="ln">31&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">32&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">33&lt;/span>
+&lt;span class="ln">34&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">35&lt;/span>
+&lt;span class="ln">36&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">37&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">38&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">39&lt;/span> &lt;span class="k">else&lt;/span>
+&lt;span class="ln">40&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">41&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Your input is invalid!&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">42&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">43&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">44&lt;/span>
+&lt;span class="ln">45&lt;/span>&lt;span class="c1">// 结果输出
+&lt;/span>&lt;span class="ln">46&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="n">Please&lt;/span> &lt;span class="n">input&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">A&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="n">G&lt;/span>
+&lt;span class="ln">47&lt;/span> &lt;span class="n">A&lt;/span>
+&lt;span class="ln">48&lt;/span> &lt;span class="n">ABA&lt;/span>
+&lt;span class="ln">49&lt;/span> &lt;span class="n">ABCBA&lt;/span>
+&lt;span class="ln">50&lt;/span> &lt;span class="n">ABCDCBA&lt;/span>
+&lt;span class="ln">51&lt;/span> &lt;span class="n">ABCDEDCBA&lt;/span>
+&lt;span class="ln">52&lt;/span> &lt;span class="n">ABCDEFEDCBA&lt;/span>
+&lt;span class="ln">53&lt;/span>&lt;span class="n">ABCDEFGFEDCBA&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>C Primer Plus读书笔记（二）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第六章至第九章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch06c控制语句循环">ch06.C控制语句：循环&lt;/h2>
 &lt;blockquote>
@@ -13,11 +88,11 @@
 &lt;/li>
 &lt;li>
 &lt;p>&lt;code>while&lt;/code>循环部分要点：&lt;strong>只有测试条件之后的单独语句（简单或者符合语句）才是循环部分&lt;/strong> （一般编程习惯好的都不会出现这种情况，但是也得了解如果出现这种情况到底是因为什么。现代高级的IDE都会有相应的提醒）&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">n&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">3&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;n is %d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln">4&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 这里的n++已经不是循环体的一部分了，这个程序会陷入死循环
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="o">++&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 这里的分号是一个完整的语句了，一个空语句，只有这个空语句是while的循环体，因此这个程序只会打印 - n is 4
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;n is %d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;/li>
@@ -27,13 +102,13 @@
 &lt;/ul>
 &lt;blockquote>
 &lt;p>TIP - 在构建是否相等的关系表示式的时候，可以如果是比价是否和一个常量相等，这时候可以把常量放左边，这可以避免误把赋值操作当做了比较操作&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">canoes&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 语法错误，编译器不允许这么做
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">canoes&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 语法错误，编译器不允许这么做
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">canose&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;/blockquote>
 &lt;ul>
 &lt;li>
 &lt;p>C语言中，数值可以作为测试表达式（真值），但是C语言的真值的逻辑是：&lt;strong>所有非0都视为真，只有0被视为假&lt;/strong>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln"> 2&lt;/span>&lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln"> 3&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%2d is true. | &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%2d is false.&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">);&lt;/span>
@@ -63,7 +138,7 @@
 &lt;h2 id="keep-your-self-busy-or-do-the-work-yourself">Keep your self busy or do the work yourself&lt;/h2>
 &lt;p>&lt;em>我理解作者的意思是：让你自己保持忙碌有事情可做（而不是干等），或者你自己来做这个工作&lt;/em>&lt;/p>
 &lt;p>下面的这段程度有什么问题：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
 &lt;span class="ln"> 2&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
@@ -87,7 +162,7 @@
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>这个程序的预期就是一个很简单的web服务。然而它同时也做了其他事情，它在一个无限循环中浪费CPU资源。这是因为&lt;code>main&lt;/code>函数最后通过&lt;code>for{}&lt;/code>阻止main Goroutine退出，而不是等待任何IO，也不是在锁上面等待，也不是发送数据到channel或者从channel接收，也不是和调度器通信。&lt;/p>
 &lt;p>由于 Go 运行时大部分是协作调度的，因此该程序将在单个 CPU 上徒劳无功，最终可能会以活锁结束。&lt;/p>
 &lt;p>我们应该如何解决这个问题？这里有一个建议。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
 &lt;span class="ln"> 2&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
@@ -112,7 +187,7 @@
 &lt;span class="ln">23&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>这或许看起来很傻，但这是我在外面看到的常见解决方案。 这明显是不了解潜在问题的症状。&lt;/p>
 &lt;p>现在，如果你与一点点go方面的经验，你可能会写出下面的代码。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
 &lt;span class="ln"> 2&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
@@ -137,7 +212,7 @@
 &lt;blockquote>
 &lt;p>TIP - Go程序中，如果&lt;code>main.main&lt;/code>函数返回了那么程序也就无条件退出了，不论程序启动的其他goroutine在正在做什么。&lt;/p>
 &lt;/blockquote>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
 &lt;span class="ln"> 2&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
@@ -161,7 +236,7 @@
 &lt;h2 id="leave-concurrency-to-caller">Leave concurrency to caller&lt;/h2>
 &lt;p>&lt;em>把并发的权利留给调用者&lt;/em>&lt;/p>
 &lt;p>下面这两个API有什么差别？&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// ListDirectory returns the contents of dir.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// ListDirectory returns the contents of dir.
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">ListDirectory&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">dir&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">([]&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">error&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="c1">// ListDirectory returns a channel over which
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="c1">// directory entries will be published. When the list
@@ -178,7 +253,7 @@
 &lt;li>调用者必须继续从channel读取直到它关闭，因为这是调用者知道用于填充channel的 goroutine 已停止的唯一方法。这是使用 ListDirectory 的严重限制，调用者必须花时间从channel读取，即使它可能已经得到了它想要的答案&lt;/li>
 &lt;/ul>
 &lt;p>结果上述问题的方案是使用一个回调函数，该函数在执行时在每个目录条目的上下文中调用。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">ListDirectory&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">dir&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">fn&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">ListDirectory&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">dir&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">fn&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">))&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>这一点也不奇怪，这就是&lt;code>filepath.WalkDir&lt;/code>函数的工作原理。&lt;/p>
 &lt;blockquote>
 &lt;p>TIP - 如果你的函数启动了一个 goroutine，你必须为调用者提供一种明确停止该 goroutine 的方法。 将异步执行函数的决定留给该函数的调用者通常更容易。&lt;/p>
@@ -187,7 +262,7 @@
 &lt;p>&lt;em>如果不知道一个goroutine何时会停止，那么你最好永远也不要启动它&lt;/em>&lt;/p>
 &lt;p>前面的例子展示了在没有必要的情况下使用了 goroutine。 但是使用 Go 的一个驱因是该语言提供的一流并发特性。 事实上，在许多情况下，你希望利用硬件提供的可用的并行性。 为此，你必须使用 goroutines。&lt;/p>
 &lt;p>这个简单的应用程序在两个不同的端口上提供 http 服务，端口 8080 用于应用程序流量，端口 8001 用于访问&lt;code>/debug/pprof&lt;/code>端点。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
 &lt;span class="ln"> 2&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
@@ -205,7 +280,7 @@
 &lt;/span>&lt;span class="ln">16&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>虽然上面的程序并没有多么复杂，但一个真正的应用基本上就是这样子了。&lt;/p>
 &lt;p>应用程序目前存在一些问题，这些问题会随着应用程序的增长而显现出来，所以现在让我们解决其中的一些问题。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 2&lt;/span> &lt;span class="nx">mux&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewServeMux&lt;/span>&lt;span class="p">()&lt;/span>
 &lt;span class="ln"> 3&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, QCon!&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
@@ -228,7 +303,7 @@
 &lt;/blockquote>
 &lt;p>然而在一个单独的goroutine中运行，如果它返回了那么只有该goroutine会退出，程序的其余部分会继续。你们的运维人员可能会不高兴的发现他们无法在需要时从你的应用中获取统计信息，因为获取统计信息的handler早就停止工作了。&lt;/p>
 &lt;p>我们需要确保当任何一个提供服务的goroutine停止时，那么整个应用程序都要被停止。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 2&lt;/span> &lt;span class="nx">mux&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewServeMux&lt;/span>&lt;span class="p">()&lt;/span>
 &lt;span class="ln"> 3&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, QCon!&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
@@ -258,7 +333,7 @@
 &lt;p>TIP - 只在&lt;code>init&lt;/code>函数和&lt;code>main.main&lt;/code>函数中使用&lt;code>log.Fatal&lt;/code>&lt;/p>
 &lt;/blockquote>
 &lt;p>我们真正想要的是将发生的任何错误传递回 goroutine 的发起者，以便它知道 goroutine 停止的原因，可以干净地关闭进程。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serveApp&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 2&lt;/span> &lt;span class="nx">mux&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewServeMux&lt;/span>&lt;span class="p">()&lt;/span>
 &lt;span class="ln"> 3&lt;/span> &lt;span class="nx">mux&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HandleFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fprintln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">resp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Hello, QCon!&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
@@ -290,7 +365,7 @@
 &lt;p>由于没有办法安全地关闭通道，我们不能使用&lt;code>for ... range ...&lt;/code>来循环的通道直到所有 goroutines 都报告完成，而是循环循环我们启动的 goroutines，数量等于channel的容量。&lt;/p>
 &lt;p>现在我们有一种方法可以等待每个 goroutine 干净地退出并记录它们遇到的任何错误。 所需要的只是一种将关闭信号从第一个退出的 goroutine 转发给其他 goroutine 的方法。&lt;/p>
 &lt;p>事实证明，让一个&lt;code>http.Server&lt;/code>关闭有一些牵强，因此我把关闭的逻辑分离出来放在一个helper函数&lt;code>serve&lt;/code>里。helper函数接收一个地址参数和&lt;code>http.Handler&lt;/code>参数（跟&lt;code>http.ListenAndServe&lt;/code>类似)，同时还有一个用来触发关闭函数&lt;code>Shutdown&lt;/code>的channel。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serve&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">addr&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">handler&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Handler&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">stop&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{})&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">serve&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">addr&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">handler&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Handler&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">stop&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{})&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 2&lt;/span> &lt;span class="nx">s&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Server&lt;/span>&lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 3&lt;/span> &lt;span class="nx">Addr&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nx">addr&lt;/span>&lt;span class="p">,&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="nx">Handler&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nx">handler&lt;/span>&lt;span class="p">,&lt;/span>
@@ -348,7 +423,7 @@
 &lt;p>为了说明什么是未完成的工作，请观察下面的例子。&lt;/p>
 &lt;p>&lt;strong>Listing 1&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/VORJoAD2oAh">https://play.golang.org/p/VORJoAD2oAh&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="mi">6&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Hello&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="mi">7&lt;/span> &lt;span class="k">go&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Goodbye&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="mi">8&lt;/span> &lt;span class="p">}&lt;/span>
@@ -362,7 +437,7 @@
 &lt;p>在Ardan Labs，我的团队构建了一个Web服务提供给那些需要追踪特定的事件的客户端使用。用于记录事件的那个系统有一个方法，类似于如下Listing 2中所示定义在&lt;code>Tracker&lt;/code>类型上的方法：&lt;/p>
 &lt;p>&lt;strong>Listing 2&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/8LoUoCdrT7T">https://play.golang.org/p/8LoUoCdrT7T&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span> &lt;span class="mi">9&lt;/span> &lt;span class="c1">// Tracker knows how to track events for the application.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span> &lt;span class="mi">9&lt;/span> &lt;span class="c1">// Tracker knows how to track events for the application.
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">10&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">Tracker&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{}&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="mi">11&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="mi">12&lt;/span> &lt;span class="c1">// Event records an event to a database or stream.
@@ -374,7 +449,7 @@
 &lt;p>基于上面判断，用于追踪事件的handler最初的实现如下：&lt;/p>
 &lt;p>&lt;strong>Listing 3&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/8LoUoCdrT7T">https://play.golang.org/p/8LoUoCdrT7T&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">18&lt;/span> &lt;span class="c1">// App holds application state.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">18&lt;/span> &lt;span class="c1">// App holds application state.
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">19&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">App&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="mi">20&lt;/span> &lt;span class="nx">track&lt;/span> &lt;span class="nx">Tracker&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">21&lt;/span> &lt;span class="p">}&lt;/span>
@@ -397,7 +472,7 @@
 &lt;p>首先，handler被修改为不直接创建Goroutine - 唯一的变化就是Listing 4中第53行去掉了&lt;code>go&lt;/code>关键字。&lt;/p>
 &lt;p>&lt;strong>Listing 4&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/BMah6_C57-l">https://play.golang.org/p/BMah6_C57-l&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">44&lt;/span> &lt;span class="c1">// Handle represents an example handler for the web service.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">44&lt;/span> &lt;span class="c1">// Handle represents an example handler for the web service.
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">45&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">App&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">Handle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">w&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ResponseWriter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">r&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Request&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="mi">46&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">47&lt;/span> &lt;span class="c1">// Do some actual work.
@@ -411,7 +486,7 @@
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>接下来，修改&lt;code>Tracker&lt;/code>类型使得它能自己管理Goroutine。&lt;/p>
 &lt;p>&lt;strong>Listing 5&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/BMah6_C57-l">https://play.golang.org/p/BMah6_C57-l&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">10&lt;/span> &lt;span class="c1">// Tracker knows how to track events for the application.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">10&lt;/span> &lt;span class="c1">// Tracker knows how to track events for the application.
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">11&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">Tracker&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="mi">12&lt;/span> &lt;span class="nx">wg&lt;/span> &lt;span class="nx">sync&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">WaitGroup&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">13&lt;/span> &lt;span class="p">}&lt;/span>
@@ -444,7 +519,7 @@
 &lt;p>&lt;code>Add&lt;/code>和&lt;code>Done&lt;/code>对于跟踪Goroutine的数量是非常有用的，但我们依然需要告诉程序去等待所有的Goroutine完成。为了达成这个目的，&lt;code>Tracker&lt;/code>类型在第35行添加了一个新的方法&lt;code>Shutdown&lt;/code> - 最简单的一个实现就是调用&lt;code>t.wg.Wait()&lt;/code>，这会阻塞程序知道Goroutine计数器变为0。最后，这个方法会再&lt;code>func main&lt;/code>中调用，如下面的Listing 6：&lt;/p>
 &lt;p>&lt;strong>Listing 6&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/BMah6_C57-l">https://play.golang.org/p/BMah6_C57-l&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">56&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">56&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 2&lt;/span>&lt;span class="mi">57&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="mi">58&lt;/span> &lt;span class="c1">// Start a server.
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">59&lt;/span> &lt;span class="c1">// Details not shown...
@@ -461,7 +536,7 @@
 &lt;p>&lt;code>Shown&lt;/code>方法的实现很简单，但确实也做了它该做的事情 - 它等待所有的Goroutine执行完成。但不幸的是，这里面无法限制要等待多久。如果是生产环境，你不能不会愿意看要无限制的等待你的程序退出。为了给&lt;code>Shutdown&lt;/code>方法一个等待的期限，我们团队修改成如下方式：&lt;/p>
 &lt;p>&lt;strong>Listing 7&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/p4gsDkpw1Gh">https://play.golang.org/p/p4gsDkpw1Gh&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">36&lt;/span> &lt;span class="c1">// Shutdown waits for all tracked events to finish processing
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">36&lt;/span> &lt;span class="c1">// Shutdown waits for all tracked events to finish processing
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">37&lt;/span> &lt;span class="c1">// or for the provided context to be canceled.
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">38&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">t&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Tracker&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">Shutdown&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Context&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">39&lt;/span>
@@ -488,7 +563,7 @@
 &lt;p>接下来，我们团队在&lt;code>func main&lt;/code>中修改了调用方式：&lt;/p>
 &lt;p>&lt;strong>Listing 8&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/p4gsDkpw1Gh">https://play.golang.org/p/p4gsDkpw1Gh&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">86&lt;/span> &lt;span class="c1">// Wait up to 5 seconds for all event goroutines to finish.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">86&lt;/span> &lt;span class="c1">// Wait up to 5 seconds for all event goroutines to finish.
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">87&lt;/span> &lt;span class="kd">const&lt;/span> &lt;span class="nx">timeout&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="mi">5&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Second&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="mi">88&lt;/span> &lt;span class="nx">ctx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cancel&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">WithTimeout&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Background&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="nx">timeout&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="mi">89&lt;/span> &lt;span class="k">defer&lt;/span> &lt;span class="nf">cancel&lt;/span>&lt;span class="p">()&lt;/span>
@@ -509,7 +584,7 @@
 &lt;p>下面的代码演示了一种非常常见的Goroutine泄漏。&lt;/p>
 &lt;p>&lt;strong>Listing 1&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/dsu3PARM24K">https://play.golang.org/p/dsu3PARM24K&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">31&lt;/span> &lt;span class="c1">// leak is a buggy function. It launches a goroutine that
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">31&lt;/span> &lt;span class="c1">// leak is a buggy function. It launches a goroutine that
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">32&lt;/span> &lt;span class="c1">// blocks receiving from a channel. Nothing will ever be
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">33&lt;/span> &lt;span class="c1">// sent on that channel and the channel is never closed so
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">34&lt;/span> &lt;span class="c1">// that goroutine will be blocked forever.
@@ -529,7 +604,7 @@
 &lt;p>我们将看到的这个程序 - 基于关键字查找记录然后打印。该程序围绕一个&lt;code>search&lt;/code>函数构建：&lt;/p>
 &lt;p>&lt;strong>Listing 2&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/o6_eMjxMVFv">https://play.golang.org/p/o6_eMjxMVFv&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">29&lt;/span> &lt;span class="c1">// search simulates a function that finds a record based
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">29&lt;/span> &lt;span class="c1">// search simulates a function that finds a record based
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">30&lt;/span> &lt;span class="c1">// on a search term. It takes 200ms to perform this work.
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">31&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">search&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">term&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">error&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="mi">32&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Sleep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">200&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Millisecond&lt;/span>&lt;span class="p">)&lt;/span>
@@ -537,7 +612,7 @@
 &lt;span class="ln">6&lt;/span>&lt;span class="mi">34&lt;/span> &lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>Listing 2中的&lt;code>search&lt;/code>函数的第31行，模拟了一个长时间运行的耗时操作，比如数据库查询或者Web调用。在这里，假设这个耗时操作为200ms。调用&lt;code>search&lt;/code>函数的代码在Listing 3中，如下所示：&lt;/p>
 &lt;p>&lt;strong>Listing 3&lt;/strong>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">17&lt;/span> &lt;span class="c1">// process is the work for the program. It finds a record
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">17&lt;/span> &lt;span class="c1">// process is the work for the program. It finds a record
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">18&lt;/span> &lt;span class="c1">// then prints it.
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">19&lt;/span> &lt;span class="kd">func&lt;/span> &lt;span class="nf">process&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">term&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">20&lt;/span> &lt;span class="nx">record&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">search&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">term&lt;/span>&lt;span class="p">)&lt;/span>
@@ -552,7 +627,7 @@
 &lt;p>对于一些应用而言，串行的调用&lt;code>search&lt;/code>带来的时延或许无法接受。假设&lt;code>search&lt;/code>无法更快的运行了，&lt;code>processs&lt;/code>函数可以修改成不必完全消耗在等待&lt;code>search&lt;/code>返回结果。为了达到这个目的，如下面Listing 4所示，可以使用一个Goroutine来解决这个问题。不幸的是，这个尝试是有问题的，它带来了潜在的Goroutine泄漏。&lt;/p>
 &lt;p>&lt;strong>Listing 4&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/m0DHuchgX0A">https://play.golang.org/p/m0DHuchgX0A&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">38&lt;/span> &lt;span class="c1">// result wraps the return values from search. It allows us
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="mi">38&lt;/span> &lt;span class="c1">// result wraps the return values from search. It allows us
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">39&lt;/span> &lt;span class="c1">// to pass both values across a single channel.
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">40&lt;/span> &lt;span class="kd">type&lt;/span> &lt;span class="nx">result&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="mi">41&lt;/span> &lt;span class="nx">record&lt;/span> &lt;span class="kt">string&lt;/span>
@@ -598,7 +673,7 @@
 &lt;p>上面的泄漏问题，最简单的解决方式就是 - 把原先的非缓冲（阻塞）channel修改为容量为1的缓冲（非阻塞）channel。&lt;/p>
 &lt;p>&lt;strong>Listing 5&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://play.golang.org/p/u3xtQ48G3qK">https://play.golang.org/p/u3xtQ48G3qK&lt;/a>&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">53&lt;/span> &lt;span class="c1">// Make a channel for the goroutine to report its result.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="mi">53&lt;/span> &lt;span class="c1">// Make a channel for the goroutine to report its result.
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">54&lt;/span> &lt;span class="c1">// Give it capacity so sending doesn&amp;#39;t block.
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="mi">55&lt;/span> &lt;span class="nx">ch&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="nx">result&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>现在在超时的那个分支，即使由于超时导致&lt;code>select&lt;/code>块结束等待往下进行（&lt;code>case &amp;lt;-ctx.Done()&lt;/code>分支)，启动&lt;code>search&lt;/code>的那个Goroutine最终也会得到搜索结果并发送到channel进而执行完成返回而不阻塞。最终Goroutine以及channel占用的内存都会被释放掉。所有事情自然而然的都解决了。&lt;/p>
@@ -615,7 +690,7 @@
 &lt;p>本文是一个指导性的参考文档，关于如何使用本文中提及的特性的例子，请参考&lt;a href="https://developers.google.com/protocol-buffers/docs/tutorials">tutorial&lt;/a> 并选择你想要的特定编程语言的例子。&lt;/p>
 &lt;h2 id="定义一个消息类型">定义一个消息类型&lt;/h2>
 &lt;p>首先让我们来看一个非常简单的例子。比如说你想要定义一个搜索请求这样一个消息，这个消息里包含一个查询字符串（query string）、你所感兴趣页面的数量以及每个页面包含的结果。如下是你的&lt;code>.proto&lt;/code>文件定义：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">syntax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;proto3&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">syntax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;proto3&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchRequest&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">query&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -644,7 +719,7 @@
 &lt;p>在&lt;code>proto3&lt;/code>中，标量类型的&lt;code>repeated&lt;/code>字段是默认是使用&lt;code>packed&lt;/code>来编码的。你可以从&lt;a href="https://developers.google.com/protocol-buffers/docs/encoding#packed">Protocol Buffer Encoding&lt;/a>中了解更多关于&lt;code>packed&lt;/code>编码的信息。&lt;/p>
 &lt;h3 id="添加更多的消息类型">添加更多的消息类型&lt;/h3>
 &lt;p>在一个&lt;code>.proto&lt;/code>文件中你可以定义多种不同的消息类型，如果你奥定义多个相关的消息，这就非常有用 - 比如你想要定义和&lt;code>SearchRequest&lt;/code>相对应的&lt;code>SearchResponse&lt;/code>消息，你可以在同一个&lt;code>.proto&lt;/code>文件中添加：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchRequest&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchRequest&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">query&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="n">page_number&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="n">result_per_page&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -655,7 +730,7 @@
 &lt;/span>&lt;span class="ln">9&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="添加注释">添加注释&lt;/h3>
 &lt;p>在&lt;code>.proto&lt;/code>中添加注释，你可以使用C/C++风格的语法：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="cm">/* SearchRequest represents a search query, with pagination options to
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="cm">/* SearchRequest represents a search query, with pagination options to
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="cm"> * indicate which results to include in the response. */&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchRequest&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
@@ -665,7 +740,7 @@
 &lt;/span>&lt;span class="ln">8&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="保留字段">保留字段&lt;/h3>
 &lt;p>如果你&lt;a href="#%E6%9B%B4%E6%96%B0%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B">更新息类型&lt;/a>的时候删除了一个字段，或者把一个字段注释掉，将来其他人在更新相同的消息的时候是可以重用之前字段的号码。之后在他们使用老版本的&lt;code>.proto&lt;/code>时将会导致许多问题，包括数据出错，privacy bugs等。为了确保这些问题不会发生，有一个办法是把那些你删除的字段的使用过的字段号码（和/或名称）标记为&lt;code>reserved&lt;/code>。如果你使用了这些被&lt;code>reserved&lt;/code>标记的号码，编译器会报错。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Foo&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Foo&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">reserved&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">15&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">9&lt;/span> &lt;span class="k">to&lt;/span> &lt;span class="mi">11&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">reserved&lt;/span> &lt;span class="s">&amp;#34;foo&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;bar&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
@@ -852,7 +927,7 @@
 &lt;h2 id="枚举">枚举&lt;/h2>
 &lt;p>当你定义你的消息的时候，你可能希望某些字段的值只能从一些预先定义好的值里来。例如，你想为你的&lt;code>SearchRequest&lt;/code>添加一个&lt;code>corpus&lt;/code>字段，这个字段的值可以是&lt;code>UNIVERSAL&lt;/code>, &lt;code>WEB&lt;/code>, &lt;code>IMAGES&lt;/code>, &lt;code>LOCAL&lt;/code>, &lt;code>NEWS&lt;/code>, &lt;code>PRODUCTS&lt;/code> 或者 &lt;code>VIDEO&lt;/code>。你可以通过定义枚举类满足你的需求，枚举中所有可能的值都是一个常量。&lt;/p>
 &lt;p>下面的例子中我们添加了一个名为&lt;code>Corpus&lt;/code>的枚举，这个枚举中定义了它可能的值，同时也定义类型为&lt;code>Corpus&lt;/code>的字段：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchRequest&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchRequest&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">query&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="n">page_number&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="n">result_per_page&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -873,7 +948,7 @@
 &lt;li>0值作为枚举的第一个元素，这个和&lt;code>proto2&lt;/code>的语言兼容，即第一个元素的值总是默认值&lt;/li>
 &lt;/ul>
 &lt;p>你可以通过给不同的枚举元素赋相同的值来定义别名，前提是你需要把&lt;code>allow_alias&lt;/code>选项设置为&lt;code>true&lt;/code>，否者编译器遇到这样的别名设置会报错。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">MyMessage1&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">MyMessage1&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kd">enum&lt;/span> &lt;span class="n">EnumAllowingAlias&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="k">option&lt;/span> &lt;span class="n">allow_alias&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">UNKNOWN&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -897,14 +972,14 @@
 &lt;p>更多关于如何使用&lt;code>enum&lt;/code>的信息，请参考：&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/overview">generated code guide&lt;/a>中特定编程语言的部分。&lt;/p>
 &lt;h3 id="枚举保留值">枚举保留值&lt;/h3>
 &lt;p>如果你&lt;a href="#%E6%9B%B4%E6%96%B0%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B">更新消息类型&lt;/a>的时候删除了一个枚举项或者注释掉，后面其他人在更新这个枚举的时候可以重用原枚举项对应的数值。之后在他们使用老版本的&lt;code>.proto&lt;/code>时将会导致许多问题，包括数据出错，privacy bugs等。为了确保这些问题不会发生，有一个办法是把那些你删除的枚举项的使用过的数值（和/或名称）标记为&lt;code>reserved&lt;/code>。如果你使用了这些被&lt;code>reserved&lt;/code>标记的号码，编译器会报错。你可以指定你保留的枚举数值的范围，你可以使用&lt;code>max&lt;/code>关键字来指定范围的最大值。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">enum&lt;/span> &lt;span class="n">Foo&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">enum&lt;/span> &lt;span class="n">Foo&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">reserved&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">15&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">9&lt;/span> &lt;span class="k">to&lt;/span> &lt;span class="mi">11&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">40&lt;/span> &lt;span class="k">to&lt;/span> &lt;span class="k">max&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">reserved&lt;/span> &lt;span class="s">&amp;#34;FOO&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;BAR&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>注意，你不可以在同一个&lt;code>reserved&lt;/code>语句中同时指定枚举项的名称和枚举值。&lt;/p>
 &lt;h2 id="使用其他消息类型">使用其他消息类型&lt;/h2>
 &lt;p>你可以使用其他消息作为你的字段的类型。例如，你希望你的&lt;code>SearchResponse&lt;/code>中包含&lt;code>Result&lt;/code>类型的字段 - 你可以在同一个&lt;code>.proto&lt;/code>文件找那个定义&lt;code>Result&lt;/code>消息，然后指定&lt;code>SearchResponse&lt;/code>的字段为&lt;code>Result&lt;/code>类型：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchResponse&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchResponse&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="k">repeated&lt;/span> &lt;span class="n">Result&lt;/span> &lt;span class="n">results&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">
@@ -917,15 +992,15 @@
 &lt;p>&lt;strong>注意，这个特性不适用于Java&lt;/strong>&lt;/p>
 &lt;p>在上面的例子中，&lt;code>Result&lt;/code>是和&lt;code>SearchResponse&lt;/code>位于相同的&lt;code>.proto&lt;/code>文件中 - 如果你想要使用的消息类型是定义在其他&lt;code>.proto&lt;/code>文件中呢？&lt;/p>
 &lt;p>你可以通过导入&lt;code>.proto&lt;/code>文件来使用定义在其他&lt;code>.proto&lt;/code>文件中的消息类型。你可以在文件头部添加import语句来导入：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;myproject/other_protos.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;myproject/other_protos.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>默认情况下，你只能使用直接导入的&lt;code>.proto&lt;/code>文件中定义的消息类型。但是，有时候你可能需要把&lt;code>.proto&lt;/code>文件移动到一个新的位置。你可以直接移动&lt;code>.proto&lt;/code>文件到一个新的位置，然后然后更新所有的import语句指向&lt;code>.proto&lt;/code>的新位置，你现在也可以在原来的位置放一个”假“的&lt;code>.proto&lt;/code>然后使用&lt;code>import public&lt;/code>语句把老的&lt;code>.proto&lt;/code>中的import语句重定向到新的位置。任何导入了包含&lt;code>import public&lt;/code>的&lt;code>.proto&lt;/code>文件也就把&lt;code>import public&lt;/code>的依赖也导入了。例如：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// new.proto
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// new.proto
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">// All definitions are moved here
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// old.proto
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// old.proto
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">// This is the proto that all clients are importing.
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="n">public&lt;/span> &lt;span class="s">&amp;#34;new.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;other.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// client.proto
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// client.proto
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;old.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="c1">// You use definitions from old.proto and new.proto, but not other.proto
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>protocol buffer编译器从命令行参数&lt;code>-I&lt;/code>/&lt;code>--proto_path&lt;/code>指定的一系列路径中查找导入的&lt;code>.proto&lt;/code>文件。如果这个参数没有指定一个值，编译器就从运行的目录里查找。通常地，你应该把&lt;code>--proto_path&lt;/code>的值设置为你项目的根目录，然后在import语句中使用完整的名称。&lt;/p>
@@ -933,7 +1008,7 @@
 &lt;p>在&lt;code>proto3&lt;/code>的消息中导入并使用&lt;code>proto2&lt;/code>的消息类型是可以的，相反也是可以。但是&lt;code>proto2&lt;/code>的枚举是无法在&lt;code>proto3&lt;/code>中使用（如果&lt;code>proto2&lt;/code>的消息体中使用&lt;code>proto2&lt;/code>枚举是可以的）&lt;/p>
 &lt;h2 id="嵌套类型">嵌套类型&lt;/h2>
 &lt;p>你可以在一个消息类型里定义嵌套的消息类型并使用它，如下面的例子所示 - &lt;code>Result&lt;/code>消息是定义在&lt;code>SearchResponse&lt;/code>里的：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchResponse&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SearchResponse&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kd">message&lt;/span> &lt;span class="nc">Result&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">url&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">title&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -942,11 +1017,11 @@
 &lt;/span>&lt;span class="ln">7&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="k">repeated&lt;/span> &lt;span class="n">Result&lt;/span> &lt;span class="n">results&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">8&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果你想在定义嵌套消息的父消息外使用，你可以通过&lt;code>_Parent_._Type_&lt;/code>来使用：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SomeOtherMessage&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SomeOtherMessage&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">SearchResponse.Result&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>你可以多层嵌套消息，如下所示：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Outer&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// Level 0
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Outer&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// Level 0
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kd">message&lt;/span> &lt;span class="nc">MiddleAA&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// Level 1
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kd">message&lt;/span> &lt;span class="nc">Inner&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// Level 2
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kt">int64&lt;/span> &lt;span class="n">ival&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -980,7 +1055,7 @@
 &lt;p>原先proto3消息在解析的时候总是丢弃未知字段，但是在版本3.5我们重新引入了对未知字段的保留以匹配proto2的行为。在版本3.5以及之后未知字段在解析和序列化的时候又重新保留了下来。&lt;/p>
 &lt;h2 id="any">Any&lt;/h2>
 &lt;p>&lt;code>Any&lt;/code>消息类型能让你像使用嵌套类型一样来使用一个消息而不需要有&lt;code>.proto&lt;/code>的定义。一个&lt;code>Any&lt;/code>消息包含一个序列化为&lt;code>bytes&lt;/code>的消息以及用来解释成对应消息类型的一个全局唯一标识符URL。你需要&lt;a href="#%E4%BD%BF%E7%94%A8%E5%85%B6%E4%BB%96%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B">导入&lt;/a>&lt;code>google/protobuf/any.proto&lt;/code>来使用&lt;code>Any&lt;/code>类型。（注：说白了，这个Any类型就是一种序列化，把一种特定类型按照某种方式序列化为字节数组）&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;google/protobuf/any.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;google/protobuf/any.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">ErrorStatus&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="kd">message&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -988,7 +1063,7 @@
 &lt;/span>&lt;span class="ln">6&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>默认的类型URL是&lt;code>type.googleapis.com/_packagename_._messagename_&lt;/code>。&lt;/p>
 &lt;p>不同的语言实现会提供类型安全的运行时库来打包和解包&lt;code>Any&lt;/code>类型的值 - 例如在Java中，&lt;code>Any&lt;/code>类型提供了&lt;code>pack()&lt;/code>和&lt;code>unpack()&lt;/code>访问器，在C++中提供了&lt;code>PackFrom()&lt;/code>和&lt;code>UnpackTo()&lt;/code>方法：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln"> 1&lt;/span>&lt;span class="c1">// Storing an arbitrary message type in Any.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln"> 1&lt;/span>&lt;span class="c1">// Storing an arbitrary message type in Any.
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="n">NetworkErrorDetails&lt;/span> &lt;span class="n">details&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">...;&lt;/span>
 &lt;span class="ln"> 3&lt;/span>&lt;span class="n">ErrorStatus&lt;/span> &lt;span class="n">status&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="n">status&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">add_details&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">PackFrom&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">details&lt;/span>&lt;span class="p">);&lt;/span>
@@ -1009,7 +1084,7 @@
 &lt;p>&lt;code>oneof&lt;/code>字段和常规字段一样，只是&lt;code>oneof&lt;/code>里所有的成员是共享内存的，且同一时刻最多只有一个字段被赋值。设置任何一个&lt;code>oneof&lt;/code>里的成员将自动清空其他的成员。你可以一个特殊的&lt;code>case()&lt;/code>或者&lt;code>WhichOneof()&lt;/code>方法（取决特定的语言）来判断&lt;code>oneof&lt;/code>里的成员是否被赋值了。&lt;/p>
 &lt;h3 id="使用oneof">使用&lt;code>oneof&lt;/code>&lt;/h3>
 &lt;p>你可以使用&lt;code>oneof&lt;/code>关键字跟上你的&lt;code>oneof&lt;/code>名称来定义一个&lt;code>oneof&lt;/code>，比如在&lt;code>test_oneof&lt;/code>中：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SampleMessage&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">SampleMessage&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="k">oneof&lt;/span> &lt;span class="n">test_oneof&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">SubMessage&lt;/span> &lt;span class="n">sub_message&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">9&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -1020,7 +1095,7 @@
 &lt;ul>
 &lt;li>
 &lt;p>设置任何一个&lt;code>oneof&lt;/code>里的成员将自动清空其他的成员。如果你设置了多个成员，只有最后一个设置的成员才有值。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="o">;&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">set_name&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="n">CHECK&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">has_name&lt;/span>&lt;span class="o">());&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">mutable_sub_message&lt;/span>&lt;span class="o">();&lt;/span> &lt;span class="c1">// Will clear name field.
@@ -1040,21 +1115,21 @@
 &lt;/li>
 &lt;li>
 &lt;p>如果你使用C++，确保你的代码不会引发内存泄漏。下面的代码会奔溃原因是因为&lt;code>sub_message&lt;/code>在调用了&lt;code>set_name()&lt;/code>后就被删除了&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="n">SubMessage&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">sub_message&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">mutable_sub_message&lt;/span>&lt;span class="p">();&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">set_name&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// Will delete sub_message
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="n">sub_message&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">set_&lt;/span>&lt;span class="p">...&lt;/span> &lt;span class="c1">// Crashes here
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;li>
 &lt;p>还是C++，&lt;code>Swap()&lt;/code>两个&lt;code>oneof&lt;/code>消息后，每个消息的&lt;code>oneof&lt;/code>字段发生互换。在下面的例子中，&lt;code>msg1&lt;/code>将会有&lt;code>sub_message&lt;/code>成员而&lt;code>msg2&lt;/code>将会有&lt;code>name&lt;/code>成员：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">msg1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">msg1&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="n">msg1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">set_name&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">msg2&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="n">msg2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">mutable_sub_message&lt;/span>&lt;span class="p">();&lt;/span>
 &lt;span class="ln">5&lt;/span>&lt;span class="n">msg1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">swap&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">msg2&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln">6&lt;/span>&lt;span class="n">CHECK&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">msg1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">has_sub_message&lt;/span>&lt;span class="p">());&lt;/span>
 &lt;span class="ln">7&lt;/span>&lt;span class="n">CHECK&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">msg2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">has_name&lt;/span>&lt;span class="p">());&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">msg1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="ln">1&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">msg1&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="n">msg1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">set_name&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="n">SampleMessage&lt;/span> &lt;span class="n">msg2&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="n">msg2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">mutable_sub_message&lt;/span>&lt;span class="p">();&lt;/span>
@@ -1073,9 +1148,9 @@
 &lt;/ul>
 &lt;h2 id="maps">Maps&lt;/h2>
 &lt;p>如果你希望在你的数据定义中创建&lt;code>map&lt;/code>，protocol buffer提供了一个方便的语法：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="n">key_type&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">value_type&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="n">map_field&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="n">key_type&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">value_type&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="n">map_field&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>key_type&lt;/code>可以是任何整型或者字符串类型（也就是说除了浮点和&lt;code>bytes&lt;/code>之外的标量类型）。因此，如果你希望创建一个键为字符串类型值为&lt;code>Project&lt;/code>消息的&lt;code>map&lt;/code>，你可以定义如下：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Project&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="n">projects&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Project&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="n">projects&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
 &lt;li>&lt;code>map&lt;/code>类型的字段是不可以定义为&lt;code>repeated&lt;/code>&lt;/li>
 &lt;li>Wire格式的顺序不固定，迭代&lt;code>map&lt;/code>也是无序的，因此你不能依赖&lt;code>map&lt;/code>为你提供有序的成员&lt;/li>
@@ -1085,7 +1160,7 @@
 &lt;p>访问&lt;code>map&lt;/code>的API目前已对&lt;code>proto3&lt;/code>支持。你可以从 &lt;a href="https://developers.google.com/protocol-buffers/docs/reference/overview">API reference&lt;/a>中查找特定语言相关的说明。&lt;/p>
 &lt;h3 id="向后兼容">向后兼容&lt;/h3>
 &lt;p>&lt;code>map&lt;/code>的语法和下面的定义等价，因此对那些不支持&lt;code>map&lt;/code>的protocol buffer实现依然可以处理你的数据。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">MapFieldEntry&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">MapFieldEntry&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">key_type&lt;/span> &lt;span class="n">key&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">value_type&lt;/span> &lt;span class="n">value&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
@@ -1094,10 +1169,10 @@
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>任何支持&lt;code>map&lt;/code>的protocol buffer的实现必须能够基于上面的定义生成和接受数据。&lt;/p>
 &lt;h2 id="包">包&lt;/h2>
 &lt;p>你可以在&lt;code>.proto&lt;/code>中添加一个可选的&lt;code>package&lt;/code>指示符，这样可以防止不同的消息类型间名字冲突。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nn">foo&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bar&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nn">foo&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bar&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Open&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="o">...&lt;/span> &lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>你可以在定义你的消息类型的时候使用&lt;code>package&lt;/code>指示符：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Foo&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Foo&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="o">...&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="n">foo.bar.Open&lt;/span> &lt;span class="n">open&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="o">...&lt;/span>&lt;span class="err">
@@ -1115,7 +1190,7 @@
 &lt;p>protocol buffer编译器通过解析导入的&lt;code>.proto&lt;/code>文件来解析所有的类型名称。即使不同语言有不同的范围规则，不同语言的代码生成器知道如何找到特定的类型。&lt;/p>
 &lt;h2 id="定义服务">定义服务&lt;/h2>
 &lt;p>如果你希望在你的RPC服务中使用你定义的消息，你可以在&lt;code>.proto&lt;/code>文件中定义RPC服务接口，而后protocol buffer会生成特定语言的服务接口代码和mock实现。因此，假如你需要定义个RPC服务的方法接受&lt;code>SearchRequest&lt;/code>参数返回&lt;code>SearchResponse&lt;/code>，你可以按如下方式定义：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">service&lt;/span> &lt;span class="n">SearchService&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="kd">service&lt;/span> &lt;span class="n">SearchService&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="k">rpc&lt;/span> &lt;span class="n">Search&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">SearchRequest&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">returns&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">SearchResponse&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;a href="https://grpc.io/">gRPC&lt;/a>是最直接使用protocol buffer的RPC系统：Google开发的一个语言和平台中立的开源的RPC系统。gRPC能非常好的和protocol buffer工作，使用一个特殊的protocol buffer插件能完美的生成gRPC代码。&lt;/p>
@@ -1273,7 +1348,7 @@
 &lt;h2 id="生成你的类">生成你的类&lt;/h2>
 &lt;p>你需要运行Protocol buffer编译器&lt;code>.protoc&lt;/code>来编译你的&lt;code>.proto&lt;/code>文件来生成和消息交互的Java/Kotlin/Python/C++/Go/Ruby/Objective-C/C# 代码。如果你还没哟uanzhuang编译器，&lt;a href="https://developers.google.com/protocol-buffers/docs/downloads">请先下载&lt;/a>然后参考README的说明来安装。对Go语言，你需要安装一个特定的代码生成器插件：你可以从&lt;a href="https://github.com/golang/protobuf/">golang/protobuf&lt;/a> 找到这个插件以及这个插件的安装说明。&lt;/p>
 &lt;p>Protocol编译器是按照以下的方式来调用：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">protoc&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">proto_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">IMPORT_PATH&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">cpp_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">java_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">python_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">go_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">ruby_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">objc_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">csharp_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="n">path&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="k">to&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">file.proto&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">protoc&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">proto_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">IMPORT_PATH&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">cpp_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">java_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">python_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">go_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">ruby_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">objc_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">csharp_out&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DST_DIR&lt;/span> &lt;span class="n">path&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="k">to&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">file.proto&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
 &lt;li>
 &lt;p>&lt;code>IMPORT_PATH&lt;/code>指定了从什么位置导入&lt;code>.proto&lt;/code>文件。如果没有指定，默认从当前位置导入。如果有多个导入位置，可以多次指定&lt;code>--proto_path&lt;/code>并设置路径，这些路径将被按顺序查找和导入。&lt;code>-I=_IMPORT_PATH_&lt;/code>是&lt;code>--proto_path&lt;/code>的简短形式。&lt;/p>
@@ -1332,7 +1407,7 @@
 &lt;li>n1是float类型，但是在存储的时候会自动转换成double，因此占用8个字节，但是&lt;code>%ld&lt;/code>导致在转换说明的时候，只读取了前4个字节&lt;/li>
 &lt;li>以上，导致每一次&lt;code>%ld&lt;/code>的转换都发生错位，四次的&lt;code>%ld&lt;/code>仅读取了16个字节，但是&lt;code>n1&lt;/code>到&lt;code>n4&lt;/code>一共占用了24个字节&lt;/li>
 &lt;/ol>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%ld %ld %ld %ld&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n4&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%ld %ld %ld %ld&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n4&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/printf-incompatiable.png" alt="转换不匹配">&lt;/p>
 &lt;/li>
 &lt;li>格式化字符串转换说明 （关于转换说明符修饰符P71）
@@ -1416,7 +1491,7 @@
 &lt;/li>
 &lt;li>
 &lt;p>对于scanf而言，把*放在%和转换字符之间，则会跳过相应的输入项。下面代码所示，scanf跳过了第一个和第二个输入，把第三个输入赋值给n&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 2&lt;/span> &lt;span class="kt">unsigned&lt;/span> &lt;span class="n">width&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">6&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">precision&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln"> 3&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">number&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">256&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln"> 4&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">weight&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">242.5&lt;/span>&lt;span class="p">;&lt;/span>
@@ -1573,14 +1648,14 @@
 &lt;h2 id="定义你的protocol格式">定义你的protocol格式&lt;/h2>
 &lt;p>创建你的地址簿应用的第一步是定义你的&lt;code>.proto&lt;/code>文件。&lt;code>.proto&lt;/code>文件中的定义很简单：你为你想要序列化的每一个数据结构添加一个消息，然后为消息中的每个字段指定一个名称和对应的类型。在我们的例子中，在&lt;code>.proto&lt;/code>中定义的消息请参考&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/addressbook.proto">addressbook.proto&lt;/a>。&lt;/p>
 &lt;p>&lt;code>.proto&lt;/code>文件是从一个包声明开始的，包声明用来防止在不同项目中的名字冲突。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">syntax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;proto3&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="n">syntax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;proto3&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nn">tutorial&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln">4&lt;/span>&lt;span class="err">&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;google/protobuf/timestamp.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>go_package&lt;/code>定义了代码生成所在的路径，包名即路径中的最后一个目录。例如，我们的例子的包名就是”tutorialpb“。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="k">option&lt;/span> &lt;span class="n">go_package&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;github.com/protocolbuffers/protobuf/examples/go/tutorialpb&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln">1&lt;/span>&lt;span class="k">option&lt;/span> &lt;span class="n">go_package&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;github.com/protocolbuffers/protobuf/examples/go/tutorialpb&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>接下来，你就可以定义你的消息了。一个小时是包含一组含有类型的字段的集合。许多标准的简单值类型都是支持的，例如&lt;code>bool&lt;/code> 、&lt;code>int32&lt;/code>、 &lt;code>float&lt;/code>、 &lt;code>double&lt;/code> 和&lt;code>string&lt;/code>。你也可以包含其他消息在你要定义的消息里。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Person&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="ln"> 1&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">Person&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="err">&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="n">id&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// Unique ID number for this person.
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">email&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
@@ -1618,14 +1693,14 @@
 &lt;/li>
 &lt;li>
 &lt;p>运行下面的命令安装Go protocol buffers plugin：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>go get github.com/golang/protobuf/protoc-gen-go
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>go get github.com/golang/protobuf/protoc-gen-go
 &lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;/ol>
 &lt;p>编译器plugin &lt;code>protoc-gen-to&lt;/code>将被安装在&lt;code>$GOBIN&lt;/code>目录，该目录默认是在&lt;code>$GOPATH/bin&lt;/code>。这个目录必须包含在你的&lt;code>$PATH&lt;/code>中。&lt;/p>
 &lt;ol start="3">
 &lt;li>
 &lt;p>现在你可以运行编译器，指定源目录（就是你的源文件所在的目录，如果没有指定就是指当前目录）和目标目录（生成的代码所在的目录）以及&lt;code>.proto&lt;/code>所在的目录。在我们的例子中，你应该运行下面命令：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>protoc -I&lt;span class="o">=&lt;/span>&lt;span class="nv">$SRC_DIR&lt;/span> --go_out&lt;span class="o">=&lt;/span>&lt;span class="nv">$DST_DIR&lt;/span> &lt;span class="nv">$SRC_DIR&lt;/span>/addressbook.proto
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>protoc -I&lt;span class="o">=&lt;/span>&lt;span class="nv">$SRC_DIR&lt;/span> --go_out&lt;span class="o">=&lt;/span>&lt;span class="nv">$DST_DIR&lt;/span> &lt;span class="nv">$SRC_DIR&lt;/span>/addressbook.proto
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>由于你是需要生成Go代码，你应该使用&lt;code>--go-out&lt;/code>选项，其他语言则使用对应的选项。&lt;/p>
 &lt;/li>
 &lt;/ol>
@@ -1640,7 +1715,7 @@
 &lt;/ul>
 &lt;p>你可以从&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/go-generated">Go Generated Code guide&lt;/a>了解到代码生成的细节，对于大部分代码你只需要像对待Go类型一样。&lt;/p>
 &lt;p>&lt;code>list_people&lt;/code>的单元测试&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people_test.go">command's unit tests&lt;/a>中展示了你应该如何创建&lt;code>Person&lt;/code>的实例：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="nx">p&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Person&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="nx">p&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Person&lt;/span>&lt;span class="p">{&lt;/span>
 &lt;span class="ln">2&lt;/span> &lt;span class="nx">Id&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1234&lt;/span>&lt;span class="p">,&lt;/span>
 &lt;span class="ln">3&lt;/span> &lt;span class="nx">Name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;John Doe&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
 &lt;span class="ln">4&lt;/span> &lt;span class="nx">Email&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;jdoe@example.com&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
@@ -1650,7 +1725,7 @@
 &lt;span class="ln">8&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="写消息">写消息&lt;/h2>
 &lt;p>使用proptocol buffers的目的是序列化你的数据，而后能够在任何地方解析。Go语言中，你可以使用&lt;code>proto&lt;/code>库的&lt;a href="https://pkg.go.dev/google.golang.org/protobuf/proto?tab=doc#Marshal">Marshal&lt;/a>方法序列化你的protocol buffer数据。protocol buffer消息的指针类型实现了&lt;code>proto.Message&lt;/code>接口。调用&lt;code>proto.Marshal&lt;/code>返回序列化后的编码成wire格式的protocol buffer数据。例如，我们在&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/add_person.go">&lt;code>add_person&lt;/code> command&lt;/a>中使用了这个方法：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="nx">book&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">AddressBook&lt;/span>&lt;span class="p">{}&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln"> 1&lt;/span>&lt;span class="nx">book&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">AddressBook&lt;/span>&lt;span class="p">{}&lt;/span>
 &lt;span class="ln"> 2&lt;/span>&lt;span class="c1">// ...
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>
 &lt;span class="ln"> 4&lt;/span>&lt;span class="c1">// Write the new address book back to disk.
@@ -1663,7 +1738,7 @@
 &lt;span class="ln">11&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="读数据">读数据&lt;/h2>
 &lt;p>你可以使用&lt;code>proto&lt;/code>库中的&lt;a href="https://pkg.go.dev/google.golang.org/protobuf/proto?tab=doc#Unmarshal">Unmarshal&lt;/a>方法来解析编码过的数据。调用这个方法将&lt;code>buf&lt;/code>中的protocol buffer数据解析出来存放在&lt;code>pb&lt;/code>中。因此我们使用下面的代码在&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people.go">&lt;code>list_people&lt;/code> command&lt;/a>中进行解析：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// Read the existing address book.
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// Read the existing address book.
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">in&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ioutil&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ReadFile&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">fname&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln">4&lt;/span> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatalln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Error reading file:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
@@ -1690,9 +1765,9 @@
 &lt;p>此外，你最好对Hugo有一些基本的认识。你可以通过&lt;a href="https://gohugo.io/getting-started/quick-start/">Quick Start Hugo&lt;/a>来快速了解，&lt;strong>并且事先安装好hugo&lt;/strong>。&lt;/p>
 &lt;h2 id="配置jonlimxblogs-src和github-action">配置jonlimx/blogs-src和Github Action&lt;/h2>
 &lt;p>在github上创建好jonlimx/blogs-src之后，在本地创建一个名为blogs-src的文件夹（路径和名称可自行决定），然后初始化为hugo站点，最后和jonlimx/blogs-src关联即可。&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>hugo new site .
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>hugo new site .
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>接着打开jonlimx/blogs-src，创建一个workflow &lt;strong>gh-pages.yml&lt;/strong>，完整内容如下：&lt;/p>
-&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="ln"> 1&lt;/span>&lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">github pages&lt;/span>&lt;span class="w">
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="ln"> 1&lt;/span>&lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">github pages&lt;/span>&lt;span class="w">
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="w">
 &lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="nt">on&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
 &lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nt">push&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
