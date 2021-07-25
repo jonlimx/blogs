@@ -113,7 +113,7 @@ Jul 5, 2021</span>
 <ul>
 <li><a href=#ch03-数据和c>ch03. 数据和C</a></li>
 <li><a href=#ch04-字符串和格式化输入输出>ch04. 字符串和格式化输入/输出</a></li>
-<li><a href=#ch05运算符表达符和语句>ch05.运算符、表达符和语句</a></li>
+<li><a href=#ch05-运算符表达符和语句>ch05. 运算符、表达符和语句</a></li>
 </ul>
 </nav>
 <p><em>本文是《C Primer Plus》第三章至第五章读书笔记。</em></p>
@@ -146,16 +146,38 @@ Jul 5, 2021</span>
 </ol>
 </blockquote>
 <ul>
-<li>C语言中，没有专门的数据结构存放字符串。字符串是存放在char数组中，且数组的末尾是存放占位符'\0'，这个占位符是自动添加到数组末尾</li>
-<li>使用scanf读取字符串的时候，<strong>输入空格则停止读取</strong></li>
-<li>"x"和'x'的区别：前者是char数组，实际占用两个字符，后者是char类型，一个字符</li>
-<li>sizeof - 字节长度 / strlen - 字符串长度</li>
-<li>使用sizeof计算字符串，会把结束字符（空字符'\0'）也算进去得到总共占用的字节数；而strlen计算字符串长度的时候，不会把末尾的结束字符计算进去</li>
-<li>sizeof结果返回size_t类型，一个无符号整型</li>
-<li>limits.h和float.h中分别定义了各种类型的最大值和最小值，这个会由于操作系统以及其字长的不同而不同</li>
-<li>#define NAME value - 使用预处理器定义了一个明示常量，通常用大写来命名；const定义的实际是变量，可读变量</li>
-<li>printf<em><strong>转换说明：把以二进制格式存储在计算机中的值转换成一系列字符串然后打印</strong></em></li>
-<li>转换如果和底层的数据类型不匹配会发生很奇怪的事情，如下代码：
+<li>
+<p>C语言中，没有专门的数据结构存放字符串。字符串是存放在char数组中，且数组的末尾是存放占位符'\0'，这个占位符是自动添加到数组末尾</p>
+</li>
+<li>
+<p>使用scanf读取字符串的时候，<strong>输入空格则停止读取</strong></p>
+</li>
+<li>
+<p>使用scanf读取字符串的时候，变量不需要通过&取地址（因为字符数组本身就是一个指针？？）</p>
+</li>
+<li>
+<p>"x"和'x'的区别：前者是char数组，实际占用两个字符，后者是char类型，一个字符</p>
+</li>
+<li>
+<p>sizeof - 字节长度 / strlen - 字符串长度</p>
+</li>
+<li>
+<p>使用sizeof计算字符串，会把结束字符（空字符'\0'）也算进去得到总共占用的字节数；而strlen计算字符串长度的时候，不会把末尾的结束字符计算进去</p>
+</li>
+<li>
+<p>sizeof结果返回size_t类型，一个无符号整型</p>
+</li>
+<li>
+<p>limits.h和float.h中分别定义了各种类型的最大值和最小值，这个会由于操作系统以及其字长的不同而不同</p>
+</li>
+<li>
+<p>#define NAME value - 使用预处理器定义了一个明示常量，通常用大写来命名；const定义的实际是变量，可读变量</p>
+</li>
+<li>
+<p>printf<em><strong>转换说明：把以二进制格式存储在计算机中的值转换成一系列字符串然后打印</strong></em></p>
+</li>
+<li>
+<p>转换如果和底层的数据类型不匹配会发生很奇怪的事情，如下代码：</p>
 <ol>
 <li>n1是float类型，但是在存储的时候会自动转换成double，因此占用8个字节，但是<code>%ld</code>导致在转换说明的时候，只读取了前4个字节</li>
 <li>以上，导致每一次<code>%ld</code>的转换都发生错位，四次的<code>%ld</code>仅读取了16个字节，但是<code>n1</code>到<code>n4</code>一共占用了24个字节</li>
@@ -163,7 +185,8 @@ Jul 5, 2021</span>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln>1</span><span class=n>printf</span><span class=p>(</span><span class=s>&#34;%ld %ld %ld %ld</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>n1</span><span class=p>,</span> <span class=n>n2</span><span class=p>,</span> <span class=n>n3</span><span class=p>,</span> <span class=n>n4</span><span class=p>);</span>
 </code></pre></div><p><img src=https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/printf-incompatiable.png alt=转换不匹配></p>
 </li>
-<li>格式化字符串转换说明 （关于转换说明符修饰符P71）
+<li>
+<p>格式化字符串转换说明 （关于转换说明符修饰符P71）</p>
 <table>
 <thead>
 <tr>
@@ -235,9 +258,14 @@ Jul 5, 2021</span>
 </tbody>
 </table>
 </li>
-<li>scanf与printf正好相反，从键盘输入的都是字符串，scanf通过制定数据类型然后将字符串转换成对应的数据类型。注意：<strong>除了字符串类型及char数组，其他所有的类型都要通过指针来接收值</strong></li>
-<li>scanf通过空格或者回车将输入分割成多个字段（%c是例外，也会把空字符作为输入存储）</li>
-<li>*修饰符
+<li>
+<p>scanf与printf正好相反，从键盘输入的都是字符串，scanf通过制定数据类型然后将字符串转换成对应的数据类型。注意：<strong>除了字符串类型及char数组，其他所有的类型都要通过指针来接收值</strong></p>
+</li>
+<li>
+<p>scanf通过空格或者回车将输入分割成多个字段（%c是例外，也会把空字符作为输入存储）</p>
+</li>
+<li>
+<p>*修饰符</p>
 <ul>
 <li>
 <p>对于printf而言，*修饰符用于代替字段。如下面代码所示，*修饰符用与替换width和precision表示宽度和精度</p>
@@ -262,7 +290,7 @@ Jul 5, 2021</span>
 </ul>
 </li>
 </ul>
-<h2 id=ch05运算符表达符和语句>ch05.运算符、表达符和语句</h2>
+<h2 id=ch05-运算符表达符和语句>ch05. 运算符、表达符和语句</h2>
 <blockquote>
 <p>思考问题：</p>
 <ol>

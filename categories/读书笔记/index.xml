@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>读书笔记 on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</link><description>Recent content in 读书笔记 on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Mon, 19 Jul 2021 21:24:20 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus读书笔记（二）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第六章至第九章读书笔记，持续更新中。&lt;/em>&lt;/p>
-&lt;h2 id="ch06c控制语句循环">ch06.C控制语句：循环&lt;/h2>
+&lt;h2 id="ch06-c控制语句循环">ch06. C控制语句：循环&lt;/h2>
 &lt;blockquote>
 &lt;ol>
 &lt;li>C语言支持哪些循环控制关键字&lt;/li>
@@ -53,6 +53,18 @@
 &lt;li>
 &lt;p>**关系运算符优先级：**关系运算符的优先级比算术运算符（包括+和-）&lt;strong>低&lt;/strong>，&lt;strong>比赋值运算符高&lt;/strong> (优先级：&lt;a href="https://www.jonathanlin.top/posts/c-primer-plus-notes-01/#ch05%E8%BF%90%E7%AE%97%E7%AC%A6%E8%A1%A8%E8%BE%BE%E7%AC%A6%E5%92%8C%E8%AF%AD%E5%8F%A5">C Primer Plus读书笔记（一） | Standing on the Shoulder of Giants (jonathanlin.top)&lt;/a>)&lt;/p>
 &lt;/li>
+&lt;/ul>
+&lt;h2 id="ch07-c控制语句分支和跳转">ch07. C控制语句：分支和跳转&lt;/h2>
+&lt;blockquote>
+&lt;ol>
+&lt;li>支持分支、跳转的关键字有哪些&lt;/li>
+&lt;li>字符I/O函数&lt;code>getchar&lt;/code>和&lt;code>putchar&lt;/code>有什么特别之处&lt;/li>
+&lt;li>&lt;code>goto&lt;/code>语句是否应该使用，应该注意哪些事项&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>&lt;code>ch = getchar()&lt;/code> - 与&lt;code>scanf(&amp;quot;%c&amp;quot;, &amp;amp;ch)&lt;/code>类似，读取下一个字符赋值给变量&lt;code>ch&lt;/code>&lt;/li>
+&lt;li>&lt;code>putchar(ch)&lt;/code> - 与&lt;code>printf(&amp;quot;%c&amp;quot;, ch)&lt;/code>类似，打印一个字符&lt;/li>
 &lt;/ul></description></item><item><title>C Primer Plus读书笔记（一）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-01/</link><pubDate>Mon, 05 Jul 2021 19:41:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-01/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第三章至第五章读书笔记。&lt;/em>&lt;/p>
 &lt;h2 id="ch03-数据和c">ch03. 数据和C&lt;/h2>
@@ -84,16 +96,38 @@
 &lt;/ol>
 &lt;/blockquote>
 &lt;ul>
-&lt;li>C语言中，没有专门的数据结构存放字符串。字符串是存放在char数组中，且数组的末尾是存放占位符'\0'，这个占位符是自动添加到数组末尾&lt;/li>
-&lt;li>使用scanf读取字符串的时候，&lt;strong>输入空格则停止读取&lt;/strong>&lt;/li>
-&lt;li>&amp;quot;x&amp;quot;和'x'的区别：前者是char数组，实际占用两个字符，后者是char类型，一个字符&lt;/li>
-&lt;li>sizeof - 字节长度 / strlen - 字符串长度&lt;/li>
-&lt;li>使用sizeof计算字符串，会把结束字符（空字符'\0'）也算进去得到总共占用的字节数；而strlen计算字符串长度的时候，不会把末尾的结束字符计算进去&lt;/li>
-&lt;li>sizeof结果返回size_t类型，一个无符号整型&lt;/li>
-&lt;li>limits.h和float.h中分别定义了各种类型的最大值和最小值，这个会由于操作系统以及其字长的不同而不同&lt;/li>
-&lt;li>#define NAME value - 使用预处理器定义了一个明示常量，通常用大写来命名；const定义的实际是变量，可读变量&lt;/li>
-&lt;li>printf&lt;em>&lt;strong>转换说明：把以二进制格式存储在计算机中的值转换成一系列字符串然后打印&lt;/strong>&lt;/em>&lt;/li>
-&lt;li>转换如果和底层的数据类型不匹配会发生很奇怪的事情，如下代码：
+&lt;li>
+&lt;p>C语言中，没有专门的数据结构存放字符串。字符串是存放在char数组中，且数组的末尾是存放占位符'\0'，这个占位符是自动添加到数组末尾&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>使用scanf读取字符串的时候，&lt;strong>输入空格则停止读取&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>使用scanf读取字符串的时候，变量不需要通过&amp;amp;取地址（因为字符数组本身就是一个指针？？）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&amp;quot;x&amp;quot;和'x'的区别：前者是char数组，实际占用两个字符，后者是char类型，一个字符&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>sizeof - 字节长度 / strlen - 字符串长度&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>使用sizeof计算字符串，会把结束字符（空字符'\0'）也算进去得到总共占用的字节数；而strlen计算字符串长度的时候，不会把末尾的结束字符计算进去&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>sizeof结果返回size_t类型，一个无符号整型&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>limits.h和float.h中分别定义了各种类型的最大值和最小值，这个会由于操作系统以及其字长的不同而不同&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>#define NAME value - 使用预处理器定义了一个明示常量，通常用大写来命名；const定义的实际是变量，可读变量&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>printf&lt;em>&lt;strong>转换说明：把以二进制格式存储在计算机中的值转换成一系列字符串然后打印&lt;/strong>&lt;/em>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>转换如果和底层的数据类型不匹配会发生很奇怪的事情，如下代码：&lt;/p>
 &lt;ol>
 &lt;li>n1是float类型，但是在存储的时候会自动转换成double，因此占用8个字节，但是&lt;code>%ld&lt;/code>导致在转换说明的时候，只读取了前4个字节&lt;/li>
 &lt;li>以上，导致每一次&lt;code>%ld&lt;/code>的转换都发生错位，四次的&lt;code>%ld&lt;/code>仅读取了16个字节，但是&lt;code>n1&lt;/code>到&lt;code>n4&lt;/code>一共占用了24个字节&lt;/li>
@@ -101,7 +135,8 @@
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%ld %ld %ld %ld&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n4&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/printf-incompatiable.png" alt="转换不匹配">&lt;/p>
 &lt;/li>
-&lt;li>格式化字符串转换说明 （关于转换说明符修饰符P71）
+&lt;li>
+&lt;p>格式化字符串转换说明 （关于转换说明符修饰符P71）&lt;/p>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -173,9 +208,14 @@
 &lt;/tbody>
 &lt;/table>
 &lt;/li>
-&lt;li>scanf与printf正好相反，从键盘输入的都是字符串，scanf通过制定数据类型然后将字符串转换成对应的数据类型。注意：&lt;strong>除了字符串类型及char数组，其他所有的类型都要通过指针来接收值&lt;/strong>&lt;/li>
-&lt;li>scanf通过空格或者回车将输入分割成多个字段（%c是例外，也会把空字符作为输入存储）&lt;/li>
-&lt;li>*修饰符
+&lt;li>
+&lt;p>scanf与printf正好相反，从键盘输入的都是字符串，scanf通过制定数据类型然后将字符串转换成对应的数据类型。注意：&lt;strong>除了字符串类型及char数组，其他所有的类型都要通过指针来接收值&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>scanf通过空格或者回车将输入分割成多个字段（%c是例外，也会把空字符作为输入存储）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>*修饰符&lt;/p>
 &lt;ul>
 &lt;li>
 &lt;p>对于printf而言，*修饰符用于代替字段。如下面代码所示，*修饰符用与替换width和precision表示宽度和精度&lt;/p>
@@ -200,7 +240,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h2 id="ch05运算符表达符和语句">ch05.运算符、表达符和语句&lt;/h2>
+&lt;h2 id="ch05-运算符表达符和语句">ch05. 运算符、表达符和语句&lt;/h2>
 &lt;blockquote>
 &lt;p>思考问题：&lt;/p>
 &lt;ol>

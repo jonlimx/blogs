@@ -22,16 +22,16 @@
 <meta property="og:locale" content="zh">
 <meta property="og:type" content="article">
 <meta name=description content="本文是《C Primer Plus》第六章至第九章读书笔记，持续更新中。
-ch06.C控制语句：循环   C语言支持哪些循环控制关键字 循环体中（里）变量的作用域     可以通过scanf函数控制循环 - 如果输入数据无法转换成指定类型的时候，scanf函数返回0
-  while循环部分要点：只有测试条件之后的单独语 …">
+ch06. C控制语句：循环   C语言支持哪些循环控制关键字 循环体中（里）变量的作用域     可以通过scanf函数控制循环 - 如果输入数据无法转换成指定类型的时候，scanf函数返回0
+  while循环部分要点：只有测试条件之后的单独 …">
 <meta name=twitter:card content="summary">
 <meta name=twitter:creator content>
 <meta name=twitter:title content="C Primer Plus读书笔记（二）">
 <meta property="og:url" content="https://www.jonathanlin.top/posts/c-primer-plus-notes-02/">
 <meta property="og:title" content="C Primer Plus读书笔记（二）">
 <meta property="og:description" content="本文是《C Primer Plus》第六章至第九章读书笔记，持续更新中。
-ch06.C控制语句：循环   C语言支持哪些循环控制关键字 循环体中（里）变量的作用域     可以通过scanf函数控制循环 - 如果输入数据无法转换成指定类型的时候，scanf函数返回0
-  while循环部分要点：只有测试条件之后的单独语 …">
+ch06. C控制语句：循环   C语言支持哪些循环控制关键字 循环体中（里）变量的作用域     可以通过scanf函数控制循环 - 如果输入数据无法转换成指定类型的时候，scanf函数返回0
+  while循环部分要点：只有测试条件之后的单独 …">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/c-primer-plus.png">
 <link rel=apple-touch-icon sizes=180x180 href=https://www.jonathanlin.top/icons/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=https://www.jonathanlin.top/icons/favicon-32x32.png>
@@ -111,11 +111,12 @@ Jul 19, 2021</span>
 <h2>文章目录</h2>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#ch06c控制语句循环>ch06.C控制语句：循环</a></li>
+<li><a href=#ch06-c控制语句循环>ch06. C控制语句：循环</a></li>
+<li><a href=#ch07-c控制语句分支和跳转>ch07. C控制语句：分支和跳转</a></li>
 </ul>
 </nav>
 <p><em>本文是《C Primer Plus》第六章至第九章读书笔记，持续更新中。</em></p>
-<h2 id=ch06c控制语句循环>ch06.C控制语句：循环</h2>
+<h2 id=ch06-c控制语句循环>ch06. C控制语句：循环</h2>
 <blockquote>
 <ol>
 <li>C语言支持哪些循环控制关键字</li>
@@ -168,6 +169,18 @@ Jul 19, 2021</span>
 <li>
 <p>**关系运算符优先级：**关系运算符的优先级比算术运算符（包括+和-）<strong>低</strong>，<strong>比赋值运算符高</strong> (优先级：<a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-01/#ch05%E8%BF%90%E7%AE%97%E7%AC%A6%E8%A1%A8%E8%BE%BE%E7%AC%A6%E5%92%8C%E8%AF%AD%E5%8F%A5>C Primer Plus读书笔记（一） | Standing on the Shoulder of Giants (jonathanlin.top)</a>)</p>
 </li>
+</ul>
+<h2 id=ch07-c控制语句分支和跳转>ch07. C控制语句：分支和跳转</h2>
+<blockquote>
+<ol>
+<li>支持分支、跳转的关键字有哪些</li>
+<li>字符I/O函数<code>getchar</code>和<code>putchar</code>有什么特别之处</li>
+<li><code>goto</code>语句是否应该使用，应该注意哪些事项</li>
+</ol>
+</blockquote>
+<ul>
+<li><code>ch = getchar()</code> - 与<code>scanf("%c", &ch)</code>类似，读取下一个字符赋值给变量<code>ch</code></li>
+<li><code>putchar(ch)</code> - 与<code>printf("%c", ch)</code>类似，打印一个字符</li>
 </ul>
 <style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
