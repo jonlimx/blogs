@@ -1,19 +1,19 @@
-<!doctype html><html lang=zh data-figures>
+<!doctype html><html lang=zh data-figures class=page>
 <head>
-<title>编程练习 | Standing on the Shoulder of Giants</title>
+<title>MongoDB学习笔记（一） | Standing on the Shoulder of Giants</title>
 <meta charset=utf-8>
-<meta property="og:title" content="编程练习 | Standing on the Shoulder of Giants">
-<meta itemprop=name content="编程练习 | Standing on the Shoulder of Giants">
-<meta name=application-name content="编程练习 | Standing on the Shoulder of Giants">
+<meta property="og:title" content="MongoDB学习笔记（一） | Standing on the Shoulder of Giants">
+<meta itemprop=name content="MongoDB学习笔记（一） | Standing on the Shoulder of Giants">
+<meta name=application-name content="MongoDB学习笔记（一） | Standing on the Shoulder of Giants">
 <meta property="og:site_name" content="Jonathan Lin">
 <meta name=description content>
 <meta itemprop=description content>
 <meta property="og:description" content>
 <meta name=twitter:description content>
-<base href=https://www.jonathanlin.top/categories/%E7%BC%96%E7%A8%8B%E7%BB%83%E4%B9%A0/>
-<link rel=canonical href=https://www.jonathanlin.top/categories/%E7%BC%96%E7%A8%8B%E7%BB%83%E4%B9%A0/ itemprop=url>
-<meta name=url content="https://www.jonathanlin.top/categories/%E7%BC%96%E7%A8%8B%E7%BB%83%E4%B9%A0/">
-<meta property="og:url" content="https://www.jonathanlin.top/categories/%E7%BC%96%E7%A8%8B%E7%BB%83%E4%B9%A0/">
+<base href=https://www.jonathanlin.top/posts/mongo-notes-01/>
+<link rel=canonical href=https://www.jonathanlin.top/posts/mongo-notes-01/ itemprop=url>
+<meta name=url content="https://www.jonathanlin.top/posts/mongo-notes-01/">
+<meta property="og:url" content="https://www.jonathanlin.top/posts/mongo-notes-01/">
 <meta property="og:locale" content="zh-cn">
 <meta name=language content="Chinese">
 <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -21,19 +21,22 @@
 <script>var _hmt=_hmt||[];(function(){var a=document.createElement("script"),b;a.src="https://hm.baidu.com/hm.js?d60a5d9f17547c322bf9ce50cc9b5954",b=document.getElementsByTagName("script")[0],b.parentNode.insertBefore(a,b)})()</script>
 <meta property="og:locale" content="zh">
 <meta property="og:type" content="article">
-<meta name=description content>
+<meta name=description content="安装mongodb 我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用brew来安装，使用以下命令：
+  添加官方tap
+1brew tap mongodb/brew   安装mongo全家桶，包括社区版服务端，Shell …">
 <meta name=twitter:card content="summary">
 <meta name=twitter:creator content>
-<meta name=twitter:title content="编程练习">
-<meta property="og:url" content="https://www.jonathanlin.top/categories/%E7%BC%96%E7%A8%8B%E7%BB%83%E4%B9%A0/">
-<meta property="og:title" content="编程练习">
-<meta property="og:description" content>
-<meta property="og:image" content="https://www.jonathanlin.top/">
+<meta name=twitter:title content="MongoDB学习笔记（一）">
+<meta property="og:url" content="https://www.jonathanlin.top/posts/mongo-notes-01/">
+<meta property="og:title" content="MongoDB学习笔记（一）">
+<meta property="og:description" content="安装mongodb 我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用brew来安装，使用以下命令：
+  添加官方tap
+1brew tap mongodb/brew   安装mongo全家桶，包括社区版服务端，Shell …">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/mongodb150.png">
 <link rel=apple-touch-icon sizes=180x180 href=https://www.jonathanlin.top/icons/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=https://www.jonathanlin.top/icons/favicon-32x32.png>
 <link rel=manifest href=https://www.jonathanlin.top/icons/site.webmanifest>
-<link rel=canonical href=https://www.jonathanlin.top/categories/%E7%BC%96%E7%A8%8B%E7%BB%83%E4%B9%A0/>
-<link rel=alternate type=application/rss+xml href=https://www.jonathanlin.top/categories/%E7%BC%96%E7%A8%8B%E7%BB%83%E4%B9%A0/index.xml title="Standing on the Shoulder of Giants">
+<link rel=canonical href=https://www.jonathanlin.top/posts/mongo-notes-01/>
 <link rel=preload href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" as=style crossorigin=anonymous>
 <link rel=preload href=https://www.jonathanlin.top/js/bundle.min.617c4c3549a10c9fe7e1bb91e87f0722f6a285b59e742c7123c755df9fb33530bae76060ebd303966dd0e1c09813e679f8042802b7fd059315ef1345f0429ad2.js as=script integrity="sha512-YXxMNUmhDJ/n4buR6H8HIvaihbWedCxxI8dV35+zNTC652Bg69MDlm3Q4cCYE+Z5+AQoArf9BZMV7xNF8EKa0g==" crossorigin=anonymous>
 <link rel=stylesheet type=text/css href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" crossorigin=anonymous>
@@ -81,55 +84,76 @@
 </header>
 <main>
 <div class="grid-inverse wrap content">
-<ul class=posts id=posts>
-<li class=post_item>
-<div class=excerpt>
-<div class=excerpt_header>
-<h3 class=post_link>
-<a href=https://www.jonathanlin.top/posts/c-primer-plus-handson/ title="C Primer Plus 编程练习">C Primer Plus 编程练习</a>
-</h3>
+<article class=post_content>
+<h1 class=post_title>MongoDB学习笔记（一）</h1>
 <div class=post_meta>
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
-Jul 23, 2021</span>
-<span class=post_time> · 2 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
-</a><a href=https://www.jonathanlin.top/tags/c-primer-plus title="C Primer Plus" class="post_tag button button_translucent">C Primer Plus
+Aug 5, 2021</span>
+<span class=post_time> · 1 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/mongodb title=mongodb class="post_tag button button_translucent">mongodb
 </a>
 </span>
 <span class=page_only>&nbsp;·
 <div class=post_share>
 分享到:
-<a href="https://twitter.com/intent/tweet?text=C%20Primer%20Plus%20%e7%bc%96%e7%a8%8b%e7%bb%83%e4%b9%a0&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fc-primer-plus-handson%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
+<a href="https://twitter.com/intent/tweet?text=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%80%ef%bc%89&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-01%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
 </a>
-<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fc-primer-plus-handson%2f&t=C%20Primer%20Plus%20%e7%bc%96%e7%a8%8b%e7%bb%83%e4%b9%a0" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
+<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-01%2f&t=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%80%ef%bc%89" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
 </a>
 <a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
 </a>
-<a href=https://www.jonathanlin.top/posts/c-primer-plus-handson/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
+<a href=https://www.jonathanlin.top/posts/mongo-notes-01/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
 </a>
 </div>
 </span>
 </div>
-</div>
-<div class="excerpt_footer partition">
-<div class=excerpt_thumbnail>
-<img src=https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/c-primer-plus.png alt="C Primer Plus 编程练习">
-</div>
-<div>
-<p class=pale>
-ch06. C控制语句：循环 编写一个程序，提示用户输入大写字母。使用嵌套循环以下面金字塔型的格式打印字母：
-1 A 2 ABA 3 ABCBA 4 ABCDCBA 5ABCDEDCBA 提示：用外层循环处理行，每行使用3个内层循环，分别处理空格、以升序打印字母、以降序打印字母。
-思考：外层循环处理行容易实现，但是使用3个内层循环控制空格、升序字母和降序空格字母似乎有点多。这里可以结合条件判断，是的内层只需要一个循环搞定空格、升降序字母的打印。这里有几点比较关键
-每行有多少个空格 每个一共要打印的字符是多少个，是包括每行的空格加上字符 每行都是对称的，要找到每行对称中心的字符 每行的空格数、字符数和对称中心的字符都是不一 …
-</p>
-<a href=https://www.jonathanlin.top/posts/c-primer-plus-handson/ title=阅读更多 class="excerpt_more button">阅读更多</a>
-</div>
-</div>
-</div>
-</li>
+<h2 id=安装mongodb>安装mongodb</h2>
+<p>我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用<code>brew</code>来安装，使用以下命令：</p>
+<ol>
 <li>
-</li>
-</ul>
+<p>添加官方tap</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>brew tap mongodb/brew
+</code></pre></div></li>
+<li>
+<p>安装mongo全家桶，包括社区版服务端，Shell和数据库相关工具</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>brew install mongodb-community
+</code></pre></div></li>
+</ol>
+<p>安装完成后，对应的二进制文件和配置文件的位置如下：（Inter处理器）</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>二进制可执行文件</td>
+<td>/usr/local/Cellar/mongodb-community/5.0.1/bin</td>
+</tr>
+<tr>
+<td>配置文件</td>
+<td>/usr/local/etc/mongod.conf</td>
+</tr>
+<tr>
+<td>日志文件</td>
+<td>/usr/local/var/log/mongodb</td>
+</tr>
+<tr>
+<td>数据文件</td>
+<td>/usr/local/var/mongodb</td>
+</tr>
+</tbody>
+</table>
+<h2 id=以服务的方式启动停止mongodb>以服务的方式启动/停止mongodb</h2>
+<p>启动mongodb服务：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>brew services start mongodb-community@5.0
+</code></pre></div><p>停止mongodb服务：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>brew services stop mongodb-community@5.0
+</code></pre></div><style>.utterances{max-width:100%}</style>
+<script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
+</article>
 <aside class=sidebar>
 <section class=sidebar_inner>
 <div class=author_header>
@@ -174,16 +198,12 @@ ch06. C控制语句：循环 编写一个程序，提示用户输入大写字母
 外文翻译
 <span class=button_tally>5</span>
 </a>
-<a href=https://www.jonathanlin.top/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/ class="post_tag button button_translucent" title=读书笔记>
-读书笔记
-<span class=button_tally>2</span>
+<a href=https://www.jonathanlin.top/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/ class="post_tag button button_translucent" title=学习笔记>
+学习笔记
+<span class=button_tally>4</span>
 </a>
 <a href=https://www.jonathanlin.top/categories/how-to/ class="post_tag button button_translucent" title=how-to>
 HOW-TO
-<span class=button_tally>1</span>
-</a>
-<a href=https://www.jonathanlin.top/categories/%E7%BC%96%E7%A8%8B%E7%BB%83%E4%B9%A0/ class="post_tag button button_translucent" title=编程练习>
-编程练习
 <span class=button_tally>1</span>
 </a>
 </nav>
@@ -229,6 +249,10 @@ GITHUB-PAGES
 </a>
 <a href=https://www.jonathanlin.top/tags/hugo/ class="post_tag button button_translucent" title=hugo>
 HUGO
+<span class=button_tally>1</span>
+</a>
+<a href=https://www.jonathanlin.top/tags/mongodb/ class="post_tag button button_translucent" title=mongodb>
+MONGODB
 <span class=button_tally>1</span>
 </a>
 </nav>

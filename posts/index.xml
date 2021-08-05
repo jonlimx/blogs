@@ -1,4 +1,49 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/posts/</link><description>Recent content in Posts on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Fri, 23 Jul 2021 23:35:03 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus 编程练习</title><link>https://www.jonathanlin.top/posts/c-primer-plus-handson/</link><pubDate>Fri, 23 Jul 2021 23:35:03 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-handson/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/posts/</link><description>Recent content in Posts on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Thu, 05 Aug 2021 13:48:47 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>MongoDB学习笔记（一）</title><link>https://www.jonathanlin.top/posts/mongo-notes-01/</link><pubDate>Thu, 05 Aug 2021 13:48:47 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-01/</guid><description>
+&lt;h2 id="安装mongodb">安装mongodb&lt;/h2>
+&lt;p>我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用&lt;code>brew&lt;/code>来安装，使用以下命令：&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>添加官方tap&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew tap mongodb/brew
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>安装mongo全家桶，包括社区版服务端，Shell和数据库相关工具&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew install mongodb-community
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;p>安装完成后，对应的二进制文件和配置文件的位置如下：（Inter处理器）&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>文件&lt;/th>
+&lt;th>位置&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>二进制可执行文件&lt;/td>
+&lt;td>/usr/local/Cellar/mongodb-community/5.0.1/bin&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>配置文件&lt;/td>
+&lt;td>/usr/local/etc/mongod.conf&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>日志文件&lt;/td>
+&lt;td>/usr/local/var/log/mongodb&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>数据文件&lt;/td>
+&lt;td>/usr/local/var/mongodb&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="以服务的方式启动停止mongodb">以服务的方式启动/停止mongodb&lt;/h2>
+&lt;p>启动mongodb服务：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew services start mongodb-community@5.0
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>停止mongodb服务：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew services stop mongodb-community@5.0
+&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>C Primer Plus 编程练习</title><link>https://www.jonathanlin.top/posts/c-primer-plus-handson/</link><pubDate>Fri, 23 Jul 2021 23:35:03 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-handson/</guid><description>
 &lt;h2 id="ch06-c控制语句循环">ch06. C控制语句：循环&lt;/h2>
 &lt;blockquote>
 &lt;ol start="5">
