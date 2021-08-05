@@ -176,11 +176,14 @@ Jul 19, 2021</span>
 <li>支持分支、跳转的关键字有哪些</li>
 <li>字符I/O函数<code>getchar</code>和<code>putchar</code>有什么特别之处</li>
 <li><code>goto</code>语句是否应该使用，应该注意哪些事项</li>
+<li><code>if...else</code>的配对问题</li>
 </ol>
 </blockquote>
 <ul>
 <li><code>ch = getchar()</code> - 与<code>scanf("%c", &ch)</code>类似，读取下一个字符赋值给变量<code>ch</code></li>
 <li><code>putchar(ch)</code> - 与<code>printf("%c", ch)</code>类似，打印一个字符</li>
+<li><code>ctype.h</code>系列字符函数 - 接受一个字符作为输入，如果该字符属于某个特殊的类型，则返回一个非零值（<code>True</code>），否则返回零值（<code>False</code>)。这些函数可以判断是否为字母、数字、空白字符等</li>
+<li><em><strong>C编译器是忽略缩进的</strong></em>，当出现多个<code>if...else</code>的时候，一定要注意它们之间的配对。配对的原则是：<em><strong>如果没有花括号，<code>else</code>和离它最近的<code>if</code>配对</strong></em></li>
 </ul>
 <style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>

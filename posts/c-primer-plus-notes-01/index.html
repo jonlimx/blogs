@@ -321,7 +321,7 @@ Jul 5, 2021</span>
 <td>从左到右</td>
 </tr>
 <tr>
-<td>+ - （一元）++ -- sizeof</td>
+<td>+ - （一元）++ -- sizeof ！</td>
 <td>从右到左</td>
 </tr>
 <tr>
@@ -404,7 +404,19 @@ Jul 5, 2021</span>
 <p>当把较大类型转换成较小类型时，可能会丢失数据</p>
 </blockquote>
 <ul>
-<li>函数声明 - 在调用函数的时候，编译器首先需要知道函数的返回类型，所以需要先声明函数，至于函数的实现可以放在后面</li>
+<li>
+<p>函数声明 - 在调用函数的时候，编译器首先需要知道函数的返回类型，所以需要先声明函数，至于函数的实现可以放在后面</p>
+</li>
+<li>
+<p>逻辑表达式（有逻辑运算符<code>&& || !</code>参与的表达式）的求值顺序是从左往右，<em>一旦发现有使整个表达式为假的因素</em>，立即停止求值</p>
+</li>
+<li>
+<p>范围测试，例如判断<code>score</code>是否在90和100之间</p>
+<ul>
+<li><code>score >= 90 && score&lt;=100</code> ✔️</li>
+<li><code>90 &lt;= score &lt;= 100</code> ❌ 由于<code>&lt;=</code>的求值顺序是从左到右，因此这里会先计算<code>90 &lt;= score</code>，而整个关系表达值的值要么是0（False）要么是1（True），都是小于100，因此整个表达式的结果是<code>True</code></li>
+</ul>
+</li>
 </ul>
 <style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
