@@ -90,7 +90,7 @@ ch06. C控制语句：循环   C语言支持哪些循环控制关键字 循环�
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
 Jul 19, 2021</span>
-<span class=post_time> · 1 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
+<span class=post_time> · 2 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
 </a><a href=https://www.jonathanlin.top/tags/c-primer-plus title="C Primer Plus" class="post_tag button button_translucent">C Primer Plus
 </a>
 </span>
@@ -180,10 +180,62 @@ Jul 19, 2021</span>
 </ol>
 </blockquote>
 <ul>
-<li><code>ch = getchar()</code> - 与<code>scanf("%c", &ch)</code>类似，读取下一个字符赋值给变量<code>ch</code></li>
-<li><code>putchar(ch)</code> - 与<code>printf("%c", ch)</code>类似，打印一个字符</li>
-<li><code>ctype.h</code>系列字符函数 - 接受一个字符作为输入，如果该字符属于某个特殊的类型，则返回一个非零值（<code>True</code>），否则返回零值（<code>False</code>)。这些函数可以判断是否为字母、数字、空白字符等</li>
-<li><em><strong>C编译器是忽略缩进的</strong></em>，当出现多个<code>if...else</code>的时候，一定要注意它们之间的配对。配对的原则是：<em><strong>如果没有花括号，<code>else</code>和离它最近的<code>if</code>配对</strong></em></li>
+<li>
+<p><code>ch = getchar()</code> - 与<code>scanf("%c", &ch)</code>类似，读取下一个字符赋值给变量<code>ch</code></p>
+</li>
+<li>
+<p><code>putchar(ch)</code> - 与<code>printf("%c", ch)</code>类似，打印一个字符</p>
+</li>
+<li>
+<p><code>ctype.h</code>系列字符函数 - 接受一个字符作为输入，如果该字符属于某个特殊的类型，则返回一个非零值（<code>True</code>），否则返回零值（<code>False</code>)。这些函数可以判断是否为字母、数字、空白字符等</p>
+</li>
+<li>
+<p><em><strong>C编译器是忽略缩进的</strong></em>，当出现多个<code>if...else</code>的时候，一定要注意它们之间的配对。配对的原则是：<em><strong>如果没有花括号，<code>else</code>和离它最近的<code>if</code>配对</strong></em></p>
+</li>
+<li>
+<p>逻辑表达式（有逻辑运算符<code>&& || !</code>参与的表达式）的求值顺序是从左往右，<em>一旦发现有使整个表达式为假的因素</em>，立即停止求值</p>
+</li>
+<li>
+<p>范围测试，例如判断<code>score</code>是否在90和100之间</p>
+<ul>
+<li><code>score >= 90 && score&lt;=100</code> ✔️</li>
+<li><code>90 &lt;= score &lt;= 100</code> ❌ 由于<code>&lt;=</code>的求值顺序是从左到右，因此这里会先计算<code>90 &lt;= score</code>，而整个关系表达值的值要么是0（False）要么是1（True），都是小于100，因此整个表达式的结果是<code>True</code></li>
+</ul>
+</li>
+<li>
+<p>条件运算符<code>?:</code> - <code>expression1 ? expression2: expression3</code></p>
+<ul>
+<li>如果<code>expression1</code>的值为<code>True</code>，那么整个表达式的值为<code>expression2</code></li>
+<li>如果<code>expression1</code>的值为<code>False</code>，那么整个表达式的值为<code>expression3</code></li>
+</ul>
+</li>
+<li>
+<p><code>switch...case...</code></p>
+<ul>
+<li><code>switch</code>括号表达式中的值应该是一个整数值（包括<code>char</code>）</li>
+<li><code>case</code>标签必须是整数类型（包括<code>char</code>)的常量或者整数型常量表达式</li>
+<li>不能用变量作为<code>case</code>标签</li>
+<li>如果没有添加<code>break</code>，那么匹配到某个标签以及之后所有的<code>case</code>都会匹配上</li>
+</ul>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln> 1</span><span class=k>switch</span><span class=p>(</span><span class=err>整型表达式</span><span class=p>)</span>
+<span class=ln> 2</span><span class=p>{</span>
+<span class=ln> 3</span>  <span class=k>case</span> <span class=err>常量</span><span class=mi>1</span><span class=o>:</span>
+<span class=ln> 4</span>    <span class=err>语句</span><span class=p>;</span>
+<span class=ln> 5</span>    <span class=k>break</span><span class=p>;</span>
+<span class=ln> 6</span>  <span class=k>case</span> <span class=err>常量</span><span class=mi>2</span><span class=o>:</span>
+<span class=ln> 7</span>    <span class=err>语句</span><span class=mi>2</span><span class=p>;</span>
+<span class=ln> 8</span>    <span class=k>break</span><span class=p>;</span>
+<span class=ln> 9</span>  <span class=k>default</span><span class=o>:</span>
+<span class=ln>10</span>    <span class=err>语句</span><span class=p>;</span>
+<span class=ln>11</span>    <span class=k>break</span><span class=p>;</span>
+<span class=ln>12</span><span class=p>}</span>
+</code></pre></div></li>
+<li>
+<p>尽量避免或者不使用<code>goto</code></p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln>1</span><span class=k>goto</span> <span class=n>label</span><span class=p>;</span>
+<span class=ln>2</span><span class=p>...</span>
+<span class=ln>3</span><span class=nl>label</span><span class=p>:</span> <span class=n>statement</span><span class=p>;</span>
+</code></pre></div></li>
 </ul>
 <style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>

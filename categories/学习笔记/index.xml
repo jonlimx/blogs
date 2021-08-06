@@ -363,10 +363,62 @@
 &lt;/ol>
 &lt;/blockquote>
 &lt;ul>
-&lt;li>&lt;code>ch = getchar()&lt;/code> - 与&lt;code>scanf(&amp;quot;%c&amp;quot;, &amp;amp;ch)&lt;/code>类似，读取下一个字符赋值给变量&lt;code>ch&lt;/code>&lt;/li>
-&lt;li>&lt;code>putchar(ch)&lt;/code> - 与&lt;code>printf(&amp;quot;%c&amp;quot;, ch)&lt;/code>类似，打印一个字符&lt;/li>
-&lt;li>&lt;code>ctype.h&lt;/code>系列字符函数 - 接受一个字符作为输入，如果该字符属于某个特殊的类型，则返回一个非零值（&lt;code>True&lt;/code>），否则返回零值（&lt;code>False&lt;/code>)。这些函数可以判断是否为字母、数字、空白字符等&lt;/li>
-&lt;li>&lt;em>&lt;strong>C编译器是忽略缩进的&lt;/strong>&lt;/em>，当出现多个&lt;code>if...else&lt;/code>的时候，一定要注意它们之间的配对。配对的原则是：&lt;em>&lt;strong>如果没有花括号，&lt;code>else&lt;/code>和离它最近的&lt;code>if&lt;/code>配对&lt;/strong>&lt;/em>&lt;/li>
+&lt;li>
+&lt;p>&lt;code>ch = getchar()&lt;/code> - 与&lt;code>scanf(&amp;quot;%c&amp;quot;, &amp;amp;ch)&lt;/code>类似，读取下一个字符赋值给变量&lt;code>ch&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>putchar(ch)&lt;/code> - 与&lt;code>printf(&amp;quot;%c&amp;quot;, ch)&lt;/code>类似，打印一个字符&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>ctype.h&lt;/code>系列字符函数 - 接受一个字符作为输入，如果该字符属于某个特殊的类型，则返回一个非零值（&lt;code>True&lt;/code>），否则返回零值（&lt;code>False&lt;/code>)。这些函数可以判断是否为字母、数字、空白字符等&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;em>&lt;strong>C编译器是忽略缩进的&lt;/strong>&lt;/em>，当出现多个&lt;code>if...else&lt;/code>的时候，一定要注意它们之间的配对。配对的原则是：&lt;em>&lt;strong>如果没有花括号，&lt;code>else&lt;/code>和离它最近的&lt;code>if&lt;/code>配对&lt;/strong>&lt;/em>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>逻辑表达式（有逻辑运算符&lt;code>&amp;amp;&amp;amp; || !&lt;/code>参与的表达式）的求值顺序是从左往右，&lt;em>一旦发现有使整个表达式为假的因素&lt;/em>，立即停止求值&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>范围测试，例如判断&lt;code>score&lt;/code>是否在90和100之间&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>score &amp;gt;= 90 &amp;amp;&amp;amp; score&amp;lt;=100&lt;/code> ✔️&lt;/li>
+&lt;li>&lt;code>90 &amp;lt;= score &amp;lt;= 100&lt;/code> ❌ 由于&lt;code>&amp;lt;=&lt;/code>的求值顺序是从左到右，因此这里会先计算&lt;code>90 &amp;lt;= score&lt;/code>，而整个关系表达值的值要么是0（False）要么是1（True），都是小于100，因此整个表达式的结果是&lt;code>True&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>条件运算符&lt;code>?:&lt;/code> - &lt;code>expression1 ? expression2: expression3&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>如果&lt;code>expression1&lt;/code>的值为&lt;code>True&lt;/code>，那么整个表达式的值为&lt;code>expression2&lt;/code>&lt;/li>
+&lt;li>如果&lt;code>expression1&lt;/code>的值为&lt;code>False&lt;/code>，那么整个表达式的值为&lt;code>expression3&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>switch...case...&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>switch&lt;/code>括号表达式中的值应该是一个整数值（包括&lt;code>char&lt;/code>）&lt;/li>
+&lt;li>&lt;code>case&lt;/code>标签必须是整数类型（包括&lt;code>char&lt;/code>)的常量或者整数型常量表达式&lt;/li>
+&lt;li>不能用变量作为&lt;code>case&lt;/code>标签&lt;/li>
+&lt;li>如果没有添加&lt;code>break&lt;/code>，那么匹配到某个标签以及之后所有的&lt;code>case&lt;/code>都会匹配上&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="k">switch&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="err">整型表达式&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 2&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="k">case&lt;/span> &lt;span class="err">常量&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="err">语句&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="k">case&lt;/span> &lt;span class="err">常量&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="err">语句&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="k">default&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="err">语句&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">12&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>尽量避免或者不使用&lt;code>goto&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="k">goto&lt;/span> &lt;span class="n">label&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">2&lt;/span>&lt;span class="p">...&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="nl">label&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">statement&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;/ul></description></item><item><title>C Primer Plus读书笔记（一）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-01/</link><pubDate>Mon, 05 Jul 2021 19:41:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-01/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第三章至第五章读书笔记。&lt;/em>&lt;/p>
 &lt;h2 id="ch03-数据和c">ch03. 数据和C&lt;/h2>
@@ -656,17 +708,5 @@
 &lt;p>当把较大类型转换成较小类型时，可能会丢失数据&lt;/p>
 &lt;/blockquote>
 &lt;ul>
-&lt;li>
-&lt;p>函数声明 - 在调用函数的时候，编译器首先需要知道函数的返回类型，所以需要先声明函数，至于函数的实现可以放在后面&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>逻辑表达式（有逻辑运算符&lt;code>&amp;amp;&amp;amp; || !&lt;/code>参与的表达式）的求值顺序是从左往右，&lt;em>一旦发现有使整个表达式为假的因素&lt;/em>，立即停止求值&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>范围测试，例如判断&lt;code>score&lt;/code>是否在90和100之间&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>score &amp;gt;= 90 &amp;amp;&amp;amp; score&amp;lt;=100&lt;/code> ✔️&lt;/li>
-&lt;li>&lt;code>90 &amp;lt;= score &amp;lt;= 100&lt;/code> ❌ 由于&lt;code>&amp;lt;=&lt;/code>的求值顺序是从左到右，因此这里会先计算&lt;code>90 &amp;lt;= score&lt;/code>，而整个关系表达值的值要么是0（False）要么是1（True），都是小于100，因此整个表达式的结果是&lt;code>True&lt;/code>&lt;/li>
-&lt;/ul>
-&lt;/li>
+&lt;li>函数声明 - 在调用函数的时候，编译器首先需要知道函数的返回类型，所以需要先声明函数，至于函数的实现可以放在后面&lt;/li>
 &lt;/ul></description></item></channel></rss>
