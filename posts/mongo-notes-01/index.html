@@ -146,12 +146,127 @@ Aug 5, 2021</span>
 </tr>
 </tbody>
 </table>
+<p>MongoDB官方提供了以供学习用的示例数据集合，可以从https://atlas-education.s3.amazonaws.com/sampledata.archive下载，关于示例数据集的详细信息，可以参考：<a href=https://www.mongodb.com/developer/article/atlas-sample-datasets/#std-label-atlas-sample-data-local-installation>The MongoDB Atlas Sample Datasets</a>。</p>
 <h2 id=以服务的方式启动停止mongodb>以服务的方式启动/停止mongodb</h2>
 <p>启动mongodb服务：</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>brew services start mongodb-community@5.0
 </code></pre></div><p>停止mongodb服务：</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>brew services stop mongodb-community@5.0
-</code></pre></div><style>.utterances{max-width:100%}</style>
+</code></pre></div><h2 id=mongodb查询操作>mongodb查询操作</h2>
+<p>这里介绍的关于mongodb的查询操作（<strong>MQL</strong>）是通过<code>mongosh</code>方法来实现的，这些方法底层是基于<code>JavaScript</code>，但是如果你使用<code>JavaScript</code>来连接那么你应该参考相应语言的包（<a href=https://docs.mongodb.com/drivers/>idiomatic driver</a> ）。关于新增、删除和更新的方法相对来说比较简单，可以自行查看文档：<a href=https://docs.mongodb.com/manual/reference/method/>mongosh Methods — MongoDB Manual</a>。这里重点记录一下查找方法的使用。</p>
+<h3 id=方法定义>方法定义</h3>
+<p>方法定义：<code>db.collection.find(query, projection)</code></p>
+<p>参数列表如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>参数类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>query</td>
+<td>document</td>
+<td>可选参数。使用<a href=#%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C%E7%AC%A6>查询操作符</a>构建查询条件。如果你希望返回集合里的所有对象，那么忽略这个参数，或者传递一个空的文档(<code>{}</code>)</td>
+</tr>
+<tr>
+<td>projecttion</td>
+<td>document</td>
+<td>可选参数。对查询结果进行筛选，选择性的返回指定的字段而不是包含对象里的所有字段。如果希望返回对象里的所有字段，则忽略该参数。关于更多细节，请参看：<a href=#Projection(%E5%B1%95%E7%A4%BA)>Projection(展示)</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id=查询操作符>查询操作符</h3>
+<h4 id=比较操作符>比较操作符</h4>
+<table>
+<thead>
+<tr>
+<th>数学运算符（SQL）</th>
+<th>MQL运算符</th>
+<th>语法说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>=</td>
+<td>$eq</td>
+<td><code>{ &lt;field>: { $eq: &lt;value> } }</code> 如果<code>value</code>不是正则表达式，也可以写成<code>{ field: &lt;value> }</code></td>
+</tr>
+<tr>
+<td>></td>
+<td>$gt</td>
+<td><code>{field: {$gt: value} }</code></td>
+</tr>
+<tr>
+<td>>=</td>
+<td>$gte</td>
+<td><code>{field: {$gte: value} }</code></td>
+</tr>
+<tr>
+<td>in</td>
+<td>$in</td>
+<td><code>{ field: { $in: [&lt;value1>, &lt;value2>, ... &lt;valueN> ] } }</code> 字段的值<strong>在</strong>给定的数组里</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>$lt</td>
+<td><code>{field: {$lt: value} }</code></td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td>$lte</td>
+<td><code>{ field: { $lte: value} }</code></td>
+</tr>
+<tr>
+<td>!=</td>
+<td>$ne</td>
+<td><code>{field: {$ne: value} }</code></td>
+</tr>
+<tr>
+<td>not in</td>
+<td>$nin</td>
+<td><code>{ field: { $nin: [ &lt;value1>, &lt;value2> ... &lt;valueN> ]} }</code>字段的值<strong>不在</strong>给定的数组里</td>
+</tr>
+</tbody>
+</table>
+<h4 id=逻辑操作符>逻辑操作符</h4>
+<table>
+<thead>
+<tr>
+<th>MQL运算符</th>
+<th>语法说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$and</td>
+<td><code>{ $and: [ { &lt;expression1> }, { &lt;expression2> } , ... , { &lt;expressionN> } ] }</code></td>
+</tr>
+<tr>
+<td>$not</td>
+<td></td>
+</tr>
+<tr>
+<td>$nor</td>
+<td></td>
+</tr>
+<tr>
+<td>$or</td>
+<td></td>
+</tr>
+<tr>
+<td>$exists</td>
+<td></td>
+</tr>
+<tr>
+<td>$type</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
 </article>
 <aside class=sidebar>

@@ -38,12 +38,126 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
+&lt;p>MongoDB官方提供了以供学习用的示例数据集合，可以从https://atlas-education.s3.amazonaws.com/sampledata.archive下载，关于示例数据集的详细信息，可以参考：&lt;a href="https://www.mongodb.com/developer/article/atlas-sample-datasets/#std-label-atlas-sample-data-local-installation">The MongoDB Atlas Sample Datasets&lt;/a>。&lt;/p>
 &lt;h2 id="以服务的方式启动停止mongodb">以服务的方式启动/停止mongodb&lt;/h2>
 &lt;p>启动mongodb服务：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew services start mongodb-community@5.0
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>停止mongodb服务：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew services stop mongodb-community@5.0
-&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>C Primer Plus 编程练习</title><link>https://www.jonathanlin.top/posts/c-primer-plus-handson/</link><pubDate>Fri, 23 Jul 2021 23:35:03 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-handson/</guid><description>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="mongodb查询操作">mongodb查询操作&lt;/h2>
+&lt;p>这里介绍的关于mongodb的查询操作（&lt;strong>MQL&lt;/strong>）是通过&lt;code>mongosh&lt;/code>方法来实现的，这些方法底层是基于&lt;code>JavaScript&lt;/code>，但是如果你使用&lt;code>JavaScript&lt;/code>来连接那么你应该参考相应语言的包（&lt;a href="https://docs.mongodb.com/drivers/">idiomatic driver&lt;/a> ）。关于新增、删除和更新的方法相对来说比较简单，可以自行查看文档：&lt;a href="https://docs.mongodb.com/manual/reference/method/">mongosh Methods — MongoDB Manual&lt;/a>。这里重点记录一下查找方法的使用。&lt;/p>
+&lt;h3 id="方法定义">方法定义&lt;/h3>
+&lt;p>方法定义：&lt;code>db.collection.find(query, projection)&lt;/code>&lt;/p>
+&lt;p>参数列表如下：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>参数&lt;/th>
+&lt;th>参数类型&lt;/th>
+&lt;th>描述&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>query&lt;/td>
+&lt;td>document&lt;/td>
+&lt;td>可选参数。使用&lt;a href="#%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C%E7%AC%A6">查询操作符&lt;/a>构建查询条件。如果你希望返回集合里的所有对象，那么忽略这个参数，或者传递一个空的文档(&lt;code>{}&lt;/code>)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>projecttion&lt;/td>
+&lt;td>document&lt;/td>
+&lt;td>可选参数。对查询结果进行筛选，选择性的返回指定的字段而不是包含对象里的所有字段。如果希望返回对象里的所有字段，则忽略该参数。关于更多细节，请参看：&lt;a href="#Projection(%E5%B1%95%E7%A4%BA)">Projection(展示)&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="查询操作符">查询操作符&lt;/h3>
+&lt;h4 id="比较操作符">比较操作符&lt;/h4>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>数学运算符（SQL）&lt;/th>
+&lt;th>MQL运算符&lt;/th>
+&lt;th>语法说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>=&lt;/td>
+&lt;td>$eq&lt;/td>
+&lt;td>&lt;code>{ &amp;lt;field&amp;gt;: { $eq: &amp;lt;value&amp;gt; } }&lt;/code> 如果&lt;code>value&lt;/code>不是正则表达式，也可以写成&lt;code>{ field: &amp;lt;value&amp;gt; }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&amp;gt;&lt;/td>
+&lt;td>$gt&lt;/td>
+&lt;td>&lt;code>{field: {$gt: value} }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&amp;gt;=&lt;/td>
+&lt;td>$gte&lt;/td>
+&lt;td>&lt;code>{field: {$gte: value} }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>in&lt;/td>
+&lt;td>$in&lt;/td>
+&lt;td>&lt;code>{ field: { $in: [&amp;lt;value1&amp;gt;, &amp;lt;value2&amp;gt;, ... &amp;lt;valueN&amp;gt; ] } }&lt;/code> 字段的值&lt;strong>在&lt;/strong>给定的数组里&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&amp;lt;&lt;/td>
+&lt;td>$lt&lt;/td>
+&lt;td>&lt;code>{field: {$lt: value} }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&amp;lt;=&lt;/td>
+&lt;td>$lte&lt;/td>
+&lt;td>&lt;code>{ field: { $lte: value} }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>!=&lt;/td>
+&lt;td>$ne&lt;/td>
+&lt;td>&lt;code>{field: {$ne: value} }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>not in&lt;/td>
+&lt;td>$nin&lt;/td>
+&lt;td>&lt;code>{ field: { $nin: [ &amp;lt;value1&amp;gt;, &amp;lt;value2&amp;gt; ... &amp;lt;valueN&amp;gt; ]} }&lt;/code>字段的值&lt;strong>不在&lt;/strong>给定的数组里&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h4 id="逻辑操作符">逻辑操作符&lt;/h4>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>MQL运算符&lt;/th>
+&lt;th>语法说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>$and&lt;/td>
+&lt;td>&lt;code>{ $and: [ { &amp;lt;expression1&amp;gt; }, { &amp;lt;expression2&amp;gt; } , ... , { &amp;lt;expressionN&amp;gt; } ] }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$not&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$nor&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$or&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$exists&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$type&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>C Primer Plus 编程练习</title><link>https://www.jonathanlin.top/posts/c-primer-plus-handson/</link><pubDate>Fri, 23 Jul 2021 23:35:03 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-handson/</guid><description>
 &lt;h2 id="ch06-c控制语句循环">ch06. C控制语句：循环&lt;/h2>
 &lt;blockquote>
 &lt;ol start="5">
