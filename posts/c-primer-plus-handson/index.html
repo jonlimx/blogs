@@ -90,7 +90,7 @@
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
 Jul 23, 2021</span>
-<span class=post_time> · 2 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
+<span class=post_time> · 3 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
 </a><a href=https://www.jonathanlin.top/tags/c-primer-plus title="C Primer Plus" class="post_tag button button_translucent">C Primer Plus
 </a>
 </span>
@@ -112,6 +112,7 @@ Jul 23, 2021</span>
 <nav id=TableOfContents>
 <ul>
 <li><a href=#ch06-c控制语句循环>ch06. C控制语句：循环</a></li>
+<li><a href=#ch07-c控制语句分支和跳转>ch07. C控制语句：分支和跳转</a></li>
 </ul>
 </nav>
 <h2 id=ch06-c控制语句循环>ch06. C控制语句：循环</h2>
@@ -253,6 +254,67 @@ Jul 23, 2021</span>
 <span class=ln>20</span><span class=c1>// 结果输出
 </span><span class=ln>21</span><span class=c1></span><span class=n>Enter</span> <span class=mi>8</span> <span class=n>numbers</span><span class=p>(</span><span class=kt>int</span><span class=p>)</span><span class=o>:</span> <span class=mi>1</span> <span class=mi>2</span> <span class=mi>3</span> <span class=mi>4</span> <span class=mi>5</span> <span class=mi>6</span> <span class=mi>7</span> <span class=mi>8</span>
 <span class=ln>22</span><span class=n>Numbers</span> <span class=n>in</span> <span class=nl>reverse</span><span class=p>:</span> <span class=mi>8</span> <span class=mi>7</span> <span class=mi>6</span> <span class=mi>5</span> <span class=mi>4</span> <span class=mi>3</span> <span class=mi>2</span> <span class=mi>1</span> <span class=o>%</span> 
+</code></pre></div><h2 id=ch07-c控制语句分支和跳转>ch07. C控制语句：分支和跳转</h2>
+<blockquote>
+<ol>
+<li>编写一个程序读取输入，读到#字符停止，然后报告读取的空格数、换行符数和所有其他字符的数量</li>
+</ol>
+</blockquote>
+<p>思考：</p>
+<ul>
+<li>可以使用<code>getchar</code>或者<code>scanf</code>来获取输入的字符</li>
+<li>可以使用<code>switch...case...</code>或者<code>if...else...</code>来判断字符</li>
+<li><code>ctype.h</code>中提供了一系列判断字符类型的函数，要加以利用。但是在<code>switch...case..</code> 的<code>case</code>语句中，不能使用函数判断字符类型，因为<code>case</code>分支值必须是整型常量后者常量表达式</li>
+</ul>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln> 1</span><span class=cp>#include</span> <span class=cpf>&#34;stdio.h&#34;</span><span class=cp>
+</span><span class=ln> 2</span><span class=cp></span>
+<span class=ln> 3</span><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+<span class=ln> 4</span><span class=p>{</span>
+<span class=ln> 5</span>	<span class=n>printf</span><span class=p>(</span><span class=s>&#34;Input # to end...</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+<span class=ln> 6</span>	<span class=kt>int</span> <span class=n>spaces</span><span class=p>,</span> <span class=n>returns</span><span class=p>,</span> <span class=n>others</span><span class=p>;</span>
+<span class=ln> 7</span>	<span class=n>spaces</span><span class=o>=</span><span class=n>returns</span><span class=o>=</span><span class=n>others</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span>
+<span class=ln> 8</span>	<span class=kt>char</span> <span class=n>ch</span><span class=p>;</span>
+<span class=ln> 9</span>	<span class=k>while</span> <span class=p>((</span><span class=n>ch</span> <span class=o>=</span> <span class=n>getchar</span><span class=p>())</span> <span class=o>!=</span> <span class=sc>&#39;#&#39;</span><span class=p>)</span>
+<span class=ln>10</span>	<span class=p>{</span>
+<span class=ln>11</span>		<span class=k>switch</span> <span class=p>(</span><span class=n>ch</span><span class=p>)</span>
+<span class=ln>12</span>		<span class=p>{</span>
+<span class=ln>13</span>		<span class=k>case</span> <span class=sc>&#39; &#39;</span><span class=o>:</span>
+<span class=ln>14</span>			<span class=o>++</span><span class=n>spaces</span><span class=p>;</span>
+<span class=ln>15</span>			<span class=k>break</span><span class=p>;</span>
+<span class=ln>16</span>		<span class=k>case</span> <span class=sc>&#39;\n&#39;</span><span class=o>:</span>
+<span class=ln>17</span>			<span class=o>++</span><span class=n>returns</span><span class=p>;</span>
+<span class=ln>18</span>			<span class=k>break</span><span class=p>;</span>
+<span class=ln>19</span>		<span class=k>default</span><span class=o>:</span>
+<span class=ln>20</span>			<span class=o>++</span><span class=n>others</span><span class=p>;</span>
+<span class=ln>21</span>		<span class=p>}</span>
+<span class=ln>22</span>	<span class=p>}</span>
+<span class=ln>23</span>	<span class=n>printf</span><span class=p>(</span><span class=s>&#34;char counts:</span><span class=se>\n</span><span class=s>spaces : %d</span><span class=se>\n</span><span class=s>returns: %d</span><span class=se>\n</span><span class=s>others: %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>spaces</span><span class=p>,</span> <span class=n>returns</span><span class=p>,</span> <span class=n>others</span><span class=p>);</span>
+<span class=ln>24</span><span class=p>}</span>
+</code></pre></div><blockquote>
+<ol start=6>
+<li>编写程序读取输入，读到#停止，报告ei出现的次数</li>
+</ol>
+</blockquote>
+<p>思考：</p>
+<ol>
+<li>需要记录上一次和当前的字符，当上次字符是<code>e</code>且当前字符是<code>i</code>的时候，计数器加1</li>
+<li>需要使用逻辑与运算</li>
+</ol>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln> 1</span><span class=cp>#include</span> <span class=cpf>&#34;stdio.h&#34;</span><span class=cp>
+</span><span class=ln> 2</span><span class=cp></span><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+<span class=ln> 3</span><span class=p>{</span>
+<span class=ln> 4</span>	<span class=kt>char</span> <span class=n>current</span><span class=p>,</span> <span class=n>previous</span> <span class=o>=</span> <span class=sc>&#39; &#39;</span><span class=p>;</span>
+<span class=ln> 5</span>	<span class=kt>int</span> <span class=n>repeat</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=ln> 6</span>	<span class=n>printf</span><span class=p>(</span><span class=s>&#34;Input # to end...</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+<span class=ln> 7</span>
+<span class=ln> 8</span>	<span class=k>while</span> <span class=p>((</span><span class=n>current</span> <span class=o>=</span> <span class=n>getchar</span><span class=p>())</span> <span class=o>!=</span> <span class=sc>&#39;#&#39;</span><span class=p>)</span>
+<span class=ln> 9</span>	<span class=p>{</span>
+<span class=ln>10</span>		<span class=k>if</span> <span class=p>(</span><span class=n>previous</span> <span class=o>==</span> <span class=sc>&#39;e&#39;</span> <span class=o>&amp;&amp;</span> <span class=n>current</span> <span class=o>==</span> <span class=sc>&#39;i&#39;</span><span class=p>)</span>
+<span class=ln>11</span>			<span class=o>++</span><span class=n>repeat</span><span class=p>;</span>
+<span class=ln>12</span>		<span class=n>previous</span> <span class=o>=</span> <span class=n>current</span><span class=p>;</span>
+<span class=ln>13</span>	<span class=p>}</span>
+<span class=ln>14</span>	<span class=n>printf</span><span class=p>(</span><span class=s>&#34;ei counts: %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>repeat</span><span class=p>);</span>
+<span class=ln>15</span><span class=p>}</span>
 </code></pre></div><style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
 </article>

@@ -297,6 +297,67 @@
 &lt;span class="ln">20&lt;/span>&lt;span class="c1">// 结果输出
 &lt;/span>&lt;span class="ln">21&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="n">Enter&lt;/span> &lt;span class="mi">8&lt;/span> &lt;span class="n">numbers&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="mi">3&lt;/span> &lt;span class="mi">4&lt;/span> &lt;span class="mi">5&lt;/span> &lt;span class="mi">6&lt;/span> &lt;span class="mi">7&lt;/span> &lt;span class="mi">8&lt;/span>
 &lt;span class="ln">22&lt;/span>&lt;span class="n">Numbers&lt;/span> &lt;span class="n">in&lt;/span> &lt;span class="nl">reverse&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">8&lt;/span> &lt;span class="mi">7&lt;/span> &lt;span class="mi">6&lt;/span> &lt;span class="mi">5&lt;/span> &lt;span class="mi">4&lt;/span> &lt;span class="mi">3&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="o">%&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="ch07-c控制语句分支和跳转">ch07. C控制语句：分支和跳转&lt;/h2>
+&lt;blockquote>
+&lt;ol>
+&lt;li>编写一个程序读取输入，读到#字符停止，然后报告读取的空格数、换行符数和所有其他字符的数量&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;p>思考：&lt;/p>
+&lt;ul>
+&lt;li>可以使用&lt;code>getchar&lt;/code>或者&lt;code>scanf&lt;/code>来获取输入的字符&lt;/li>
+&lt;li>可以使用&lt;code>switch...case...&lt;/code>或者&lt;code>if...else...&lt;/code>来判断字符&lt;/li>
+&lt;li>&lt;code>ctype.h&lt;/code>中提供了一系列判断字符类型的函数，要加以利用。但是在&lt;code>switch...case..&lt;/code> 的&lt;code>case&lt;/code>语句中，不能使用函数判断字符类型，因为&lt;code>case&lt;/code>分支值必须是整型常量后者常量表达式&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;stdio.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="cp">&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 4&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Input # to end...&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">spaces&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">returns&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">others&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="n">spaces&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">returns&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">others&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">ch&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="p">((&lt;/span>&lt;span class="n">ch&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">getchar&lt;/span>&lt;span class="p">())&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="sc">&amp;#39;#&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="k">switch&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">ch&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="k">case&lt;/span> &lt;span class="sc">&amp;#39; &amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="o">++&lt;/span>&lt;span class="n">spaces&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="k">case&lt;/span> &lt;span class="sc">&amp;#39;\n&amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="o">++&lt;/span>&lt;span class="n">returns&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="k">default&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="o">++&lt;/span>&lt;span class="n">others&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">21&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">22&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">23&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;char counts:&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">spaces : %d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">returns: %d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">others: %d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">spaces&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">returns&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">others&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">24&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;ol start="6">
+&lt;li>编写程序读取输入，读到#停止，报告ei出现的次数&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;p>思考：&lt;/p>
+&lt;ol>
+&lt;li>需要记录上一次和当前的字符，当上次字符是&lt;code>e&lt;/code>且当前字符是&lt;code>i&lt;/code>的时候，计数器加1&lt;/li>
+&lt;li>需要使用逻辑与运算&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;stdio.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="cp">&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">current&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">previous&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="sc">&amp;#39; &amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">repeat&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Input # to end...&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln"> 7&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="p">((&lt;/span>&lt;span class="n">current&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">getchar&lt;/span>&lt;span class="p">())&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="sc">&amp;#39;#&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">previous&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="sc">&amp;#39;e&amp;#39;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">current&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="sc">&amp;#39;i&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="o">++&lt;/span>&lt;span class="n">repeat&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="n">previous&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">current&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;ei counts: %d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">repeat&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">15&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div></description></item><item><title>C Primer Plus读书笔记（二）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第六章至第九章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch06-c控制语句循环">ch06. C控制语句：循环&lt;/h2>
