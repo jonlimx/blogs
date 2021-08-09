@@ -90,7 +90,7 @@
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
 Aug 5, 2021</span>
-<span class=post_time> · 1 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/mongodb title=mongodb class="post_tag button button_translucent">mongodb
+<span class=post_time> · 2 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/mongodb title=mongodb class="post_tag button button_translucent">mongodb
 </a>
 </span>
 <span class=page_only>&nbsp;·
@@ -169,17 +169,18 @@ Aug 5, 2021</span>
 <tr>
 <td>query</td>
 <td>document</td>
-<td>可选参数。使用<a href=#%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C%E7%AC%A6>查询操作符</a>构建查询条件。如果你希望返回集合里的所有对象，那么忽略这个参数，或者传递一个空的文档(<code>{}</code>)</td>
+<td>可选参数。使用<a href=#%E6%9F%A5%E8%AF%A2%E9%80%89%E6%8B%A9%E5%99%A8>查询选择器</a>构建查询条件。如果你希望返回集合里的所有文档，那么忽略这个参数，或者传递一个空的文档(<code>{}</code>)</td>
 </tr>
 <tr>
 <td>projecttion</td>
 <td>document</td>
-<td>可选参数。对查询结果进行筛选，选择性的返回指定的字段而不是包含对象里的所有字段。如果希望返回对象里的所有字段，则忽略该参数。关于更多细节，请参看：<a href=#Projection(%E5%B1%95%E7%A4%BA)>Projection(展示)</a></td>
+<td>可选参数。对查询结果进行筛选，选择性的返回指定的字段而不是包含文档里的所有字段。如果希望返回文档里的所有字段，则忽略该参数。关于更多细节，请参看：<a href=#Projection(%E6%8A%95%E5%BD%B1)>Projection(投影)</a></td>
 </tr>
 </tbody>
 </table>
-<h3 id=查询操作符>查询操作符</h3>
-<h4 id=比较操作符>比较操作符</h4>
+<h3 id=查询选择器>查询选择器</h3>
+<p>这部分官网有很好的解释说明，详见：<a href=https://docs.mongodb.com/manual/reference/operator/query/#query-selectors>Query and Projection Operators — MongoDB Manual</a></p>
+<h4 id=比较>比较</h4>
 <table>
 <thead>
 <tr>
@@ -231,7 +232,7 @@ Aug 5, 2021</span>
 </tr>
 </tbody>
 </table>
-<h4 id=逻辑操作符>逻辑操作符</h4>
+<h4 id=逻辑运算>逻辑运算</h4>
 <table>
 <thead>
 <tr>
@@ -246,26 +247,42 @@ Aug 5, 2021</span>
 </tr>
 <tr>
 <td>$not</td>
-<td></td>
+<td><code>{ field: { $not: { &lt;operator-expression> } } }</code>注意<code>{ $not: { $gt: 1.99 } }</code>和<code>{ $lte: 1.99 }</code>不一样，<strong>如果字段不存在，前者会匹配到，但是后者得存在才能匹配到</strong></td>
 </tr>
 <tr>
 <td>$nor</td>
-<td></td>
+<td><code>{ $nor: [ { &lt;expression1> }, { &lt;expression2> }, ... { &lt;expressionN> } ] }</code>匹配表达式列列表都不满足情况，<strong>如果表达式中涉及到的所有字段都不存在，也会匹配出来</strong></td>
 </tr>
 <tr>
 <td>$or</td>
-<td></td>
-</tr>
-<tr>
-<td>$exists</td>
-<td></td>
+<td><code>{ $or: [ { &lt;expression1> }, { &lt;expression2> }, ... , { &lt;expressionN> } ] }</code>匹配表达式列表中的一个或者多个</td>
 </tr>
 <tr>
 <td>$type</td>
-<td></td>
+<td><code>{ field: { $type: &lt;BSON type> } }</code>或者<code>{ field: { $type: [ &lt;BSON type1> , &lt;BSON type2>, ... ] } }</code>根据字段的类型匹配，可以匹配某种特定类型，或者几种类型中的一种。<code>BSON</code>的支持的类型：<a href=https://docs.mongodb.com/manual/reference/operator/query/type/#std-label-document-type-available-types>$type — MongoDB Manual</a></td>
 </tr>
 </tbody>
 </table>
+<h4 id=元素element>元素（element）</h4>
+<table>
+<thead>
+<tr>
+<th>MQL运算符</th>
+<th>语法说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$exists</td>
+<td><code>{ field: { $exists: &lt;boolean> } }</code>匹配某个字段是否存在。如果值是<code>true</code>那么会匹配到字段存在的或者值为<code>null</code>的</td>
+</tr>
+<tr>
+<td>$type</td>
+<td><code>{ field: { $type: &lt;BSON type> } }</code>或者<code>{ field: { $type: [ &lt;BSON type1> , &lt;BSON type2>, ... ] } }</code>根据字段的类型匹配，可以匹配某种特定类型，或者几种类型中的一种。<code>BSON</code>的支持的类型：<a href=https://docs.mongodb.com/manual/reference/operator/query/type/#std-label-document-type-available-types>$type — MongoDB Manual</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id=projection投影>Projection(投影)</h3>
 <style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
 </article>

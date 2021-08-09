@@ -61,17 +61,18 @@
 &lt;tr>
 &lt;td>query&lt;/td>
 &lt;td>document&lt;/td>
-&lt;td>可选参数。使用&lt;a href="#%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C%E7%AC%A6">查询操作符&lt;/a>构建查询条件。如果你希望返回集合里的所有对象，那么忽略这个参数，或者传递一个空的文档(&lt;code>{}&lt;/code>)&lt;/td>
+&lt;td>可选参数。使用&lt;a href="#%E6%9F%A5%E8%AF%A2%E9%80%89%E6%8B%A9%E5%99%A8">查询选择器&lt;/a>构建查询条件。如果你希望返回集合里的所有文档，那么忽略这个参数，或者传递一个空的文档(&lt;code>{}&lt;/code>)&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>projecttion&lt;/td>
 &lt;td>document&lt;/td>
-&lt;td>可选参数。对查询结果进行筛选，选择性的返回指定的字段而不是包含对象里的所有字段。如果希望返回对象里的所有字段，则忽略该参数。关于更多细节，请参看：&lt;a href="#Projection(%E5%B1%95%E7%A4%BA)">Projection(展示)&lt;/a>&lt;/td>
+&lt;td>可选参数。对查询结果进行筛选，选择性的返回指定的字段而不是包含文档里的所有字段。如果希望返回文档里的所有字段，则忽略该参数。关于更多细节，请参看：&lt;a href="#Projection(%E6%8A%95%E5%BD%B1)">Projection(投影)&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;h3 id="查询操作符">查询操作符&lt;/h3>
-&lt;h4 id="比较操作符">比较操作符&lt;/h4>
+&lt;h3 id="查询选择器">查询选择器&lt;/h3>
+&lt;p>这部分官网有很好的解释说明，详见：&lt;a href="https://docs.mongodb.com/manual/reference/operator/query/#query-selectors">Query and Projection Operators — MongoDB Manual&lt;/a>&lt;/p>
+&lt;h4 id="比较">比较&lt;/h4>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -123,7 +124,7 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;h4 id="逻辑操作符">逻辑操作符&lt;/h4>
+&lt;h4 id="逻辑运算">逻辑运算&lt;/h4>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -138,26 +139,42 @@
 &lt;/tr>
 &lt;tr>
 &lt;td>$not&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>&lt;code>{ field: { $not: { &amp;lt;operator-expression&amp;gt; } } }&lt;/code>注意&lt;code>{ $not: { $gt: 1.99 } }&lt;/code>和&lt;code>{ $lte: 1.99 }&lt;/code>不一样，&lt;strong>如果字段不存在，前者会匹配到，但是后者得存在才能匹配到&lt;/strong>&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>$nor&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>&lt;code>{ $nor: [ { &amp;lt;expression1&amp;gt; }, { &amp;lt;expression2&amp;gt; }, ... { &amp;lt;expressionN&amp;gt; } ] }&lt;/code>匹配表达式列列表都不满足情况，&lt;strong>如果表达式中涉及到的所有字段都不存在，也会匹配出来&lt;/strong>&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>$or&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>$exists&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>&lt;code>{ $or: [ { &amp;lt;expression1&amp;gt; }, { &amp;lt;expression2&amp;gt; }, ... , { &amp;lt;expressionN&amp;gt; } ] }&lt;/code>匹配表达式列表中的一个或者多个&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>$type&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>&lt;code>{ field: { $type: &amp;lt;BSON type&amp;gt; } }&lt;/code>或者&lt;code>{ field: { $type: [ &amp;lt;BSON type1&amp;gt; , &amp;lt;BSON type2&amp;gt;, ... ] } }&lt;/code>根据字段的类型匹配，可以匹配某种特定类型，或者几种类型中的一种。&lt;code>BSON&lt;/code>的支持的类型：&lt;a href="https://docs.mongodb.com/manual/reference/operator/query/type/#std-label-document-type-available-types">$type — MongoDB Manual&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
-&lt;/table></description></item><item><title>C Primer Plus 编程练习</title><link>https://www.jonathanlin.top/posts/c-primer-plus-handson/</link><pubDate>Fri, 23 Jul 2021 23:35:03 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-handson/</guid><description>
+&lt;/table>
+&lt;h4 id="元素element">元素（element）&lt;/h4>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>MQL运算符&lt;/th>
+&lt;th>语法说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>$exists&lt;/td>
+&lt;td>&lt;code>{ field: { $exists: &amp;lt;boolean&amp;gt; } }&lt;/code>匹配某个字段是否存在。如果值是&lt;code>true&lt;/code>那么会匹配到字段存在的或者值为&lt;code>null&lt;/code>的&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$type&lt;/td>
+&lt;td>&lt;code>{ field: { $type: &amp;lt;BSON type&amp;gt; } }&lt;/code>或者&lt;code>{ field: { $type: [ &amp;lt;BSON type1&amp;gt; , &amp;lt;BSON type2&amp;gt;, ... ] } }&lt;/code>根据字段的类型匹配，可以匹配某种特定类型，或者几种类型中的一种。&lt;code>BSON&lt;/code>的支持的类型：&lt;a href="https://docs.mongodb.com/manual/reference/operator/query/type/#std-label-document-type-available-types">$type — MongoDB Manual&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="projection投影">Projection(投影)&lt;/h3></description></item><item><title>C Primer Plus 编程练习</title><link>https://www.jonathanlin.top/posts/c-primer-plus-handson/</link><pubDate>Fri, 23 Jul 2021 23:35:03 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-handson/</guid><description>
 &lt;h2 id="ch06-c控制语句循环">ch06. C控制语句：循环&lt;/h2>
 &lt;blockquote>
 &lt;ol start="5">
