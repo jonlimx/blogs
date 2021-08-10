@@ -90,7 +90,7 @@
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
 Jul 23, 2021</span>
-<span class=post_time> · 3 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
+<span class=post_time> · 4 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
 </a><a href=https://www.jonathanlin.top/tags/c-primer-plus title="C Primer Plus" class="post_tag button button_translucent">C Primer Plus
 </a>
 </span>
@@ -315,6 +315,49 @@ Jul 23, 2021</span>
 <span class=ln>13</span>	<span class=p>}</span>
 <span class=ln>14</span>	<span class=n>printf</span><span class=p>(</span><span class=s>&#34;ei counts: %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>repeat</span><span class=p>);</span>
 <span class=ln>15</span><span class=p>}</span>
+</code></pre></div><blockquote>
+<ol start=7>
+<li>
+<p>编写一个程序，提示用户输入一周工作的小时数，然后打印工资总额、税金和净收入。做如下假设：</p>
+<p>a. 基本工资 = 10.00美元/小时</p>
+<p>b. 加班（超过40小时）= 1.5倍的时间</p>
+<p>c. 税率： 前300美元为15%</p>
+<p>​ 续150美元为20%</p>
+<p>​ 余下的为25%</p>
+</li>
+</ol>
+</blockquote>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln> 1</span><span class=cp>#include</span> <span class=cpf>&#34;stdio.h&#34;</span><span class=cp>
+</span><span class=ln> 2</span><span class=cp>#define BASIC_SALARY 10.00
+</span><span class=ln> 3</span><span class=cp>#define RATE_300 0.15
+</span><span class=ln> 4</span><span class=cp>#define RATE_450 0.2
+</span><span class=ln> 5</span><span class=cp>#define RATE_OVER_450 0.25
+</span><span class=ln> 6</span><span class=cp></span>
+<span class=ln> 7</span><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+<span class=ln> 8</span><span class=p>{</span>
+<span class=ln> 9</span>	<span class=kt>double</span> <span class=n>working_hours</span><span class=p>;</span>
+<span class=ln>10</span>	<span class=n>printf</span><span class=p>(</span><span class=s>&#34;Please input your working hours: &#34;</span><span class=p>);</span>
+<span class=ln>11</span>	<span class=k>if</span> <span class=p>(</span><span class=n>scanf</span><span class=p>(</span><span class=s>&#34;%lf&#34;</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>working_hours</span><span class=p>)</span> <span class=o>==</span> <span class=mi>1</span><span class=p>)</span>
+<span class=ln>12</span>	<span class=p>{</span>
+<span class=ln>13</span>
+<span class=ln>14</span>
+<span class=ln>15</span>		<span class=k>if</span> <span class=p>(</span><span class=n>working_hours</span> <span class=o>&gt;</span> <span class=mi>40</span><span class=p>)</span>
+<span class=ln>16</span>			<span class=n>working_hours</span> <span class=o>=</span> <span class=mi>40</span> <span class=o>+</span> <span class=mf>1.5</span> <span class=o>*</span> <span class=p>(</span><span class=n>working_hours</span> <span class=o>-</span> <span class=mi>40</span><span class=p>);</span>
+<span class=ln>17</span>
+<span class=ln>18</span>		<span class=kt>double</span> <span class=n>total_salary</span> <span class=o>=</span> <span class=n>working_hours</span> <span class=o>*</span> <span class=n>BASIC_SALARY</span><span class=p>;</span>
+<span class=ln>19</span>		<span class=kt>double</span> <span class=n>tax</span><span class=p>;</span>
+<span class=ln>20</span>		<span class=k>if</span> <span class=p>(</span><span class=n>total_salary</span> <span class=o>&gt;</span> <span class=mi>450</span><span class=p>)</span>
+<span class=ln>21</span>			<span class=n>tax</span> <span class=o>=</span> <span class=mi>300</span> <span class=o>*</span> <span class=n>RATE_300</span> <span class=o>+</span> <span class=mi>150</span> <span class=o>*</span> <span class=n>RATE_450</span> <span class=o>+</span> <span class=p>(</span><span class=n>total_salary</span> <span class=o>-</span> <span class=mi>450</span><span class=p>)</span> <span class=o>*</span> <span class=n>RATE_OVER_450</span><span class=p>;</span>
+<span class=ln>22</span>		<span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>total_salary</span> <span class=o>&gt;</span> <span class=mi>300</span><span class=p>)</span>
+<span class=ln>23</span>			<span class=n>tax</span> <span class=o>=</span> <span class=mi>300</span> <span class=o>*</span> <span class=n>RATE_300</span> <span class=o>+</span> <span class=p>(</span><span class=n>total_salary</span> <span class=o>-</span> <span class=mi>300</span><span class=p>)</span> <span class=o>*</span> <span class=n>RATE_OVER_450</span><span class=p>;</span>
+<span class=ln>24</span>		<span class=k>else</span>
+<span class=ln>25</span>			<span class=n>tax</span> <span class=o>=</span> <span class=n>total_salary</span> <span class=o>*</span> <span class=n>RATE_300</span><span class=p>;</span>
+<span class=ln>26</span>
+<span class=ln>27</span>		<span class=n>printf</span><span class=p>(</span><span class=s>&#34;Total Salary: %lf</span><span class=se>\n</span><span class=s>Tax: %lf</span><span class=se>\n</span><span class=s>Net Salary: %lf</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>total_salary</span><span class=p>,</span> <span class=n>tax</span><span class=p>,</span> <span class=n>total_salary</span> <span class=o>-</span> <span class=n>tax</span><span class=p>);</span>
+<span class=ln>28</span>	<span class=p>}</span>
+<span class=ln>29</span>	<span class=k>else</span>
+<span class=ln>30</span>		<span class=n>printf</span><span class=p>(</span><span class=s>&#34;Bad input, bye!&#34;</span><span class=p>);</span>
+<span class=ln>31</span><span class=p>}</span>
 </code></pre></div><style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
 </article>
