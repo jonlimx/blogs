@@ -539,7 +539,54 @@
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="k">goto&lt;/span> &lt;span class="n">label&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">2&lt;/span>&lt;span class="p">...&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="nl">label&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">statement&lt;/span>&lt;span class="p">;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="ch08-字符输入输出和输入验证">ch08. 字符输入/输出和输入验证&lt;/h2>
+&lt;blockquote>
+&lt;ol>
+&lt;li>输入和输出跟缓冲区有什么关系？&lt;/li>
+&lt;li>有缓冲和无缓冲有什么区别？&lt;/li>
+&lt;li>是否可以手动刷新输入输出缓冲区？&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>
+&lt;p>无缓冲区：当用户输入字符后立即重复打印该字符，这是无缓冲区&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>有缓冲区：用户输入的字符被收集保存在一个被称为&lt;code>缓冲区(buffer)&lt;/code>的临时存储区，按下Enter后打印，这是有缓冲区&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>缓冲类型：&lt;/p>
+&lt;ul>
+&lt;li>完全缓冲I/O：当缓冲区满的时候才刷新缓冲区&lt;/li>
+&lt;li>行缓冲I/O：出现换行符时刷新缓冲区&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>文件和流&lt;/p>
+&lt;ul>
+&lt;li>文件：&lt;strong>存储器中存储信息的区域，不同的操作系统存储信息方式不同，因此文件的底层表示形式也不一样。有的分块有的不分块，有的块大有的块小&lt;/strong>&lt;/li>
+&lt;li>流：C程序处理的是流，而不是文件。流或者说数据流是对输入输出的映射，换句话说，输入转换成数据流，数据流映射到文件，输出也是类似，文件映射成数据流。这样上层就忽略了底层因为操作系统不同带来的差异&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>文件结尾EOF&lt;/p>
+&lt;ul>
+&lt;li>可以用处理文件的方式来处理键盘输入（意思是，处理文件的函数基本都适用于处理键盘输入？？）&lt;/li>
+&lt;li>以往判断文件结尾的一种方式是，&lt;strong>在文件末尾放一个特殊字符ctrl+z标记文件结尾&lt;/strong>&lt;/li>
+&lt;li>无论操作系统实际使用何种方法检测文件结尾，C语言中检测到文件末尾的时候，会返回一个&lt;strong>特殊的值EOF&lt;/strong>（&lt;strong>注意，EOF是一个值，并不是一个字符&lt;/strong>）&lt;/li>
+&lt;li>EOF的值不在&lt;code>char&lt;/code>的值表示的范围内&lt;/li>
+&lt;li>在终端中，UNIX风格的操作系统通过&lt;code>ctrl+d&lt;/code>模拟EOF&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>stdin和stdout&lt;/p>
+&lt;ul>
+&lt;li>C语言上层处理的是&lt;strong>数据流&lt;/strong>，至于数据流的源头和目的地是哪，实际上对上层语言是透明的&lt;/li>
+&lt;li>stdin - 程序从stdin获取到的数据流，数据的来源可能是键盘输入，也可能是来自文件，程序本身不知道源头，只知道处理的是数据流。stdin默认来源是键盘输入，可以通过重定向使得数据来源于文件&lt;/li>
+&lt;li>stdout - 程序将数据流发送给stdout，数据流的去处对程序是透明的。数据流经由stdout，可能输出到显示设备，也可能保存到文件。默认是输出到显示设备&lt;/li>
+&lt;li>&lt;code>&amp;lt;&lt;/code>和&lt;code>&amp;gt;&lt;/code>是重定向符号&lt;/li>
+&lt;/ul>
+&lt;/li>
 &lt;/ul></description></item><item><title>C Primer Plus读书笔记（一）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-01/</link><pubDate>Mon, 05 Jul 2021 19:41:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-01/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第三章至第五章读书笔记。&lt;/em>&lt;/p>
 &lt;h2 id="ch03-数据和c">ch03. 数据和C&lt;/h2>
