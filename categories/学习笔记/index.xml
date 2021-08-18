@@ -397,27 +397,28 @@
 &lt;span class="ln"> 8&lt;/span>&lt;span class="p">{&lt;/span>
 &lt;span class="ln"> 9&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">working_hours&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">10&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Please input your working hours: &amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
-&lt;span class="ln">11&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">scanf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%lf&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">working_hours&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">scanf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%lf&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">working_hours&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">12&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;span class="ln">13&lt;/span>
-&lt;span class="ln">14&lt;/span>
-&lt;span class="ln">15&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">working_hours&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">40&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;span class="ln">16&lt;/span> &lt;span class="n">working_hours&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">40&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mf">1.5&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">working_hours&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">40&lt;/span>&lt;span class="p">);&lt;/span>
-&lt;span class="ln">17&lt;/span>
-&lt;span class="ln">18&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">total_salary&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">working_hours&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">BASIC_SALARY&lt;/span>&lt;span class="p">;&lt;/span>
-&lt;span class="ln">19&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">tax&lt;/span>&lt;span class="p">;&lt;/span>
-&lt;span class="ln">20&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">total_salary&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">450&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;span class="ln">21&lt;/span> &lt;span class="n">tax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">300&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RATE_300&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">150&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RATE_450&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">total_salary&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">450&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RATE_OVER_450&lt;/span>&lt;span class="p">;&lt;/span>
-&lt;span class="ln">22&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">total_salary&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">300&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;span class="ln">23&lt;/span> &lt;span class="n">tax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">300&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RATE_300&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">total_salary&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">300&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RATE_OVER_450&lt;/span>&lt;span class="p">;&lt;/span>
-&lt;span class="ln">24&lt;/span> &lt;span class="k">else&lt;/span>
-&lt;span class="ln">25&lt;/span> &lt;span class="n">tax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">total_salary&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RATE_300&lt;/span>&lt;span class="p">;&lt;/span>
-&lt;span class="ln">26&lt;/span>
-&lt;span class="ln">27&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Total Salary: %lf&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">Tax: %lf&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">Net Salary: %lf&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">total_salary&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tax&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">total_salary&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">tax&lt;/span>&lt;span class="p">);&lt;/span>
-&lt;span class="ln">28&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;span class="ln">29&lt;/span> &lt;span class="k">else&lt;/span>
-&lt;span class="ln">30&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Bad input, bye!&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
-&lt;span class="ln">31&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Bad input, please try again!&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">getchar&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="sc">&amp;#39;\n&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 过滤掉不符合要求的字符，否则不符合规则字符会一直传递给scanf导致死循环
+&lt;/span>&lt;span class="ln">15&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="k">continue&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Please input your working hours: &amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">18&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">working_hours&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">40&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="n">working_hours&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">40&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mf">1.5&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">working_hours&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">40&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">21&lt;/span>
+&lt;span class="ln">22&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">total_salary&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">working_hours&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">BASIC_SALARY&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">23&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">tax&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">24&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">total_salary&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">450&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">25&lt;/span> &lt;span class="n">tax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">300&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RATE_300&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">150&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RATE_450&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">total_salary&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">450&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RATE_OVER_450&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">26&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">total_salary&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">300&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">27&lt;/span> &lt;span class="n">tax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">300&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RATE_300&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">total_salary&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">300&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RATE_OVER_450&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">28&lt;/span> &lt;span class="k">else&lt;/span>
+&lt;span class="ln">29&lt;/span> &lt;span class="n">tax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">total_salary&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RATE_300&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">30&lt;/span>
+&lt;span class="ln">31&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Total Salary: %4.2lf&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">Tax: %4.2lf&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">Net Salary: %4.2lf&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">total_salary&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tax&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">total_salary&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">tax&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">32&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div></description></item><item><title>C Primer Plus读书笔记（二）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第六章至第九章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch06-c控制语句循环">ch06. C控制语句：循环&lt;/h2>
@@ -486,6 +487,10 @@
 &lt;ul>
 &lt;li>
 &lt;p>&lt;code>ch = getchar()&lt;/code> - 与&lt;code>scanf(&amp;quot;%c&amp;quot;, &amp;amp;ch)&lt;/code>类似，读取下一个字符赋值给变量&lt;code>ch&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>getchar&lt;/code> - 读取每个字符，包括空格、制表符和换行符&lt;/li>
+&lt;li>&lt;code>scanf&lt;/code> - 读取数字时会跳过空格、制表符和换行符&lt;/li>
+&lt;/ul>
 &lt;/li>
 &lt;li>
 &lt;p>&lt;code>putchar(ch)&lt;/code> - 与&lt;code>printf(&amp;quot;%c&amp;quot;, ch)&lt;/code>类似，打印一个字符&lt;/p>
@@ -735,6 +740,9 @@
 &lt;/li>
 &lt;li>
 &lt;p>scanf通过空格或者回车将输入分割成多个字段（%c是例外，也会把空字符作为输入存储）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>scanf的返回值是成功读取的项数（个数）&lt;/p>
 &lt;/li>
 &lt;li>
 &lt;p>*修饰符&lt;/p>

@@ -337,27 +337,28 @@ Jul 23, 2021</span>
 <span class=ln> 8</span><span class=p>{</span>
 <span class=ln> 9</span>	<span class=kt>double</span> <span class=n>working_hours</span><span class=p>;</span>
 <span class=ln>10</span>	<span class=n>printf</span><span class=p>(</span><span class=s>&#34;Please input your working hours: &#34;</span><span class=p>);</span>
-<span class=ln>11</span>	<span class=k>if</span> <span class=p>(</span><span class=n>scanf</span><span class=p>(</span><span class=s>&#34;%lf&#34;</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>working_hours</span><span class=p>)</span> <span class=o>==</span> <span class=mi>1</span><span class=p>)</span>
+<span class=ln>11</span>	<span class=k>while</span> <span class=p>(</span><span class=n>scanf</span><span class=p>(</span><span class=s>&#34;%lf&#34;</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>working_hours</span><span class=p>)</span> <span class=o>!=</span> <span class=mi>1</span><span class=p>)</span>
 <span class=ln>12</span>	<span class=p>{</span>
-<span class=ln>13</span>
-<span class=ln>14</span>
-<span class=ln>15</span>		<span class=k>if</span> <span class=p>(</span><span class=n>working_hours</span> <span class=o>&gt;</span> <span class=mi>40</span><span class=p>)</span>
-<span class=ln>16</span>			<span class=n>working_hours</span> <span class=o>=</span> <span class=mi>40</span> <span class=o>+</span> <span class=mf>1.5</span> <span class=o>*</span> <span class=p>(</span><span class=n>working_hours</span> <span class=o>-</span> <span class=mi>40</span><span class=p>);</span>
-<span class=ln>17</span>
-<span class=ln>18</span>		<span class=kt>double</span> <span class=n>total_salary</span> <span class=o>=</span> <span class=n>working_hours</span> <span class=o>*</span> <span class=n>BASIC_SALARY</span><span class=p>;</span>
-<span class=ln>19</span>		<span class=kt>double</span> <span class=n>tax</span><span class=p>;</span>
-<span class=ln>20</span>		<span class=k>if</span> <span class=p>(</span><span class=n>total_salary</span> <span class=o>&gt;</span> <span class=mi>450</span><span class=p>)</span>
-<span class=ln>21</span>			<span class=n>tax</span> <span class=o>=</span> <span class=mi>300</span> <span class=o>*</span> <span class=n>RATE_300</span> <span class=o>+</span> <span class=mi>150</span> <span class=o>*</span> <span class=n>RATE_450</span> <span class=o>+</span> <span class=p>(</span><span class=n>total_salary</span> <span class=o>-</span> <span class=mi>450</span><span class=p>)</span> <span class=o>*</span> <span class=n>RATE_OVER_450</span><span class=p>;</span>
-<span class=ln>22</span>		<span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>total_salary</span> <span class=o>&gt;</span> <span class=mi>300</span><span class=p>)</span>
-<span class=ln>23</span>			<span class=n>tax</span> <span class=o>=</span> <span class=mi>300</span> <span class=o>*</span> <span class=n>RATE_300</span> <span class=o>+</span> <span class=p>(</span><span class=n>total_salary</span> <span class=o>-</span> <span class=mi>300</span><span class=p>)</span> <span class=o>*</span> <span class=n>RATE_OVER_450</span><span class=p>;</span>
-<span class=ln>24</span>		<span class=k>else</span>
-<span class=ln>25</span>			<span class=n>tax</span> <span class=o>=</span> <span class=n>total_salary</span> <span class=o>*</span> <span class=n>RATE_300</span><span class=p>;</span>
-<span class=ln>26</span>
-<span class=ln>27</span>		<span class=n>printf</span><span class=p>(</span><span class=s>&#34;Total Salary: %lf</span><span class=se>\n</span><span class=s>Tax: %lf</span><span class=se>\n</span><span class=s>Net Salary: %lf</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>total_salary</span><span class=p>,</span> <span class=n>tax</span><span class=p>,</span> <span class=n>total_salary</span> <span class=o>-</span> <span class=n>tax</span><span class=p>);</span>
-<span class=ln>28</span>	<span class=p>}</span>
-<span class=ln>29</span>	<span class=k>else</span>
-<span class=ln>30</span>		<span class=n>printf</span><span class=p>(</span><span class=s>&#34;Bad input, bye!&#34;</span><span class=p>);</span>
-<span class=ln>31</span><span class=p>}</span>
+<span class=ln>13</span>		<span class=n>printf</span><span class=p>(</span><span class=s>&#34;Bad input, please try again!</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+<span class=ln>14</span>		<span class=k>while</span> <span class=p>(</span><span class=n>getchar</span><span class=p>()</span> <span class=o>!=</span> <span class=sc>&#39;\n&#39;</span><span class=p>)</span> <span class=c1>// 过滤掉不符合要求的字符，否则不符合规则字符会一直传递给scanf导致死循环
+</span><span class=ln>15</span><span class=c1></span>			<span class=k>continue</span><span class=p>;</span>
+<span class=ln>16</span>		<span class=n>printf</span><span class=p>(</span><span class=s>&#34;Please input your working hours: &#34;</span><span class=p>);</span>
+<span class=ln>17</span>	<span class=p>}</span>
+<span class=ln>18</span>
+<span class=ln>19</span>	<span class=k>if</span> <span class=p>(</span><span class=n>working_hours</span> <span class=o>&gt;</span> <span class=mi>40</span><span class=p>)</span>
+<span class=ln>20</span>		<span class=n>working_hours</span> <span class=o>=</span> <span class=mi>40</span> <span class=o>+</span> <span class=mf>1.5</span> <span class=o>*</span> <span class=p>(</span><span class=n>working_hours</span> <span class=o>-</span> <span class=mi>40</span><span class=p>);</span>
+<span class=ln>21</span>
+<span class=ln>22</span>	<span class=kt>double</span> <span class=n>total_salary</span> <span class=o>=</span> <span class=n>working_hours</span> <span class=o>*</span> <span class=n>BASIC_SALARY</span><span class=p>;</span>
+<span class=ln>23</span>	<span class=kt>double</span> <span class=n>tax</span><span class=p>;</span>
+<span class=ln>24</span>	<span class=k>if</span> <span class=p>(</span><span class=n>total_salary</span> <span class=o>&gt;</span> <span class=mi>450</span><span class=p>)</span>
+<span class=ln>25</span>		<span class=n>tax</span> <span class=o>=</span> <span class=mi>300</span> <span class=o>*</span> <span class=n>RATE_300</span> <span class=o>+</span> <span class=mi>150</span> <span class=o>*</span> <span class=n>RATE_450</span> <span class=o>+</span> <span class=p>(</span><span class=n>total_salary</span> <span class=o>-</span> <span class=mi>450</span><span class=p>)</span> <span class=o>*</span> <span class=n>RATE_OVER_450</span><span class=p>;</span>
+<span class=ln>26</span>	<span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>total_salary</span> <span class=o>&gt;</span> <span class=mi>300</span><span class=p>)</span>
+<span class=ln>27</span>		<span class=n>tax</span> <span class=o>=</span> <span class=mi>300</span> <span class=o>*</span> <span class=n>RATE_300</span> <span class=o>+</span> <span class=p>(</span><span class=n>total_salary</span> <span class=o>-</span> <span class=mi>300</span><span class=p>)</span> <span class=o>*</span> <span class=n>RATE_OVER_450</span><span class=p>;</span>
+<span class=ln>28</span>	<span class=k>else</span>
+<span class=ln>29</span>		<span class=n>tax</span> <span class=o>=</span> <span class=n>total_salary</span> <span class=o>*</span> <span class=n>RATE_300</span><span class=p>;</span>
+<span class=ln>30</span>
+<span class=ln>31</span>	<span class=n>printf</span><span class=p>(</span><span class=s>&#34;Total Salary: %4.2lf</span><span class=se>\n</span><span class=s>Tax: %4.2lf</span><span class=se>\n</span><span class=s>Net Salary: %4.2lf</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>total_salary</span><span class=p>,</span> <span class=n>tax</span><span class=p>,</span> <span class=n>total_salary</span> <span class=o>-</span> <span class=n>tax</span><span class=p>);</span>
+<span class=ln>32</span><span class=p>}</span>
 </code></pre></div><style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
 </article>
