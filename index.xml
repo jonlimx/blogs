@@ -1,4 +1,197 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/</link><description>Recent content on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Thu, 05 Aug 2021 13:48:47 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/index.xml" rel="self" type="application/rss+xml"/><item><title>MongoDB学习笔记（一）</title><link>https://www.jonathanlin.top/posts/mongo-notes-01/</link><pubDate>Thu, 05 Aug 2021 13:48:47 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-01/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/</link><description>Recent content on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Thu, 02 Sep 2021 13:59:45 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/index.xml" rel="self" type="application/rss+xml"/><item><title>Regex Cheatsheet</title><link>https://www.jonathanlin.top/posts/regex-cheatsheet/</link><pubDate>Thu, 02 Sep 2021 13:59:45 +0800</pubDate><guid>https://www.jonathanlin.top/posts/regex-cheatsheet/</guid><description>
+&lt;h2 id="regular-expressions-cheat-sheet">Regular Expressions Cheat Sheet&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">符号&lt;/th>
+&lt;th style="text-align:left">解释&lt;/th>
+&lt;th>示例&lt;/th>
+&lt;th>示例说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">.&lt;/td>
+&lt;td style="text-align:left">匹配任意字符&lt;/td>
+&lt;td>b.t&lt;/td>
+&lt;td>可以匹配bat/but/b#t/b1t等&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">\w&lt;/td>
+&lt;td style="text-align:left">匹配字母，数字和下划线&lt;/td>
+&lt;td>b\wt&lt;/td>
+&lt;td>可以匹配but/b1t/b_1，但不能匹配b#t&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">\s&lt;/td>
+&lt;td style="text-align:left">匹配空白字符，包括\r，\n，\t&lt;/td>
+&lt;td>love\syou&lt;/td>
+&lt;td>匹配love you&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">\d&lt;/td>
+&lt;td style="text-align:left">匹配数字&lt;/td>
+&lt;td>\d\d&lt;/td>
+&lt;td>可以匹配01，23等&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">\b&lt;/td>
+&lt;td style="text-align:left">限定字符串边界&lt;/td>
+&lt;td>\bThe\b&lt;/td>
+&lt;td>匹配The这个单词，不能匹配There。也就是The的前面和后面只能是空格&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">^&lt;/td>
+&lt;td style="text-align:left">根据字符串的开头部分匹配&lt;/td>
+&lt;td>^The&lt;/td>
+&lt;td>匹配以The开头的字符串&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">$&lt;/td>
+&lt;td style="text-align:left">根据字符串的结束部分匹配&lt;/td>
+&lt;td>.exe$&lt;/td>
+&lt;td>匹配以.exe结尾的字符串&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">\W&lt;/td>
+&lt;td style="text-align:left">匹配非字母，非数字和非下划线&lt;/td>
+&lt;td>b\Wt&lt;/td>
+&lt;td>可以匹配b#t，b@t等，但不能匹配but/b1t/b_1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">\S&lt;/td>
+&lt;td style="text-align:left">匹配非空白字符&lt;/td>
+&lt;td>love\Syou&lt;/td>
+&lt;td>可以匹配love#you，但不能匹配love you&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">\D&lt;/td>
+&lt;td style="text-align:left">匹配非数字&lt;/td>
+&lt;td>\d\D&lt;/td>
+&lt;td>可以匹配9$，3#等&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">\B&lt;/td>
+&lt;td style="text-align:left">与\b相反，匹配的字符串不处于边界&lt;/td>
+&lt;td>\Bio\B&lt;/td>
+&lt;td>可以匹配biological，因为io的前后都不是空格&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">[]&lt;/td>
+&lt;td style="text-align:left">匹配字符集（中括号内）里的任意单一字符&lt;/td>
+&lt;td>[aeiou]&lt;/td>
+&lt;td>匹配a，e，i，o，u这几个元音字符&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">[^]&lt;/td>
+&lt;td style="text-align:left">匹配不在字符集（中括号内）里的任意单一字符&lt;/td>
+&lt;td>[^aeiou]&lt;/td>
+&lt;td>匹配除了a，e，i，o，u这几个原因字符以外的字符&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">*&lt;/td>
+&lt;td style="text-align:left">匹配0次或者多次&lt;/td>
+&lt;td>bee*&lt;/td>
+&lt;td>匹配be，bee或者beeeeee等&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">+&lt;/td>
+&lt;td style="text-align:left">匹配1次或者多次&lt;/td>
+&lt;td>bee+&lt;/td>
+&lt;td>匹配bee，beee或者beeeeee等&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">?&lt;/td>
+&lt;td style="text-align:left">匹配0次或者1次&lt;/td>
+&lt;td>bee?&lt;/td>
+&lt;td>匹配be或者bee&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">{N}&lt;/td>
+&lt;td style="text-align:left">匹配N次&lt;/td>
+&lt;td>be{3}&lt;/td>
+&lt;td>匹配beee&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">{M,}&lt;/td>
+&lt;td style="text-align:left">至少匹配M次&lt;/td>
+&lt;td>be{3,}&lt;/td>
+&lt;td>匹配beee，beeeeeee等&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">{N,M}&lt;/td>
+&lt;td style="text-align:left">匹配至少M次，至多N次&lt;/td>
+&lt;td>be{3,5}&lt;/td>
+&lt;td>匹配beee，beeee，beeeee&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">|&lt;/td>
+&lt;td style="text-align:left">分支&lt;/td>
+&lt;td>foo|bar&lt;/td>
+&lt;td>匹配foo或者bar&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">(exp)&lt;/td>
+&lt;td style="text-align:left">匹配exp并且捕获到自动命名的组中&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>这里的重点是自动命名的组里，至于如何匹配完全取决于exp如何定义&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">(?&lt;name>exp)&lt;/td>
+&lt;td style="text-align:left">匹配exp并且捕获到名为name的组中&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>这里的重点是命名组，至于如何匹配完全取决于exp如何定义&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">(?:exp)&lt;/td>
+&lt;td style="text-align:left">匹配exp但是不捕获匹配的文本&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">(?=exp)&lt;/td>
+&lt;td style="text-align:left">对exp前面的文本进行匹配&lt;/td>
+&lt;td>\b\w+(?=ing)&lt;/td>
+&lt;td>匹配I'm reading中的read&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">(?&amp;lt;=exp)&lt;/td>
+&lt;td style="text-align:left">对exp后面的文本进行匹配&lt;/td>
+&lt;td>(?&amp;lt;=\bread)\w+\b&lt;/td>
+&lt;td>匹配I'm reading中的ing&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">*？&lt;/td>
+&lt;td style="text-align:left">重复任意次，但尽可能少重复&lt;/td>
+&lt;td>b\w*?p&lt;/td>
+&lt;td>bephellobeep会匹配出bep和beep。但是如果正则为b\w*p，那么匹配的结果是bephellobeep&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">+？&lt;/td>
+&lt;td style="text-align:left">重复1次或者多次，但尽可能少重复&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>原理同上&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">??&lt;/td>
+&lt;td style="text-align:left">重复0次或者1次，但尽可能少重复&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>原理同上&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">{M,N}?&lt;/td>
+&lt;td style="text-align:left">重复M到N次，但尽可能少重复&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>原理同上&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">{M,}?&lt;/td>
+&lt;td style="text-align:left">重复M次以及以上，但尽可能少重复&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>原理同上&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>MongoDB学习笔记（一）</title><link>https://www.jonathanlin.top/posts/mongo-notes-01/</link><pubDate>Thu, 05 Aug 2021 13:48:47 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-01/</guid><description>
 &lt;h2 id="安装mongodb">安装mongodb&lt;/h2>
 &lt;p>我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用&lt;code>brew&lt;/code>来安装，使用以下命令：&lt;/p>
 &lt;ol>

@@ -1,19 +1,19 @@
-<!doctype html><html lang=zh data-figures>
+<!doctype html><html lang=zh data-figures class=page>
 <head>
-<title>goroutine | Standing on the Shoulder of Giants</title>
+<title>Regex Cheatsheet | Standing on the Shoulder of Giants</title>
 <meta charset=utf-8>
-<meta property="og:title" content="goroutine | Standing on the Shoulder of Giants">
-<meta itemprop=name content="goroutine | Standing on the Shoulder of Giants">
-<meta name=application-name content="goroutine | Standing on the Shoulder of Giants">
+<meta property="og:title" content="Regex Cheatsheet | Standing on the Shoulder of Giants">
+<meta itemprop=name content="Regex Cheatsheet | Standing on the Shoulder of Giants">
+<meta name=application-name content="Regex Cheatsheet | Standing on the Shoulder of Giants">
 <meta property="og:site_name" content="Jonathan Lin">
 <meta name=description content>
 <meta itemprop=description content>
 <meta property="og:description" content>
 <meta name=twitter:description content>
-<base href=https://www.jonathanlin.top/tags/goroutine/>
-<link rel=canonical href=https://www.jonathanlin.top/tags/goroutine/ itemprop=url>
-<meta name=url content="https://www.jonathanlin.top/tags/goroutine/">
-<meta property="og:url" content="https://www.jonathanlin.top/tags/goroutine/">
+<base href=https://www.jonathanlin.top/posts/regex-cheatsheet/>
+<link rel=canonical href=https://www.jonathanlin.top/posts/regex-cheatsheet/ itemprop=url>
+<meta name=url content="https://www.jonathanlin.top/posts/regex-cheatsheet/">
+<meta property="og:url" content="https://www.jonathanlin.top/posts/regex-cheatsheet/">
 <meta property="og:locale" content="zh-cn">
 <meta name=language content="Chinese">
 <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -21,19 +21,18 @@
 <script>var _hmt=_hmt||[];(function(){var a=document.createElement("script"),b;a.src="https://hm.baidu.com/hm.js?d60a5d9f17547c322bf9ce50cc9b5954",b=document.getElementsByTagName("script")[0],b.parentNode.insertBefore(a,b)})()</script>
 <meta property="og:locale" content="zh">
 <meta property="og:type" content="article">
-<meta name=description content>
+<meta name=description content="Regular Expressions Cheat Sheet    符号 解释 示例 示例说明     . 匹配任意字符 b.t 可以匹配bat/but/b#t/b1t等   \w 匹配字母，数字和下划线 b\wt 可以匹配but/b1t/b_1，但不能匹配b#t   \s 匹配空白字符，包括\r，\n，\t …">
 <meta name=twitter:card content="summary">
 <meta name=twitter:creator content>
-<meta name=twitter:title content="goroutine">
-<meta property="og:url" content="https://www.jonathanlin.top/tags/goroutine/">
-<meta property="og:title" content="goroutine">
-<meta property="og:description" content>
-<meta property="og:image" content="https://www.jonathanlin.top/">
+<meta name=twitter:title content="Regex Cheatsheet">
+<meta property="og:url" content="https://www.jonathanlin.top/posts/regex-cheatsheet/">
+<meta property="og:title" content="Regex Cheatsheet">
+<meta property="og:description" content="Regular Expressions Cheat Sheet    符号 解释 示例 示例说明     . 匹配任意字符 b.t 可以匹配bat/but/b#t/b1t等   \w 匹配字母，数字和下划线 b\wt 可以匹配but/b1t/b_1，但不能匹配b#t   \s 匹配空白字符，包括\r，\n，\t …">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/regex150.png">
 <link rel=apple-touch-icon sizes=180x180 href=https://www.jonathanlin.top/icons/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=https://www.jonathanlin.top/icons/favicon-32x32.png>
 <link rel=manifest href=https://www.jonathanlin.top/icons/site.webmanifest>
-<link rel=canonical href=https://www.jonathanlin.top/tags/goroutine/>
-<link rel=alternate type=application/rss+xml href=https://www.jonathanlin.top/tags/goroutine/index.xml title="Standing on the Shoulder of Giants">
+<link rel=canonical href=https://www.jonathanlin.top/posts/regex-cheatsheet/>
 <link rel=preload href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" as=style crossorigin=anonymous>
 <link rel=preload href=https://www.jonathanlin.top/js/bundle.min.617c4c3549a10c9fe7e1bb91e87f0722f6a285b59e742c7123c755df9fb33530bae76060ebd303966dd0e1c09813e679f8042802b7fd059315ef1345f0429ad2.js as=script integrity="sha512-YXxMNUmhDJ/n4buR6H8HIvaihbWedCxxI8dV35+zNTC652Bg69MDlm3Q4cCYE+Z5+AQoArf9BZMV7xNF8EKa0g==" crossorigin=anonymous>
 <link rel=stylesheet type=text/css href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" crossorigin=anonymous>
@@ -81,146 +80,231 @@
 </header>
 <main>
 <div class="grid-inverse wrap content">
-<ul class=posts id=posts>
-<li class=post_item>
-<div class=excerpt>
-<div class=excerpt_header>
-<h3 class=post_link>
-<a href=https://www.jonathanlin.top/posts/go-concurrency-best-practice/ title="[译]Go Concurrency Best Practice">[译]Go Concurrency Best Practice</a>
-</h3>
+<article class=post_content>
+<h1 class=post_title>Regex Cheatsheet</h1>
 <div class=post_meta>
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
-Jul 12, 2021</span>
-<span class=post_time> · 5 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/golang title=golang class="post_tag button button_translucent">golang
-</a><a href=https://www.jonathanlin.top/tags/goroutine title=goroutine class="post_tag button button_translucent">goroutine
-</a><a href=https://www.jonathanlin.top/tags/concurrency title=Concurrency class="post_tag button button_translucent">Concurrency
+Sep 2, 2021</span>
+<span class=post_time> · 1 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/regex title=regex class="post_tag button button_translucent">regex
 </a>
 </span>
 <span class=page_only>&nbsp;·
 <div class=post_share>
 分享到:
-<a href="https://twitter.com/intent/tweet?text=%5b%e8%af%91%5dGo%20Concurrency%20Best%20Practice&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fgo-concurrency-best-practice%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
+<a href="https://twitter.com/intent/tweet?text=Regex%20Cheatsheet&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fregex-cheatsheet%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
 </a>
-<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fgo-concurrency-best-practice%2f&t=%5b%e8%af%91%5dGo%20Concurrency%20Best%20Practice" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
-</a>
-<a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
-</a>
-<a href=https://www.jonathanlin.top/posts/go-concurrency-best-practice/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
-</a>
-</div>
-</span>
-</div>
-</div>
-<div class="excerpt_footer partition">
-<div class=excerpt_thumbnail>
-<img src=https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/gocurrency150.png alt="[译]Go Concurrency Best Practice">
-</div>
-<div>
-<p class=pale>
-Dave Cheney 2019年在QCon上分享的一些Go编程的原则很有参考价值。我摘录了关于并发的部分，这部分是关于Go编发编程的一些原则和思想。
-原文链接：Practical Go: Real world advice for writing maintainable Go programs (cheney.net)
-通常选择Go来做项目，往往是因为它的并发特性。Go团队已经不遗余力的让Go在并发方面即能节省资源又能满足性能要求。然而，使用Go的并发特性写出低性能或者不稳定的代码是完全可能的。在最后我想留给你们一些我关于如何避免使用Go并发特定带来的一些隐患的建议。
-支持并发特性的语句channel，select和go在Go特 …
-</p>
-<a href=https://www.jonathanlin.top/posts/go-concurrency-best-practice/ title=阅读更多 class="excerpt_more button">阅读更多</a>
-</div>
-</div>
-</div>
-</li>
-<li class=post_item>
-<div class=excerpt>
-<div class=excerpt_header>
-<h3 class=post_link>
-<a href=https://www.jonathanlin.top/posts/concurrency-trap-2-incomplete-work/ title="[译]Concurrency Trap #2: Incomplete Work">[译]Concurrency Trap #2: Incomplete Work</a>
-</h3>
-<div class=post_meta>
-<span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
-<span class=post_date>
-Jul 12, 2021</span>
-<span class=post_time> · 3 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/golang title=golang class="post_tag button button_translucent">golang
-</a><a href=https://www.jonathanlin.top/tags/goroutine title=goroutine class="post_tag button button_translucent">goroutine
-</a><a href=https://www.jonathanlin.top/tags/concurrency-trap title="Concurrency Trap" class="post_tag button button_translucent">Concurrency Trap
-</a>
-</span>
-<span class=page_only>&nbsp;·
-<div class=post_share>
-分享到:
-<a href="https://twitter.com/intent/tweet?text=%5b%e8%af%91%5dConcurrency%20Trap%20%232%3a%20Incomplete%20Work&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fconcurrency-trap-2-incomplete-work%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
-</a>
-<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fconcurrency-trap-2-incomplete-work%2f&t=%5b%e8%af%91%5dConcurrency%20Trap%20%232%3a%20Incomplete%20Work" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
+<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fregex-cheatsheet%2f&t=Regex%20Cheatsheet" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
 </a>
 <a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
 </a>
-<a href=https://www.jonathanlin.top/posts/concurrency-trap-2-incomplete-work/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
+<a href=https://www.jonathanlin.top/posts/regex-cheatsheet/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
 </a>
 </div>
 </span>
 </div>
-</div>
-<div class="excerpt_footer partition">
-<div class=excerpt_thumbnail>
-<img src=https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/golang150.png alt="[译]Concurrency Trap #2: Incomplete Work">
-</div>
-<div>
-<p class=pale>
-原文链接：Concurrency Trap #2: Incomplete Work (ardanlabs.com)
-简介 在我的上一篇博文[译]Goroutine Leaks - The Forgotten Sender中，我提到了并发是一个非常有用的工具，但是并发往往伴随着特定的陷阱，而这些不会在同步编程中出现。本文会继续这个主题，在本文中我将介绍一个名为未完成的工作的陷阱。未完成的工作发生于在仍然有未完成的Goroutine（非main goroutine）存在的时候程序终止退出了。发生这种情况时，Goroutine的本质使得它会被强制退出，这可能是一个严重的问题。
-未完成的工作 为了说明什么是未完成的工作，请观察下面的例子。 …
-</p>
-<a href=https://www.jonathanlin.top/posts/concurrency-trap-2-incomplete-work/ title=阅读更多 class="excerpt_more button">阅读更多</a>
-</div>
-</div>
-</div>
-</li>
-<li class=post_item>
-<div class=excerpt>
-<div class=excerpt_header>
-<h3 class=post_link>
-<a href=https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/ title="[译]Goroutine Leaks - The Forgotten Sender">[译]Goroutine Leaks - The Forgotten Sender</a>
-</h3>
-<div class=post_meta>
-<span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
-<span class=post_date>
-Jul 7, 2021</span>
-<span class=post_time> · 3 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/golang title=golang class="post_tag button button_translucent">golang
-</a><a href=https://www.jonathanlin.top/tags/goroutine title=goroutine class="post_tag button button_translucent">goroutine
-</a><a href=https://www.jonathanlin.top/tags/concurrency-trap title="Concurrency Trap" class="post_tag button button_translucent">Concurrency Trap
-</a>
-</span>
-<span class=page_only>&nbsp;·
-<div class=post_share>
-分享到:
-<a href="https://twitter.com/intent/tweet?text=%5b%e8%af%91%5dGoroutine%20Leaks%20-%20The%20Forgotten%20Sender&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fgorouting-leak-the-forgotten-sender%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
-</a>
-<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fgorouting-leak-the-forgotten-sender%2f&t=%5b%e8%af%91%5dGoroutine%20Leaks%20-%20The%20Forgotten%20Sender" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
-</a>
-<a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
-</a>
-<a href=https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
-</a>
-</div>
-</span>
-</div>
-</div>
-<div class="excerpt_footer partition">
-<div class=excerpt_thumbnail>
-<img src=https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/golang150.png alt="[译]Goroutine Leaks - The Forgotten Sender">
-</div>
-<div>
-<p class=pale>
-原文链接：Goroutine Leaks - The Forgotten Sender (ardanlabs.com)
-简介 并发编程可以让程序员以多个执行路径来解决问题，而且通常是试图提高程序性能。并发并不意味着这些执行路径是以并行的方式执行，而是说这些执行路径以无序异步的方式执行而不是同步顺序执行。历史上这种编程模型是通过标准款或者第三方库来实现的。
-Go语言中，并发特性是通过语言内置的Goroutine和channel来实现，这样就减少了对库的依赖。这容易给人一种错觉，觉得使用Go来编写并发程序会很简单。你得非常小心，因为如果你没有正确的使用Go的并发特性，往往会引入特定的边界效应或者调入陷阱。一不小心，这些陷阱就会给你程序带 …
-</p>
-<a href=https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/ title=阅读更多 class="excerpt_more button">阅读更多</a>
-</div>
-</div>
-</div>
-</li>
-<li>
-</li>
+<h2>文章目录</h2>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#regular-expressions-cheat-sheet>Regular Expressions Cheat Sheet</a></li>
 </ul>
+</nav>
+<h2 id=regular-expressions-cheat-sheet>Regular Expressions Cheat Sheet</h2>
+<table>
+<thead>
+<tr>
+<th style=text-align:left>符号</th>
+<th style=text-align:left>解释</th>
+<th>示例</th>
+<th>示例说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style=text-align:left>.</td>
+<td style=text-align:left>匹配任意字符</td>
+<td>b.t</td>
+<td>可以匹配bat/but/b#t/b1t等</td>
+</tr>
+<tr>
+<td style=text-align:left>\w</td>
+<td style=text-align:left>匹配字母，数字和下划线</td>
+<td>b\wt</td>
+<td>可以匹配but/b1t/b_1，但不能匹配b#t</td>
+</tr>
+<tr>
+<td style=text-align:left>\s</td>
+<td style=text-align:left>匹配空白字符，包括\r，\n，\t</td>
+<td>love\syou</td>
+<td>匹配love you</td>
+</tr>
+<tr>
+<td style=text-align:left>\d</td>
+<td style=text-align:left>匹配数字</td>
+<td>\d\d</td>
+<td>可以匹配01，23等</td>
+</tr>
+<tr>
+<td style=text-align:left>\b</td>
+<td style=text-align:left>限定字符串边界</td>
+<td>\bThe\b</td>
+<td>匹配The这个单词，不能匹配There。也就是The的前面和后面只能是空格</td>
+</tr>
+<tr>
+<td style=text-align:left>^</td>
+<td style=text-align:left>根据字符串的开头部分匹配</td>
+<td>^The</td>
+<td>匹配以The开头的字符串</td>
+</tr>
+<tr>
+<td style=text-align:left>$</td>
+<td style=text-align:left>根据字符串的结束部分匹配</td>
+<td>.exe$</td>
+<td>匹配以.exe结尾的字符串</td>
+</tr>
+<tr>
+<td style=text-align:left>\W</td>
+<td style=text-align:left>匹配非字母，非数字和非下划线</td>
+<td>b\Wt</td>
+<td>可以匹配b#t，b@t等，但不能匹配but/b1t/b_1</td>
+</tr>
+<tr>
+<td style=text-align:left>\S</td>
+<td style=text-align:left>匹配非空白字符</td>
+<td>love\Syou</td>
+<td>可以匹配love#you，但不能匹配love you</td>
+</tr>
+<tr>
+<td style=text-align:left>\D</td>
+<td style=text-align:left>匹配非数字</td>
+<td>\d\D</td>
+<td>可以匹配9$，3#等</td>
+</tr>
+<tr>
+<td style=text-align:left>\B</td>
+<td style=text-align:left>与\b相反，匹配的字符串不处于边界</td>
+<td>\Bio\B</td>
+<td>可以匹配biological，因为io的前后都不是空格</td>
+</tr>
+<tr>
+<td style=text-align:left>[]</td>
+<td style=text-align:left>匹配字符集（中括号内）里的任意单一字符</td>
+<td>[aeiou]</td>
+<td>匹配a，e，i，o，u这几个元音字符</td>
+</tr>
+<tr>
+<td style=text-align:left>[^]</td>
+<td style=text-align:left>匹配不在字符集（中括号内）里的任意单一字符</td>
+<td>[^aeiou]</td>
+<td>匹配除了a，e，i，o，u这几个原因字符以外的字符</td>
+</tr>
+<tr>
+<td style=text-align:left>*</td>
+<td style=text-align:left>匹配0次或者多次</td>
+<td>bee*</td>
+<td>匹配be，bee或者beeeeee等</td>
+</tr>
+<tr>
+<td style=text-align:left>+</td>
+<td style=text-align:left>匹配1次或者多次</td>
+<td>bee+</td>
+<td>匹配bee，beee或者beeeeee等</td>
+</tr>
+<tr>
+<td style=text-align:left>?</td>
+<td style=text-align:left>匹配0次或者1次</td>
+<td>bee?</td>
+<td>匹配be或者bee</td>
+</tr>
+<tr>
+<td style=text-align:left>{N}</td>
+<td style=text-align:left>匹配N次</td>
+<td>be{3}</td>
+<td>匹配beee</td>
+</tr>
+<tr>
+<td style=text-align:left>{M,}</td>
+<td style=text-align:left>至少匹配M次</td>
+<td>be{3,}</td>
+<td>匹配beee，beeeeeee等</td>
+</tr>
+<tr>
+<td style=text-align:left>{N,M}</td>
+<td style=text-align:left>匹配至少M次，至多N次</td>
+<td>be{3,5}</td>
+<td>匹配beee，beeee，beeeee</td>
+</tr>
+<tr>
+<td style=text-align:left>|</td>
+<td style=text-align:left>分支</td>
+<td>foo|bar</td>
+<td>匹配foo或者bar</td>
+</tr>
+<tr>
+<td style=text-align:left>(exp)</td>
+<td style=text-align:left>匹配exp并且捕获到自动命名的组中</td>
+<td></td>
+<td>这里的重点是自动命名的组里，至于如何匹配完全取决于exp如何定义</td>
+</tr>
+<tr>
+<td style=text-align:left>(?<name>exp)</td>
+<td style=text-align:left>匹配exp并且捕获到名为name的组中</td>
+<td></td>
+<td>这里的重点是命名组，至于如何匹配完全取决于exp如何定义</td>
+</tr>
+<tr>
+<td style=text-align:left>(?:exp)</td>
+<td style=text-align:left>匹配exp但是不捕获匹配的文本</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td style=text-align:left>(?=exp)</td>
+<td style=text-align:left>对exp前面的文本进行匹配</td>
+<td>\b\w+(?=ing)</td>
+<td>匹配I'm reading中的read</td>
+</tr>
+<tr>
+<td style=text-align:left>(?&lt;=exp)</td>
+<td style=text-align:left>对exp后面的文本进行匹配</td>
+<td>(?&lt;=\bread)\w+\b</td>
+<td>匹配I'm reading中的ing</td>
+</tr>
+<tr>
+<td style=text-align:left>*？</td>
+<td style=text-align:left>重复任意次，但尽可能少重复</td>
+<td>b\w*?p</td>
+<td>bephellobeep会匹配出bep和beep。但是如果正则为b\w*p，那么匹配的结果是bephellobeep</td>
+</tr>
+<tr>
+<td style=text-align:left>+？</td>
+<td style=text-align:left>重复1次或者多次，但尽可能少重复</td>
+<td></td>
+<td>原理同上</td>
+</tr>
+<tr>
+<td style=text-align:left>??</td>
+<td style=text-align:left>重复0次或者1次，但尽可能少重复</td>
+<td></td>
+<td>原理同上</td>
+</tr>
+<tr>
+<td style=text-align:left>{M,N}?</td>
+<td style=text-align:left>重复M到N次，但尽可能少重复</td>
+<td></td>
+<td>原理同上</td>
+</tr>
+<tr>
+<td style=text-align:left>{M,}?</td>
+<td style=text-align:left>重复M次以及以上，但尽可能少重复</td>
+<td></td>
+<td>原理同上</td>
+</tr>
+</tbody>
+</table>
+<style>.utterances{max-width:100%}</style>
+<script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
+</article>
 <aside class=sidebar>
 <section class=sidebar_inner>
 <div class=author_header>
@@ -233,9 +317,6 @@ Go语言中，并发特性是通过语言内置的Goroutine和channel来实现�
 <a href=https://www.jonathanlin.top/about/ class="button mt-1" role=button title=阅读更多>阅读更多</a>
 <h2 class=mt-4>最新文章</h2>
 <ul class=flex-column>
-<li>
-<a href=https://www.jonathanlin.top/posts/regex-cheatsheet/ class=nav-link title="Regex Cheatsheet">Regex Cheatsheet</a>
-</li>
 <li>
 <a href=https://www.jonathanlin.top/posts/mongo-notes-01/ class=nav-link title=MongoDB学习笔记（一）>MongoDB学习笔记（一）</a>
 </li>
@@ -256,6 +337,9 @@ Go语言中，并发特性是通过语言内置的Goroutine和channel来实现�
 </li>
 <li>
 <a href=https://www.jonathanlin.top/posts/protocol-buffer-language-guide/ class=nav-link title="[译]Protocol Buffer Language Guide (proto3)">[译]Protocol Buffer Language Guide (proto3)</a>
+</li>
+<li>
+<a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-01/ class=nav-link title="C Primer Plus读书笔记（一）">C Primer Plus读书笔记（一）</a>
 </li>
 </ul>
 <div>
