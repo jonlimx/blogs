@@ -320,7 +320,11 @@ Aug 5, 2021</span>
 </tbody>
 </table>
 <h3 id=projection投影>Projection(投影)</h3>
-<p>投影的目的是将query的结果按要求返回，比如需要返回哪些字段、返回几个符合条件的数组元素。</p>
+<p>投影的目的是将query的结果按要求返回，比如需要返回哪些字段、返回几个符合条件的数组元素。<strong>注意</strong>：</p>
+<ol>
+<li>包含或者排除，<strong>这二者在投影里是互斥的</strong>。即指定了包含的字段，那么结果仅返回指定的字段，如果指定了排除的字段，那么返回的结果不包含被排除的字段</li>
+<li><code>_id</code>是特例，默认是包含在返回结果里，如果不希望结果里返回，是需要在投影里排除掉。<code>_id</code>的排除是可以和其他字段的包含同时存在</li>
+</ol>
 <table>
 <thead>
 <tr>
@@ -335,7 +339,7 @@ Aug 5, 2021</span>
 </tr>
 <tr>
 <td><code>&lt;field>: &lt;0 or false></code></td>
-<td>结果中<strong>不</strong>包含某个字段</td>
+<td>结果中<strong>排除</strong>某个字段</td>
 </tr>
 <tr>
 <td><code>&lt;field>: &lt;aggregation expression></code></td>
@@ -479,9 +483,31 @@ Aug 5, 2021</span>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
 <span class=ln>2</span>   <span class=o>{</span> awards: <span class=o>{</span> <span class=nv>$elemMatch</span>: <span class=o>{</span> award: <span class=s2>&#34;Turing Award&#34;</span>, year: <span class=o>{</span> <span class=nv>$gt</span>: <span class=m>1980</span> <span class=o>}</span> <span class=o>}</span> <span class=o>}</span> <span class=o>}</span>
 <span class=ln>3</span><span class=o>)</span>
-</code></pre></div></li>
+</code></pre></div><h2 id=投影示例>投影示例</h2>
+</li>
 </ul>
-<style>.utterances{max-width:100%}</style>
+<p><strong>指定要包含的字段</strong></p>
+<p>查找<code>bios</code>集合里所有文档并返回文档的<code>name</code>和<code>contribs</code>字段：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span> <span class=o>{</span> <span class=o>}</span>, <span class=o>{</span> name: 1, contribs: <span class=m>1</span> <span class=o>}</span> <span class=o>)</span>
+</code></pre></div><p><strong>指定要排除的字段</strong></p>
+<p>查找<code>bios</code>集合里<code>contribs</code>为OOP的集合，返回的时候排除掉<code>name.first</code>和<code>birth</code>字段：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
+<span class=ln>2</span>   <span class=o>{</span> contribs: <span class=s1>&#39;OOP&#39;</span> <span class=o>}</span>,
+<span class=ln>3</span>   <span class=o>{</span> <span class=s1>&#39;name.first&#39;</span>: 0, birth: <span class=m>0</span> <span class=o>}</span>
+<span class=ln>4</span><span class=o>)</span>
+</code></pre></div><p><strong>显式排除<code>_id</code>字段</strong></p>
+<p>查找<code>bios</code>集合里所有文档并返回文档的<code>name</code>和<code>contribs</code>字段但不包括<code>_id</code>：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
+<span class=ln>2</span>   <span class=o>{</span> <span class=o>}</span>,
+<span class=ln>3</span>   <span class=o>{</span> name: 1, contribs: 1, _id: <span class=m>0</span> <span class=o>}</span>
+<span class=ln>4</span><span class=o>)</span>
+</code></pre></div><p><strong>对子文档和数组投影</strong></p>
+<p>查找<code>bios</code>集合里的所有文档并返回<code>name.last</code>，以及<code>contribs</code>数组里的前两个元素</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
+<span class=ln>2</span>    <span class=o>{}</span>,
+<span class=ln>3</span>    <span class=o>{</span>_id: 0, <span class=s1>&#39;name.last&#39;</span>: 1, contribs: <span class=o>{</span><span class=nv>$slice</span>: 2<span class=o>}}</span>
+<span class=ln>4</span><span class=o>)</span>
+</code></pre></div><style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
 </article>
 <aside class=sidebar>

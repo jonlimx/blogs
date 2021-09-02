@@ -212,7 +212,11 @@
 &lt;/tbody>
 &lt;/table>
 &lt;h3 id="projection投影">Projection(投影)&lt;/h3>
-&lt;p>投影的目的是将query的结果按要求返回，比如需要返回哪些字段、返回几个符合条件的数组元素。&lt;/p>
+&lt;p>投影的目的是将query的结果按要求返回，比如需要返回哪些字段、返回几个符合条件的数组元素。&lt;strong>注意&lt;/strong>：&lt;/p>
+&lt;ol>
+&lt;li>包含或者排除，&lt;strong>这二者在投影里是互斥的&lt;/strong>。即指定了包含的字段，那么结果仅返回指定的字段，如果指定了排除的字段，那么返回的结果不包含被排除的字段&lt;/li>
+&lt;li>&lt;code>_id&lt;/code>是特例，默认是包含在返回结果里，如果不希望结果里返回，是需要在投影里排除掉。&lt;code>_id&lt;/code>的排除是可以和其他字段的包含同时存在&lt;/li>
+&lt;/ol>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -227,7 +231,7 @@
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;code>&amp;lt;field&amp;gt;: &amp;lt;0 or false&amp;gt;&lt;/code>&lt;/td>
-&lt;td>结果中&lt;strong>不&lt;/strong>包含某个字段&lt;/td>
+&lt;td>结果中&lt;strong>排除&lt;/strong>某个字段&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;code>&amp;lt;field&amp;gt;: &amp;lt;aggregation expression&amp;gt;&lt;/code>&lt;/td>
@@ -371,5 +375,28 @@
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
 &lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> awards: &lt;span class="o">{&lt;/span> &lt;span class="nv">$elemMatch&lt;/span>: &lt;span class="o">{&lt;/span> award: &lt;span class="s2">&amp;#34;Turing Award&amp;#34;&lt;/span>, year: &lt;span class="o">{&lt;/span> &lt;span class="nv">$gt&lt;/span>: &lt;span class="m">1980&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="o">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
-&lt;/ul></description></item></channel></rss>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="投影示例">投影示例&lt;/h2>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>指定要包含的字段&lt;/strong>&lt;/p>
+&lt;p>查找&lt;code>bios&lt;/code>集合里所有文档并返回文档的&lt;code>name&lt;/code>和&lt;code>contribs&lt;/code>字段：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="o">}&lt;/span>, &lt;span class="o">{&lt;/span> name: 1, contribs: &lt;span class="m">1&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>指定要排除的字段&lt;/strong>&lt;/p>
+&lt;p>查找&lt;code>bios&lt;/code>集合里&lt;code>contribs&lt;/code>为OOP的集合，返回的时候排除掉&lt;code>name.first&lt;/code>和&lt;code>birth&lt;/code>字段：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> contribs: &lt;span class="s1">&amp;#39;OOP&amp;#39;&lt;/span> &lt;span class="o">}&lt;/span>,
+&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="s1">&amp;#39;name.first&amp;#39;&lt;/span>: 0, birth: &lt;span class="m">0&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>显式排除&lt;code>_id&lt;/code>字段&lt;/strong>&lt;/p>
+&lt;p>查找&lt;code>bios&lt;/code>集合里所有文档并返回文档的&lt;code>name&lt;/code>和&lt;code>contribs&lt;/code>字段但不包括&lt;code>_id&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="o">}&lt;/span>,
+&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span> name: 1, contribs: 1, _id: &lt;span class="m">0&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>对子文档和数组投影&lt;/strong>&lt;/p>
+&lt;p>查找&lt;code>bios&lt;/code>集合里的所有文档并返回&lt;code>name.last&lt;/code>，以及&lt;code>contribs&lt;/code>数组里的前两个元素&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">{}&lt;/span>,
+&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span>_id: 0, &lt;span class="s1">&amp;#39;name.last&amp;#39;&lt;/span>: 1, contribs: &lt;span class="o">{&lt;/span>&lt;span class="nv">$slice&lt;/span>: 2&lt;span class="o">}}&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div></description></item></channel></rss>
