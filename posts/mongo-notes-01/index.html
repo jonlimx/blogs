@@ -90,7 +90,7 @@
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
 Aug 5, 2021</span>
-<span class=post_time> · 3 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/mongodb title=mongodb class="post_tag button button_translucent">mongodb
+<span class=post_time> · 4 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/mongodb title=mongodb class="post_tag button button_translucent">mongodb
 </a>
 </span>
 <span class=page_only>&nbsp;·
@@ -107,6 +107,22 @@ Aug 5, 2021</span>
 </div>
 </span>
 </div>
+<h2>文章目录</h2>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#安装mongodb>安装mongodb</a></li>
+<li><a href=#以服务的方式启动停止mongodb>以服务的方式启动/停止mongodb</a></li>
+<li><a href=#mongodb查询操作>mongodb查询操作</a>
+<ul>
+<li><a href=#方法定义>方法定义</a></li>
+<li><a href=#查询选择器>查询选择器</a></li>
+<li><a href=#projection投影>Projection(投影)</a></li>
+</ul>
+</li>
+<li><a href=#查询示例>查询示例</a></li>
+<li><a href=#投影示例>投影示例</a></li>
+</ul>
+</nav>
 <h2 id=安装mongodb>安装mongodb</h2>
 <p>我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用<code>brew</code>来安装，使用以下命令：</p>
 <ol>
@@ -150,7 +166,8 @@ Aug 5, 2021</span>
 <h2 id=以服务的方式启动停止mongodb>以服务的方式启动/停止mongodb</h2>
 <p>启动mongodb服务：</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>brew services start mongodb-community@5.0
-</code></pre></div><p>停止mongodb服务：</p>
+</code></pre></div><p>服务启动后，可以通过<code>mongo</code>命令连接并进入shell。</p>
+<p>停止mongodb服务：</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>brew services stop mongodb-community@5.0
 </code></pre></div><h2 id=mongodb查询操作>mongodb查询操作</h2>
 <p>这里介绍的关于mongodb的查询操作（<strong>MQL</strong>）是通过<code>mongosh</code>方法来实现的，这些方法底层是基于<code>JavaScript</code>，但是如果你使用<code>JavaScript</code>来连接那么你应该参考相应语言的包（<a href=https://docs.mongodb.com/drivers/>idiomatic driver</a> ）。关于新增、删除和更新的方法相对来说比较简单，可以自行查看文档：<a href=https://docs.mongodb.com/manual/reference/method/>mongosh Methods — MongoDB Manual</a>。这里重点记录一下查找方法的使用。</p>
@@ -181,7 +198,7 @@ Aug 5, 2021</span>
 <p>构建query的时候，会涉及到字段或者嵌套字段。所谓嵌套字段是指子文档里的字段。指定嵌套的字段的方式有两种：</p>
 <ul>
 <li>点标记法：<code>"field.nestedfield": &lt;value></code></li>
-<li>嵌套的方式：<code>{ field: { nestedfield: &lt;value> } }</code></li>
+<li>嵌套的方式：<code>{ field: { nestedfield: &lt;value> } }</code> （**注意：**这种方式和点标记法不一样，这种方式将匹配名称为<code>filed</code>的子文档，子文档只包含一个名为<code>nestedfield</code>的字段）</li>
 </ul>
 <h3 id=查询选择器>查询选择器</h3>
 <p>这部分官网有很好的解释说明，详见：<a href=https://docs.mongodb.com/manual/reference/operator/query/#query-selectors>Query and Projection Operators — MongoDB Manual</a></p>
@@ -483,6 +500,13 @@ Aug 5, 2021</span>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
 <span class=ln>2</span>   <span class=o>{</span> awards: <span class=o>{</span> <span class=nv>$elemMatch</span>: <span class=o>{</span> award: <span class=s2>&#34;Turing Award&#34;</span>, year: <span class=o>{</span> <span class=nv>$gt</span>: <span class=m>1980</span> <span class=o>}</span> <span class=o>}</span> <span class=o>}</span> <span class=o>}</span>
 <span class=ln>3</span><span class=o>)</span>
+</code></pre></div><p>如果这里不使用<code>elemMatch</code>而是使用下面的方式，结果返回的是<code>awards</code>元素里包含<code>award</code>为”Turing Award“和<code>year</code>大于1975的元素。这两个条件是要求<code>awards</code>下的所有元素里，满足这两个条件之一即可。这两个条件是限制在<code>awards</code>上，不是限制在单一的数组元素上。</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
+<span class=ln>2</span>   <span class=o>{</span>
+<span class=ln>3</span>        <span class=s2>&#34;awards.award&#34;</span>: <span class=s2>&#34;Turing Award&#34;</span> ,
+<span class=ln>4</span>        <span class=s2>&#34;awards.year&#34;</span>: <span class=o>{</span><span class=nv>$gt</span>: 1975<span class=o>}</span>
+<span class=ln>5</span>   <span class=o>}</span>
+<span class=ln>6</span><span class=o>)</span>
 </code></pre></div><h2 id=投影示例>投影示例</h2>
 </li>
 </ul>
@@ -523,6 +547,9 @@ Aug 5, 2021</span>
 <h2 class=mt-4>最新文章</h2>
 <ul class=flex-column>
 <li>
+<a href=https://www.jonathanlin.top/posts/mongo-notes-02/ class=nav-link title=MongoDB学习笔记（二）>MongoDB学习笔记（二）</a>
+</li>
+<li>
 <a href=https://www.jonathanlin.top/posts/regex-cheatsheet/ class=nav-link title="Regex Cheatsheet">Regex Cheatsheet</a>
 </li>
 <li>
@@ -543,16 +570,13 @@ Aug 5, 2021</span>
 <li>
 <a href=https://www.jonathanlin.top/posts/protocol-buffer-language-guide/ class=nav-link title="[译]Protocol Buffer Language Guide (proto3)">[译]Protocol Buffer Language Guide (proto3)</a>
 </li>
-<li>
-<a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-01/ class=nav-link title="C Primer Plus读书笔记（一）">C Primer Plus读书笔记（一）</a>
-</li>
 </ul>
 <div>
 <h2 class="mt-4 taxonomy" id=categories-section>分类</h2>
 <nav class=tags_nav>
 <a href=https://www.jonathanlin.top/categories/notes/ class="post_tag button button_translucent" title=notes>
 NOTES
-<span class=button_tally>5</span>
+<span class=button_tally>6</span>
 </a>
 <a href=https://www.jonathanlin.top/categories/translation/ class="post_tag button button_translucent" title=translation>
 TRANSLATION
@@ -587,6 +611,10 @@ GOROUTINE
 CONCURRENCY-TRAP
 <span class=button_tally>2</span>
 </a>
+<a href=https://www.jonathanlin.top/tags/mongodb/ class="post_tag button button_translucent" title=mongodb>
+MONGODB
+<span class=button_tally>2</span>
+</a>
 <a href=https://www.jonathanlin.top/tags/protobuf/ class="post_tag button button_translucent" title=protobuf>
 PROTOBUF
 <span class=button_tally>2</span>
@@ -605,10 +633,6 @@ GITHUB-PAGES
 </a>
 <a href=https://www.jonathanlin.top/tags/hugo/ class="post_tag button button_translucent" title=hugo>
 HUGO
-<span class=button_tally>1</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/mongodb/ class="post_tag button button_translucent" title=mongodb>
-MONGODB
 <span class=button_tally>1</span>
 </a>
 <a href=https://www.jonathanlin.top/tags/regex/ class="post_tag button button_translucent" title=regex>

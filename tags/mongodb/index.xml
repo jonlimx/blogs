@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>mongodb on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/mongodb/</link><description>Recent content in mongodb on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Thu, 05 Aug 2021 13:48:47 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/mongodb/index.xml" rel="self" type="application/rss+xml"/><item><title>MongoDB学习笔记（一）</title><link>https://www.jonathanlin.top/posts/mongo-notes-01/</link><pubDate>Thu, 05 Aug 2021 13:48:47 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-01/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>mongodb on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/mongodb/</link><description>Recent content in mongodb on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Fri, 03 Sep 2021 15:03:57 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/mongodb/index.xml" rel="self" type="application/rss+xml"/><item><title>MongoDB学习笔记（二）</title><link>https://www.jonathanlin.top/posts/mongo-notes-02/</link><pubDate>Fri, 03 Sep 2021 15:03:57 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-02/</guid><description/></item><item><title>MongoDB学习笔记（一）</title><link>https://www.jonathanlin.top/posts/mongo-notes-01/</link><pubDate>Thu, 05 Aug 2021 13:48:47 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-01/</guid><description>
 &lt;h2 id="安装mongodb">安装mongodb&lt;/h2>
 &lt;p>我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用&lt;code>brew&lt;/code>来安装，使用以下命令：&lt;/p>
 &lt;ol>
@@ -42,7 +42,8 @@
 &lt;h2 id="以服务的方式启动停止mongodb">以服务的方式启动/停止mongodb&lt;/h2>
 &lt;p>启动mongodb服务：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew services start mongodb-community@5.0
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>停止mongodb服务：&lt;/p>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>服务启动后，可以通过&lt;code>mongo&lt;/code>命令连接并进入shell。&lt;/p>
+&lt;p>停止mongodb服务：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew services stop mongodb-community@5.0
 &lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="mongodb查询操作">mongodb查询操作&lt;/h2>
 &lt;p>这里介绍的关于mongodb的查询操作（&lt;strong>MQL&lt;/strong>）是通过&lt;code>mongosh&lt;/code>方法来实现的，这些方法底层是基于&lt;code>JavaScript&lt;/code>，但是如果你使用&lt;code>JavaScript&lt;/code>来连接那么你应该参考相应语言的包（&lt;a href="https://docs.mongodb.com/drivers/">idiomatic driver&lt;/a> ）。关于新增、删除和更新的方法相对来说比较简单，可以自行查看文档：&lt;a href="https://docs.mongodb.com/manual/reference/method/">mongosh Methods — MongoDB Manual&lt;/a>。这里重点记录一下查找方法的使用。&lt;/p>
@@ -73,7 +74,7 @@
 &lt;p>构建query的时候，会涉及到字段或者嵌套字段。所谓嵌套字段是指子文档里的字段。指定嵌套的字段的方式有两种：&lt;/p>
 &lt;ul>
 &lt;li>点标记法：&lt;code>&amp;quot;field.nestedfield&amp;quot;: &amp;lt;value&amp;gt;&lt;/code>&lt;/li>
-&lt;li>嵌套的方式：&lt;code>{ field: { nestedfield: &amp;lt;value&amp;gt; } }&lt;/code>&lt;/li>
+&lt;li>嵌套的方式：&lt;code>{ field: { nestedfield: &amp;lt;value&amp;gt; } }&lt;/code> （**注意：**这种方式和点标记法不一样，这种方式将匹配名称为&lt;code>filed&lt;/code>的子文档，子文档只包含一个名为&lt;code>nestedfield&lt;/code>的字段）&lt;/li>
 &lt;/ul>
 &lt;h3 id="查询选择器">查询选择器&lt;/h3>
 &lt;p>这部分官网有很好的解释说明，详见：&lt;a href="https://docs.mongodb.com/manual/reference/operator/query/#query-selectors">Query and Projection Operators — MongoDB Manual&lt;/a>&lt;/p>
@@ -375,6 +376,13 @@
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
 &lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> awards: &lt;span class="o">{&lt;/span> &lt;span class="nv">$elemMatch&lt;/span>: &lt;span class="o">{&lt;/span> award: &lt;span class="s2">&amp;#34;Turing Award&amp;#34;&lt;/span>, year: &lt;span class="o">{&lt;/span> &lt;span class="nv">$gt&lt;/span>: &lt;span class="m">1980&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果这里不使用&lt;code>elemMatch&lt;/code>而是使用下面的方式，结果返回的是&lt;code>awards&lt;/code>元素里包含&lt;code>award&lt;/code>为”Turing Award“和&lt;code>year&lt;/code>大于1975的元素。这两个条件是要求&lt;code>awards&lt;/code>下的所有元素里，满足这两个条件之一即可。这两个条件是限制在&lt;code>awards&lt;/code>上，不是限制在单一的数组元素上。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="s2">&amp;#34;awards.award&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;Turing Award&amp;#34;&lt;/span> ,
+&lt;span class="ln">4&lt;/span> &lt;span class="s2">&amp;#34;awards.year&amp;#34;&lt;/span>: &lt;span class="o">{&lt;/span>&lt;span class="nv">$gt&lt;/span>: 1975&lt;span class="o">}&lt;/span>
+&lt;span class="ln">5&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">6&lt;/span>&lt;span class="o">)&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="投影示例">投影示例&lt;/h2>
 &lt;/li>
 &lt;/ul>
