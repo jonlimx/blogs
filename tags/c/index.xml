@@ -243,6 +243,37 @@
 &lt;span class="ln">30&lt;/span>
 &lt;span class="ln">31&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Total Salary: %4.2lf&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">Tax: %4.2lf&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">Net Salary: %4.2lf&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">total_salary&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tax&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">total_salary&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">tax&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln">32&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="ch08-字符输入输出和输入验证">ch08. 字符输入/输出和输入验证&lt;/h2>
+&lt;blockquote>
+&lt;ol start="4">
+&lt;li>编写一个程序，在遇到EOF之前，把输入作为字符流读取。该程序要报告每个单词的字母数，不要把空白和标点统计为单词的字母&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;stdio.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;ctype.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="cp">&lt;/span>
+&lt;span class="ln"> 4&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln"> 5&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">ch&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">chCount&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">width&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="p">((&lt;/span>&lt;span class="n">ch&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">getchar&lt;/span>&lt;span class="p">())&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">EOF&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">ispunct&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ch&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="k">continue&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">ch&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="sc">&amp;#39; &amp;#39;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">ch&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="sc">&amp;#39;\t&amp;#39;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">ch&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="sc">&amp;#39;\n&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="n">putchar&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ch&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="n">chCount&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="k">else&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="n">width&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">10&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">chCount&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%*d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">width&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">chCount&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">21&lt;/span> &lt;span class="n">chCount&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">22&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">23&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">24&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">25&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div></description></item><item><title>C Primer Plus读书笔记（二）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第六章至第八章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch06-c控制语句循环">ch06. C控制语句：循环&lt;/h2>

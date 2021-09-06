@@ -113,6 +113,7 @@ Jul 23, 2021</span>
 <ul>
 <li><a href=#ch06-c控制语句循环>ch06. C控制语句：循环</a></li>
 <li><a href=#ch07-c控制语句分支和跳转>ch07. C控制语句：分支和跳转</a></li>
+<li><a href=#ch08-字符输入输出和输入验证>ch08. 字符输入/输出和输入验证</a></li>
 </ul>
 </nav>
 <h2 id=ch06-c控制语句循环>ch06. C控制语句：循环</h2>
@@ -359,6 +360,37 @@ Jul 23, 2021</span>
 <span class=ln>30</span>
 <span class=ln>31</span>	<span class=n>printf</span><span class=p>(</span><span class=s>&#34;Total Salary: %4.2lf</span><span class=se>\n</span><span class=s>Tax: %4.2lf</span><span class=se>\n</span><span class=s>Net Salary: %4.2lf</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>total_salary</span><span class=p>,</span> <span class=n>tax</span><span class=p>,</span> <span class=n>total_salary</span> <span class=o>-</span> <span class=n>tax</span><span class=p>);</span>
 <span class=ln>32</span><span class=p>}</span>
+</code></pre></div><h2 id=ch08-字符输入输出和输入验证>ch08. 字符输入/输出和输入验证</h2>
+<blockquote>
+<ol start=4>
+<li>编写一个程序，在遇到EOF之前，把输入作为字符流读取。该程序要报告每个单词的字母数，不要把空白和标点统计为单词的字母</li>
+</ol>
+</blockquote>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln> 1</span><span class=cp>#include</span> <span class=cpf>&#34;stdio.h&#34;</span><span class=cp>
+</span><span class=ln> 2</span><span class=cp>#include</span> <span class=cpf>&#34;ctype.h&#34;</span><span class=cp>
+</span><span class=ln> 3</span><span class=cp></span>
+<span class=ln> 4</span><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=ln> 5</span><span class=p>{</span>
+<span class=ln> 6</span>	<span class=kt>int</span> <span class=n>ch</span><span class=p>,</span> <span class=n>chCount</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=ln> 7</span>	<span class=kt>int</span> <span class=n>width</span><span class=p>;</span>
+<span class=ln> 8</span>	<span class=k>while</span> <span class=p>((</span><span class=n>ch</span> <span class=o>=</span> <span class=n>getchar</span><span class=p>())</span> <span class=o>!=</span> <span class=n>EOF</span><span class=p>)</span>
+<span class=ln> 9</span>	<span class=p>{</span>
+<span class=ln>10</span>		<span class=k>if</span> <span class=p>(</span><span class=n>ispunct</span><span class=p>(</span><span class=n>ch</span><span class=p>))</span>
+<span class=ln>11</span>			<span class=k>continue</span><span class=p>;</span>
+<span class=ln>12</span>		<span class=k>if</span> <span class=p>(</span><span class=n>ch</span> <span class=o>!=</span> <span class=sc>&#39; &#39;</span> <span class=o>&amp;&amp;</span> <span class=n>ch</span> <span class=o>!=</span> <span class=sc>&#39;\t&#39;</span> <span class=o>&amp;&amp;</span> <span class=n>ch</span> <span class=o>!=</span> <span class=sc>&#39;\n&#39;</span><span class=p>)</span>
+<span class=ln>13</span>		<span class=p>{</span>
+<span class=ln>14</span>			<span class=n>putchar</span><span class=p>(</span><span class=n>ch</span><span class=p>);</span>
+<span class=ln>15</span>			<span class=n>chCount</span><span class=o>++</span><span class=p>;</span>
+<span class=ln>16</span>		<span class=p>}</span>
+<span class=ln>17</span>		<span class=k>else</span>
+<span class=ln>18</span>		<span class=p>{</span>
+<span class=ln>19</span>			<span class=n>width</span> <span class=o>=</span> <span class=mi>10</span> <span class=o>-</span> <span class=n>chCount</span><span class=p>;</span>
+<span class=ln>20</span>			<span class=n>printf</span><span class=p>(</span><span class=s>&#34;%*d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>width</span><span class=p>,</span> <span class=n>chCount</span><span class=p>);</span>
+<span class=ln>21</span>			<span class=n>chCount</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=ln>22</span>		<span class=p>}</span>
+<span class=ln>23</span>	<span class=p>}</span>
+<span class=ln>24</span>	<span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=ln>25</span><span class=p>}</span>
 </code></pre></div><style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
 </article>
