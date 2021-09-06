@@ -846,7 +846,7 @@
 &lt;span class="ln">31&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Total Salary: %4.2lf&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">Tax: %4.2lf&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">Net Salary: %4.2lf&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">total_salary&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tax&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">total_salary&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">tax&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln">32&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div></description></item><item><title>C Primer Plus读书笔记（二）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
-&lt;p>&lt;em>本文是《C Primer Plus》第六章至第九章读书笔记，持续更新中。&lt;/em>&lt;/p>
+&lt;p>&lt;em>本文是《C Primer Plus》第六章至第八章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch06-c控制语句循环">ch06. C控制语句：循环&lt;/h2>
 &lt;blockquote>
 &lt;ol>
@@ -1002,7 +1002,7 @@
 &lt;li>
 &lt;p>文件结尾EOF&lt;/p>
 &lt;ul>
-&lt;li>可以用处理文件的方式来处理键盘输入（意思是，处理文件的函数基本都适用于处理键盘输入？？）&lt;/li>
+&lt;li>可以用处理文件的方式来处理键盘输入（原因是C语言处理的都是流）&lt;/li>
 &lt;li>以往判断文件结尾的一种方式是，&lt;strong>在文件末尾放一个特殊字符ctrl+z标记文件结尾&lt;/strong>&lt;/li>
 &lt;li>无论操作系统实际使用何种方法检测文件结尾，C语言中检测到文件末尾的时候，会返回一个&lt;strong>特殊的值EOF&lt;/strong>（&lt;strong>注意，EOF是一个值，并不是一个字符&lt;/strong>）&lt;/li>
 &lt;li>EOF的值不在&lt;code>char&lt;/code>的值表示的范围内&lt;/li>
@@ -2402,7 +2402,7 @@
 &lt;p>scanf通过空格或者回车将输入分割成多个字段（%c是例外，也会把空字符作为输入存储）&lt;/p>
 &lt;/li>
 &lt;li>
-&lt;p>scanf的返回值是成功读取的项数（个数）&lt;/p>
+&lt;p>&lt;strong>scanf的返回值是成功读取的项数（个数）&lt;/strong>&lt;/p>
 &lt;/li>
 &lt;li>
 &lt;p>*修饰符&lt;/p>
