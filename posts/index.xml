@@ -1,4 +1,27 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/posts/</link><description>Recent content in Posts on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Fri, 03 Sep 2021 15:03:57 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>MongoDB学习笔记（二）</title><link>https://www.jonathanlin.top/posts/mongo-notes-02/</link><pubDate>Fri, 03 Sep 2021 15:03:57 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-02/</guid><description/></item><item><title>Regex Cheatsheet</title><link>https://www.jonathanlin.top/posts/regex-cheatsheet/</link><pubDate>Thu, 02 Sep 2021 13:59:45 +0800</pubDate><guid>https://www.jonathanlin.top/posts/regex-cheatsheet/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/posts/</link><description>Recent content in Posts on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 08 Sep 2021 20:14:21 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus读书笔记（三）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</link><pubDate>Wed, 08 Sep 2021 20:14:21 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</guid><description>
+&lt;p>&lt;em>本文是《C Primer Plus》第九章至第十一章读书笔记，持续更新中。&lt;/em>&lt;/p>
+&lt;h2 id="ch09-函数">ch09. 函数&lt;/h2>
+&lt;blockquote>
+&lt;ol>
+&lt;li>函数原型、函数定义和函数调用&lt;/li>
+&lt;li>函数的参数列表和返回值&lt;/li>
+&lt;li>形参和实参&lt;/li>
+&lt;li>函数类型&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>函数原型：任何程序在使用函数之前都要声明改函数的类型。&lt;strong>在函数调用前需要声明函数原型&lt;/strong>。函数原型是告诉编译器函数的类型。对于较小的函数，也可以把函数定义放在主调函数之前，这时候的函数定义也就是函数声明&lt;/li>
+&lt;li>函数定义：提供函数的实际代码&lt;/li>
+&lt;li>声明带有参数的函数时，可以只给定参数的类型而不需要提供参数的名字，比如：&lt;code>void show_n_char(char, int);&lt;/code>&lt;/li>
+&lt;li>函数参数 - 主调函数通过参数将值传递给被调函数
+&lt;ul>
+&lt;li>形式参数(formal argument) - 函数定义和声明中，参数列表里定义的参数&lt;/li>
+&lt;li>实际参数(actual argument) - 具体的值，是主调函数赋值给形式参数的值，可以是常量、变量或者表达式。&lt;strong>在被调函数中使用的实际参数的值，是主调函数以拷贝的方式传递给被调函数，因此在被调函数中需值的修改不会影响原始数据&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>返回值 - 被调函数通过返回值将值传递给主调函数&lt;/li>
+&lt;li>函数类型，实际上是指函数的返回值类型&lt;/li>
+&lt;/ul></description></item><item><title>MongoDB学习笔记（二）</title><link>https://www.jonathanlin.top/posts/mongo-notes-02/</link><pubDate>Fri, 03 Sep 2021 15:03:57 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-02/</guid><description/></item><item><title>Regex Cheatsheet</title><link>https://www.jonathanlin.top/posts/regex-cheatsheet/</link><pubDate>Thu, 02 Sep 2021 13:59:45 +0800</pubDate><guid>https://www.jonathanlin.top/posts/regex-cheatsheet/</guid><description>
 &lt;h2 id="regular-expressions-cheat-sheet">Regular Expressions Cheat Sheet&lt;/h2>
 &lt;table>
 &lt;thead>
