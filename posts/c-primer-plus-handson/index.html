@@ -90,7 +90,7 @@
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
 Jul 23, 2021</span>
-<span class=post_time> · 4 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
+<span class=post_time> · 5 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
 </a><a href=https://www.jonathanlin.top/tags/c-primer-plus title="C Primer Plus" class="post_tag button button_translucent">C Primer Plus
 </a>
 </span>
@@ -114,6 +114,7 @@ Jul 23, 2021</span>
 <li><a href=#ch06-c控制语句循环>ch06. C控制语句：循环</a></li>
 <li><a href=#ch07-c控制语句分支和跳转>ch07. C控制语句：分支和跳转</a></li>
 <li><a href=#ch08-字符输入输出和输入验证>ch08. 字符输入/输出和输入验证</a></li>
+<li><a href=#ch09-函数>ch09. 函数</a></li>
 </ul>
 </nav>
 <h2 id=ch06-c控制语句循环>ch06. C控制语句：循环</h2>
@@ -391,6 +392,89 @@ Jul 23, 2021</span>
 <span class=ln>23</span>	<span class=p>}</span>
 <span class=ln>24</span>	<span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
 <span class=ln>25</span><span class=p>}</span>
+</code></pre></div><h2 id=ch09-函数>ch09. 函数</h2>
+<blockquote>
+<ol start=7>
+<li>编写一个函数，从标准输入中读取字符，直到遇到文件结尾。程序要报告每个字符是否是字母。如果是，还要报告该字母在字母表中的数值位置。例如，c和C在字母表中的位置都是3。合并一个函数，以一个字符作为参数，如果该字符是一个字母则返回一个数值位置，否则返回-1。</li>
+</ol>
+</blockquote>
+<p>思考：善用<code>ctype.h</code>提供的函数能很好的处理空格和大小写字符</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln> 1</span><span class=cp>#include</span> <span class=cpf>&#34;stdio.h&#34;</span><span class=cp>
+</span><span class=ln> 2</span><span class=cp>#include</span> <span class=cpf>&#34;ctype.h&#34;</span><span class=cp>
+</span><span class=ln> 3</span><span class=cp></span><span class=kt>int</span> <span class=nf>alphabetPos</span><span class=p>(</span><span class=kt>char</span><span class=p>);</span>
+<span class=ln> 4</span>
+<span class=ln> 5</span><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+<span class=ln> 6</span><span class=p>{</span>
+<span class=ln> 7</span>	<span class=kt>char</span> <span class=n>c</span><span class=p>;</span>
+<span class=ln> 8</span>	<span class=kt>int</span> <span class=n>pos</span><span class=p>;</span>
+<span class=ln> 9</span>	<span class=k>while</span> <span class=p>((</span><span class=n>c</span> <span class=o>=</span> <span class=n>getchar</span><span class=p>())</span> <span class=o>!=</span> <span class=n>EOF</span><span class=p>)</span>
+<span class=ln>10</span>	<span class=p>{</span>
+<span class=ln>11</span>		<span class=k>if</span> <span class=p>(</span><span class=n>isspace</span><span class=p>(</span><span class=n>c</span><span class=p>))</span>
+<span class=ln>12</span>			<span class=k>continue</span><span class=p>;</span>
+<span class=ln>13</span>		<span class=n>pos</span> <span class=o>=</span> <span class=n>alphabetPos</span><span class=p>(</span><span class=n>c</span><span class=p>);</span>
+<span class=ln>14</span>		<span class=k>if</span> <span class=p>(</span><span class=n>pos</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+<span class=ln>15</span>			<span class=n>printf</span><span class=p>(</span><span class=s>&#34;%c is not in the alphabet.</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>c</span><span class=p>);</span>
+<span class=ln>16</span>		<span class=k>else</span>
+<span class=ln>17</span>			<span class=n>printf</span><span class=p>(</span><span class=s>&#34;The position of %c in the alphabet is: %d.</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>pos</span><span class=p>);</span>
+<span class=ln>18</span>	<span class=p>}</span>
+<span class=ln>19</span>  <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=ln>20</span><span class=p>}</span>
+<span class=ln>21</span>
+<span class=ln>22</span><span class=kt>int</span> <span class=nf>alphabetPos</span><span class=p>(</span><span class=kt>char</span> <span class=n>c</span><span class=p>)</span>
+<span class=ln>23</span><span class=p>{</span>
+<span class=ln>24</span>	<span class=k>if</span> <span class=p>(</span><span class=n>islower</span><span class=p>(</span><span class=n>c</span><span class=p>))</span>
+<span class=ln>25</span>	<span class=p>{</span>
+<span class=ln>26</span>		<span class=k>return</span> <span class=n>c</span> <span class=o>-</span> <span class=sc>&#39;a&#39;</span> <span class=o>+</span> <span class=mi>1</span><span class=p>;</span>
+<span class=ln>27</span>	<span class=p>}</span>
+<span class=ln>28</span>	<span class=k>if</span> <span class=p>(</span><span class=n>isupper</span><span class=p>(</span><span class=n>c</span><span class=p>))</span>
+<span class=ln>29</span>	<span class=p>{</span>
+<span class=ln>30</span>		<span class=k>return</span> <span class=n>c</span> <span class=o>-</span> <span class=sc>&#39;A&#39;</span> <span class=o>+</span> <span class=mi>1</span><span class=p>;</span>
+<span class=ln>31</span>	<span class=p>}</span>
+<span class=ln>32</span>	<span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+<span class=ln>33</span><span class=p>}</span>
+</code></pre></div><blockquote>
+<ol start=11>
+<li>编写并测试Fibonacci()函数，该函数用循环代替递归计算斐波那锲数。</li>
+</ol>
+</blockquote>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln> 1</span><span class=cp>#include</span> <span class=cpf>&#34;stdio.h&#34;</span><span class=cp>
+</span><span class=ln> 2</span><span class=cp></span><span class=kt>unsigned</span> <span class=kt>long</span> <span class=nf>fibonacci_recursion</span><span class=p>(</span><span class=kt>unsigned</span> <span class=n>n</span><span class=p>);</span>
+<span class=ln> 3</span><span class=kt>unsigned</span> <span class=kt>long</span> <span class=nf>fibonacci_loop</span><span class=p>(</span><span class=kt>unsigned</span> <span class=n>n</span><span class=p>);</span>
+<span class=ln> 4</span>
+<span class=ln> 5</span><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+<span class=ln> 6</span><span class=p>{</span>
+<span class=ln> 7</span>	<span class=kt>unsigned</span> <span class=kt>long</span> <span class=n>result</span><span class=p>;</span>
+<span class=ln> 8</span>	<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;=</span> <span class=mi>10</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span>
+<span class=ln> 9</span>	<span class=p>{</span>
+<span class=ln>10</span>		<span class=n>result</span> <span class=o>=</span> <span class=n>fibonacci_loop</span><span class=p>(</span><span class=n>i</span><span class=p>);</span>
+<span class=ln>11</span>
+<span class=ln>12</span>		<span class=n>printf</span><span class=p>(</span><span class=s>&#34;Fibonacci(%u): %lu. recursion == loop? %d </span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>result</span><span class=p>,</span> <span class=n>fibonacci_recursion</span><span class=p>(</span><span class=n>i</span><span class=p>)</span> <span class=o>==</span> <span class=n>result</span><span class=p>);</span>
+<span class=ln>13</span>	<span class=p>}</span>
+<span class=ln>14</span>	<span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=ln>15</span><span class=p>}</span>
+<span class=ln>16</span>
+<span class=ln>17</span><span class=kt>unsigned</span> <span class=kt>long</span> <span class=nf>fibonacci_recursion</span><span class=p>(</span><span class=kt>unsigned</span> <span class=n>n</span><span class=p>)</span>
+<span class=ln>18</span><span class=p>{</span>
+<span class=ln>19</span>	<span class=k>if</span> <span class=p>(</span><span class=n>n</span> <span class=o>&gt;</span> <span class=mi>2</span><span class=p>)</span>
+<span class=ln>20</span>		<span class=k>return</span> <span class=n>fibonacci_recursion</span><span class=p>(</span><span class=n>n</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span> <span class=o>+</span> <span class=n>fibonacci_recursion</span><span class=p>(</span><span class=n>n</span> <span class=o>-</span> <span class=mi>2</span><span class=p>);</span>
+<span class=ln>21</span>	<span class=k>else</span>
+<span class=ln>22</span>		<span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+<span class=ln>23</span><span class=p>}</span>
+<span class=ln>24</span>
+<span class=ln>25</span><span class=kt>unsigned</span> <span class=kt>long</span> <span class=nf>fibonacci_loop</span><span class=p>(</span><span class=kt>unsigned</span> <span class=n>n</span><span class=p>)</span>
+<span class=ln>26</span><span class=p>{</span>
+<span class=ln>27</span>	<span class=k>if</span> <span class=p>(</span><span class=n>n</span> <span class=o>&lt;=</span> <span class=mi>2</span><span class=p>)</span>
+<span class=ln>28</span>		<span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+<span class=ln>29</span>	<span class=kt>int</span> <span class=n>before_1</span> <span class=o>=</span> <span class=mi>1</span><span class=p>,</span> <span class=n>before_2</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+<span class=ln>30</span>	<span class=kt>int</span> <span class=n>current</span><span class=p>;</span>
+<span class=ln>31</span>	<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>3</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;=</span> <span class=n>n</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span>
+<span class=ln>32</span>	<span class=p>{</span>
+<span class=ln>33</span>		<span class=n>current</span> <span class=o>=</span> <span class=n>before_1</span> <span class=o>+</span> <span class=n>before_2</span><span class=p>;</span>
+<span class=ln>34</span>		<span class=n>before_2</span> <span class=o>=</span> <span class=n>before_1</span><span class=p>;</span>
+<span class=ln>35</span>		<span class=n>before_1</span> <span class=o>=</span> <span class=n>current</span><span class=p>;</span>
+<span class=ln>36</span>	<span class=p>}</span>
+<span class=ln>37</span>	<span class=k>return</span> <span class=n>current</span><span class=p>;</span>
+<span class=ln>38</span><span class=p>}</span>
 </code></pre></div><style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
 </article>
