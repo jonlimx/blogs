@@ -88,7 +88,7 @@ ch09. 函数   函数原型、函数定义和函数调用 函数的参数列表�
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
 Sep 8, 2021</span>
-<span class=post_time> · 1 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
+<span class=post_time> · 2 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
 </a><a href=https://www.jonathanlin.top/tags/c-primer-plus title="C Primer Plus" class="post_tag button button_translucent">C Primer Plus
 </a>
 </span>
@@ -184,8 +184,11 @@ Sep 8, 2021</span>
 </ol>
 </blockquote>
 <ul>
-<li>数组：数据类型相同的一系列元素组成。声明数组必须告诉编译器数组的<strong>元素个数</strong>和元素<strong>数据类型</strong></li>
-<li>数组初始化：
+<li>
+<p>数组：数据类型相同的一系列元素组成。声明数组必须告诉编译器数组的<strong>元素个数</strong>和元素<strong>数据类型</strong></p>
+</li>
+<li>
+<p>数组初始化：</p>
 <ul>
 <li>以逗号分割的值列表（花括号里）来初始化数组，如：<code>int powers[3] = {1,2,3};</code>。注意，这种用花括号形式的赋值只能在初始化的时候，其他时候则不行</li>
 <li>经常使用符号常量来指定数组大小，如：<code>int days[MONTHs] = {31,28,31};</code></li>
@@ -195,14 +198,18 @@ Sep 8, 2021</span>
 <li>创建数组时可以不指定数组大小，让编译器自动匹配数组大小，如：<code>int days[] = {31,28,31};</code></li>
 </ul>
 </li>
-<li>指定初始化器
+<li>
+<p>指定初始化器</p>
 <ul>
 <li>使用指定初始化器，可以给特定下标的元素赋值，其他元素保持默认，如：<code>int staff[] = {1,[6]=4,9,10};</code>，第0号元素为1，第6，7，8号元素分别是4，9和10，剩余元素默认为0</li>
 <li>如果多次初始化指定元素，后面的会覆盖前面的</li>
 </ul>
 </li>
-<li>多维数组在计算机内部是按顺序存放数据</li>
-<li>二维数组初始化：
+<li>
+<p>多维数组在计算机内部是按顺序存放数据</p>
+</li>
+<li>
+<p>二维数组初始化：</p>
 <ul>
 <li>
 <p>可以看成是元素类型为一维数组的一维数组</p>
@@ -214,6 +221,69 @@ Sep 8, 2021</span>
 <p>另一种初始化方式是只用一对大括号，大括号里面的值依次按行付给数组元素。例如：<code>int sg[2][3]={5,6,7,8}</code>，这样第一行的元素分别是5，6和7。而第二行是8和0</p>
 </li>
 </ul>
+</li>
+<li>
+<p>指针和数组</p>
+<ul>
+<li><strong>数组名是该数组首元素的地址</strong></li>
+<li>指针加1表示增加一个存储单元。这里的存储单元实际上对应指针所指向对象的数据类型对应的字节数</li>
+<li>数组加1后的地址是下一个元素的地址</li>
+<li>举例来说，定义一个数组<code>ar</code>：
+<ul>
+<li><code>ar[n] = *(ar+n)</code></li>
+<li><code>ar + n</code>的意义是：先定位到ar的位置，也就是首个元素的地址，然后移动n个存储单元</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>函数和数组</p>
+<ul>
+<li>处理数组的函数实际上是用指针作为参数</li>
+<li>在函数原型或者函数定义中，<code>int *ar</code>和<code>int[] ar</code>等价，也只有在函数原型或者定义中，这二者才能互换。<strong>但是只有ar是指针变量的时候，才能使用<code>ar++</code>这种操作</strong></li>
+<li>函数原型中指定数组的两种方式：1）通过指针来指定数组首元素的地址 2）使用数组的定义</li>
+</ul>
+</li>
+<li>
+<p>在函数原型或者定义中指定数组元素个数的两种方式</p>
+<ol>
+<li>
+<p>在函数原型或者定义中指定数组的大小</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln>1</span><span class=kt>int</span> <span class=nf>sum</span><span class=p>(</span><span class=kt>int</span><span class=o>*</span> <span class=n>ar</span><span class=p>,</span> <span class=kt>int</span> <span class=n>n</span><span class=p>)</span>
+<span class=ln>2</span><span class=p>{</span>
+<span class=ln>3</span>	<span class=kt>int</span> <span class=n>total</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=ln>4</span>	<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>n</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span>
+<span class=ln>5</span>	<span class=p>{</span>
+<span class=ln>6</span>       <span class=n>total</span> <span class=o>+=</span> <span class=n>ar</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
+<span class=ln>7</span>	<span class=p>}</span>
+<span class=ln>8</span>	<span class=k>return</span> <span class=n>total</span><span class=p>;</span>
+<span class=ln>9</span><span class=p>}</span>
+</code></pre></div></li>
+<li>
+<p>在函数原型或者定义中指定数组的开始处和结束处</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln> 1</span><span class=kt>int</span> <span class=nf>sump</span><span class=p>(</span><span class=kt>int</span><span class=o>*</span> <span class=n>start</span><span class=p>,</span> <span class=kt>int</span><span class=o>*</span> <span class=n>end</span><span class=p>)</span>
+<span class=ln> 2</span><span class=p>{</span>
+<span class=ln> 3</span>	<span class=kt>int</span> <span class=n>total</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=ln> 4</span>	<span class=k>while</span> <span class=p>(</span><span class=n>start</span> <span class=o>&lt;</span> <span class=n>end</span><span class=p>)</span>
+<span class=ln> 5</span>	<span class=p>{</span>
+<span class=ln> 6</span>       <span class=n>total</span> <span class=o>+=</span> <span class=o>*</span><span class=p>(</span><span class=n>start</span><span class=o>++</span><span class=p>);</span>
+<span class=ln> 7</span>	<span class=p>}</span>
+<span class=ln> 8</span>	<span class=k>return</span> <span class=n>total</span><span class=p>;</span>
+<span class=ln> 9</span><span class=p>}</span>
+<span class=ln>10</span><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=ln>11</span><span class=p>{</span>
+<span class=ln>12</span>	<span class=kt>int</span> <span class=n>numbers</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span> <span class=p>};</span>
+<span class=ln>13</span>	<span class=n>printf</span><span class=p>(</span><span class=s>&#34;sump(): %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>sump</span><span class=p>(</span><span class=n>numbers</span><span class=p>,</span> <span class=n>numbers</span> <span class=o>+</span> <span class=n>SIZE</span><span class=p>));</span>
+<span class=ln>14</span>	<span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=ln>15</span><span class=p>}</span>
+</code></pre></div><p>几点需要注意：</p>
+<ul>
+<li><code>end</code>实际上是指向数组最后一个元素的后面</li>
+<li>C保证在分配数组空间的时候，确保最后一个元素后面的第一个位置的指针仍然有效，<strong>但是对存储在该位置上的值未做保证</strong></li>
+<li>上面例子中，<code>numbers + SIZE</code>就是指向最后一个元素的后面</li>
+</ul>
+</li>
+</ol>
 </li>
 </ul>
 <style>.utterances{max-width:100%}</style>
