@@ -171,6 +171,73 @@
 &lt;/li>
 &lt;/ol>
 &lt;/li>
+&lt;li>
+&lt;p>指针的几种操作&lt;/p>
+&lt;ul>
+&lt;li>赋值：&lt;code>ptr = &amp;amp;val&lt;/code>，把地址付给指针&lt;/li>
+&lt;li>解引用：&lt;code>*&lt;/code>运算符给出指针指向的地址上存储的值。&lt;strong>注意：千万不要解引用未初始化的指针&lt;/strong>&lt;/li>
+&lt;li>取值：&lt;code>ptr2 = &amp;amp;ptr1&lt;/code>，指针变量也有自己的地址和值&lt;/li>
+&lt;li>指针与整数n相加：指针对应的地址+数组元素的数据类型的大小（字节为单位）*n， 实际上相当于数组的下标往后移动几个&lt;/li>
+&lt;li>递增指针：实际相当于加1，数组下标往后移动一个&lt;/li>
+&lt;li>指针减去一个整数：与整数相加相反，数组下标往前移动&lt;/li>
+&lt;li>递减指针：数组下标往前移动一个&lt;/li>
+&lt;li>指针求差：两个指针分别指向同一个数组的不同元素，通过计算求出两个元素之间的距离&lt;/li>
+&lt;li>比较：两个指针都指向相同的类型才能比较&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>在函数（参数）中传递数组&lt;/p>
+&lt;ul>
+&lt;li>数组时以指针的方式传递。如果数组也通过副本的方式传递，那么会占用大量的内容&lt;/li>
+&lt;li>由于数组时通过指针传递，因此是可以在函数中直接修改参数的值&lt;/li>
+&lt;li>为了避免在函数中修改参数的值，应该将数组声明为&lt;code>const&lt;/code>，例如：&lt;code>int sum(const int ar[], int n);&lt;/code>&lt;/li>
+&lt;li>&lt;code>const&lt;/code>并不是要求原数组是常量，而是函数处理数组时将其视为常量。如果不小心在函数中修改了数组的值，编译器会报错&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>const的几种用法&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">定义&lt;/th>
+&lt;th>指针是否可以修改指向别处&lt;/th>
+&lt;th>指针指向的值是否可以修改&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">&lt;code>double rates[3] = {11.1, 22.2, 33.3}; const double * pd = rates;&lt;/code>&lt;/td>
+&lt;td>是&lt;/td>
+&lt;td>否&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;code>double rates[3] = {11.1, 22.2, 33.3}; double * const pd = rates;&lt;/code>&lt;/td>
+&lt;td>否&lt;/td>
+&lt;td>是&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;code>double rates[3] = {11.1, 22.2, 33.3}; const double * const pd = rates;&lt;/code>&lt;/td>
+&lt;td>否&lt;/td>
+&lt;td>否&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>此外还需要注意：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>把&lt;code>const&lt;/code>数据或者非&lt;code>const&lt;/code>数据的地址初始化为指向&lt;code>const&lt;/code>的指针是合法的。指向&lt;code>const&lt;/code>的指针意义在于无法通过该指针修改相应地址对应的值：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="kt">double&lt;/span> &lt;span class="n">rates1&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mf">11.1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">22.2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">33.3&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;span class="ln">2&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">rates2&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mf">44.4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">55.5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">66.6&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">pd1&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">rates1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">pd2&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">rates2&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>只能把非&lt;code>const&lt;/code>数据的地址赋给普通指针。由于可以通过&lt;strong>普通指针&lt;/strong>修改指向的地址对应的值，因此如果将&lt;code>const&lt;/code>数据的地址赋给普通指针，那么&lt;code>const&lt;/code>数据将变的可以修改，这是&lt;strong>不合理&lt;/strong>的，这个将产生不可预期的结果&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">rates2&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mf">44.4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">55.5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">66.6&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;span class="ln">2&lt;/span>&lt;span class="kt">double&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">pd3&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">rates2&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 不应该这么做
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;/li>
 &lt;/ul></description></item><item><title>MongoDB学习笔记（二）</title><link>https://www.jonathanlin.top/posts/mongo-notes-02/</link><pubDate>Fri, 03 Sep 2021 15:03:57 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-02/</guid><description/></item><item><title>Regex Cheatsheet</title><link>https://www.jonathanlin.top/posts/regex-cheatsheet/</link><pubDate>Thu, 02 Sep 2021 13:59:45 +0800</pubDate><guid>https://www.jonathanlin.top/posts/regex-cheatsheet/</guid><description>
 &lt;h2 id="regular-expressions-cheat-sheet">Regular Expressions Cheat Sheet&lt;/h2>
 &lt;table>

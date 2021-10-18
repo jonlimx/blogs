@@ -285,6 +285,73 @@ Sep 8, 2021</span>
 </li>
 </ol>
 </li>
+<li>
+<p>指针的几种操作</p>
+<ul>
+<li>赋值：<code>ptr = &val</code>，把地址付给指针</li>
+<li>解引用：<code>*</code>运算符给出指针指向的地址上存储的值。<strong>注意：千万不要解引用未初始化的指针</strong></li>
+<li>取值：<code>ptr2 = &ptr1</code>，指针变量也有自己的地址和值</li>
+<li>指针与整数n相加：指针对应的地址+数组元素的数据类型的大小（字节为单位）*n， 实际上相当于数组的下标往后移动几个</li>
+<li>递增指针：实际相当于加1，数组下标往后移动一个</li>
+<li>指针减去一个整数：与整数相加相反，数组下标往前移动</li>
+<li>递减指针：数组下标往前移动一个</li>
+<li>指针求差：两个指针分别指向同一个数组的不同元素，通过计算求出两个元素之间的距离</li>
+<li>比较：两个指针都指向相同的类型才能比较</li>
+</ul>
+</li>
+<li>
+<p>在函数（参数）中传递数组</p>
+<ul>
+<li>数组时以指针的方式传递。如果数组也通过副本的方式传递，那么会占用大量的内容</li>
+<li>由于数组时通过指针传递，因此是可以在函数中直接修改参数的值</li>
+<li>为了避免在函数中修改参数的值，应该将数组声明为<code>const</code>，例如：<code>int sum(const int ar[], int n);</code></li>
+<li><code>const</code>并不是要求原数组是常量，而是函数处理数组时将其视为常量。如果不小心在函数中修改了数组的值，编译器会报错</li>
+</ul>
+</li>
+<li>
+<p>const的几种用法</p>
+<table>
+<thead>
+<tr>
+<th style=text-align:left>定义</th>
+<th>指针是否可以修改指向别处</th>
+<th>指针指向的值是否可以修改</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style=text-align:left><code>double rates[3] = {11.1, 22.2, 33.3}; const double * pd = rates;</code></td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td style=text-align:left><code>double rates[3] = {11.1, 22.2, 33.3}; double * const pd = rates;</code></td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td style=text-align:left><code>double rates[3] = {11.1, 22.2, 33.3}; const double * const pd = rates;</code></td>
+<td>否</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<p>此外还需要注意：</p>
+<ul>
+<li>
+<p>把<code>const</code>数据或者非<code>const</code>数据的地址初始化为指向<code>const</code>的指针是合法的。指向<code>const</code>的指针意义在于无法通过该指针修改相应地址对应的值：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln>1</span><span class=kt>double</span> <span class=n>rates1</span><span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mf>11.1</span><span class=p>,</span> <span class=mf>22.2</span><span class=p>,</span> <span class=mf>33.3</span> <span class=p>};</span>
+<span class=ln>2</span><span class=k>const</span> <span class=kt>double</span> <span class=n>rates2</span><span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mf>44.4</span><span class=p>,</span> <span class=mf>55.5</span><span class=p>,</span> <span class=mf>66.6</span> <span class=p>};</span>
+<span class=ln>3</span><span class=k>const</span> <span class=kt>double</span> <span class=o>*</span> <span class=n>pd1</span> <span class=o>=</span> <span class=n>rates1</span><span class=p>;</span>
+<span class=ln>4</span><span class=k>const</span> <span class=kt>double</span> <span class=o>*</span> <span class=n>pd2</span> <span class=o>=</span> <span class=n>rates2</span><span class=p>;</span>
+</code></pre></div></li>
+<li>
+<p>只能把非<code>const</code>数据的地址赋给普通指针。由于可以通过<strong>普通指针</strong>修改指向的地址对应的值，因此如果将<code>const</code>数据的地址赋给普通指针，那么<code>const</code>数据将变的可以修改，这是<strong>不合理</strong>的，这个将产生不可预期的结果</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln>1</span><span class=k>const</span> <span class=kt>double</span> <span class=n>rates2</span><span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mf>44.4</span><span class=p>,</span> <span class=mf>55.5</span><span class=p>,</span> <span class=mf>66.6</span> <span class=p>};</span>
+<span class=ln>2</span><span class=kt>double</span> <span class=o>*</span> <span class=n>pd3</span> <span class=o>=</span> <span class=n>rates2</span><span class=p>;</span> <span class=c1>// 不应该这么做
+</span></code></pre></div></li>
+</ul>
+</li>
 </ul>
 <style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
