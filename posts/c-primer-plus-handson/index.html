@@ -115,6 +115,7 @@ Jul 23, 2021</span>
 <li><a href=#ch07-c控制语句分支和跳转>ch07. C控制语句：分支和跳转</a></li>
 <li><a href=#ch08-字符输入输出和输入验证>ch08. 字符输入/输出和输入验证</a></li>
 <li><a href=#ch09-函数>ch09. 函数</a></li>
+<li><a href=#ch10-数组和指针>ch10. 数组和指针</a></li>
 </ul>
 </nav>
 <h2 id=ch06-c控制语句循环>ch06. C控制语句：循环</h2>
@@ -475,7 +476,19 @@ Jul 23, 2021</span>
 <span class=ln>36</span>	<span class=p>}</span>
 <span class=ln>37</span>	<span class=k>return</span> <span class=n>current</span><span class=p>;</span>
 <span class=ln>38</span><span class=p>}</span>
-</code></pre></div><style>.utterances{max-width:100%}</style>
+</code></pre></div><h2 id=ch10-数组和指针>ch10. 数组和指针</h2>
+<blockquote>
+<ol>
+<li>
+<p>下面的代码中，<code>*ptr</code>和<code>*(ptr+2)</code>的值分别是什么？</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln>1</span><span class=kt>int</span> <span class=o>*</span><span class=n>ptr</span><span class=p>;</span>
+<span class=ln>2</span><span class=kt>int</span> <span class=n>torf</span><span class=p>[</span><span class=mi>2</span><span class=p>][</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span><span class=mi>12</span><span class=p>,</span> <span class=mi>14</span><span class=p>,</span> <span class=mi>16</span><span class=p>};</span>
+<span class=ln>3</span><span class=n>ptr</span> <span class=o>=</span> <span class=n>torf</span><span class=p>[</span><span class=mi>0</span><span class=p>];</span>
+</code></pre></div></li>
+</ol>
+</blockquote>
+<p>解答：<code>ptr</code>指向的<code>torf[0]</code>，也就是一维数组，指向的数据类型的大小是一个<code>int</code>类型大小为4个字节的整数。初始化<code>ptr</code>的时候，指向二维数组的第一个元素也就是12，因此解引用后ptr = 12；接着<code>ptr+2</code>使得指针往前移动两个数据单位，也就是移动了8个字节，由于数组地址的连续性，然后这时候指针正好指向了16。</p>
+<style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
 </article>
 <aside class=sidebar>

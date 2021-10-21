@@ -240,7 +240,7 @@ Sep 8, 2021</span>
 <p>函数和数组</p>
 <ul>
 <li>处理数组的函数实际上是用指针作为参数</li>
-<li>在函数原型或者函数定义中，<code>int *ar</code>和<code>int[] ar</code>等价，也只有在函数原型或者定义中，这二者才能互换。<strong>但是只有ar是指针变量的时候，才能使用<code>ar++</code>这种操作</strong></li>
+<li>在函数原型或者函数定义中，<code>int *ar</code>和<code>int[] ar</code>等价，也只有在函数原型或者定义中，这二者才能互换。<strong>但是只有ar是指针变量的时候，才能使用<code>ar++</code>这种操作，并且不支持<code>++ar</code></strong></li>
 <li>函数原型中指定数组的两种方式：1）通过指针来指定数组首元素的地址 2）使用数组的定义</li>
 </ul>
 </li>

@@ -126,7 +126,7 @@
 &lt;p>函数和数组&lt;/p>
 &lt;ul>
 &lt;li>处理数组的函数实际上是用指针作为参数&lt;/li>
-&lt;li>在函数原型或者函数定义中，&lt;code>int *ar&lt;/code>和&lt;code>int[] ar&lt;/code>等价，也只有在函数原型或者定义中，这二者才能互换。&lt;strong>但是只有ar是指针变量的时候，才能使用&lt;code>ar++&lt;/code>这种操作&lt;/strong>&lt;/li>
+&lt;li>在函数原型或者函数定义中，&lt;code>int *ar&lt;/code>和&lt;code>int[] ar&lt;/code>等价，也只有在函数原型或者定义中，这二者才能互换。&lt;strong>但是只有ar是指针变量的时候，才能使用&lt;code>ar++&lt;/code>这种操作，并且不支持&lt;code>++ar&lt;/code>&lt;/strong>&lt;/li>
 &lt;li>函数原型中指定数组的两种方式：1）通过指针来指定数组首元素的地址 2）使用数组的定义&lt;/li>
 &lt;/ul>
 &lt;/li>
@@ -674,7 +674,18 @@
 &lt;span class="ln">36&lt;/span> &lt;span class="p">}&lt;/span>
 &lt;span class="ln">37&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="n">current&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">38&lt;/span>&lt;span class="p">}&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>C Primer Plus读书笔记（二）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="ch10-数组和指针">ch10. 数组和指针&lt;/h2>
+&lt;blockquote>
+&lt;ol>
+&lt;li>
+&lt;p>下面的代码中，&lt;code>*ptr&lt;/code>和&lt;code>*(ptr+2)&lt;/code>的值分别是什么？&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">ptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">2&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">torf&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">][&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="mi">12&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">14&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">16&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="n">ptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torf&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;p>解答：&lt;code>ptr&lt;/code>指向的&lt;code>torf[0]&lt;/code>，也就是一维数组，指向的数据类型的大小是一个&lt;code>int&lt;/code>类型大小为4个字节的整数。初始化&lt;code>ptr&lt;/code>的时候，指向二维数组的第一个元素也就是12，因此解引用后ptr = 12；接着&lt;code>ptr+2&lt;/code>使得指针往前移动两个数据单位，也就是移动了8个字节，由于数组地址的连续性，然后这时候指针正好指向了16。&lt;/p></description></item><item><title>C Primer Plus读书笔记（二）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第六章至第八章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch06-c控制语句循环">ch06. C控制语句：循环&lt;/h2>
 &lt;blockquote>
