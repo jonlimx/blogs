@@ -578,6 +578,68 @@ Jul 23, 2021</span>
 <span class=ln>16</span>
 <span class=ln>17</span>	<span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
 <span class=ln>18</span><span class=p>}</span>
+</code></pre></div><blockquote>
+<ol start=7>
+<li>编写一个程序，初始化一个double类型的二维数组，使用2中的拷贝程序把该二维数组拷贝到另一个二维数组里</li>
+</ol>
+</blockquote>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln> 1</span><span class=kt>void</span> <span class=nf>copy_arr2d</span><span class=p>(</span><span class=kt>double</span> <span class=n>target2d</span><span class=p>[][</span><span class=mi>5</span><span class=p>],</span> <span class=kt>double</span> <span class=n>source2d</span><span class=p>[][</span><span class=mi>5</span><span class=p>],</span> <span class=kt>int</span> <span class=n>n</span><span class=p>)</span>
+<span class=ln> 2</span><span class=p>{</span>
+<span class=ln> 3</span>	<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>n</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span>
+<span class=ln> 4</span>	<span class=p>{</span>
+<span class=ln> 5</span>		<span class=n>copy_ptr</span><span class=p>(</span><span class=n>target2d</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=n>source2d</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=mi>5</span><span class=p>);</span>
+<span class=ln> 6</span>	<span class=p>}</span>
+<span class=ln> 7</span><span class=p>}</span>
+<span class=ln> 8</span>
+<span class=ln> 9</span><span class=kt>void</span> <span class=nf>printarr2d</span><span class=p>(</span><span class=kt>double</span> <span class=n>arr</span><span class=p>[][</span><span class=mi>5</span><span class=p>],</span> <span class=kt>int</span> <span class=n>n</span><span class=p>)</span>
+<span class=ln>10</span><span class=p>{</span>
+<span class=ln>11</span>	<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>n</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span>
+<span class=ln>12</span>	<span class=p>{</span>
+<span class=ln>13</span>		<span class=n>printarr</span><span class=p>(</span><span class=n>arr</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=mi>5</span><span class=p>);</span>
+<span class=ln>14</span>	<span class=p>}</span>
+<span class=ln>15</span><span class=p>}</span>
+<span class=ln>16</span>
+<span class=ln>17</span><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+<span class=ln>18</span><span class=p>{</span>
+<span class=ln>19</span>	<span class=kt>double</span> <span class=n>source2d</span><span class=p>[</span><span class=mi>3</span><span class=p>][</span><span class=mi>5</span><span class=p>]</span> <span class=o>=</span> <span class=p>{{</span> <span class=mf>1.1</span><span class=p>,</span> <span class=mf>2.2</span><span class=p>,</span> <span class=mf>3.3</span><span class=p>,</span> <span class=mf>4.4</span><span class=p>,</span> <span class=mf>5.5</span> <span class=p>},</span> <span class=p>{</span> <span class=mf>6.6</span><span class=p>,</span> <span class=mf>7.7</span><span class=p>,</span> <span class=mf>8.8</span><span class=p>,</span> <span class=mf>9.9</span><span class=p>,</span> <span class=mf>10.0</span> <span class=p>},</span> <span class=p>{</span> <span class=mf>11.1</span><span class=p>,</span> <span class=mf>12.2</span><span class=p>,</span> <span class=mf>13.3</span><span class=p>,</span> <span class=mf>14.4</span><span class=p>,</span> <span class=mf>15.5</span> <span class=p>}};</span>
+<span class=ln>20</span>	<span class=kt>double</span> <span class=n>target2d</span><span class=p>[</span><span class=mi>3</span><span class=p>][</span><span class=mi>5</span><span class=p>];</span>
+<span class=ln>21</span>	<span class=n>copy_arr2d</span><span class=p>(</span><span class=n>target2d</span><span class=p>,</span> <span class=n>source2d</span><span class=p>,</span> <span class=mi>3</span><span class=p>);</span>
+<span class=ln>22</span>	<span class=n>printarr2d</span><span class=p>(</span><span class=n>target2d</span><span class=p>,</span> <span class=mi>3</span><span class=p>);</span>
+<span class=ln>23</span>
+<span class=ln>24</span>	<span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=ln>25</span><span class=p>}</span>
+</code></pre></div><blockquote>
+<ol start=9>
+<li>编写一个程序初始化一个double类型的3X5的二维数组，使用一个处理变长数组的函数将其拷贝至另一个二维数组中。还需要编写一个接受一个以变长数组为形参的函数打印这个二维数组</li>
+</ol>
+</blockquote>
+<p>思考：这个跟第7题类似，只不过将第7题中的函数修改成以变长数组作为形参。这里需要知道如何定义形参为变长数组的函数即可。</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln> 1</span><span class=kt>void</span> <span class=nf>copy_mn2darr</span><span class=p>(</span><span class=kt>int</span> <span class=n>rows</span><span class=p>,</span> <span class=kt>int</span> <span class=n>cols</span><span class=p>,</span> <span class=kt>double</span> <span class=n>target</span><span class=p>[</span><span class=n>rows</span><span class=p>][</span><span class=n>cols</span><span class=p>],</span> <span class=kt>double</span> <span class=n>source</span><span class=p>[</span><span class=n>rows</span><span class=p>][</span><span class=n>cols</span><span class=p>])</span>
+<span class=ln> 2</span><span class=p>{</span>
+<span class=ln> 3</span>	<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>rows</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span>
+<span class=ln> 4</span>	<span class=p>{</span>
+<span class=ln> 5</span>		<span class=n>copy_ptr</span><span class=p>(</span><span class=n>target</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=n>source</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=n>cols</span><span class=p>);</span>
+<span class=ln> 6</span>	<span class=p>}</span>
+<span class=ln> 7</span><span class=p>}</span>
+<span class=ln> 8</span>
+<span class=ln> 9</span><span class=kt>void</span> <span class=nf>print_mn2darr</span><span class=p>(</span><span class=kt>int</span> <span class=n>rows</span><span class=p>,</span> <span class=kt>int</span> <span class=n>cols</span><span class=p>,</span> <span class=kt>double</span> <span class=n>arr2d</span><span class=p>[</span><span class=n>rows</span><span class=p>][</span><span class=n>cols</span><span class=p>])</span>
+<span class=ln>10</span><span class=p>{</span>
+<span class=ln>11</span>	<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>rows</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span>
+<span class=ln>12</span>	<span class=p>{</span>
+<span class=ln>13</span>		<span class=n>printarr</span><span class=p>(</span><span class=n>arr2d</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=n>cols</span><span class=p>);</span>
+<span class=ln>14</span>	<span class=p>}</span>
+<span class=ln>15</span><span class=p>}</span>
+<span class=ln>16</span>
+<span class=ln>17</span><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+<span class=ln>18</span><span class=p>{</span>
+<span class=ln>19</span>	<span class=kt>double</span> <span class=n>source2d</span><span class=p>[</span><span class=mi>3</span><span class=p>][</span><span class=mi>5</span><span class=p>]</span> <span class=o>=</span> <span class=p>{{</span> <span class=mf>1.1</span><span class=p>,</span> <span class=mf>2.2</span><span class=p>,</span> <span class=mf>3.3</span><span class=p>,</span> <span class=mf>4.4</span><span class=p>,</span> <span class=mf>5.5</span> <span class=p>},</span> <span class=p>{</span> <span class=mf>6.6</span><span class=p>,</span> <span class=mf>7.7</span><span class=p>,</span> <span class=mf>8.8</span><span class=p>,</span> <span class=mf>9.9</span><span class=p>,</span> <span class=mf>10.0</span> <span class=p>},</span> <span class=p>{</span> <span class=mf>11.1</span><span class=p>,</span> <span class=mf>12.2</span><span class=p>,</span> <span class=mf>13.3</span><span class=p>,</span> <span class=mf>14.4</span><span class=p>,</span> <span class=mf>15.5</span> <span class=p>}};</span>
+<span class=ln>20</span>	<span class=kt>double</span> <span class=n>target2d</span><span class=p>[</span><span class=mi>3</span><span class=p>][</span><span class=mi>5</span><span class=p>];</span>
+<span class=ln>21</span>
+<span class=ln>22</span>	<span class=n>copy_mn2darr</span><span class=p>(</span><span class=mi>3</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=n>target2d</span><span class=p>,</span> <span class=n>source2d</span><span class=p>);</span>
+<span class=ln>23</span>	<span class=n>print_mn2darr</span><span class=p>(</span><span class=mi>3</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=n>target2d</span><span class=p>);</span>
+<span class=ln>24</span>  
+<span class=ln>25</span>	<span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=ln>26</span><span class=p>}</span>
 </code></pre></div><style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
 </article>

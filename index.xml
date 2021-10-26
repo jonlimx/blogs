@@ -1378,6 +1378,68 @@
 &lt;span class="ln">16&lt;/span>
 &lt;span class="ln">17&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">18&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;ol start="7">
+&lt;li>编写一个程序，初始化一个double类型的二维数组，使用2中的拷贝程序把该二维数组拷贝到另一个二维数组里&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="nf">copy_arr2d&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">double&lt;/span> &lt;span class="n">target2d&lt;/span>&lt;span class="p">[][&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">source2d&lt;/span>&lt;span class="p">[][&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 2&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="o">++&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="n">copy_ptr&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">target2d&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">source2d&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln"> 7&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln"> 8&lt;/span>
+&lt;span class="ln"> 9&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="nf">printarr2d&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">double&lt;/span> &lt;span class="n">arr&lt;/span>&lt;span class="p">[][&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">10&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="o">++&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="n">printarr&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">arr&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">15&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">16&lt;/span>
+&lt;span class="ln">17&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">18&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">source2d&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">][&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{{&lt;/span> &lt;span class="mf">1.1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">2.2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">3.3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">4.4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">5.5&lt;/span> &lt;span class="p">},&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mf">6.6&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">7.7&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">8.8&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">9.9&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">10.0&lt;/span> &lt;span class="p">},&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mf">11.1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">12.2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">13.3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">14.4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">15.5&lt;/span> &lt;span class="p">}};&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">target2d&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">][&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;span class="ln">21&lt;/span> &lt;span class="n">copy_arr2d&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">target2d&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">source2d&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">22&lt;/span> &lt;span class="n">printarr2d&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">target2d&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">23&lt;/span>
+&lt;span class="ln">24&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">25&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;ol start="9">
+&lt;li>编写一个程序初始化一个double类型的3X5的二维数组，使用一个处理变长数组的函数将其拷贝至另一个二维数组中。还需要编写一个接受一个以变长数组为形参的函数打印这个二维数组&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;p>思考：这个跟第7题类似，只不过将第7题中的函数修改成以变长数组作为形参。这里需要知道如何定义形参为变长数组的函数即可。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="nf">copy_mn2darr&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">rows&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">cols&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">target&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">rows&lt;/span>&lt;span class="p">][&lt;/span>&lt;span class="n">cols&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">source&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">rows&lt;/span>&lt;span class="p">][&lt;/span>&lt;span class="n">cols&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;span class="ln"> 2&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">rows&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="o">++&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="n">copy_ptr&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">target&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">source&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">cols&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln"> 7&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln"> 8&lt;/span>
+&lt;span class="ln"> 9&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="nf">print_mn2darr&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">rows&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">cols&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">arr2d&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">rows&lt;/span>&lt;span class="p">][&lt;/span>&lt;span class="n">cols&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;span class="ln">10&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">rows&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="o">++&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="n">printarr&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">arr2d&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">cols&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">15&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">16&lt;/span>
+&lt;span class="ln">17&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">18&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">source2d&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">][&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{{&lt;/span> &lt;span class="mf">1.1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">2.2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">3.3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">4.4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">5.5&lt;/span> &lt;span class="p">},&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mf">6.6&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">7.7&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">8.8&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">9.9&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">10.0&lt;/span> &lt;span class="p">},&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mf">11.1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">12.2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">13.3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">14.4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">15.5&lt;/span> &lt;span class="p">}};&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">target2d&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">][&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;span class="ln">21&lt;/span>
+&lt;span class="ln">22&lt;/span> &lt;span class="n">copy_mn2darr&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">target2d&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">source2d&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">23&lt;/span> &lt;span class="n">print_mn2darr&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">target2d&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">24&lt;/span>
+&lt;span class="ln">25&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="ln">26&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div></description></item><item><title>C Primer Plus读书笔记（二）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第六章至第八章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch06-c控制语句循环">ch06. C控制语句：循环&lt;/h2>
