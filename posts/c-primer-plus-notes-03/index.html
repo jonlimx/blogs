@@ -88,7 +88,7 @@ ch09. 函数   函数原型、函数定义和函数调用 函数的参数列表�
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
 Sep 8, 2021</span>
-<span class=post_time> · 2 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
+<span class=post_time> · 3 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
 </a><a href=https://www.jonathanlin.top/tags/c-primer-plus title="C Primer Plus" class="post_tag button button_translucent">C Primer Plus
 </a>
 </span>
@@ -111,6 +111,7 @@ Sep 8, 2021</span>
 <ul>
 <li><a href=#ch09-函数>ch09. 函数</a></li>
 <li><a href=#ch10-数组和指针>ch10. 数组和指针</a></li>
+<li><a href=#ch11-字符串和字符串函数>ch11. 字符串和字符串函数</a></li>
 </ul>
 </nav>
 <p><em>本文是《C Primer Plus》第九章至第十一章读书笔记，持续更新中。</em></p>
@@ -254,7 +255,7 @@ Sep 8, 2021</span>
 <span class=ln>3</span>	<span class=kt>int</span> <span class=n>total</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
 <span class=ln>4</span>	<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>n</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span>
 <span class=ln>5</span>	<span class=p>{</span>
-<span class=ln>6</span>       <span class=n>total</span> <span class=o>+=</span> <span class=n>ar</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
+<span class=ln>6</span>		<span class=n>total</span> <span class=o>+=</span> <span class=n>ar</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
 <span class=ln>7</span>	<span class=p>}</span>
 <span class=ln>8</span>	<span class=k>return</span> <span class=n>total</span><span class=p>;</span>
 <span class=ln>9</span><span class=p>}</span>
@@ -266,7 +267,7 @@ Sep 8, 2021</span>
 <span class=ln> 3</span>	<span class=kt>int</span> <span class=n>total</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
 <span class=ln> 4</span>	<span class=k>while</span> <span class=p>(</span><span class=n>start</span> <span class=o>&lt;</span> <span class=n>end</span><span class=p>)</span>
 <span class=ln> 5</span>	<span class=p>{</span>
-<span class=ln> 6</span>       <span class=n>total</span> <span class=o>+=</span> <span class=o>*</span><span class=p>(</span><span class=n>start</span><span class=o>++</span><span class=p>);</span>
+<span class=ln> 6</span>		<span class=n>total</span> <span class=o>+=</span> <span class=o>*</span><span class=p>(</span><span class=n>start</span><span class=o>++</span><span class=p>);</span>
 <span class=ln> 7</span>	<span class=p>}</span>
 <span class=ln> 8</span>	<span class=k>return</span> <span class=n>total</span><span class=p>;</span>
 <span class=ln> 9</span><span class=p>}</span>
@@ -369,11 +370,15 @@ Sep 8, 2021</span>
 <table>
 <thead>
 <tr>
-<th><code>zippo</code></th>
-<th>首元素地址，实际上是第一行元素的起始地址。<code>*zippo</code>取到第一行元素，<code>**zippo</code>取到第一行元素的第一个元素</th>
+<th>表达式</th>
+<th>解释</th>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>zippo</code></td>
+<td>首元素地址，实际上是第一行元素的起始地址。<code>*zippo</code>取到第一行元素，<code>**zippo</code>取到第一行元素的第一个元素</td>
+</tr>
 <tr>
 <td><code>zippo + 2</code></td>
 <td>第3行元素的地址</td>
@@ -389,10 +394,6 @@ Sep 8, 2021</span>
 <tr>
 <td><code>*(*(zippo + 2)+1)</code></td>
 <td>第3行元素的第2个元素的值</td>
-</tr>
-<tr>
-<td>表达式</td>
-<td>解释</td>
 </tr>
 </tbody>
 </table>
@@ -427,6 +428,35 @@ Sep 8, 2021</span>
 <li>字面量 - 5是int类型字面量，'c'是char类型的字面量，81.3是double类型的字面量...</li>
 <li><code>(int [])(50,20,90)</code>是一维数组字面量，二维数组类似，这些就是复合字面量</li>
 <li>复合字面量可以很方便的给函数传递数组参数而不必事先创建数组，实际上复合字面量就是匿名数组</li>
+</ul>
+</li>
+</ul>
+<h2 id=ch11-字符串和字符串函数>ch11. 字符串和字符串函数</h2>
+<blockquote>
+<ol>
+<li>字符串的表示形式</li>
+<li>C库中的字符和字符串函数的使用</li>
+</ol>
+</blockquote>
+<p><strong>几种定义字符串的方式：</strong></p>
+<ul>
+<li>
+<p>字符串常量 - 用双引号括起来的内容称为字符串常量。编译器会在双引号的字符末尾自动加入<code>\0</code>字符</p>
+<ul>
+<li>字符串常量属于静态存储类别，即该字符串只被存储一次</li>
+<li>双引号括起来的内容被视为指向该字符串的存储位置的指针。例如：<code>*"space farers"</code>表示的是对"space farers"的存储位置的地址解引用，那么取到的值就是该字符串的首个字符<code>s</code></li>
+<li>如果字符串中带有引号，那么需要在引号前面添加反斜杠</li>
+</ul>
+</li>
+<li>
+<p>字符串数组和初始化</p>
+<ul>
+<li>
+<p><code>char name[10] = "Jonathan"</code> - 在字符个数少于定义的数组个数时，用<code>'\0'</code>补足。注意，如果用单个字符赋值是，例如<code>char name[10] = {'J', 'o', 'n', 'a', 't', 'h','a','n','\n'}</code>，最后一个字符一定得是<code>'\0'</code>，否则会被认定是字符数组而不是字符串</p>
+</li>
+<li>
+<p><code>char name[] = "Jonathan"</code> - 这种不给定数组长度，那么编译器自动根据给定的字符串计算长度，当然最后会加上<code>'\0'</code></p>
+</li>
 </ul>
 </li>
 </ul>
