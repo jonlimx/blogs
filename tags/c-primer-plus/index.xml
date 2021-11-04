@@ -325,23 +325,25 @@
 &lt;/blockquote>
 &lt;p>&lt;strong>几种定义字符串的方式：&lt;/strong>&lt;/p>
 &lt;ul>
-&lt;li>
-&lt;p>字符串常量 - 用双引号括起来的内容称为字符串常量。编译器会在双引号的字符末尾自动加入&lt;code>\0&lt;/code>字符&lt;/p>
+&lt;li>字符串常量 - 用双引号括起来的内容称为字符串常量。编译器会在双引号的字符末尾自动加入&lt;code>\0&lt;/code>字符
 &lt;ul>
 &lt;li>字符串常量属于静态存储类别，即该字符串只被存储一次&lt;/li>
-&lt;li>双引号括起来的内容被视为指向该字符串的存储位置的指针。例如：&lt;code>*&amp;quot;space farers&amp;quot;&lt;/code>表示的是对&amp;quot;space farers&amp;quot;的存储位置的地址解引用，那么取到的值就是该字符串的首个字符&lt;code>s&lt;/code>&lt;/li>
+&lt;li>&lt;strong>双引号括起来的内容被视为指向该字符串的存储位置的指针&lt;/strong>。例如：&lt;code>*&amp;quot;space farers&amp;quot;&lt;/code>表示的是对&amp;quot;space farers&amp;quot;的存储位置的地址解引用，那么取到的值就是该字符串的首个字符&lt;code>s&lt;/code>&lt;/li>
 &lt;li>如果字符串中带有引号，那么需要在引号前面添加反斜杠&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>
-&lt;p>字符串数组和初始化&lt;/p>
+&lt;li>字符串数组和初始化
 &lt;ul>
-&lt;li>
-&lt;p>&lt;code>char name[10] = &amp;quot;Jonathan&amp;quot;&lt;/code> - 在字符个数少于定义的数组个数时，用&lt;code>'\0'&lt;/code>补足。注意，如果用单个字符赋值是，例如&lt;code>char name[10] = {'J', 'o', 'n', 'a', 't', 'h','a','n','\n'}&lt;/code>，最后一个字符一定得是&lt;code>'\0'&lt;/code>，否则会被认定是字符数组而不是字符串&lt;/p>
+&lt;li>&lt;code>char name[10] = &amp;quot;Jonathan&amp;quot;&lt;/code> - 在字符个数少于定义的数组个数时，用&lt;code>'\0'&lt;/code>补足。注意，如果用单个字符赋值是，例如&lt;code>char name[10] = {'J', 'o', 'n', 'a', 't', 'h','a','n','\n'}&lt;/code>，最后一个字符一定得是&lt;code>'\0'&lt;/code>，否则会被认定是字符数组而不是字符串&lt;/li>
+&lt;li>&lt;code>char name[] = &amp;quot;Jonathan&amp;quot;&lt;/code> - 这种不给定数组长度，那么编译器自动根据给定的字符串计算长度，当然最后会加上&lt;code>'\0'&lt;/code>&lt;/li>
+&lt;/ul>
 &lt;/li>
-&lt;li>
-&lt;p>&lt;code>char name[] = &amp;quot;Jonathan&amp;quot;&lt;/code> - 这种不给定数组长度，那么编译器自动根据给定的字符串计算长度，当然最后会加上&lt;code>'\0'&lt;/code>&lt;/p>
-&lt;/li>
+&lt;li>数组和指针的区别 - 既然字符串可以使用字符数组来表示，而后数组实际上又是和指针相通，那么指针自然可以表示字符串
+&lt;ul>
+&lt;li>&lt;code>char * head = &amp;quot;I love you&amp;quot;&lt;/code> - 这里的head是指针变量，因此可以修改head使得它指向其他的字符串&lt;/li>
+&lt;li>&lt;code>char heart[] = &amp;quot;I love you&amp;quot; &lt;/code> - 这里的heart是常量，因为数组的值就是数组首个元素的地址，这个值是固定。因此不可以对heart本身再赋值。比如：&lt;code>heart = head&lt;/code>这个是不成立的&lt;/li>
+&lt;li>&lt;code>char * head = &amp;quot;I love you&amp;quot;;*(head + 5) = 'T'&lt;/code> - &lt;strong>这是不推荐的做法&lt;/strong>，不同的编译器可能会导致不同的行为。对于&lt;code>&amp;quot;I love you&amp;quot;&lt;/code>这个字符串而言是存放在静态存储区，这里通过head修改了对应的静态存储区的值，会导致引用该字符串的所有其他变量都发生变化。因此，&lt;strong>建议在把指针初始化为字符串常量的时候使用const修饰符&lt;/strong>，即：&lt;code>const char * head = &amp;quot;I love you&amp;quot;&lt;/code>&lt;/li>
+&lt;li>对于&lt;code>char heart[] = &amp;quot;I love you&amp;quot;&lt;/code>而言，实际上&lt;code>heart&lt;/code>并不是指向&lt;code>&amp;quot;I love you&amp;quot;&lt;/code>的静态存储区，数组实际上是获得了&lt;code>&amp;quot;I love you&amp;quot;&lt;/code>的副本。&lt;strong>所以，如果打算修改字符串，应该用数组形式而不是用指针&lt;/strong>&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul></description></item><item><title>C Primer Plus 编程练习</title><link>https://www.jonathanlin.top/posts/c-primer-plus-handson/</link><pubDate>Fri, 23 Jul 2021 23:35:03 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-handson/</guid><description>
