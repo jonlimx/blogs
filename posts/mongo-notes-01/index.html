@@ -32,7 +32,7 @@
 <meta property="og:description" content="安装mongodb 我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用brew来安装，使用以下命令：
   添加官方tap
 1brew tap mongodb/brew   安装mongo全家桶，包括社区版服务端，Shell …">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/mongodb150.png">
+<meta property="og:image" content="https://www.jonathanlin.top/">
 <link rel=apple-touch-icon sizes=180x180 href=https://www.jonathanlin.top/icons/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=https://www.jonathanlin.top/icons/favicon-32x32.png>
 <link rel=manifest href=https://www.jonathanlin.top/icons/site.webmanifest>
@@ -89,10 +89,8 @@
 <div class=post_meta>
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
-Aug 5, 2021</span>
-<span class=post_time> · 4 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/mongodb title=mongodb class="post_tag button button_translucent">mongodb
-</a>
-</span>
+Jan 1, 0001</span>
+<span class=post_time> · 4 min read</span>
 <span class=page_only>&nbsp;·
 <div class=post_share>
 分享到:
@@ -107,22 +105,6 @@ Aug 5, 2021</span>
 </div>
 </span>
 </div>
-<h2>文章目录</h2>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#安装mongodb>安装mongodb</a></li>
-<li><a href=#以服务的方式启动停止mongodb>以服务的方式启动/停止mongodb</a></li>
-<li><a href=#mongodb查询操作>mongodb查询操作</a>
-<ul>
-<li><a href=#方法定义>方法定义</a></li>
-<li><a href=#查询选择器>查询选择器</a></li>
-<li><a href=#projection投影>Projection(投影)</a></li>
-</ul>
-</li>
-<li><a href=#查询示例>查询示例</a></li>
-<li><a href=#投影示例>投影示例</a></li>
-</ul>
-</nav>
 <h2 id=安装mongodb>安装mongodb</h2>
 <p>我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用<code>brew</code>来安装，使用以下命令：</p>
 <ol>
@@ -135,7 +117,7 @@ Aug 5, 2021</span>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>brew install mongodb-community
 </code></pre></div></li>
 </ol>
-<p>安装完成后，对应的二进制文件和配置文件的位置如下：（Inter处理器）</p>
+<p>安装完成后，对应的二进制文件和配置文件的位置如下：（Intel处理器）</p>
 <table>
 <thead>
 <tr>
@@ -170,7 +152,7 @@ Aug 5, 2021</span>
 <p>停止mongodb服务：</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>brew services stop mongodb-community@5.0
 </code></pre></div><h2 id=mongodb查询操作>mongodb查询操作</h2>
-<p>这里介绍的关于mongodb的查询操作（<strong>MQL</strong>）是通过<code>mongosh</code>方法来实现的，这些方法底层是基于<code>JavaScript</code>，但是如果你使用<code>JavaScript</code>来连接那么你应该参考相应语言的包（<a href=https://docs.mongodb.com/drivers/>idiomatic driver</a> ）。关于新增、删除和更新的方法相对来说比较简单，可以自行查看文档：<a href=https://docs.mongodb.com/manual/reference/method/>mongosh Methods — MongoDB Manual</a>。这里重点记录一下查找方法的使用。</p>
+<p>这里介绍的关于mongodb的查询操作（<strong>MQL</strong>）是通过<code>mongosh</code>方法来实现的，这些方法底层是基于<code>JavaScript</code>，但是如果你使用<code>JavaScript</code>来连接那么你应该参考相应语言的包（<a href=https://docs.mongodb.com/drivers/>idiomatic driver</a> ）。关于新增、删除和更新的方法可以查看文档：<a href=https://docs.mongodb.com/manual/reference/method/>mongosh Methods — MongoDB Manual</a>。这里记录一下查找方法的使用。</p>
 <h3 id=方法定义>方法定义</h3>
 <p>方法定义：<code>db.collection.find(query, projection)</code></p>
 <p>参数列表如下：</p>
@@ -191,7 +173,7 @@ Aug 5, 2021</span>
 <tr>
 <td>projecttion</td>
 <td>document</td>
-<td>可选参数。对查询结果进行筛选，选择性的返回指定的字段而不是包含文档里的所有字段。如果希望返回文档里的所有字段，则忽略该参数。关于更多细节，请参看：<a href=#Projection(%E6%8A%95%E5%BD%B1)>Projection(投影)</a></td>
+<td>可选参数。对查询结果进行筛选，选择性的返回指定的字段而不是包含文档里的所有字段。如果希望返回文档里的所有字段，则忽略该参数。关于更多细节，请参看：<a href=#Projection%E6%8A%95%E5%BD%B1>Projection(投影)</a></td>
 </tr>
 </tbody>
 </table>
@@ -254,7 +236,7 @@ Aug 5, 2021</span>
 </tr>
 </tbody>
 </table>
-<p>***注意：***在进行比较的时候，比较操作符两边的数据需要是相同的BSON类型（<a href=https://docs.mongodb.com/manual/reference/bson-type-comparison-order/#std-label-bson-types-comparison-order>Comparison/Sort Order — MongoDB Manual</a>）</p>
+<p>**注意：**在进行比较的时候，比较操作符两边的数据需要是相同的BSON类型（<a href=https://docs.mongodb.com/manual/reference/bson-type-comparison-order/#std-label-bson-types-comparison-order>Comparison/Sort Order — MongoDB Manual</a>）</p>
 <h4 id=逻辑运算>逻辑运算</h4>
 <table>
 <thead>
@@ -576,7 +558,7 @@ Aug 5, 2021</span>
 <nav class=tags_nav>
 <a href=https://www.jonathanlin.top/categories/notes/ class="post_tag button button_translucent" title=notes>
 NOTES
-<span class=button_tally>7</span>
+<span class=button_tally>6</span>
 </a>
 <a href=https://www.jonathanlin.top/categories/translation/ class="post_tag button button_translucent" title=translation>
 TRANSLATION
@@ -611,10 +593,6 @@ GOROUTINE
 CONCURRENCY-TRAP
 <span class=button_tally>2</span>
 </a>
-<a href=https://www.jonathanlin.top/tags/mongodb/ class="post_tag button button_translucent" title=mongodb>
-MONGODB
-<span class=button_tally>2</span>
-</a>
 <a href=https://www.jonathanlin.top/tags/protobuf/ class="post_tag button button_translucent" title=protobuf>
 PROTOBUF
 <span class=button_tally>2</span>
@@ -633,6 +611,10 @@ GITHUB-PAGES
 </a>
 <a href=https://www.jonathanlin.top/tags/hugo/ class="post_tag button button_translucent" title=hugo>
 HUGO
+<span class=button_tally>1</span>
+</a>
+<a href=https://www.jonathanlin.top/tags/mongodb/ class="post_tag button button_translucent" title=mongodb>
+MONGODB
 <span class=button_tally>1</span>
 </a>
 <a href=https://www.jonathanlin.top/tags/regex/ class="post_tag button button_translucent" title=regex>

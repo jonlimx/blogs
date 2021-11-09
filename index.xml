@@ -539,416 +539,7 @@
 &lt;td>原理同上&lt;/td>
 &lt;/tr>
 &lt;/tbody>
-&lt;/table></description></item><item><title>MongoDB学习笔记（一）</title><link>https://www.jonathanlin.top/posts/mongo-notes-01/</link><pubDate>Thu, 05 Aug 2021 13:48:47 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-01/</guid><description>
-&lt;h2 id="安装mongodb">安装mongodb&lt;/h2>
-&lt;p>我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用&lt;code>brew&lt;/code>来安装，使用以下命令：&lt;/p>
-&lt;ol>
-&lt;li>
-&lt;p>添加官方tap&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew tap mongodb/brew
-&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
-&lt;li>
-&lt;p>安装mongo全家桶，包括社区版服务端，Shell和数据库相关工具&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew install mongodb-community
-&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
-&lt;/ol>
-&lt;p>安装完成后，对应的二进制文件和配置文件的位置如下：（Inter处理器）&lt;/p>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>文件&lt;/th>
-&lt;th>位置&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>二进制可执行文件&lt;/td>
-&lt;td>/usr/local/Cellar/mongodb-community/5.0.1/bin&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>配置文件&lt;/td>
-&lt;td>/usr/local/etc/mongod.conf&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>日志文件&lt;/td>
-&lt;td>/usr/local/var/log/mongodb&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>数据文件&lt;/td>
-&lt;td>/usr/local/var/mongodb&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;p>MongoDB官方提供了以供学习用的示例数据集合，可以从https://atlas-education.s3.amazonaws.com/sampledata.archive下载，关于示例数据集的详细信息，可以参考：&lt;a href="https://www.mongodb.com/developer/article/atlas-sample-datasets/#std-label-atlas-sample-data-local-installation">The MongoDB Atlas Sample Datasets&lt;/a>。&lt;/p>
-&lt;h2 id="以服务的方式启动停止mongodb">以服务的方式启动/停止mongodb&lt;/h2>
-&lt;p>启动mongodb服务：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew services start mongodb-community@5.0
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>服务启动后，可以通过&lt;code>mongo&lt;/code>命令连接并进入shell。&lt;/p>
-&lt;p>停止mongodb服务：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew services stop mongodb-community@5.0
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="mongodb查询操作">mongodb查询操作&lt;/h2>
-&lt;p>这里介绍的关于mongodb的查询操作（&lt;strong>MQL&lt;/strong>）是通过&lt;code>mongosh&lt;/code>方法来实现的，这些方法底层是基于&lt;code>JavaScript&lt;/code>，但是如果你使用&lt;code>JavaScript&lt;/code>来连接那么你应该参考相应语言的包（&lt;a href="https://docs.mongodb.com/drivers/">idiomatic driver&lt;/a> ）。关于新增、删除和更新的方法相对来说比较简单，可以自行查看文档：&lt;a href="https://docs.mongodb.com/manual/reference/method/">mongosh Methods — MongoDB Manual&lt;/a>。这里重点记录一下查找方法的使用。&lt;/p>
-&lt;h3 id="方法定义">方法定义&lt;/h3>
-&lt;p>方法定义：&lt;code>db.collection.find(query, projection)&lt;/code>&lt;/p>
-&lt;p>参数列表如下：&lt;/p>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>参数&lt;/th>
-&lt;th>参数类型&lt;/th>
-&lt;th>描述&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>query&lt;/td>
-&lt;td>document&lt;/td>
-&lt;td>可选参数。使用&lt;a href="#%E6%9F%A5%E8%AF%A2%E9%80%89%E6%8B%A9%E5%99%A8">查询选择器&lt;/a>构建查询条件。如果你希望返回集合里的所有文档，那么忽略这个参数，或者传递一个空的文档(&lt;code>{}&lt;/code>)&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>projecttion&lt;/td>
-&lt;td>document&lt;/td>
-&lt;td>可选参数。对查询结果进行筛选，选择性的返回指定的字段而不是包含文档里的所有字段。如果希望返回文档里的所有字段，则忽略该参数。关于更多细节，请参看：&lt;a href="#Projection(%E6%8A%95%E5%BD%B1)">Projection(投影)&lt;/a>&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;p>构建query的时候，会涉及到字段或者嵌套字段。所谓嵌套字段是指子文档里的字段。指定嵌套的字段的方式有两种：&lt;/p>
-&lt;ul>
-&lt;li>点标记法：&lt;code>&amp;quot;field.nestedfield&amp;quot;: &amp;lt;value&amp;gt;&lt;/code>&lt;/li>
-&lt;li>嵌套的方式：&lt;code>{ field: { nestedfield: &amp;lt;value&amp;gt; } }&lt;/code> （**注意：**这种方式和点标记法不一样，这种方式将匹配名称为&lt;code>filed&lt;/code>的子文档，子文档只包含一个名为&lt;code>nestedfield&lt;/code>的字段）&lt;/li>
-&lt;/ul>
-&lt;h3 id="查询选择器">查询选择器&lt;/h3>
-&lt;p>这部分官网有很好的解释说明，详见：&lt;a href="https://docs.mongodb.com/manual/reference/operator/query/#query-selectors">Query and Projection Operators — MongoDB Manual&lt;/a>&lt;/p>
-&lt;h4 id="比较">比较&lt;/h4>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>数学运算符（SQL）&lt;/th>
-&lt;th>MQL运算符&lt;/th>
-&lt;th>语法说明&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>=&lt;/td>
-&lt;td>$eq&lt;/td>
-&lt;td>&lt;code>{ &amp;lt;field&amp;gt;: { $eq: &amp;lt;value&amp;gt; } }&lt;/code> 如果&lt;code>value&lt;/code>不是正则表达式，也可以写成&lt;code>{ field: &amp;lt;value&amp;gt; }&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&amp;gt;&lt;/td>
-&lt;td>$gt&lt;/td>
-&lt;td>&lt;code>{field: {$gt: value} }&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&amp;gt;=&lt;/td>
-&lt;td>$gte&lt;/td>
-&lt;td>&lt;code>{field: {$gte: value} }&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>in&lt;/td>
-&lt;td>$in&lt;/td>
-&lt;td>&lt;code>{ field: { $in: [&amp;lt;value1&amp;gt;, &amp;lt;value2&amp;gt;, ... &amp;lt;valueN&amp;gt; ] } }&lt;/code> 字段的值&lt;strong>在&lt;/strong>给定的数组里&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&amp;lt;&lt;/td>
-&lt;td>$lt&lt;/td>
-&lt;td>&lt;code>{field: {$lt: value} }&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&amp;lt;=&lt;/td>
-&lt;td>$lte&lt;/td>
-&lt;td>&lt;code>{ field: { $lte: value} }&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>!=&lt;/td>
-&lt;td>$ne&lt;/td>
-&lt;td>&lt;code>{field: {$ne: value} }&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>not in&lt;/td>
-&lt;td>$nin&lt;/td>
-&lt;td>&lt;code>{ field: { $nin: [ &amp;lt;value1&amp;gt;, &amp;lt;value2&amp;gt; ... &amp;lt;valueN&amp;gt; ]} }&lt;/code>字段的值&lt;strong>不在&lt;/strong>给定的数组里&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;p>***注意：***在进行比较的时候，比较操作符两边的数据需要是相同的BSON类型（&lt;a href="https://docs.mongodb.com/manual/reference/bson-type-comparison-order/#std-label-bson-types-comparison-order">Comparison/Sort Order — MongoDB Manual&lt;/a>）&lt;/p>
-&lt;h4 id="逻辑运算">逻辑运算&lt;/h4>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>MQL运算符&lt;/th>
-&lt;th>语法说明&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>$and&lt;/td>
-&lt;td>&lt;code>{ $and: [ { &amp;lt;expression1&amp;gt; }, { &amp;lt;expression2&amp;gt; } , ... , { &amp;lt;expressionN&amp;gt; } ] }&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>$not&lt;/td>
-&lt;td>&lt;code>{ field: { $not: { &amp;lt;operator-expression&amp;gt; } } }&lt;/code>注意&lt;code>{ $not: { $gt: 1.99 } }&lt;/code>和&lt;code>{ $lte: 1.99 }&lt;/code>不一样，&lt;strong>如果字段不存在，前者会匹配到，但是后者得存在才能匹配到&lt;/strong>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>$nor&lt;/td>
-&lt;td>&lt;code>{ $nor: [ { &amp;lt;expression1&amp;gt; }, { &amp;lt;expression2&amp;gt; }, ... { &amp;lt;expressionN&amp;gt; } ] }&lt;/code>匹配表达式列列表都不满足情况，&lt;strong>如果表达式中涉及到的所有字段都不存在，也会匹配出来&lt;/strong>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>$or&lt;/td>
-&lt;td>&lt;code>{ $or: [ { &amp;lt;expression1&amp;gt; }, { &amp;lt;expression2&amp;gt; }, ... , { &amp;lt;expressionN&amp;gt; } ] }&lt;/code>匹配表达式列表中的一个或者多个&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;h4 id="元素element">元素（Element）&lt;/h4>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>MQL运算符&lt;/th>
-&lt;th>语法说明&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>$exists&lt;/td>
-&lt;td>&lt;code>{ field: { $exists: &amp;lt;boolean&amp;gt; } }&lt;/code>匹配某个字段是否存在。如果值是&lt;code>true&lt;/code>那么会匹配到字段存在的或者值为&lt;code>null&lt;/code>的&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>$type&lt;/td>
-&lt;td>&lt;code>{ field: { $type: &amp;lt;BSON type&amp;gt; } }&lt;/code>或者&lt;code>{ field: { $type: [ &amp;lt;BSON type1&amp;gt; , &amp;lt;BSON type2&amp;gt;, ... ] } }&lt;/code>根据字段的类型匹配，可以匹配某种特定类型，或者几种类型中的一种。&lt;code>BSON&lt;/code>的支持的类型：&lt;a href="https://docs.mongodb.com/manual/reference/operator/query/type/#std-label-document-type-available-types">$type — MongoDB Manual&lt;/a>&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;h4 id="评估evaluation">评估（Evaluation）&lt;/h4>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>MQL运算符&lt;/th>
-&lt;th>说明&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>$expr&lt;/td>
-&lt;td>在query中使用复杂表达式来查询文档 &lt;a href="https://docs.mongodb.com/manual/reference/operator/query/expr/">$expr — MongoDB Manual&lt;/a>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>$jsonSchema&lt;/td>
-&lt;td>校验文档的schema&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>$mod&lt;/td>
-&lt;td>取模运算&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>$regex&lt;/td>
-&lt;td>使用正则表达式来匹配 &lt;a href="https://docs.mongodb.com/manual/reference/operator/query/regex/">$regex — MongoDB Manual&lt;/a>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>$text&lt;/td>
-&lt;td>使用文本搜索来匹配字段，前提是这个字段上有text索引&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>$where&lt;/td>
-&lt;td>使用自定义的JS表达式或者方法进行匹配&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;h3 id="projection投影">Projection(投影)&lt;/h3>
-&lt;p>投影的目的是将query的结果按要求返回，比如需要返回哪些字段、返回几个符合条件的数组元素。&lt;strong>注意&lt;/strong>：&lt;/p>
-&lt;ol>
-&lt;li>包含或者排除，&lt;strong>这二者在投影里是互斥的&lt;/strong>。即指定了包含的字段，那么结果仅返回指定的字段，如果指定了排除的字段，那么返回的结果不包含被排除的字段&lt;/li>
-&lt;li>&lt;code>_id&lt;/code>是特例，默认是包含在返回结果里，如果不希望结果里返回，是需要在投影里排除掉。&lt;code>_id&lt;/code>的排除是可以和其他字段的包含同时存在&lt;/li>
-&lt;/ol>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>Projection&lt;/th>
-&lt;th>描述&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>&lt;code>&amp;lt;field&amp;gt;: &amp;lt;1 or true&amp;gt;&lt;/code>&lt;/td>
-&lt;td>结果中包含某个字段。只要是非0的整型数字，都会被当成&lt;code>true&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&lt;code>&amp;lt;field&amp;gt;: &amp;lt;0 or false&amp;gt;&lt;/code>&lt;/td>
-&lt;td>结果中&lt;strong>排除&lt;/strong>某个字段&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&lt;code>&amp;lt;field&amp;gt;: &amp;lt;aggregation expression&amp;gt;&lt;/code>&lt;/td>
-&lt;td>&lt;em>TODO - 待补充&lt;/em>&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;p>关于对于数组的投影，参考以下操作符：&lt;/p>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>MQL运算符&lt;/th>
-&lt;th>语法说明&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>$&lt;/td>
-&lt;td>&lt;code>db.collection.find( { &amp;lt;array&amp;gt;: &amp;lt;condition&amp;gt; ... },{ &amp;quot;&amp;lt;array&amp;gt;.$&amp;quot;: 1 } )&lt;/code> &lt;code>db.collection.find( { &amp;lt;array.field&amp;gt;: &amp;lt;condition&amp;gt; ...}, { &amp;quot;&amp;lt;array&amp;gt;.$&amp;quot;: 1 } )&lt;/code> 查找条件是基于文档内部的数组元素，通过&lt;code>$&lt;/code>投影出符合条件的第一个数组元素&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>$elemMatch&lt;/td>
-&lt;td>与&lt;code>$&lt;/code>类似，投影出符合条件的第一个数组元素。&lt;code>$elemMatch&lt;/code>是在query的结果上，对数组元组的一个或者多个进行继续过滤：&lt;code>db.collection.find( { query, array: {$elemMatch: {condition ...}} ... }&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>$meta&lt;/td>
-&lt;td>获取文档相关的元数据，包括&lt;code>textScore&lt;/code>和&lt;code>indexKey&lt;/code>。&lt;code>textScore&lt;/code>和query中的&lt;code>text&lt;/code>一起使用，表示文档和query的匹配程度；&lt;code>indexKey&lt;/code>顾名思义获取文档对应的非text类型的索引键，主要用于调试目的（??）&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>$slice&lt;/td>
-&lt;td>返回符合query条件的数组元素的切片。&lt;code>db.collection.find(&amp;lt;query&amp;gt;,{ &amp;lt;arrayField&amp;gt;: { $slice: &amp;lt;number&amp;gt; } });&lt;/code>或者&lt;code>db.collection.find(&amp;lt;query&amp;gt;,{ &amp;lt;arrayField&amp;gt;: { $slice: [ &amp;lt;number&amp;gt;, &amp;lt;number&amp;gt; ] } });&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;h2 id="查询示例">查询示例&lt;/h2>
-&lt;p>这个部分的数据来源是官方&lt;code>bios&lt;/code>数据集：&lt;a href="https://docs.mongodb.com/manual/reference/bios-example-collection/">The bios Example Collection — MongoDB Manual&lt;/a>&lt;/p>
-&lt;p>&lt;strong>查询所有文档&lt;/strong>&lt;/p>
-&lt;p>&lt;code>find()&lt;/code>方法的query部分不传值，或者传递一个空的文档，那么返回的接口就是所有文档。&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">()&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>按照特定的值查询&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>查找&lt;code>_id&lt;/code>为5的文档：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>_id: 5&lt;span class="o">})&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
-&lt;li>
-&lt;p>查找&lt;code>name&lt;/code>子文档里&lt;code>last&lt;/code>的值为&amp;quot;Hopper&amp;quot;的文档：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>&lt;span class="s2">&amp;#34;name.last&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;Hopper&amp;#34;&lt;/span>&lt;span class="o">})&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
-&lt;/ul>
-&lt;p>&lt;strong>使用&lt;a href="#%E6%9F%A5%E8%AF%A2%E9%80%89%E6%8B%A9%E5%99%A8%5D">查询选择器&lt;/a>&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>查找&lt;code>_id&lt;/code>的值等于5或者等于&lt;code>ObjectId(&amp;quot;51e062189c6ae665454e301d&amp;quot;)&lt;/code>的文档：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>_id: &lt;span class="o">{&lt;/span>&lt;span class="nv">$in&lt;/span>: &lt;span class="o">[&lt;/span>5, ObjectId&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;51e062189c6ae665454e301d&amp;#34;&lt;/span>&lt;span class="o">)]}})&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
-&lt;li>
-&lt;p>查找&lt;code>birth&lt;/code>在1950之后的文档：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>birth: &lt;span class="o">{&lt;/span>&lt;span class="nv">$gt&lt;/span>: new Date&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;1950-01-01&amp;#34;&lt;/span>&lt;span class="o">)}})&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
-&lt;li>
-&lt;p>使用正则表达式查找&lt;code>name&lt;/code>子文档下&lt;code>last&lt;/code>以N开头的文档：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="s2">&amp;#34;name.last&amp;#34;&lt;/span>: &lt;span class="o">{&lt;/span> &lt;span class="nv">$regex&lt;/span>: /^N/ &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">3&lt;/span>&lt;span class="o">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
-&lt;p>&lt;code>$regex&lt;/code>的语法格式如下：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>&lt;span class="o">{&lt;/span> &amp;lt;field&amp;gt;: &lt;span class="o">{&lt;/span> &lt;span class="nv">$regex&lt;/span>: /pattern/, &lt;span class="nv">$options&lt;/span>: &lt;span class="s1">&amp;#39;&amp;lt;options&amp;gt;&amp;#39;&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">2&lt;/span>&lt;span class="o">{&lt;/span> &amp;lt;field&amp;gt;: &lt;span class="o">{&lt;/span> &lt;span class="nv">$regex&lt;/span>: &lt;span class="s1">&amp;#39;pattern&amp;#39;&lt;/span>, &lt;span class="nv">$options&lt;/span>: &lt;span class="s1">&amp;#39;&amp;lt;options&amp;gt;&amp;#39;&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">3&lt;/span>&lt;span class="o">{&lt;/span> &amp;lt;field&amp;gt;: &lt;span class="o">{&lt;/span> &lt;span class="nv">$regex&lt;/span>: /pattern/&amp;lt;options&amp;gt; &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;/blockquote>
-&lt;/li>
-&lt;/ul>
-&lt;p>&lt;strong>按照值范围查询&lt;/strong>&lt;/p>
-&lt;p>查找&lt;code>birth&lt;/code>在1940和1960之间的文档：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>birth: &lt;span class="o">{&lt;/span>&lt;span class="nv">$gt&lt;/span>: new Date&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;1940-01-01&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>, &lt;span class="nv">$lt&lt;/span>: new Date&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;1960-01-01&amp;#34;&lt;/span>&lt;span class="o">)}})&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>根据多个条件查询&lt;/strong>&lt;/p>
-&lt;p>查找&lt;code>birth&lt;/code>在1920之后，且&lt;code>death&lt;/code>为false的文档：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span> &lt;span class="o">{&lt;/span>
-&lt;span class="ln">2&lt;/span> birth: &lt;span class="o">{&lt;/span> &lt;span class="nv">$gt&lt;/span>: new Date&lt;span class="o">(&lt;/span>&lt;span class="s1">&amp;#39;1920-01-01&amp;#39;&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">}&lt;/span>,
-&lt;span class="ln">3&lt;/span> death: &lt;span class="o">{&lt;/span> &lt;span class="nv">$exists&lt;/span>: &lt;span class="nb">false&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">4&lt;/span>&lt;span class="o">}&lt;/span> &lt;span class="o">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>或者使用&lt;code>$and&lt;/code>操作符&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>&lt;span class="nv">$and&lt;/span>: &lt;span class="o">[&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span>birth: &lt;span class="o">{&lt;/span>&lt;span class="nv">$gt&lt;/span>: new Date&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;1920-01-01&amp;#34;&lt;/span>&lt;span class="o">)}}&lt;/span>,
-&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span>death: &lt;span class="o">{&lt;/span>&lt;span class="nv">$exists&lt;/span>: false&lt;span class="o">}}&lt;/span>
-&lt;span class="ln">4&lt;/span>&lt;span class="o">]})&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>精确匹配子文档&lt;/strong>&lt;/p>
-&lt;p>所谓精确匹配是指&lt;strong>要求子文档的字段的个数以及字段顺序与给定的查询条件中的子文档一致&lt;/strong>。下面的例子中，要求匹配&lt;code>name&lt;/code>子文档的&lt;code>first&lt;/code>为Yukihiro，&lt;code>last&lt;/code>为Matsumoto，文档中这两个字段的顺序也是要匹配上&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> name: &lt;span class="o">{&lt;/span> first: &lt;span class="s2">&amp;#34;Yukihiro&amp;#34;&lt;/span>, last: &lt;span class="s2">&amp;#34;Matsumoto&amp;#34;&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">3&lt;/span>&lt;span class="o">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>下面的两种情况无法匹配成功：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln"> 1&lt;/span>&lt;span class="p">{&lt;/span>
-&lt;span class="ln"> 2&lt;/span> &lt;span class="err">first:&lt;/span> &lt;span class="nt">&amp;#34;Yukihiro&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 3&lt;/span> &lt;span class="err">aka:&lt;/span> &lt;span class="nt">&amp;#34;Matz&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 4&lt;/span> &lt;span class="err">last:&lt;/span> &lt;span class="nt">&amp;#34;Matsumoto&amp;#34;&lt;/span>
-&lt;span class="ln"> 5&lt;/span>&lt;span class="p">}&lt;/span>
-&lt;span class="ln"> 6&lt;/span>
-&lt;span class="ln"> 7&lt;/span>&lt;span class="p">{&lt;/span>
-&lt;span class="ln"> 8&lt;/span> &lt;span class="err">last:&lt;/span> &lt;span class="nt">&amp;#34;Matsumoto&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 9&lt;/span> &lt;span class="err">first:&lt;/span> &lt;span class="nt">&amp;#34;Yukihiro&amp;#34;&lt;/span>
-&lt;span class="ln">10&lt;/span>&lt;span class="p">}&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>匹配子文档的字段&lt;/strong>&lt;/p>
-&lt;p>使用点标记法匹配子文档字段。例如查找&lt;code>name&lt;/code>子文档下&lt;code>first&lt;/code>为Yukihiro以及&lt;code>last&lt;/code>为Matsumoto的文档&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span>
-&lt;span class="ln">3&lt;/span> &lt;span class="s2">&amp;#34;name.first&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;Yukihiro&amp;#34;&lt;/span>,
-&lt;span class="ln">4&lt;/span> &lt;span class="s2">&amp;#34;name.last&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;Matsumoto&amp;#34;&lt;/span>
-&lt;span class="ln">5&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">6&lt;/span>&lt;span class="o">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>根据数组元素(数组元素类型为简单类型)来查找&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>查找&lt;code>contribs&lt;/code>数组里含有&lt;code>UNIX&lt;/code>元素的文档：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>contribs: &lt;span class="s2">&amp;#34;UNIX&amp;#34;&lt;/span>&lt;span class="o">})&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
-&lt;li>
-&lt;p>查找&lt;code>contribs&lt;/code>数组里含有&lt;code>ALGOL&lt;/code>或者&lt;code>Lisp&lt;/code>元素的文档：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>contribs: &lt;span class="o">{&lt;/span>&lt;span class="nv">$in&lt;/span>: &lt;span class="o">[&lt;/span>&lt;span class="s2">&amp;#34;ALGOL&amp;#34;&lt;/span>, &lt;span class="s2">&amp;#34;Lisp&amp;#34;&lt;/span>&lt;span class="o">]}})&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
-&lt;li>
-&lt;p>查找&lt;code>contribs&lt;/code>数组里含有&lt;code>ALGOL&lt;/code>和&lt;code>Lisp&lt;/code>元素的文档：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>contribs: &lt;span class="o">{&lt;/span>&lt;span class="nv">$all&lt;/span>: &lt;span class="o">[&lt;/span>&lt;span class="s2">&amp;#34;ALGOL&amp;#34;&lt;/span>, &lt;span class="s2">&amp;#34;Lisp&amp;#34;&lt;/span>&lt;span class="o">]}})&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
-&lt;li>
-&lt;p>查找&lt;code>contribs&lt;/code>数组大小为4的文档：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>contribs: &lt;span class="o">{&lt;/span>&lt;span class="nv">$size&lt;/span>: 4&lt;span class="o">}})&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
-&lt;/ul>
-&lt;p>&lt;strong>根据数组元素(数组元素类型为文档类型)来查找&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>查找&lt;code>awards&lt;/code>数组下的子文档中的&lt;code>award&lt;/code>的值为&lt;code>Turing Award&lt;/code>的文档：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="s2">&amp;#34;awards.award&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;Turing Award&amp;#34;&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">3&lt;/span>&lt;span class="o">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
-&lt;li>
-&lt;p>查找&lt;code>awards&lt;/code>数组下的子文档中的&lt;code>award&lt;/code>的值为&lt;code>Turing Award&lt;/code>且&lt;code>year&lt;/code>(这里必须要在一个子文档里同时满足)大于1999的文档：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> awards: &lt;span class="o">{&lt;/span> &lt;span class="nv">$elemMatch&lt;/span>: &lt;span class="o">{&lt;/span> award: &lt;span class="s2">&amp;#34;Turing Award&amp;#34;&lt;/span>, year: &lt;span class="o">{&lt;/span> &lt;span class="nv">$gt&lt;/span>: &lt;span class="m">1980&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">3&lt;/span>&lt;span class="o">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果这里不使用&lt;code>elemMatch&lt;/code>而是使用下面的方式，结果返回的是&lt;code>awards&lt;/code>元素里包含&lt;code>award&lt;/code>为”Turing Award“和&lt;code>year&lt;/code>大于1975的元素。这两个条件是要求&lt;code>awards&lt;/code>下的所有元素里，满足这两个条件之一即可。这两个条件是限制在&lt;code>awards&lt;/code>上，不是限制在单一的数组元素上。&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span>
-&lt;span class="ln">3&lt;/span> &lt;span class="s2">&amp;#34;awards.award&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;Turing Award&amp;#34;&lt;/span> ,
-&lt;span class="ln">4&lt;/span> &lt;span class="s2">&amp;#34;awards.year&amp;#34;&lt;/span>: &lt;span class="o">{&lt;/span>&lt;span class="nv">$gt&lt;/span>: 1975&lt;span class="o">}&lt;/span>
-&lt;span class="ln">5&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">6&lt;/span>&lt;span class="o">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="投影示例">投影示例&lt;/h2>
-&lt;/li>
-&lt;/ul>
-&lt;p>&lt;strong>指定要包含的字段&lt;/strong>&lt;/p>
-&lt;p>查找&lt;code>bios&lt;/code>集合里所有文档并返回文档的&lt;code>name&lt;/code>和&lt;code>contribs&lt;/code>字段：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="o">}&lt;/span>, &lt;span class="o">{&lt;/span> name: 1, contribs: &lt;span class="m">1&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>指定要排除的字段&lt;/strong>&lt;/p>
-&lt;p>查找&lt;code>bios&lt;/code>集合里&lt;code>contribs&lt;/code>为OOP的集合，返回的时候排除掉&lt;code>name.first&lt;/code>和&lt;code>birth&lt;/code>字段：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> contribs: &lt;span class="s1">&amp;#39;OOP&amp;#39;&lt;/span> &lt;span class="o">}&lt;/span>,
-&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="s1">&amp;#39;name.first&amp;#39;&lt;/span>: 0, birth: &lt;span class="m">0&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">4&lt;/span>&lt;span class="o">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>显式排除&lt;code>_id&lt;/code>字段&lt;/strong>&lt;/p>
-&lt;p>查找&lt;code>bios&lt;/code>集合里所有文档并返回文档的&lt;code>name&lt;/code>和&lt;code>contribs&lt;/code>字段但不包括&lt;code>_id&lt;/code>：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="o">}&lt;/span>,
-&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span> name: 1, contribs: 1, _id: &lt;span class="m">0&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">4&lt;/span>&lt;span class="o">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>对子文档和数组投影&lt;/strong>&lt;/p>
-&lt;p>查找&lt;code>bios&lt;/code>集合里的所有文档并返回&lt;code>name.last&lt;/code>，以及&lt;code>contribs&lt;/code>数组里的前两个元素&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="o">{}&lt;/span>,
-&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span>_id: 0, &lt;span class="s1">&amp;#39;name.last&amp;#39;&lt;/span>: 1, contribs: &lt;span class="o">{&lt;/span>&lt;span class="nv">$slice&lt;/span>: 2&lt;span class="o">}}&lt;/span>
-&lt;span class="ln">4&lt;/span>&lt;span class="o">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>C Primer Plus 编程练习</title><link>https://www.jonathanlin.top/posts/c-primer-plus-handson/</link><pubDate>Fri, 23 Jul 2021 23:35:03 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-handson/</guid><description>
+&lt;/table></description></item><item><title>C Primer Plus 编程练习</title><link>https://www.jonathanlin.top/posts/c-primer-plus-handson/</link><pubDate>Fri, 23 Jul 2021 23:35:03 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-handson/</guid><description>
 &lt;h2 id="ch06-c控制语句循环">ch06. C控制语句：循环&lt;/h2>
 &lt;blockquote>
 &lt;ol start="5">
@@ -3364,4 +2955,413 @@
 &lt;li>路径是可选/(root)或者/docs。这二者的区别是你把这个repo都配置为Github Pages，还是说仅仅是/doc目录。这个在官方资料里有说明，请自行查阅。&lt;/li>
 &lt;li>自定义域名这个是可选的。如果你跟我想配置自定义域名，请参考：&lt;a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages">About custom domains and GitHub Pages - GitHub Docs&lt;/a>&lt;/li>
 &lt;/ul>
-&lt;p>至此，基于Github Pages和Hugo的个人博客基本搭建完成。&lt;/p></description></item></channel></rss>
+&lt;p>至此，基于Github Pages和Hugo的个人博客基本搭建完成。&lt;/p></description></item><item><title>MongoDB学习笔记（一）</title><link>https://www.jonathanlin.top/posts/mongo-notes-01/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-01/</guid><description>
+&lt;h2 id="安装mongodb">安装mongodb&lt;/h2>
+&lt;p>我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用&lt;code>brew&lt;/code>来安装，使用以下命令：&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>添加官方tap&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew tap mongodb/brew
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>安装mongo全家桶，包括社区版服务端，Shell和数据库相关工具&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew install mongodb-community
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;p>安装完成后，对应的二进制文件和配置文件的位置如下：（Intel处理器）&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>文件&lt;/th>
+&lt;th>位置&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>二进制可执行文件&lt;/td>
+&lt;td>/usr/local/Cellar/mongodb-community/5.0.1/bin&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>配置文件&lt;/td>
+&lt;td>/usr/local/etc/mongod.conf&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>日志文件&lt;/td>
+&lt;td>/usr/local/var/log/mongodb&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>数据文件&lt;/td>
+&lt;td>/usr/local/var/mongodb&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>MongoDB官方提供了以供学习用的示例数据集合，可以从https://atlas-education.s3.amazonaws.com/sampledata.archive下载，关于示例数据集的详细信息，可以参考：&lt;a href="https://www.mongodb.com/developer/article/atlas-sample-datasets/#std-label-atlas-sample-data-local-installation">The MongoDB Atlas Sample Datasets&lt;/a>。&lt;/p>
+&lt;h2 id="以服务的方式启动停止mongodb">以服务的方式启动/停止mongodb&lt;/h2>
+&lt;p>启动mongodb服务：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew services start mongodb-community@5.0
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>服务启动后，可以通过&lt;code>mongo&lt;/code>命令连接并进入shell。&lt;/p>
+&lt;p>停止mongodb服务：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>brew services stop mongodb-community@5.0
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="mongodb查询操作">mongodb查询操作&lt;/h2>
+&lt;p>这里介绍的关于mongodb的查询操作（&lt;strong>MQL&lt;/strong>）是通过&lt;code>mongosh&lt;/code>方法来实现的，这些方法底层是基于&lt;code>JavaScript&lt;/code>，但是如果你使用&lt;code>JavaScript&lt;/code>来连接那么你应该参考相应语言的包（&lt;a href="https://docs.mongodb.com/drivers/">idiomatic driver&lt;/a> ）。关于新增、删除和更新的方法可以查看文档：&lt;a href="https://docs.mongodb.com/manual/reference/method/">mongosh Methods — MongoDB Manual&lt;/a>。这里记录一下查找方法的使用。&lt;/p>
+&lt;h3 id="方法定义">方法定义&lt;/h3>
+&lt;p>方法定义：&lt;code>db.collection.find(query, projection)&lt;/code>&lt;/p>
+&lt;p>参数列表如下：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>参数&lt;/th>
+&lt;th>参数类型&lt;/th>
+&lt;th>描述&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>query&lt;/td>
+&lt;td>document&lt;/td>
+&lt;td>可选参数。使用&lt;a href="#%E6%9F%A5%E8%AF%A2%E9%80%89%E6%8B%A9%E5%99%A8">查询选择器&lt;/a>构建查询条件。如果你希望返回集合里的所有文档，那么忽略这个参数，或者传递一个空的文档(&lt;code>{}&lt;/code>)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>projecttion&lt;/td>
+&lt;td>document&lt;/td>
+&lt;td>可选参数。对查询结果进行筛选，选择性的返回指定的字段而不是包含文档里的所有字段。如果希望返回文档里的所有字段，则忽略该参数。关于更多细节，请参看：&lt;a href="#Projection%E6%8A%95%E5%BD%B1">Projection(投影)&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>构建query的时候，会涉及到字段或者嵌套字段。所谓嵌套字段是指子文档里的字段。指定嵌套的字段的方式有两种：&lt;/p>
+&lt;ul>
+&lt;li>点标记法：&lt;code>&amp;quot;field.nestedfield&amp;quot;: &amp;lt;value&amp;gt;&lt;/code>&lt;/li>
+&lt;li>嵌套的方式：&lt;code>{ field: { nestedfield: &amp;lt;value&amp;gt; } }&lt;/code> （**注意：**这种方式和点标记法不一样，这种方式将匹配名称为&lt;code>filed&lt;/code>的子文档，子文档只包含一个名为&lt;code>nestedfield&lt;/code>的字段）&lt;/li>
+&lt;/ul>
+&lt;h3 id="查询选择器">查询选择器&lt;/h3>
+&lt;p>这部分官网有很好的解释说明，详见：&lt;a href="https://docs.mongodb.com/manual/reference/operator/query/#query-selectors">Query and Projection Operators — MongoDB Manual&lt;/a>&lt;/p>
+&lt;h4 id="比较">比较&lt;/h4>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>数学运算符（SQL）&lt;/th>
+&lt;th>MQL运算符&lt;/th>
+&lt;th>语法说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>=&lt;/td>
+&lt;td>$eq&lt;/td>
+&lt;td>&lt;code>{ &amp;lt;field&amp;gt;: { $eq: &amp;lt;value&amp;gt; } }&lt;/code> 如果&lt;code>value&lt;/code>不是正则表达式，也可以写成&lt;code>{ field: &amp;lt;value&amp;gt; }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&amp;gt;&lt;/td>
+&lt;td>$gt&lt;/td>
+&lt;td>&lt;code>{field: {$gt: value} }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&amp;gt;=&lt;/td>
+&lt;td>$gte&lt;/td>
+&lt;td>&lt;code>{field: {$gte: value} }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>in&lt;/td>
+&lt;td>$in&lt;/td>
+&lt;td>&lt;code>{ field: { $in: [&amp;lt;value1&amp;gt;, &amp;lt;value2&amp;gt;, ... &amp;lt;valueN&amp;gt; ] } }&lt;/code> 字段的值&lt;strong>在&lt;/strong>给定的数组里&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&amp;lt;&lt;/td>
+&lt;td>$lt&lt;/td>
+&lt;td>&lt;code>{field: {$lt: value} }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&amp;lt;=&lt;/td>
+&lt;td>$lte&lt;/td>
+&lt;td>&lt;code>{ field: { $lte: value} }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>!=&lt;/td>
+&lt;td>$ne&lt;/td>
+&lt;td>&lt;code>{field: {$ne: value} }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>not in&lt;/td>
+&lt;td>$nin&lt;/td>
+&lt;td>&lt;code>{ field: { $nin: [ &amp;lt;value1&amp;gt;, &amp;lt;value2&amp;gt; ... &amp;lt;valueN&amp;gt; ]} }&lt;/code>字段的值&lt;strong>不在&lt;/strong>给定的数组里&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>**注意：**在进行比较的时候，比较操作符两边的数据需要是相同的BSON类型（&lt;a href="https://docs.mongodb.com/manual/reference/bson-type-comparison-order/#std-label-bson-types-comparison-order">Comparison/Sort Order — MongoDB Manual&lt;/a>）&lt;/p>
+&lt;h4 id="逻辑运算">逻辑运算&lt;/h4>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>MQL运算符&lt;/th>
+&lt;th>语法说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>$and&lt;/td>
+&lt;td>&lt;code>{ $and: [ { &amp;lt;expression1&amp;gt; }, { &amp;lt;expression2&amp;gt; } , ... , { &amp;lt;expressionN&amp;gt; } ] }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$not&lt;/td>
+&lt;td>&lt;code>{ field: { $not: { &amp;lt;operator-expression&amp;gt; } } }&lt;/code>注意&lt;code>{ $not: { $gt: 1.99 } }&lt;/code>和&lt;code>{ $lte: 1.99 }&lt;/code>不一样，&lt;strong>如果字段不存在，前者会匹配到，但是后者得存在才能匹配到&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$nor&lt;/td>
+&lt;td>&lt;code>{ $nor: [ { &amp;lt;expression1&amp;gt; }, { &amp;lt;expression2&amp;gt; }, ... { &amp;lt;expressionN&amp;gt; } ] }&lt;/code>匹配表达式列列表都不满足情况，&lt;strong>如果表达式中涉及到的所有字段都不存在，也会匹配出来&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$or&lt;/td>
+&lt;td>&lt;code>{ $or: [ { &amp;lt;expression1&amp;gt; }, { &amp;lt;expression2&amp;gt; }, ... , { &amp;lt;expressionN&amp;gt; } ] }&lt;/code>匹配表达式列表中的一个或者多个&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h4 id="元素element">元素（Element）&lt;/h4>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>MQL运算符&lt;/th>
+&lt;th>语法说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>$exists&lt;/td>
+&lt;td>&lt;code>{ field: { $exists: &amp;lt;boolean&amp;gt; } }&lt;/code>匹配某个字段是否存在。如果值是&lt;code>true&lt;/code>那么会匹配到字段存在的或者值为&lt;code>null&lt;/code>的&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$type&lt;/td>
+&lt;td>&lt;code>{ field: { $type: &amp;lt;BSON type&amp;gt; } }&lt;/code>或者&lt;code>{ field: { $type: [ &amp;lt;BSON type1&amp;gt; , &amp;lt;BSON type2&amp;gt;, ... ] } }&lt;/code>根据字段的类型匹配，可以匹配某种特定类型，或者几种类型中的一种。&lt;code>BSON&lt;/code>的支持的类型：&lt;a href="https://docs.mongodb.com/manual/reference/operator/query/type/#std-label-document-type-available-types">$type — MongoDB Manual&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h4 id="评估evaluation">评估（Evaluation）&lt;/h4>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>MQL运算符&lt;/th>
+&lt;th>说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>$expr&lt;/td>
+&lt;td>在query中使用复杂表达式来查询文档 &lt;a href="https://docs.mongodb.com/manual/reference/operator/query/expr/">$expr — MongoDB Manual&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$jsonSchema&lt;/td>
+&lt;td>校验文档的schema&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$mod&lt;/td>
+&lt;td>取模运算&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$regex&lt;/td>
+&lt;td>使用正则表达式来匹配 &lt;a href="https://docs.mongodb.com/manual/reference/operator/query/regex/">$regex — MongoDB Manual&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$text&lt;/td>
+&lt;td>使用文本搜索来匹配字段，前提是这个字段上有text索引&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$where&lt;/td>
+&lt;td>使用自定义的JS表达式或者方法进行匹配&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="projection投影">Projection(投影)&lt;/h3>
+&lt;p>投影的目的是将query的结果按要求返回，比如需要返回哪些字段、返回几个符合条件的数组元素。&lt;strong>注意&lt;/strong>：&lt;/p>
+&lt;ol>
+&lt;li>包含或者排除，&lt;strong>这二者在投影里是互斥的&lt;/strong>。即指定了包含的字段，那么结果仅返回指定的字段，如果指定了排除的字段，那么返回的结果不包含被排除的字段&lt;/li>
+&lt;li>&lt;code>_id&lt;/code>是特例，默认是包含在返回结果里，如果不希望结果里返回，是需要在投影里排除掉。&lt;code>_id&lt;/code>的排除是可以和其他字段的包含同时存在&lt;/li>
+&lt;/ol>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Projection&lt;/th>
+&lt;th>描述&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>&amp;lt;field&amp;gt;: &amp;lt;1 or true&amp;gt;&lt;/code>&lt;/td>
+&lt;td>结果中包含某个字段。只要是非0的整型数字，都会被当成&lt;code>true&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>&amp;lt;field&amp;gt;: &amp;lt;0 or false&amp;gt;&lt;/code>&lt;/td>
+&lt;td>结果中&lt;strong>排除&lt;/strong>某个字段&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>&amp;lt;field&amp;gt;: &amp;lt;aggregation expression&amp;gt;&lt;/code>&lt;/td>
+&lt;td>&lt;em>TODO - 待补充&lt;/em>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>关于对于数组的投影，参考以下操作符：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>MQL运算符&lt;/th>
+&lt;th>语法说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>$&lt;/td>
+&lt;td>&lt;code>db.collection.find( { &amp;lt;array&amp;gt;: &amp;lt;condition&amp;gt; ... },{ &amp;quot;&amp;lt;array&amp;gt;.$&amp;quot;: 1 } )&lt;/code> &lt;code>db.collection.find( { &amp;lt;array.field&amp;gt;: &amp;lt;condition&amp;gt; ...}, { &amp;quot;&amp;lt;array&amp;gt;.$&amp;quot;: 1 } )&lt;/code> 查找条件是基于文档内部的数组元素，通过&lt;code>$&lt;/code>投影出符合条件的第一个数组元素&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$elemMatch&lt;/td>
+&lt;td>与&lt;code>$&lt;/code>类似，投影出符合条件的第一个数组元素。&lt;code>$elemMatch&lt;/code>是在query的结果上，对数组元组的一个或者多个进行继续过滤：&lt;code>db.collection.find( { query, array: {$elemMatch: {condition ...}} ... }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$meta&lt;/td>
+&lt;td>获取文档相关的元数据，包括&lt;code>textScore&lt;/code>和&lt;code>indexKey&lt;/code>。&lt;code>textScore&lt;/code>和query中的&lt;code>text&lt;/code>一起使用，表示文档和query的匹配程度；&lt;code>indexKey&lt;/code>顾名思义获取文档对应的非text类型的索引键，主要用于调试目的（??）&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$slice&lt;/td>
+&lt;td>返回符合query条件的数组元素的切片。&lt;code>db.collection.find(&amp;lt;query&amp;gt;,{ &amp;lt;arrayField&amp;gt;: { $slice: &amp;lt;number&amp;gt; } });&lt;/code>或者&lt;code>db.collection.find(&amp;lt;query&amp;gt;,{ &amp;lt;arrayField&amp;gt;: { $slice: [ &amp;lt;number&amp;gt;, &amp;lt;number&amp;gt; ] } });&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="查询示例">查询示例&lt;/h2>
+&lt;p>这个部分的数据来源是官方&lt;code>bios&lt;/code>数据集：&lt;a href="https://docs.mongodb.com/manual/reference/bios-example-collection/">The bios Example Collection — MongoDB Manual&lt;/a>&lt;/p>
+&lt;p>&lt;strong>查询所有文档&lt;/strong>&lt;/p>
+&lt;p>&lt;code>find()&lt;/code>方法的query部分不传值，或者传递一个空的文档，那么返回的接口就是所有文档。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">()&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>按照特定的值查询&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>查找&lt;code>_id&lt;/code>为5的文档：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>_id: 5&lt;span class="o">})&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>查找&lt;code>name&lt;/code>子文档里&lt;code>last&lt;/code>的值为&amp;quot;Hopper&amp;quot;的文档：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>&lt;span class="s2">&amp;#34;name.last&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;Hopper&amp;#34;&lt;/span>&lt;span class="o">})&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>使用&lt;a href="#%E6%9F%A5%E8%AF%A2%E9%80%89%E6%8B%A9%E5%99%A8%5D">查询选择器&lt;/a>&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>查找&lt;code>_id&lt;/code>的值等于5或者等于&lt;code>ObjectId(&amp;quot;51e062189c6ae665454e301d&amp;quot;)&lt;/code>的文档：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>_id: &lt;span class="o">{&lt;/span>&lt;span class="nv">$in&lt;/span>: &lt;span class="o">[&lt;/span>5, ObjectId&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;51e062189c6ae665454e301d&amp;#34;&lt;/span>&lt;span class="o">)]}})&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>查找&lt;code>birth&lt;/code>在1950之后的文档：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>birth: &lt;span class="o">{&lt;/span>&lt;span class="nv">$gt&lt;/span>: new Date&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;1950-01-01&amp;#34;&lt;/span>&lt;span class="o">)}})&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>使用正则表达式查找&lt;code>name&lt;/code>子文档下&lt;code>last&lt;/code>以N开头的文档：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="s2">&amp;#34;name.last&amp;#34;&lt;/span>: &lt;span class="o">{&lt;/span> &lt;span class="nv">$regex&lt;/span>: /^N/ &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>&lt;code>$regex&lt;/code>的语法格式如下：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>&lt;span class="o">{&lt;/span> &amp;lt;field&amp;gt;: &lt;span class="o">{&lt;/span> &lt;span class="nv">$regex&lt;/span>: /pattern/, &lt;span class="nv">$options&lt;/span>: &lt;span class="s1">&amp;#39;&amp;lt;options&amp;gt;&amp;#39;&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">2&lt;/span>&lt;span class="o">{&lt;/span> &amp;lt;field&amp;gt;: &lt;span class="o">{&lt;/span> &lt;span class="nv">$regex&lt;/span>: &lt;span class="s1">&amp;#39;pattern&amp;#39;&lt;/span>, &lt;span class="nv">$options&lt;/span>: &lt;span class="s1">&amp;#39;&amp;lt;options&amp;gt;&amp;#39;&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="o">{&lt;/span> &amp;lt;field&amp;gt;: &lt;span class="o">{&lt;/span> &lt;span class="nv">$regex&lt;/span>: /pattern/&amp;lt;options&amp;gt; &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/blockquote>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>按照值范围查询&lt;/strong>&lt;/p>
+&lt;p>查找&lt;code>birth&lt;/code>在1940和1960之间的文档：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>birth: &lt;span class="o">{&lt;/span>&lt;span class="nv">$gt&lt;/span>: new Date&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;1940-01-01&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>, &lt;span class="nv">$lt&lt;/span>: new Date&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;1960-01-01&amp;#34;&lt;/span>&lt;span class="o">)}})&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>根据多个条件查询&lt;/strong>&lt;/p>
+&lt;p>查找&lt;code>birth&lt;/code>在1920之后，且&lt;code>death&lt;/code>为false的文档：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;span class="ln">2&lt;/span> birth: &lt;span class="o">{&lt;/span> &lt;span class="nv">$gt&lt;/span>: new Date&lt;span class="o">(&lt;/span>&lt;span class="s1">&amp;#39;1920-01-01&amp;#39;&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">}&lt;/span>,
+&lt;span class="ln">3&lt;/span> death: &lt;span class="o">{&lt;/span> &lt;span class="nv">$exists&lt;/span>: &lt;span class="nb">false&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="o">}&lt;/span> &lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>或者使用&lt;code>$and&lt;/code>操作符&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>&lt;span class="nv">$and&lt;/span>: &lt;span class="o">[&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span>birth: &lt;span class="o">{&lt;/span>&lt;span class="nv">$gt&lt;/span>: new Date&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;1920-01-01&amp;#34;&lt;/span>&lt;span class="o">)}}&lt;/span>,
+&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span>death: &lt;span class="o">{&lt;/span>&lt;span class="nv">$exists&lt;/span>: false&lt;span class="o">}}&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="o">]})&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>精确匹配子文档&lt;/strong>&lt;/p>
+&lt;p>所谓精确匹配是指&lt;strong>要求子文档的字段的个数以及字段顺序与给定的查询条件中的子文档一致&lt;/strong>。下面的例子中，要求匹配&lt;code>name&lt;/code>子文档的&lt;code>first&lt;/code>为Yukihiro，&lt;code>last&lt;/code>为Matsumoto，文档中这两个字段的顺序也是要匹配上&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> name: &lt;span class="o">{&lt;/span> first: &lt;span class="s2">&amp;#34;Yukihiro&amp;#34;&lt;/span>, last: &lt;span class="s2">&amp;#34;Matsumoto&amp;#34;&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>下面的两种情况无法匹配成功：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln"> 1&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="err">first:&lt;/span> &lt;span class="nt">&amp;#34;Yukihiro&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="err">aka:&lt;/span> &lt;span class="nt">&amp;#34;Matz&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="err">last:&lt;/span> &lt;span class="nt">&amp;#34;Matsumoto&amp;#34;&lt;/span>
+&lt;span class="ln"> 5&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln"> 6&lt;/span>
+&lt;span class="ln"> 7&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="err">last:&lt;/span> &lt;span class="nt">&amp;#34;Matsumoto&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="err">first:&lt;/span> &lt;span class="nt">&amp;#34;Yukihiro&amp;#34;&lt;/span>
+&lt;span class="ln">10&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>匹配子文档的字段&lt;/strong>&lt;/p>
+&lt;p>使用点标记法匹配子文档字段。例如查找&lt;code>name&lt;/code>子文档下&lt;code>first&lt;/code>为Yukihiro以及&lt;code>last&lt;/code>为Matsumoto的文档&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="s2">&amp;#34;name.first&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;Yukihiro&amp;#34;&lt;/span>,
+&lt;span class="ln">4&lt;/span> &lt;span class="s2">&amp;#34;name.last&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;Matsumoto&amp;#34;&lt;/span>
+&lt;span class="ln">5&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">6&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>根据数组元素(数组元素类型为简单类型)来查找&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>查找&lt;code>contribs&lt;/code>数组里含有&lt;code>UNIX&lt;/code>元素的文档：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>contribs: &lt;span class="s2">&amp;#34;UNIX&amp;#34;&lt;/span>&lt;span class="o">})&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>查找&lt;code>contribs&lt;/code>数组里含有&lt;code>ALGOL&lt;/code>或者&lt;code>Lisp&lt;/code>元素的文档：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>contribs: &lt;span class="o">{&lt;/span>&lt;span class="nv">$in&lt;/span>: &lt;span class="o">[&lt;/span>&lt;span class="s2">&amp;#34;ALGOL&amp;#34;&lt;/span>, &lt;span class="s2">&amp;#34;Lisp&amp;#34;&lt;/span>&lt;span class="o">]}})&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>查找&lt;code>contribs&lt;/code>数组里含有&lt;code>ALGOL&lt;/code>和&lt;code>Lisp&lt;/code>元素的文档：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>contribs: &lt;span class="o">{&lt;/span>&lt;span class="nv">$all&lt;/span>: &lt;span class="o">[&lt;/span>&lt;span class="s2">&amp;#34;ALGOL&amp;#34;&lt;/span>, &lt;span class="s2">&amp;#34;Lisp&amp;#34;&lt;/span>&lt;span class="o">]}})&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>查找&lt;code>contribs&lt;/code>数组大小为4的文档：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>contribs: &lt;span class="o">{&lt;/span>&lt;span class="nv">$size&lt;/span>: 4&lt;span class="o">}})&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>根据数组元素(数组元素类型为文档类型)来查找&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>查找&lt;code>awards&lt;/code>数组下的子文档中的&lt;code>award&lt;/code>的值为&lt;code>Turing Award&lt;/code>的文档：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="s2">&amp;#34;awards.award&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;Turing Award&amp;#34;&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>查找&lt;code>awards&lt;/code>数组下的子文档中的&lt;code>award&lt;/code>的值为&lt;code>Turing Award&lt;/code>且&lt;code>year&lt;/code>(这里必须要在一个子文档里同时满足)大于1999的文档：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> awards: &lt;span class="o">{&lt;/span> &lt;span class="nv">$elemMatch&lt;/span>: &lt;span class="o">{&lt;/span> award: &lt;span class="s2">&amp;#34;Turing Award&amp;#34;&lt;/span>, year: &lt;span class="o">{&lt;/span> &lt;span class="nv">$gt&lt;/span>: &lt;span class="m">1980&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果这里不使用&lt;code>elemMatch&lt;/code>而是使用下面的方式，结果返回的是&lt;code>awards&lt;/code>元素里包含&lt;code>award&lt;/code>为”Turing Award“和&lt;code>year&lt;/code>大于1975的元素。这两个条件是要求&lt;code>awards&lt;/code>下的所有元素里，满足这两个条件之一即可。这两个条件是限制在&lt;code>awards&lt;/code>上，不是限制在单一的数组元素上。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="s2">&amp;#34;awards.award&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;Turing Award&amp;#34;&lt;/span> ,
+&lt;span class="ln">4&lt;/span> &lt;span class="s2">&amp;#34;awards.year&amp;#34;&lt;/span>: &lt;span class="o">{&lt;/span>&lt;span class="nv">$gt&lt;/span>: 1975&lt;span class="o">}&lt;/span>
+&lt;span class="ln">5&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">6&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="投影示例">投影示例&lt;/h2>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>指定要包含的字段&lt;/strong>&lt;/p>
+&lt;p>查找&lt;code>bios&lt;/code>集合里所有文档并返回文档的&lt;code>name&lt;/code>和&lt;code>contribs&lt;/code>字段：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="o">}&lt;/span>, &lt;span class="o">{&lt;/span> name: 1, contribs: &lt;span class="m">1&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>指定要排除的字段&lt;/strong>&lt;/p>
+&lt;p>查找&lt;code>bios&lt;/code>集合里&lt;code>contribs&lt;/code>为OOP的集合，返回的时候排除掉&lt;code>name.first&lt;/code>和&lt;code>birth&lt;/code>字段：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> contribs: &lt;span class="s1">&amp;#39;OOP&amp;#39;&lt;/span> &lt;span class="o">}&lt;/span>,
+&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="s1">&amp;#39;name.first&amp;#39;&lt;/span>: 0, birth: &lt;span class="m">0&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>显式排除&lt;code>_id&lt;/code>字段&lt;/strong>&lt;/p>
+&lt;p>查找&lt;code>bios&lt;/code>集合里所有文档并返回文档的&lt;code>name&lt;/code>和&lt;code>contribs&lt;/code>字段但不包括&lt;code>_id&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="o">}&lt;/span>,
+&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span> name: 1, contribs: 1, _id: &lt;span class="m">0&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>对子文档和数组投影&lt;/strong>&lt;/p>
+&lt;p>查找&lt;code>bios&lt;/code>集合里的所有文档并返回&lt;code>name.last&lt;/code>，以及&lt;code>contribs&lt;/code>数组里的前两个元素&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">{}&lt;/span>,
+&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span>_id: 0, &lt;span class="s1">&amp;#39;name.last&amp;#39;&lt;/span>: 1, contribs: &lt;span class="o">{&lt;/span>&lt;span class="nv">$slice&lt;/span>: 2&lt;span class="o">}}&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div></description></item></channel></rss>
