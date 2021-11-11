@@ -254,8 +254,12 @@ Aug 5, 2021</span>
 </tr>
 </tbody>
 </table>
-<p>**注意：**在进行比较的时候，比较操作符两边的数据需要是相同的BSON类型（<a href=https://docs.mongodb.com/manual/reference/bson-type-comparison-order/#std-label-bson-types-comparison-order>Comparison/Sort Order — MongoDB Manual</a>）</p>
-<h4 id=逻辑运算>逻辑运算</h4>
+<p><strong>注意：</strong> 在进行比较的时候，比较操作符两边的数据需要是相同的BSON类型（<a href=https://docs.mongodb.com/manual/reference/bson-type-comparison-order/#std-label-bson-types-comparison-order>Comparison/Sort Order — MongoDB Manual</a>）</p>
+<p>对于同一个字段的范围的判断，可以使用下面提到的<code>$and</code>逻辑运算，也可以简单的放在一起：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span>birth: <span class=o>{</span><span class=nv>$gt</span>: new Date<span class=o>(</span><span class=s2>&#34;1940-01-01&#34;</span><span class=o>)</span>, <span class=nv>$lt</span>: new Date<span class=o>(</span><span class=s2>&#34;1960-01-01&#34;</span><span class=o>)}})</span>
+</code></pre></div><p>或者：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span><span class=nv>$and</span>:<span class=o>[{</span>birth:<span class=o>{</span><span class=nv>$gt</span>: new Date<span class=o>(</span><span class=s2>&#34;1940-01-01&#34;</span><span class=o>)}}</span>,<span class=o>{</span>birth:<span class=o>{</span><span class=nv>$lt</span>: new Date<span class=o>(</span><span class=s2>&#34;1960-01-01&#34;</span><span class=o>)}}]})</span>
+</code></pre></div><h4 id=逻辑运算>逻辑运算</h4>
 <table>
 <thead>
 <tr>
@@ -270,7 +274,7 @@ Aug 5, 2021</span>
 </tr>
 <tr>
 <td>$not</td>
-<td><code>{ field: { $not: { &lt;operator-expression> } } }</code>注意<code>{ $not: { $gt: 1.99 } }</code>和<code>{ $lte: 1.99 }</code>不一样，<strong>如果字段不存在，前者会匹配到，但是后者得存在才能匹配到</strong></td>
+<td><code>{ field: { $not: { &lt;operator-expression> } } }</code>注意<code>{ $not: { $gt: 1.99 } }</code>和<code>{ $lte: 1.99 }</code>不一样，<strong>如果字段不存在，前者会匹配到，但是后者得存在才能匹配到</strong>。原因是前者不大于1.99包括小于等于1.99，也包括不存在的，后者明确就是小于等于1.99</td>
 </tr>
 <tr>
 <td>$nor</td>
@@ -282,6 +286,7 @@ Aug 5, 2021</span>
 </tr>
 </tbody>
 </table>
+<p><code>$not</code>用于修饰数学符号来实现不大于、不小于诸如此类，而<code>$and</code> <code>$not</code> <code>$nor</code>是用于逻辑表达式之间的运算(逻辑表达式由字段和数学表达式构成)，这里要区分开。</p>
 <h4 id=元素element>元素（Element）</h4>
 <table>
 <thead>
@@ -333,6 +338,29 @@ Aug 5, 2021</span>
 <tr>
 <td>$where</td>
 <td>使用自定义的JS表达式或者方法进行匹配</td>
+</tr>
+</tbody>
+</table>
+<h4 id=数组array>数组（Array)</h4>
+<table>
+<thead>
+<tr>
+<th>MQL运算符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$all</td>
+<td>通过文档数组里的元素进行匹配，数组元素需要满足$all中定义的所有条件。类似$and</td>
+</tr>
+<tr>
+<td>$elemMatch</td>
+<td>通过文档数组里的元素进行匹配，数组元素中的一个或者多个需要满足条件</td>
+</tr>
+<tr>
+<td>$size</td>
+<td>通过文档数组元素的个数进行匹配</td>
 </tr>
 </tbody>
 </table>
@@ -471,15 +499,15 @@ Aug 5, 2021</span>
 </code></pre></div><p><strong>根据数组元素(数组元素类型为简单类型)来查找</strong></p>
 <ul>
 <li>
-<p>查找<code>contribs</code>数组里含有<code>UNIX</code>元素的文档：</p>
+<p>查找<code>contribs</code>数组里含有<code>UNIX</code>元素的文档（至少有一个元素符合即可）：</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span>contribs: <span class=s2>&#34;UNIX&#34;</span><span class=o>})</span>
 </code></pre></div></li>
 <li>
-<p>查找<code>contribs</code>数组里含有<code>ALGOL</code>或者<code>Lisp</code>元素的文档：</p>
+<p>查找<code>contribs</code>数组里含有<code>ALGOL</code>或者<code>Lisp</code>元素的文档（至少有一个元素在$in列表里）：</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span>contribs: <span class=o>{</span><span class=nv>$in</span>: <span class=o>[</span><span class=s2>&#34;ALGOL&#34;</span>, <span class=s2>&#34;Lisp&#34;</span><span class=o>]}})</span>
 </code></pre></div></li>
 <li>
-<p>查找<code>contribs</code>数组里含有<code>ALGOL</code>和<code>Lisp</code>元素的文档：</p>
+<p>查找<code>contribs</code>数组里含有<code>ALGOL</code>和<code>Lisp</code>元素的文档（<strong>至少包含</strong>$all里定义的所有元素）：</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span>contribs: <span class=o>{</span><span class=nv>$all</span>: <span class=o>[</span><span class=s2>&#34;ALGOL&#34;</span>, <span class=s2>&#34;Lisp&#34;</span><span class=o>]}})</span>
 </code></pre></div></li>
 <li>
@@ -507,9 +535,9 @@ Aug 5, 2021</span>
 <span class=ln>4</span>        <span class=s2>&#34;awards.year&#34;</span>: <span class=o>{</span><span class=nv>$gt</span>: 1975<span class=o>}</span>
 <span class=ln>5</span>   <span class=o>}</span>
 <span class=ln>6</span><span class=o>)</span>
-</code></pre></div><h2 id=投影示例>投影示例</h2>
-</li>
+</code></pre></div></li>
 </ul>
+<h2 id=投影示例>投影示例</h2>
 <p><strong>指定要包含的字段</strong></p>
 <p>查找<code>bios</code>集合里所有文档并返回文档的<code>name</code>和<code>contribs</code>字段：</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span> <span class=o>{</span> <span class=o>}</span>, <span class=o>{</span> name: 1, contribs: <span class=m>1</span> <span class=o>}</span> <span class=o>)</span>

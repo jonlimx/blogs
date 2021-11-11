@@ -671,8 +671,12 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;p>**注意：**在进行比较的时候，比较操作符两边的数据需要是相同的BSON类型（&lt;a href="https://docs.mongodb.com/manual/reference/bson-type-comparison-order/#std-label-bson-types-comparison-order">Comparison/Sort Order — MongoDB Manual&lt;/a>）&lt;/p>
-&lt;h4 id="逻辑运算">逻辑运算&lt;/h4>
+&lt;p>&lt;strong>注意：&lt;/strong> 在进行比较的时候，比较操作符两边的数据需要是相同的BSON类型（&lt;a href="https://docs.mongodb.com/manual/reference/bson-type-comparison-order/#std-label-bson-types-comparison-order">Comparison/Sort Order — MongoDB Manual&lt;/a>）&lt;/p>
+&lt;p>对于同一个字段的范围的判断，可以使用下面提到的&lt;code>$and&lt;/code>逻辑运算，也可以简单的放在一起：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>birth: &lt;span class="o">{&lt;/span>&lt;span class="nv">$gt&lt;/span>: new Date&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;1940-01-01&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>, &lt;span class="nv">$lt&lt;/span>: new Date&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;1960-01-01&amp;#34;&lt;/span>&lt;span class="o">)}})&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>或者：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>&lt;span class="nv">$and&lt;/span>:&lt;span class="o">[{&lt;/span>birth:&lt;span class="o">{&lt;/span>&lt;span class="nv">$gt&lt;/span>: new Date&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;1940-01-01&amp;#34;&lt;/span>&lt;span class="o">)}}&lt;/span>,&lt;span class="o">{&lt;/span>birth:&lt;span class="o">{&lt;/span>&lt;span class="nv">$lt&lt;/span>: new Date&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;1960-01-01&amp;#34;&lt;/span>&lt;span class="o">)}}]})&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h4 id="逻辑运算">逻辑运算&lt;/h4>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -687,7 +691,7 @@
 &lt;/tr>
 &lt;tr>
 &lt;td>$not&lt;/td>
-&lt;td>&lt;code>{ field: { $not: { &amp;lt;operator-expression&amp;gt; } } }&lt;/code>注意&lt;code>{ $not: { $gt: 1.99 } }&lt;/code>和&lt;code>{ $lte: 1.99 }&lt;/code>不一样，&lt;strong>如果字段不存在，前者会匹配到，但是后者得存在才能匹配到&lt;/strong>&lt;/td>
+&lt;td>&lt;code>{ field: { $not: { &amp;lt;operator-expression&amp;gt; } } }&lt;/code>注意&lt;code>{ $not: { $gt: 1.99 } }&lt;/code>和&lt;code>{ $lte: 1.99 }&lt;/code>不一样，&lt;strong>如果字段不存在，前者会匹配到，但是后者得存在才能匹配到&lt;/strong>。原因是前者不大于1.99包括小于等于1.99，也包括不存在的，后者明确就是小于等于1.99&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>$nor&lt;/td>
@@ -699,6 +703,7 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
+&lt;p>&lt;code>$not&lt;/code>用于修饰数学符号来实现不大于、不小于诸如此类，而&lt;code>$and&lt;/code> &lt;code>$not&lt;/code> &lt;code>$nor&lt;/code>是用于逻辑表达式之间的运算(逻辑表达式由字段和数学表达式构成)，这里要区分开。&lt;/p>
 &lt;h4 id="元素element">元素（Element）&lt;/h4>
 &lt;table>
 &lt;thead>
@@ -750,6 +755,29 @@
 &lt;tr>
 &lt;td>$where&lt;/td>
 &lt;td>使用自定义的JS表达式或者方法进行匹配&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h4 id="数组array">数组（Array)&lt;/h4>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>MQL运算符&lt;/th>
+&lt;th>说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>$all&lt;/td>
+&lt;td>通过文档数组里的元素进行匹配，数组元素需要满足$all中定义的所有条件。类似$and&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$elemMatch&lt;/td>
+&lt;td>通过文档数组里的元素进行匹配，数组元素中的一个或者多个需要满足条件&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$size&lt;/td>
+&lt;td>通过文档数组元素的个数进行匹配&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
@@ -888,15 +916,15 @@
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>根据数组元素(数组元素类型为简单类型)来查找&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>
-&lt;p>查找&lt;code>contribs&lt;/code>数组里含有&lt;code>UNIX&lt;/code>元素的文档：&lt;/p>
+&lt;p>查找&lt;code>contribs&lt;/code>数组里含有&lt;code>UNIX&lt;/code>元素的文档（至少有一个元素符合即可）：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>contribs: &lt;span class="s2">&amp;#34;UNIX&amp;#34;&lt;/span>&lt;span class="o">})&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;li>
-&lt;p>查找&lt;code>contribs&lt;/code>数组里含有&lt;code>ALGOL&lt;/code>或者&lt;code>Lisp&lt;/code>元素的文档：&lt;/p>
+&lt;p>查找&lt;code>contribs&lt;/code>数组里含有&lt;code>ALGOL&lt;/code>或者&lt;code>Lisp&lt;/code>元素的文档（至少有一个元素在$in列表里）：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>contribs: &lt;span class="o">{&lt;/span>&lt;span class="nv">$in&lt;/span>: &lt;span class="o">[&lt;/span>&lt;span class="s2">&amp;#34;ALGOL&amp;#34;&lt;/span>, &lt;span class="s2">&amp;#34;Lisp&amp;#34;&lt;/span>&lt;span class="o">]}})&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;li>
-&lt;p>查找&lt;code>contribs&lt;/code>数组里含有&lt;code>ALGOL&lt;/code>和&lt;code>Lisp&lt;/code>元素的文档：&lt;/p>
+&lt;p>查找&lt;code>contribs&lt;/code>数组里含有&lt;code>ALGOL&lt;/code>和&lt;code>Lisp&lt;/code>元素的文档（&lt;strong>至少包含&lt;/strong>$all里定义的所有元素）：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">({&lt;/span>contribs: &lt;span class="o">{&lt;/span>&lt;span class="nv">$all&lt;/span>: &lt;span class="o">[&lt;/span>&lt;span class="s2">&amp;#34;ALGOL&amp;#34;&lt;/span>, &lt;span class="s2">&amp;#34;Lisp&amp;#34;&lt;/span>&lt;span class="o">]}})&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;li>
@@ -924,9 +952,9 @@
 &lt;span class="ln">4&lt;/span> &lt;span class="s2">&amp;#34;awards.year&amp;#34;&lt;/span>: &lt;span class="o">{&lt;/span>&lt;span class="nv">$gt&lt;/span>: 1975&lt;span class="o">}&lt;/span>
 &lt;span class="ln">5&lt;/span> &lt;span class="o">}&lt;/span>
 &lt;span class="ln">6&lt;/span>&lt;span class="o">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="投影示例">投影示例&lt;/h2>
-&lt;/li>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;/ul>
+&lt;h2 id="投影示例">投影示例&lt;/h2>
 &lt;p>&lt;strong>指定要包含的字段&lt;/strong>&lt;/p>
 &lt;p>查找&lt;code>bios&lt;/code>集合里所有文档并返回文档的&lt;code>name&lt;/code>和&lt;code>contribs&lt;/code>字段：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.bios.find&lt;span class="o">(&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="o">}&lt;/span>, &lt;span class="o">{&lt;/span> name: 1, contribs: &lt;span class="m">1&lt;/span> &lt;span class="o">}&lt;/span> &lt;span class="o">)&lt;/span>
