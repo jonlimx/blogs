@@ -32,7 +32,7 @@
 <meta property="og:description" content="安装mongodb 我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用brew来安装，使用以下命令：
   添加官方tap
 1brew tap mongodb/brew   安装mongo全家桶，包括社区版服务端，Shell …">
-<meta property="og:image" content="https://www.jonathanlin.top/">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/mongodb150.png">
 <link rel=apple-touch-icon sizes=180x180 href=https://www.jonathanlin.top/icons/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=https://www.jonathanlin.top/icons/favicon-32x32.png>
 <link rel=manifest href=https://www.jonathanlin.top/icons/site.webmanifest>
@@ -89,8 +89,10 @@
 <div class=post_meta>
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
-Jan 1, 0001</span>
-<span class=post_time> · 4 min read</span>
+Aug 5, 2021</span>
+<span class=post_time> · 4 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/mongodb title=mongodb class="post_tag button button_translucent">mongodb
+</a>
+</span>
 <span class=page_only>&nbsp;·
 <div class=post_share>
 分享到:
@@ -105,6 +107,22 @@ Jan 1, 0001</span>
 </div>
 </span>
 </div>
+<h2>文章目录</h2>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#安装mongodb>安装mongodb</a></li>
+<li><a href=#以服务的方式启动停止mongodb>以服务的方式启动/停止mongodb</a></li>
+<li><a href=#mongodb查询操作>mongodb查询操作</a>
+<ul>
+<li><a href=#方法定义>方法定义</a></li>
+<li><a href=#查询选择器>查询选择器</a></li>
+<li><a href=#projection投影>Projection(投影)</a></li>
+</ul>
+</li>
+<li><a href=#查询示例>查询示例</a></li>
+<li><a href=#投影示例>投影示例</a></li>
+</ul>
+</nav>
 <h2 id=安装mongodb>安装mongodb</h2>
 <p>我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用<code>brew</code>来安装，使用以下命令：</p>
 <ol>
@@ -433,14 +451,14 @@ Jan 1, 0001</span>
 <span class=ln>3</span><span class=o>)</span>
 </code></pre></div><p>下面的两种情况无法匹配成功：</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=ln> 1</span><span class=p>{</span>
-<span class=ln> 2</span>   <span class=err>first:</span> <span class=nt>&#34;Yukihiro&#34;</span><span class=p>,</span>
-<span class=ln> 3</span>   <span class=err>aka:</span> <span class=nt>&#34;Matz&#34;</span><span class=p>,</span>
-<span class=ln> 4</span>   <span class=err>last:</span> <span class=nt>&#34;Matsumoto&#34;</span>
+<span class=ln> 2</span>   <span class=nt>&#34;first&#34;</span><span class=p>:</span> <span class=s2>&#34;Yukihiro&#34;</span><span class=p>,</span>
+<span class=ln> 3</span>   <span class=nt>&#34;aka&#34;</span><span class=p>:</span> <span class=s2>&#34;Matz&#34;</span><span class=p>,</span>
+<span class=ln> 4</span>   <span class=nt>&#34;last&#34;</span><span class=p>:</span> <span class=s2>&#34;Matsumoto&#34;</span>
 <span class=ln> 5</span><span class=p>}</span>
 <span class=ln> 6</span>
 <span class=ln> 7</span><span class=p>{</span>
-<span class=ln> 8</span>   <span class=err>last:</span> <span class=nt>&#34;Matsumoto&#34;</span><span class=p>,</span>
-<span class=ln> 9</span>   <span class=err>first:</span> <span class=nt>&#34;Yukihiro&#34;</span>
+<span class=ln> 8</span>   <span class=nt>&#34;last&#34;</span><span class=p>:</span> <span class=s2>&#34;Matsumoto&#34;</span><span class=p>,</span>
+<span class=ln> 9</span>   <span class=nt>&#34;first&#34;</span><span class=p>:</span> <span class=s2>&#34;Yukihiro&#34;</span>
 <span class=ln>10</span><span class=p>}</span>
 </code></pre></div><p><strong>匹配子文档的字段</strong></p>
 <p>使用点标记法匹配子文档字段。例如查找<code>name</code>子文档下<code>first</code>为Yukihiro以及<code>last</code>为Matsumoto的文档</p>
@@ -532,9 +550,6 @@ Jan 1, 0001</span>
 <a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-03/ class=nav-link title="C Primer Plus读书笔记（三）">C Primer Plus读书笔记（三）</a>
 </li>
 <li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-02/ class=nav-link title=MongoDB学习笔记（二）>MongoDB学习笔记（二）</a>
-</li>
-<li>
 <a href=https://www.jonathanlin.top/posts/regex-cheatsheet/ class=nav-link title="Regex Cheatsheet">Regex Cheatsheet</a>
 </li>
 <li>
@@ -551,6 +566,9 @@ Jan 1, 0001</span>
 </li>
 <li>
 <a href=https://www.jonathanlin.top/posts/gorouting-leak-the-forgotten-sender/ class=nav-link title="[译]Goroutine Leaks - The Forgotten Sender">[译]Goroutine Leaks - The Forgotten Sender</a>
+</li>
+<li>
+<a href=https://www.jonathanlin.top/posts/protocol-buffer-language-guide/ class=nav-link title="[译]Protocol Buffer Language Guide (proto3)">[译]Protocol Buffer Language Guide (proto3)</a>
 </li>
 </ul>
 <div>
