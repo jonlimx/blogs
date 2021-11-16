@@ -1,4 +1,205 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Notes on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/categories/notes/</link><description>Recent content in Notes on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 08 Sep 2021 20:14:21 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/categories/notes/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus读书笔记（三）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</link><pubDate>Wed, 08 Sep 2021 20:14:21 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Notes on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/categories/notes/</link><description>Recent content in Notes on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Tue, 16 Nov 2021 15:03:57 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/categories/notes/index.xml" rel="self" type="application/rss+xml"/><item><title>MongoDB学习笔记（二）</title><link>https://www.jonathanlin.top/posts/mongo-notes-02/</link><pubDate>Tue, 16 Nov 2021 15:03:57 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-02/</guid><description>
+&lt;h2 id="单个文档插入操作">单个文档插入操作&lt;/h2>
+&lt;h3 id="定义">定义&lt;/h3>
+&lt;p>&lt;strong>&lt;code>db.collection.insertOne()&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>语法：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.collection.insertOne&lt;span class="o">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &amp;lt;document&amp;gt;,
+&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;span class="ln">4&lt;/span> writeConcern: &amp;lt;document&amp;gt;
+&lt;span class="ln">5&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;span class="ln">6&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>参数：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>参数&lt;/th>
+&lt;th>类型&lt;/th>
+&lt;th>说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>document&lt;/code>&lt;/td>
+&lt;td>文档&lt;/td>
+&lt;td>待插入集合的文档&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>writeConcern&lt;/code>&lt;/td>
+&lt;td>文档&lt;/td>
+&lt;td>可选。用于指定mongod对写操作的响应&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>返回值：&lt;/p>
+&lt;p>包含下列元素的文档：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>acknowledged&lt;/code> - 如果指定了&lt;code>writeConcern&lt;/code>，值为 &lt;code>true&lt;/code> ；如果&lt;code>writeConcern&lt;/code>是disable的，值为&lt;code>false&lt;/code>&lt;/li>
+&lt;li>&lt;code>insertedId&lt;/code> - 主键，也就是&lt;code>_id&lt;/code>的值&lt;/li>
+&lt;/ul>
+&lt;h3 id="行为">行为&lt;/h3>
+&lt;ul>
+&lt;li>执行&lt;code>insertOne()&lt;/code>时，&lt;strong>如果集合（表）不存在，那么会自动创建这个集合&lt;/strong>&lt;/li>
+&lt;li>如果没有显式地给定&lt;code>_id&lt;/code>的值，那么&lt;code>mongod&lt;/code>或者客户端驱动会自动创建一个，并且值具有唯一性。如果插入的文档的&lt;code>_id&lt;/code>重复，则插入失败&lt;/li>
+&lt;li>如果在事务中执行插入，那么不要显式地设置&lt;code>writeConcern&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h3 id="示例">示例&lt;/h3>
+&lt;p>&lt;strong>插入的时候未指定主键&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="k">try&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">products&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">insertOne&lt;/span>&lt;span class="p">(&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">item&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">qty&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">15&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">);&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="p">}&lt;/span> &lt;span class="k">catch&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">e&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="nx">print&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">e&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">5&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>返回值：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="nt">&amp;#34;acknowledged&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="nt">&amp;#34;insertedId&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="err">ObjectId(&lt;/span>&lt;span class="s2">&amp;#34;56fc40f9d735c28df206d078&amp;#34;&lt;/span>&lt;span class="err">)&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>插入的时候指定主键&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.products.insertOne&lt;span class="o">({&lt;/span>_id: 10, item: &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>, qty: 15&lt;span class="o">})&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果指定的值为10主键&lt;code>_id&lt;/code>已经存在，这时候插入报类似下面的错误：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln"> 1&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="nt">&amp;#34;index&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="nt">&amp;#34;code&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">11000&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="nt">&amp;#34;errmsg&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: 11.0 }&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="nt">&amp;#34;op&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="nt">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">11&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="nt">&amp;#34;item&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="nt">&amp;#34;qty&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">15&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">10&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="多个文档插入">多个文档插入&lt;/h2>
+&lt;h3 id="定义-1">定义&lt;/h3>
+&lt;p>&lt;strong>&lt;code>db.collection.insertMany()&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>语法：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln">1&lt;/span>&lt;span class="err">db.collection.insertMany(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="err">&amp;lt;document&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="err">&amp;gt;&lt;/span> &lt;span class="p">,&lt;/span> &lt;span class="err">&amp;lt;document&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="err">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="err">...&lt;/span> &lt;span class="p">]&lt;/span>&lt;span class="err">,&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="err">writeConcern:&lt;/span> &lt;span class="err">&amp;lt;document&amp;gt;,&lt;/span>
+&lt;span class="ln">5&lt;/span> &lt;span class="err">ordered:&lt;/span> &lt;span class="err">&amp;lt;boolean&amp;gt;&lt;/span>
+&lt;span class="ln">6&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">7&lt;/span>&lt;span class="err">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>参数：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>参数&lt;/th>
+&lt;th>类型&lt;/th>
+&lt;th>说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>[ &amp;lt;document 1&amp;gt; , &amp;lt;document 2&amp;gt;, ... ]&lt;/code>&lt;/td>
+&lt;td>文档&lt;/td>
+&lt;td>数组，待插入集合的文档列表&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>writeConcern&lt;/code>&lt;/td>
+&lt;td>文档&lt;/td>
+&lt;td>可选。用于指定mongod对写操作的响应&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>ordered&lt;/code>&lt;/td>
+&lt;td>布尔&lt;/td>
+&lt;td>可选。指定mongod有序还是无序插入。默认值是&lt;code>true&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>返回值：&lt;/p>
+&lt;p>包含下列元素的文档：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>acknowledged&lt;/code> - 如果指定了&lt;code>writeConcern&lt;/code>，值为 &lt;code>true&lt;/code> ；如果&lt;code>writeConcern&lt;/code>是disable的，值为&lt;code>false&lt;/code>&lt;/li>
+&lt;li>&lt;code>insertedIds&lt;/code> - 主键数组，也就是各个文档的&lt;code>_id&lt;/code>的值集合&lt;/li>
+&lt;/ul>
+&lt;h3 id="行为-1">行为&lt;/h3>
+&lt;ul>
+&lt;li>执行&lt;code>insertMany()&lt;/code>时，&lt;strong>如果集合（表）不存在，那么会自动创建这个集合&lt;/strong>&lt;/li>
+&lt;li>如果没有显式地给定&lt;code>_id&lt;/code>的值，那么&lt;code>mongod&lt;/code>或者客户端驱动会自动创建一个，并且值具有唯一性。如果插入的文档的&lt;code>_id&lt;/code>重复，则插入失败&lt;/li>
+&lt;li>默认情况下，&lt;code>mongod&lt;/code>按顺序插入。如果&lt;code>ordered&lt;/code>设为false，那么&lt;code>mongod&lt;/code>将以无序（或者按照性能优化重新排序）的方式插入&lt;/li>
+&lt;li>&lt;strong>如果是有序的操作，后一个操作需要等前一个操作完成了再进行&lt;/strong>&lt;/li>
+&lt;li>如果有序操作，当前操作发生错误，那么后面的操作则停止；&lt;strong>如果是无序操作，当前操作失败不影响后续操作进行&lt;/strong>&lt;/li>
+&lt;li>数据库通过&lt;code>maxWriteBatchSize&lt;/code>控制每组最大的写操作次数，如果&lt;code>insertMany&lt;/code>批量插入的时候超过这个值，一般来说客户端驱动会把该组操作分解成多组&lt;/li>
+&lt;/ul>
+&lt;h3 id="示例-1">示例&lt;/h3>
+&lt;p>&lt;strong>插入的时候未指定主键&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="k">try&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">products&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">insertMany&lt;/span>&lt;span class="p">(&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">item&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">qty&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">15&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">item&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;envelope&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">qty&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">20&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">5&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">item&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;stamps&amp;#34;&lt;/span> &lt;span class="p">,&lt;/span> &lt;span class="nx">qty&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">30&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">6&lt;/span> &lt;span class="p">]&lt;/span> &lt;span class="p">);&lt;/span>
+&lt;span class="ln">7&lt;/span>&lt;span class="p">}&lt;/span> &lt;span class="k">catch&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">e&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">8&lt;/span> &lt;span class="nx">print&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">e&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="ln">9&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>返回值：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="nt">&amp;#34;acknowledged&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="nt">&amp;#34;insertedIds&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="err">ObjectId(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="err">)&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">5&lt;/span> &lt;span class="err">ObjectId(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eeb&amp;#34;&lt;/span>&lt;span class="err">)&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">6&lt;/span> &lt;span class="err">ObjectId(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eec&amp;#34;&lt;/span>&lt;span class="err">)&lt;/span>
+&lt;span class="ln">7&lt;/span> &lt;span class="p">]&lt;/span>
+&lt;span class="ln">8&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>插入的时候指定重复主键&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln">1&lt;/span>&lt;span class="err">db.products.insertMany(&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">_id:ObjectId(&lt;/span>&lt;span class="nt">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="err">)&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="err">item:&lt;/span> &lt;span class="nt">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="err">qty:&lt;/span> &lt;span class="err">15&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="err">item:&lt;/span> &lt;span class="nt">&amp;#34;envelope&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="err">qty:&lt;/span> &lt;span class="err">20&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="err">item:&lt;/span> &lt;span class="nt">&amp;#34;stamps&amp;#34;&lt;/span> &lt;span class="p">,&lt;/span> &lt;span class="err">qty:&lt;/span> &lt;span class="err">30&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">5&lt;/span> &lt;span class="p">]&lt;/span> &lt;span class="err">);&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>由于键值为&lt;code>61937128eae4d2a457051eea&lt;/code>的文档已经存在，导致该文档插入失败；又因为&lt;code>ordered&lt;/code>默认值为&lt;code>true&lt;/code>，后续的插入操作停止&lt;/p>
+&lt;p>返回值：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln"> 1&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="nt">&amp;#34;writeErrors&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="nt">&amp;#34;index&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="nt">&amp;#34;code&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">11000&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="nt">&amp;#34;errmsg&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: ObjectId(&amp;#39;61937128eae4d2a457051eea&amp;#39;) }&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="nt">&amp;#34;op&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="nt">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="err">ObjectId(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="err">)&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="nt">&amp;#34;item&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="nt">&amp;#34;qty&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">15&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="p">],&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="nt">&amp;#34;writeConcernErrors&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="p">],&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="nt">&amp;#34;nInserted&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="nt">&amp;#34;nUpserted&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="nt">&amp;#34;nMatched&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="nt">&amp;#34;nModified&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="nt">&amp;#34;nRemoved&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="nt">&amp;#34;upserted&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="p">]&lt;/span>
+&lt;span class="ln">21&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>插入的时候指定重复主键且ordered=false&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln">1&lt;/span>&lt;span class="err">db.products.insertMany(&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">_id:ObjectId(&lt;/span>&lt;span class="nt">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="err">)&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="err">item:&lt;/span> &lt;span class="nt">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="err">qty:&lt;/span> &lt;span class="err">15&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="err">item:&lt;/span> &lt;span class="nt">&amp;#34;envelope&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="err">qty:&lt;/span> &lt;span class="err">20&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="err">item:&lt;/span> &lt;span class="nt">&amp;#34;stamps&amp;#34;&lt;/span> &lt;span class="p">,&lt;/span> &lt;span class="err">qty:&lt;/span> &lt;span class="err">30&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">5&lt;/span> &lt;span class="p">]&lt;/span> &lt;span class="err">,&lt;/span>
+&lt;span class="ln">6&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">ordered:&lt;/span> &lt;span class="err">false&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">);&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>返回值 - 第一条插入失败，后面两条插入成功&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln"> 1&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="nt">&amp;#34;writeErrors&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="nt">&amp;#34;index&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="nt">&amp;#34;code&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">11000&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="nt">&amp;#34;errmsg&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: ObjectId(&amp;#39;61937128eae4d2a457051eea&amp;#39;) }&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="nt">&amp;#34;op&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="nt">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="err">ObjectId(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="err">)&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="nt">&amp;#34;item&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="nt">&amp;#34;qty&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">15&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="p">],&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="nt">&amp;#34;writeConcernErrors&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="p">],&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="nt">&amp;#34;nInserted&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="nt">&amp;#34;nUpserted&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="nt">&amp;#34;nMatched&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="nt">&amp;#34;nModified&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="nt">&amp;#34;nRemoved&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="nt">&amp;#34;upserted&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="p">]&lt;/span>
+&lt;span class="ln">21&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>C Primer Plus读书笔记（三）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</link><pubDate>Wed, 08 Sep 2021 20:14:21 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第九章至第十一章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch09-函数">ch09. 函数&lt;/h2>
 &lt;blockquote>
