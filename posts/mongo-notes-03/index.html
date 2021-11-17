@@ -1,19 +1,19 @@
 <!doctype html><html lang=zh data-figures class=page>
 <head>
-<title>About | Standing on the Shoulder of Giants</title>
+<title>MongoDB学习笔记（三） | Standing on the Shoulder of Giants</title>
 <meta charset=utf-8>
-<meta property="og:title" content="About | Standing on the Shoulder of Giants">
-<meta itemprop=name content="About | Standing on the Shoulder of Giants">
-<meta name=application-name content="About | Standing on the Shoulder of Giants">
+<meta property="og:title" content="MongoDB学习笔记（三） | Standing on the Shoulder of Giants">
+<meta itemprop=name content="MongoDB学习笔记（三） | Standing on the Shoulder of Giants">
+<meta name=application-name content="MongoDB学习笔记（三） | Standing on the Shoulder of Giants">
 <meta property="og:site_name" content="Jonathan Lin">
 <meta name=description content>
 <meta itemprop=description content>
 <meta property="og:description" content>
 <meta name=twitter:description content>
-<base href=https://www.jonathanlin.top/about/>
-<link rel=canonical href=https://www.jonathanlin.top/about/ itemprop=url>
-<meta name=url content="https://www.jonathanlin.top/about/">
-<meta property="og:url" content="https://www.jonathanlin.top/about/">
+<base href=https://www.jonathanlin.top/posts/mongo-notes-03/>
+<link rel=canonical href=https://www.jonathanlin.top/posts/mongo-notes-03/ itemprop=url>
+<meta name=url content="https://www.jonathanlin.top/posts/mongo-notes-03/">
+<meta property="og:url" content="https://www.jonathanlin.top/posts/mongo-notes-03/">
 <meta property="og:locale" content="zh-cn">
 <meta name=language content="Chinese">
 <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -21,22 +21,24 @@
 <script>var _hmt=_hmt||[];(function(){var a=document.createElement("script"),b;a.src="https://hm.baidu.com/hm.js?d60a5d9f17547c322bf9ce50cc9b5954",b=document.getElementsByTagName("script")[0],b.parentNode.insertBefore(a,b)})()</script>
 <meta property="og:locale" content="zh">
 <meta property="og:type" content="article">
-<meta name=description content="我就是我，不一样的烟火！大家好，我是大龄中二青年。
-欢迎来到我的博客。我的博文由读书笔记、经验心得和外文翻译为主，目前我的兴趣方向是golang生态相关。如果你对我的博文感兴趣或者有疑问，请给我留言。如果你对我感兴趣，也请告诉我 😉
- 微信：33718515 邮箱：jonathanlim@yeah.net  ">
+<meta name=description content="删除文档 定义 删除单个文档：db.collection.deleteOne()
+删除多个文档：db.collection.deleteMany()
+语法：
+1db.collection.deleteOne( 2 <filter>, 3 { 4 writeConcern: <document>, …">
 <meta name=twitter:card content="summary">
 <meta name=twitter:creator content>
-<meta name=twitter:title content="About">
-<meta property="og:url" content="https://www.jonathanlin.top/about/">
-<meta property="og:title" content="About">
-<meta property="og:description" content="我就是我，不一样的烟火！大家好，我是大龄中二青年。
-欢迎来到我的博客。我的博文由读书笔记、经验心得和外文翻译为主，目前我的兴趣方向是golang生态相关。如果你对我的博文感兴趣或者有疑问，请给我留言。如果你对我感兴趣，也请告诉我 😉
- 微信：33718515 邮箱：jonathanlim@yeah.net  ">
-<meta property="og:image" content="https://www.jonathanlin.top/">
+<meta name=twitter:title content="MongoDB学习笔记（三）">
+<meta property="og:url" content="https://www.jonathanlin.top/posts/mongo-notes-03/">
+<meta property="og:title" content="MongoDB学习笔记（三）">
+<meta property="og:description" content="删除文档 定义 删除单个文档：db.collection.deleteOne()
+删除多个文档：db.collection.deleteMany()
+语法：
+1db.collection.deleteOne( 2 <filter>, 3 { 4 writeConcern: <document>, …">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/mongodb150.png">
 <link rel=apple-touch-icon sizes=180x180 href=https://www.jonathanlin.top/icons/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=https://www.jonathanlin.top/icons/favicon-32x32.png>
 <link rel=manifest href=https://www.jonathanlin.top/icons/site.webmanifest>
-<link rel=canonical href=https://www.jonathanlin.top/about/>
+<link rel=canonical href=https://www.jonathanlin.top/posts/mongo-notes-03/>
 <link rel=preload href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" as=style crossorigin=anonymous>
 <link rel=preload href=https://www.jonathanlin.top/js/bundle.min.617c4c3549a10c9fe7e1bb91e87f0722f6a285b59e742c7123c755df9fb33530bae76060ebd303966dd0e1c09813e679f8042802b7fd059315ef1345f0429ad2.js as=script integrity="sha512-YXxMNUmhDJ/n4buR6H8HIvaihbWedCxxI8dV35+zNTC652Bg69MDlm3Q4cCYE+Z5+AQoArf9BZMV7xNF8EKa0g==" crossorigin=anonymous>
 <link rel=stylesheet type=text/css href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" crossorigin=anonymous>
@@ -63,7 +65,7 @@
 <a href=https://twitter.com/ class="nav_child nav_item" title=Twitter>Twitter</a>
 </div>
 </div>
-<div class="nav_parent nav_active">
+<div class=nav_parent>
 <a href=https://www.jonathanlin.top/about/ class=nav_item title=About>About </a>
 </div>
 <div class=follow>
@@ -85,34 +87,216 @@
 <main>
 <div class="grid-inverse wrap content">
 <article class=post_content>
-<h1 class=post_title>About</h1>
+<h1 class=post_title>MongoDB学习笔记（三）</h1>
 <div class=post_meta>
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
-Jun 30, 2021</span>
-<span class=post_time> · 1 min read</span>
+Nov 17, 2021</span>
+<span class=post_time> · 2 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/mongodb title=mongodb class="post_tag button button_translucent">mongodb
+</a>
+</span>
 <span class=page_only>&nbsp;·
 <div class=post_share>
 分享到:
-<a href="https://twitter.com/intent/tweet?text=About&url=https%3a%2f%2fwww.jonathanlin.top%2fabout%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
+<a href="https://twitter.com/intent/tweet?text=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%89%ef%bc%89&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-03%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
 </a>
-<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fabout%2f&t=About" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
+<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-03%2f&t=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%89%ef%bc%89" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
 </a>
 <a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
 </a>
-<a href=https://www.jonathanlin.top/about/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
+<a href=https://www.jonathanlin.top/posts/mongo-notes-03/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
 </a>
 </div>
 </span>
 </div>
-<p>我就是我，不一样的烟火！大家好，我是大龄中二青年。</p>
-<p><img src=https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/itsme.jpg alt=itsme></p>
-<p>欢迎来到我的博客。我的博文由读书笔记、经验心得和外文翻译为主，目前我的兴趣方向是golang生态相关。如果你对我的博文感兴趣或者有疑问，请给我留言。如果你对我感兴趣，也请告诉我 😉</p>
+<h2>文章目录</h2>
+<nav id=TableOfContents>
 <ul>
-<li>微信：33718515</li>
-<li>邮箱：jonathanlim@yeah.net</li>
+<li><a href=#删除文档>删除文档</a>
+<ul>
+<li><a href=#定义>定义</a></li>
+<li><a href=#行为>行为</a></li>
+<li><a href=#示例>示例</a></li>
 </ul>
+</li>
+<li><a href=#更新文档>更新文档</a>
+<ul>
+<li><a href=#定义-1>定义</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+<h2 id=删除文档>删除文档</h2>
+<h3 id=定义>定义</h3>
+<p>删除单个文档：<strong><code>db.collection.deleteOne()</code></strong></p>
+<p>删除多个文档：<strong><code>db.collection.deleteMany()</code></strong></p>
+<p>语法：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln> 1</span>db.collection.deleteOne<span class=o>(</span>
+<span class=ln> 2</span>   &lt;filter&gt;,
+<span class=ln> 3</span>   <span class=o>{</span>
+<span class=ln> 4</span>      writeConcern: &lt;document&gt;,
+<span class=ln> 5</span>      collation: &lt;document&gt;,
+<span class=ln> 6</span>      hint: &lt;document<span class=p>|</span>string&gt;        // Available starting in MongoDB 4.4
+<span class=ln> 7</span>   <span class=o>}</span>
+<span class=ln> 8</span><span class=o>)</span>
+<span class=ln> 9</span>
+<span class=ln>10</span>db.collection.deleteMany<span class=o>(</span>
+<span class=ln>11</span>   &lt;filter&gt;,
+<span class=ln>12</span>   <span class=o>{</span>
+<span class=ln>13</span>      writeConcern: &lt;document&gt;,
+<span class=ln>14</span>      collation: &lt;document&gt;
+<span class=ln>15</span>   <span class=o>}</span>
+<span class=ln>16</span><span class=o>)</span>
+</code></pre></div><p>参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filter</code></td>
+<td>文档</td>
+<td>匹配条件。如果匹配条件给定<code>{}</code>，那么删除集合中的第一个文档</td>
+</tr>
+<tr>
+<td><code>writeConcern</code></td>
+<td>文档</td>
+<td>可选。用于指定mongod对写操作的响应</td>
+</tr>
+<tr>
+<td><code>collation</code></td>
+<td>文档</td>
+<td>可选。用于指定字符串匹配规则</td>
+</tr>
+<tr>
+<td><code>hint</code></td>
+<td>文档</td>
+<td>针对单个文档删除的选项。可选。指定按条件匹配时使用的索引。如果指定了一个不存在的索引则会报错</td>
+</tr>
+</tbody>
+</table>
+<p>返回值：</p>
+<p>包含下列元素的文档：</p>
+<ul>
+<li><code>acknowledged</code> - 如果指定了<code>writeConcern</code>，值为 <code>true</code> ；如果<code>writeConcern</code>是disable的，值为<code>false</code></li>
+<li><code>deletedCount</code> - 删除的文档的个数</li>
+</ul>
+<h3 id=行为>行为</h3>
+<ul>
+<li>
+<p><code>db.collection.deleteOne()</code>删除符合匹配条件的第一个文档</p>
+</li>
+<li>
+<p>无法从大小固定的集合（capped collection）上删除文档</p>
+</li>
+<li>
+<p>无法从时序集合（time series collections）中删除文档</p>
+</li>
+<li>
+<p>当<code>db.collection.deleteOne()</code>作用在分片集合上时，匹配条件里必须要包含分片键值或者<code>_id</code>字段</p>
+</li>
+<li>
+<p>如果只是删除单个文档，应该使用<code>deleteOne</code>，而不是使用<code>deleteMany</code></p>
+</li>
+<li>
+<p>指定<code>collation</code>的时候必须指定<code>locale</code>。如果未指定<code>collation</code>，则使用集合默认的<code>collation</code>。<code>collation</code>的格式如下：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln> 1</span>collation: <span class=o>{</span>
+<span class=ln> 2</span>   locale: &lt;string&gt;,
+<span class=ln> 3</span>   caseLevel: &lt;boolean&gt;,
+<span class=ln> 4</span>   caseFirst: &lt;string&gt;,
+<span class=ln> 5</span>   strength: &lt;int&gt;,
+<span class=ln> 6</span>   numericOrdering: &lt;boolean&gt;,
+<span class=ln> 7</span>   alternate: &lt;string&gt;,
+<span class=ln> 8</span>   maxVariable: &lt;string&gt;,
+<span class=ln> 9</span>   backwards: &lt;boolean&gt;
+<span class=ln>10</span><span class=o>}</span>
+</code></pre></div></li>
+</ul>
+<h3 id=示例>示例</h3>
+<p>给定下面的集合：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=p>{</span> <span class=nx>_id</span><span class=o>:</span> <span class=mi>1</span><span class=p>,</span> <span class=nx>category</span><span class=o>:</span> <span class=s2>&#34;café&#34;</span><span class=p>,</span> <span class=nx>status</span><span class=o>:</span> <span class=s2>&#34;A&#34;</span> <span class=p>}</span>
+<span class=ln>2</span><span class=p>{</span> <span class=nx>_id</span><span class=o>:</span> <span class=mi>2</span><span class=p>,</span> <span class=nx>category</span><span class=o>:</span> <span class=s2>&#34;cafe&#34;</span><span class=p>,</span> <span class=nx>status</span><span class=o>:</span> <span class=s2>&#34;a&#34;</span> <span class=p>}</span>
+<span class=ln>3</span><span class=p>{</span> <span class=nx>_id</span><span class=o>:</span> <span class=mi>3</span><span class=p>,</span> <span class=nx>category</span><span class=o>:</span> <span class=s2>&#34;cafE&#34;</span><span class=p>,</span> <span class=nx>status</span><span class=o>:</span> <span class=s2>&#34;a&#34;</span> <span class=p>}</span>
+</code></pre></div><p><strong>单个删除时指定<code>collation</code></strong></p>
+<p>下面的语句将删除<code>_id</code>为1的文档：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=nx>db</span><span class=p>.</span><span class=nx>myColl</span><span class=p>.</span><span class=nx>deleteOne</span><span class=p>(</span>
+<span class=ln>2</span>   <span class=p>{</span> <span class=nx>category</span><span class=o>:</span> <span class=s2>&#34;cafe&#34;</span><span class=p>,</span> <span class=nx>status</span><span class=o>:</span> <span class=s2>&#34;A&#34;</span> <span class=p>},</span>
+<span class=ln>3</span>   <span class=p>{</span> <span class=nx>collation</span><span class=o>:</span> <span class=p>{</span> <span class=nx>locale</span><span class=o>:</span> <span class=s2>&#34;fr&#34;</span><span class=p>,</span> <span class=nx>strength</span><span class=o>:</span> <span class=mi>1</span> <span class=p>}</span> <span class=p>}</span>
+<span class=ln>4</span><span class=p>)</span>
+</code></pre></div><p><strong>多个删除时指定<code>collation</code></strong></p>
+<p>下面的语句将删除所有的文档。如果<code>collation</code>中通过<code>caseLevel</code>指明大小写敏感，这同上就删除第一个文档</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=nx>db</span><span class=p>.</span><span class=nx>myColl</span><span class=p>.</span><span class=nx>deleteMany</span><span class=p>(</span>
+<span class=ln>2</span>   <span class=p>{</span> <span class=nx>category</span><span class=o>:</span> <span class=s2>&#34;cafe&#34;</span><span class=p>,</span> <span class=nx>status</span><span class=o>:</span> <span class=s2>&#34;A&#34;</span> <span class=p>},</span>
+<span class=ln>3</span>   <span class=p>{</span> <span class=nx>collation</span><span class=o>:</span> <span class=p>{</span> <span class=nx>locale</span><span class=o>:</span> <span class=s2>&#34;fr&#34;</span><span class=p>,</span> <span class=nx>strength</span><span class=o>:</span> <span class=mi>1</span> <span class=p>}</span> <span class=p>}</span>
+<span class=ln>4</span><span class=p>)</span>
+</code></pre></div><h2 id=更新文档>更新文档</h2>
+<h3 id=定义-1>定义</h3>
+<p><strong><code>db.collection.updateOne(filter, update, options)</code></strong></p>
+<p>语法：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln> 1</span><span class=nx>db</span><span class=p>.</span><span class=nx>collection</span><span class=p>.</span><span class=nx>updateOne</span><span class=p>(</span>
+<span class=ln> 2</span>   <span class=o>&lt;</span><span class=nx>filter</span><span class=o>&gt;</span><span class=p>,</span>
+<span class=ln> 3</span>   <span class=o>&lt;</span><span class=nx>update</span><span class=o>&gt;</span><span class=p>,</span>
+<span class=ln> 4</span>   <span class=p>{</span>
+<span class=ln> 5</span>     <span class=nx>upsert</span><span class=o>:</span> <span class=o>&lt;</span><span class=kr>boolean</span><span class=o>&gt;</span><span class=p>,</span>
+<span class=ln> 6</span>     <span class=nx>writeConcern</span><span class=o>:</span> <span class=o>&lt;</span><span class=nb>document</span><span class=o>&gt;</span><span class=p>,</span>
+<span class=ln> 7</span>     <span class=nx>collation</span><span class=o>:</span> <span class=o>&lt;</span><span class=nb>document</span><span class=o>&gt;</span><span class=p>,</span>
+<span class=ln> 8</span>     <span class=nx>arrayFilters</span><span class=o>:</span> <span class=p>[</span> <span class=o>&lt;</span><span class=nx>filterdocument1</span><span class=o>&gt;</span><span class=p>,</span> <span class=p>...</span> <span class=p>],</span>
+<span class=ln> 9</span>     <span class=nx>hint</span><span class=o>:</span>  <span class=o>&lt;</span><span class=nb>document</span><span class=o>|</span><span class=nx>string</span><span class=o>&gt;</span>        <span class=c1>// Available starting in MongoDB 4.2.1
+</span><span class=ln>10</span><span class=c1></span>   <span class=p>}</span>
+<span class=ln>11</span><span class=p>)</span>
+</code></pre></div><p>参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filter</code></td>
+<td>文档</td>
+<td>匹配条件。如果匹配条件给定<code>{}</code>，那么更新集合中的第一个文档</td>
+</tr>
+<tr>
+<td><code>update</code></td>
+<td>文档或者聚合管道</td>
+<td>可以是更新后的文档、聚合管道</td>
+</tr>
+<tr>
+<td><code>upsert</code></td>
+<td>布尔值</td>
+<td>可选。默认为false，即在没有匹配到文档的时候不会以新的文档插入</td>
+</tr>
+<tr>
+<td><code>writeConcern</code></td>
+<td>文档</td>
+<td>可选。用于指定mongod对写操作的响应</td>
+</tr>
+<tr>
+<td><code>collation</code></td>
+<td>文档</td>
+<td>可选。用于指定字符串匹配规则，和上面提到的删除的操作类似，也是用于扩展匹配规则</td>
+</tr>
+<tr>
+<td><code>arrayFilters</code></td>
+<td>数组</td>
+<td></td>
+</tr>
+<tr>
+<td><code>hint</code></td>
+<td>文档</td>
+<td>针对单个文档删除的选项。可选。指定按条件匹配时使用的索引。如果指定了一个不存在的索引则会报错</td>
+</tr>
+</tbody>
+</table>
 <style>.utterances{max-width:100%}</style>
+<script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
 </article>
 <aside class=sidebar>
 <section class=sidebar_inner>
@@ -126,9 +310,6 @@ Jun 30, 2021</span>
 <a href=https://www.jonathanlin.top/about/ class="button mt-1" role=button title=阅读更多>阅读更多</a>
 <h2 class=mt-4>最新文章</h2>
 <ul class=flex-column>
-<li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-03/ class=nav-link title=MongoDB学习笔记（三）>MongoDB学习笔记（三）</a>
-</li>
 <li>
 <a href=https://www.jonathanlin.top/posts/mongo-notes-02/ class=nav-link title=MongoDB学习笔记（二）>MongoDB学习笔记（二）</a>
 </li>
@@ -149,6 +330,9 @@ Jun 30, 2021</span>
 </li>
 <li>
 <a href=https://www.jonathanlin.top/posts/go-concurrency-best-practice/ class=nav-link title="[译]Go Concurrency Best Practice">[译]Go Concurrency Best Practice</a>
+</li>
+<li>
+<a href=https://www.jonathanlin.top/posts/concurrency-trap-2-incomplete-work/ class=nav-link title="[译]Concurrency Trap #2: Incomplete Work">[译]Concurrency Trap #2: Incomplete Work</a>
 </li>
 </ul>
 <div>
