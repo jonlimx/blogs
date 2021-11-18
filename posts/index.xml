@@ -139,7 +139,7 @@
 &lt;tr>
 &lt;td>&lt;code>update&lt;/code>&lt;/td>
 &lt;td>文档或者聚合管道&lt;/td>
-&lt;td>可以是更新后的文档、聚合管道&lt;/td>
+&lt;td>可以是带有&lt;a href="#%E6%93%8D%E4%BD%9C%E8%A1%A8%E8%BE%BE%E5%BC%8F">更新操作表达式&lt;/a>的文档，或者是聚合管道&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;code>upsert&lt;/code>&lt;/td>
@@ -159,7 +159,7 @@
 &lt;tr>
 &lt;td>&lt;code>arrayFilters&lt;/code>&lt;/td>
 &lt;td>数组&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>可选。用于匹配要更新的文档下的数组元素&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;code>hint&lt;/code>&lt;/td>
@@ -167,17 +167,99 @@
 &lt;td>针对单个文档删除的选项。可选。指定按条件匹配时使用的索引。如果指定了一个不存在的索引则会报错&lt;/td>
 &lt;/tr>
 &lt;/tbody>
-&lt;/table></description></item><item><title>MongoDB学习笔记（二）</title><link>https://www.jonathanlin.top/posts/mongo-notes-02/</link><pubDate>Tue, 16 Nov 2021 15:03:57 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-02/</guid><description>
+&lt;/table>
+&lt;p>返回值：&lt;/p>
+&lt;p>包含下列元素的文档：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>matchedCount&lt;/code> - 匹配到的文档数&lt;/li>
+&lt;li>&lt;code>modifiedCount&lt;/code> - 更新的文档数&lt;/li>
+&lt;li>&lt;code>upsertedId&lt;/code> - 新插入的文档的&lt;code>_id&lt;/code>&lt;/li>
+&lt;li>&lt;code>acknowledgeed&lt;/code> - 如果指定了&lt;code>writeConcern&lt;/code>，值为 &lt;code>true&lt;/code> ；如果&lt;code>writeConcern&lt;/code>是disable的，值为&lt;code>false&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h3 id="操作表达式">操作表达式&lt;/h3>
+&lt;p>更新操作表达式由操作符和操作对象组成，具体格式如下：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">operator1&lt;/span>&lt;span class="o">&amp;gt;:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">field1&lt;/span>&lt;span class="o">&amp;gt;:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">value1&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">...&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">operator2&lt;/span>&lt;span class="o">&amp;gt;:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">field2&lt;/span>&lt;span class="o">&amp;gt;:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">value2&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">...&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="p">...&lt;/span>
+&lt;span class="ln">5&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>注意：更新操作符在处理操作对象的时候，不同的版本顺序不一样&lt;/p>
+&lt;ul>
+&lt;li>MongoDB 5.0以及之后，操作符在处理文档字段的时候，如果是字符串则按照字典顺序，如果是数字类型则按照数字顺序&lt;/li>
+&lt;li>MongoDB 4.4以及之前，操作符都是按照字典顺序来处理&lt;/li>
+&lt;/ul>
+&lt;p>例如，对于下面的操作表达式：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">$set&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;a.2&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">new&lt;/span> &lt;span class="nx">value&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;a.10&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">new&lt;/span> &lt;span class="nx">value&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>MongoDB 5.0以及之后，先处理&lt;code>a.2&lt;/code>再处理&lt;code>a.10&lt;/code>&lt;/li>
+&lt;li>MongoDB 4.4以及之前，先处理&lt;code>a.10&lt;/code>再处理&lt;code>a.2&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h4 id="字段操作符">字段操作符&lt;/h4>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>操作符名称&lt;/th>
+&lt;th>描述&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>$currentDate&lt;/code>&lt;/td>
+&lt;td>将字段的值设置为当前日期时间或者时间戳&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$inc&lt;/code>&lt;/td>
+&lt;td>字段的值加上或者减去给定的值&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$min&lt;/code>&lt;/td>
+&lt;td>对字段复制，值为给定的值和当前值较小的那个&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$max&lt;/code>&lt;/td>
+&lt;td>对字段复制，值为给定的值和当前值较大的那个&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$mul&lt;/code>&lt;/td>
+&lt;td>字段的值乘以给定的值&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$rename&lt;/code>&lt;/td>
+&lt;td>对字段名称重命名&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$set&lt;/code>&lt;/td>
+&lt;td>对字段赋值。这里是可以替换整个文档，也可以设置文档下某个字段的值&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$setOnInsert&lt;/code>&lt;/td>
+&lt;td>如果更新的时候匹配不到现有文档而发生插入操作的时候，给对应的字段赋值&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$unset&lt;/code>&lt;/td>
+&lt;td>从文档中删除字段&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="行为-1">行为&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>执行update操作的用户需要有update，find和insert的权限&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>db.collection.updateOne&lt;/code>只更新匹配到的文档里的第一个&lt;/p>
+&lt;/li>
+&lt;/ul></description></item><item><title>MongoDB学习笔记（二）</title><link>https://www.jonathanlin.top/posts/mongo-notes-02/</link><pubDate>Tue, 16 Nov 2021 15:03:57 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-02/</guid><description>
 &lt;h2 id="单个文档插入操作">单个文档插入操作&lt;/h2>
 &lt;h3 id="定义">定义&lt;/h3>
 &lt;p>&lt;strong>&lt;code>db.collection.insertOne()&lt;/code>&lt;/strong>&lt;/p>
 &lt;p>语法：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.collection.insertOne&lt;span class="o">(&lt;/span>
-&lt;span class="ln">2&lt;/span> &amp;lt;document&amp;gt;,
-&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span>
-&lt;span class="ln">4&lt;/span> writeConcern: &amp;lt;document&amp;gt;
-&lt;span class="ln">5&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">6&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">collection&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">insertOne&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">document&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="nx">writeConcern&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">document&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;span class="ln">5&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">6&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>参数：&lt;/p>
 &lt;table>
 &lt;thead>
@@ -220,34 +302,34 @@
 &lt;span class="ln">4&lt;/span> &lt;span class="nx">print&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">e&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln">5&lt;/span>&lt;span class="p">};&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>返回值：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="nt">&amp;#34;acknowledged&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">3&lt;/span> &lt;span class="nt">&amp;#34;insertedId&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="err">ObjectId(&lt;/span>&lt;span class="s2">&amp;#34;56fc40f9d735c28df206d078&amp;#34;&lt;/span>&lt;span class="err">)&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="s2">&amp;#34;acknowledged&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="s2">&amp;#34;insertedId&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="nx">ObjectId&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;56fc40f9d735c28df206d078&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">4&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>插入的时候指定主键&lt;/strong>&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.products.insertOne&lt;span class="o">({&lt;/span>_id: 10, item: &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>, qty: 15&lt;span class="o">})&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">products&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">insertOne&lt;/span>&lt;span class="p">({&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">item&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">qty&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">15&lt;/span>&lt;span class="p">})&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>如果指定的值为10主键&lt;code>_id&lt;/code>已经存在，这时候插入报类似下面的错误：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln"> 1&lt;/span>&lt;span class="p">{&lt;/span>
-&lt;span class="ln"> 2&lt;/span> &lt;span class="nt">&amp;#34;index&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 3&lt;/span> &lt;span class="nt">&amp;#34;code&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">11000&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 4&lt;/span> &lt;span class="nt">&amp;#34;errmsg&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: 11.0 }&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 5&lt;/span> &lt;span class="nt">&amp;#34;op&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;span class="ln"> 6&lt;/span> &lt;span class="nt">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">11&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 7&lt;/span> &lt;span class="nt">&amp;#34;item&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 8&lt;/span> &lt;span class="nt">&amp;#34;qty&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">15&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="s2">&amp;#34;index&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="s2">&amp;#34;code&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">11000&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="s2">&amp;#34;errmsg&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: 11.0 }&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="s2">&amp;#34;op&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">11&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="s2">&amp;#34;item&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="s2">&amp;#34;qty&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">15&lt;/span>
 &lt;span class="ln"> 9&lt;/span> &lt;span class="p">}&lt;/span>
 &lt;span class="ln">10&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="多个文档插入">多个文档插入&lt;/h2>
 &lt;h3 id="定义-1">定义&lt;/h3>
 &lt;p>&lt;strong>&lt;code>db.collection.insertMany()&lt;/code>&lt;/strong>&lt;/p>
 &lt;p>语法：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.collection.insertMany&lt;span class="o">(&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="o">[&lt;/span> &amp;lt;document 1&amp;gt; , &amp;lt;document 2&amp;gt;, ... &lt;span class="o">]&lt;/span>,
-&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span>
-&lt;span class="ln">4&lt;/span> writeConcern: &amp;lt;document&amp;gt;,
-&lt;span class="ln">5&lt;/span> ordered: &amp;lt;boolean&amp;gt;
-&lt;span class="ln">6&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">7&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">collection&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">insertMany&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">document&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">,&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">document&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">...&lt;/span> &lt;span class="p">],&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="nx">writeConcern&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">document&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">5&lt;/span> &lt;span class="nx">ordered&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kr">boolean&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;span class="ln">6&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">7&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>参数：&lt;/p>
 &lt;table>
 &lt;thead>
@@ -302,71 +384,71 @@
 &lt;span class="ln">8&lt;/span> &lt;span class="nx">print&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">e&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln">9&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>返回值：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="nt">&amp;#34;acknowledged&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">3&lt;/span> &lt;span class="nt">&amp;#34;insertedIds&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
-&lt;span class="ln">4&lt;/span> &lt;span class="err">ObjectId(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="err">)&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">5&lt;/span> &lt;span class="err">ObjectId(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eeb&amp;#34;&lt;/span>&lt;span class="err">)&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">6&lt;/span> &lt;span class="err">ObjectId(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eec&amp;#34;&lt;/span>&lt;span class="err">)&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="s2">&amp;#34;acknowledged&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="s2">&amp;#34;insertedIds&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="nx">ObjectId&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;span class="ln">5&lt;/span> &lt;span class="nx">ObjectId&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eeb&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;span class="ln">6&lt;/span> &lt;span class="nx">ObjectId&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eec&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">7&lt;/span> &lt;span class="p">]&lt;/span>
 &lt;span class="ln">8&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>插入的时候指定重复主键&lt;/strong>&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.products.insertMany&lt;span class="o">(&lt;/span> &lt;span class="o">[&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span>_id:ObjectId&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>,item: &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>, qty: &lt;span class="m">15&lt;/span> &lt;span class="o">}&lt;/span>,
-&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span> item: &lt;span class="s2">&amp;#34;envelope&amp;#34;&lt;/span>, qty: &lt;span class="m">20&lt;/span> &lt;span class="o">}&lt;/span>,
-&lt;span class="ln">4&lt;/span> &lt;span class="o">{&lt;/span> item: &lt;span class="s2">&amp;#34;stamps&amp;#34;&lt;/span> , qty: &lt;span class="m">30&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">5&lt;/span> &lt;span class="o">]&lt;/span> &lt;span class="o">)&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">products&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">insertMany&lt;/span>&lt;span class="p">(&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="nx">ObjectId&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="nx">item&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">qty&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">15&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">item&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;envelope&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">qty&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">20&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">item&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;stamps&amp;#34;&lt;/span> &lt;span class="p">,&lt;/span> &lt;span class="nx">qty&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">30&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">5&lt;/span> &lt;span class="p">]&lt;/span> &lt;span class="p">);&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>由于键值为&lt;code>61937128eae4d2a457051eea&lt;/code>的文档已经存在，导致该文档插入失败；又因为&lt;code>ordered&lt;/code>默认值为&lt;code>true&lt;/code>，后续的插入操作停止&lt;/p>
 &lt;p>返回值：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln"> 1&lt;/span>&lt;span class="p">{&lt;/span>
-&lt;span class="ln"> 2&lt;/span> &lt;span class="nt">&amp;#34;writeErrors&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="s2">&amp;#34;writeErrors&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>
 &lt;span class="ln"> 3&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;span class="ln"> 4&lt;/span> &lt;span class="nt">&amp;#34;index&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 5&lt;/span> &lt;span class="nt">&amp;#34;code&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">11000&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 6&lt;/span> &lt;span class="nt">&amp;#34;errmsg&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: ObjectId(&amp;#39;61937128eae4d2a457051eea&amp;#39;) }&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 7&lt;/span> &lt;span class="nt">&amp;#34;op&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;span class="ln"> 8&lt;/span> &lt;span class="nt">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="err">ObjectId(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="err">)&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 9&lt;/span> &lt;span class="nt">&amp;#34;item&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">10&lt;/span> &lt;span class="nt">&amp;#34;qty&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">15&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="s2">&amp;#34;index&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="s2">&amp;#34;code&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">11000&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="s2">&amp;#34;errmsg&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: ObjectId(&amp;#39;61937128eae4d2a457051eea&amp;#39;) }&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="s2">&amp;#34;op&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="nx">ObjectId&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="s2">&amp;#34;item&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="s2">&amp;#34;qty&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">15&lt;/span>
 &lt;span class="ln">11&lt;/span> &lt;span class="p">}&lt;/span>
 &lt;span class="ln">12&lt;/span> &lt;span class="p">}&lt;/span>
 &lt;span class="ln">13&lt;/span> &lt;span class="p">],&lt;/span>
-&lt;span class="ln">14&lt;/span> &lt;span class="nt">&amp;#34;writeConcernErrors&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="p">],&lt;/span>
-&lt;span class="ln">15&lt;/span> &lt;span class="nt">&amp;#34;nInserted&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">16&lt;/span> &lt;span class="nt">&amp;#34;nUpserted&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">17&lt;/span> &lt;span class="nt">&amp;#34;nMatched&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">18&lt;/span> &lt;span class="nt">&amp;#34;nModified&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">19&lt;/span> &lt;span class="nt">&amp;#34;nRemoved&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">20&lt;/span> &lt;span class="nt">&amp;#34;upserted&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="p">]&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="s2">&amp;#34;writeConcernErrors&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="p">],&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="s2">&amp;#34;nInserted&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="s2">&amp;#34;nUpserted&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="s2">&amp;#34;nMatched&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="s2">&amp;#34;nModified&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="s2">&amp;#34;nRemoved&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="s2">&amp;#34;upserted&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="p">]&lt;/span>
 &lt;span class="ln">21&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>插入的时候指定重复主键且ordered=false&lt;/strong>&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>db.products.insertMany&lt;span class="o">(&lt;/span> &lt;span class="o">[&lt;/span>
-&lt;span class="ln">2&lt;/span> &lt;span class="o">{&lt;/span>_id:ObjectId&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>,item: &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>, qty: &lt;span class="m">15&lt;/span> &lt;span class="o">}&lt;/span>,
-&lt;span class="ln">3&lt;/span> &lt;span class="o">{&lt;/span> item: &lt;span class="s2">&amp;#34;envelope&amp;#34;&lt;/span>, qty: &lt;span class="m">20&lt;/span> &lt;span class="o">}&lt;/span>,
-&lt;span class="ln">4&lt;/span> &lt;span class="o">{&lt;/span> item: &lt;span class="s2">&amp;#34;stamps&amp;#34;&lt;/span> , qty: &lt;span class="m">30&lt;/span> &lt;span class="o">}&lt;/span>
-&lt;span class="ln">5&lt;/span> &lt;span class="o">]&lt;/span> ,
-&lt;span class="ln">6&lt;/span> &lt;span class="o">{&lt;/span>ordered: false&lt;span class="o">})&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">products&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">insertMany&lt;/span>&lt;span class="p">(&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="nx">ObjectId&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="nx">item&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">qty&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">15&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">item&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;envelope&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">qty&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">20&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">item&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;stamps&amp;#34;&lt;/span> &lt;span class="p">,&lt;/span> &lt;span class="nx">qty&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">30&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">5&lt;/span> &lt;span class="p">]&lt;/span> &lt;span class="p">,&lt;/span>
+&lt;span class="ln">6&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">ordered&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kc">false&lt;/span>&lt;span class="p">});&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>返回值 - 第一条插入失败，后面两条插入成功&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="ln"> 1&lt;/span>&lt;span class="p">{&lt;/span>
-&lt;span class="ln"> 2&lt;/span> &lt;span class="nt">&amp;#34;writeErrors&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="s2">&amp;#34;writeErrors&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>
 &lt;span class="ln"> 3&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;span class="ln"> 4&lt;/span> &lt;span class="nt">&amp;#34;index&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 5&lt;/span> &lt;span class="nt">&amp;#34;code&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">11000&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 6&lt;/span> &lt;span class="nt">&amp;#34;errmsg&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: ObjectId(&amp;#39;61937128eae4d2a457051eea&amp;#39;) }&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 7&lt;/span> &lt;span class="nt">&amp;#34;op&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;span class="ln"> 8&lt;/span> &lt;span class="nt">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="err">ObjectId(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="err">)&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln"> 9&lt;/span> &lt;span class="nt">&amp;#34;item&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">10&lt;/span> &lt;span class="nt">&amp;#34;qty&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">15&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="s2">&amp;#34;index&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="s2">&amp;#34;code&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">11000&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="s2">&amp;#34;errmsg&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: ObjectId(&amp;#39;61937128eae4d2a457051eea&amp;#39;) }&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="s2">&amp;#34;op&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="nx">ObjectId&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;61937128eae4d2a457051eea&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="s2">&amp;#34;item&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;card&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="s2">&amp;#34;qty&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">15&lt;/span>
 &lt;span class="ln">11&lt;/span> &lt;span class="p">}&lt;/span>
 &lt;span class="ln">12&lt;/span> &lt;span class="p">}&lt;/span>
 &lt;span class="ln">13&lt;/span> &lt;span class="p">],&lt;/span>
-&lt;span class="ln">14&lt;/span> &lt;span class="nt">&amp;#34;writeConcernErrors&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="p">],&lt;/span>
-&lt;span class="ln">15&lt;/span> &lt;span class="nt">&amp;#34;nInserted&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">16&lt;/span> &lt;span class="nt">&amp;#34;nUpserted&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">17&lt;/span> &lt;span class="nt">&amp;#34;nMatched&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">18&lt;/span> &lt;span class="nt">&amp;#34;nModified&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">19&lt;/span> &lt;span class="nt">&amp;#34;nRemoved&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">20&lt;/span> &lt;span class="nt">&amp;#34;upserted&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="p">]&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="s2">&amp;#34;writeConcernErrors&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="p">],&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="s2">&amp;#34;nInserted&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="s2">&amp;#34;nUpserted&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="s2">&amp;#34;nMatched&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="s2">&amp;#34;nModified&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="s2">&amp;#34;nRemoved&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="s2">&amp;#34;upserted&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="p">]&lt;/span>
 &lt;span class="ln">21&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div></description></item><item><title>C Primer Plus读书笔记（三）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</link><pubDate>Wed, 08 Sep 2021 20:14:21 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第九章至第十一章读书笔记，持续更新中。&lt;/em>&lt;/p>

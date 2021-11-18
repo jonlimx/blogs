@@ -122,6 +122,8 @@ Nov 17, 2021</span>
 <li><a href=#更新文档>更新文档</a>
 <ul>
 <li><a href=#定义-1>定义</a></li>
+<li><a href=#操作表达式>操作表达式</a></li>
+<li><a href=#行为-1>行为</a></li>
 </ul>
 </li>
 </ul>
@@ -266,7 +268,7 @@ Nov 17, 2021</span>
 <tr>
 <td><code>update</code></td>
 <td>文档或者聚合管道</td>
-<td>可以是更新后的文档、聚合管道</td>
+<td>可以是带有<a href=#%E6%93%8D%E4%BD%9C%E8%A1%A8%E8%BE%BE%E5%BC%8F>更新操作表达式</a>的文档，或者是聚合管道</td>
 </tr>
 <tr>
 <td><code>upsert</code></td>
@@ -286,7 +288,7 @@ Nov 17, 2021</span>
 <tr>
 <td><code>arrayFilters</code></td>
 <td>数组</td>
-<td></td>
+<td>可选。用于匹配要更新的文档下的数组元素</td>
 </tr>
 <tr>
 <td><code>hint</code></td>
@@ -295,6 +297,88 @@ Nov 17, 2021</span>
 </tr>
 </tbody>
 </table>
+<p>返回值：</p>
+<p>包含下列元素的文档：</p>
+<ul>
+<li><code>matchedCount</code> - 匹配到的文档数</li>
+<li><code>modifiedCount</code> - 更新的文档数</li>
+<li><code>upsertedId</code> - 新插入的文档的<code>_id</code></li>
+<li><code>acknowledgeed</code> - 如果指定了<code>writeConcern</code>，值为 <code>true</code> ；如果<code>writeConcern</code>是disable的，值为<code>false</code></li>
+</ul>
+<h3 id=操作表达式>操作表达式</h3>
+<p>更新操作表达式由操作符和操作对象组成，具体格式如下：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=p>{</span>
+<span class=ln>2</span>   <span class=o>&lt;</span><span class=nx>operator1</span><span class=o>&gt;:</span> <span class=p>{</span> <span class=o>&lt;</span><span class=nx>field1</span><span class=o>&gt;:</span> <span class=o>&lt;</span><span class=nx>value1</span><span class=o>&gt;</span><span class=p>,</span> <span class=p>...</span> <span class=p>},</span>
+<span class=ln>3</span>   <span class=o>&lt;</span><span class=nx>operator2</span><span class=o>&gt;:</span> <span class=p>{</span> <span class=o>&lt;</span><span class=nx>field2</span><span class=o>&gt;:</span> <span class=o>&lt;</span><span class=nx>value2</span><span class=o>&gt;</span><span class=p>,</span> <span class=p>...</span> <span class=p>},</span>
+<span class=ln>4</span>   <span class=p>...</span>
+<span class=ln>5</span><span class=p>}</span>
+</code></pre></div><p>注意：更新操作符在处理操作对象的时候，不同的版本顺序不一样</p>
+<ul>
+<li>MongoDB 5.0以及之后，操作符在处理文档字段的时候，如果是字符串则按照字典顺序，如果是数字类型则按照数字顺序</li>
+<li>MongoDB 4.4以及之前，操作符都是按照字典顺序来处理</li>
+</ul>
+<p>例如，对于下面的操作表达式：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=p>{</span> <span class=nx>$set</span><span class=o>:</span> <span class=p>{</span> <span class=s2>&#34;a.2&#34;</span><span class=o>:</span> <span class=o>&lt;</span><span class=k>new</span> <span class=nx>value</span><span class=o>&gt;</span><span class=p>,</span> <span class=s2>&#34;a.10&#34;</span><span class=o>:</span> <span class=o>&lt;</span><span class=k>new</span> <span class=nx>value</span><span class=o>&gt;</span><span class=p>,</span> <span class=p>}</span> <span class=p>}</span>
+</code></pre></div><ul>
+<li>MongoDB 5.0以及之后，先处理<code>a.2</code>再处理<code>a.10</code></li>
+<li>MongoDB 4.4以及之前，先处理<code>a.10</code>再处理<code>a.2</code></li>
+</ul>
+<h4 id=字段操作符>字段操作符</h4>
+<table>
+<thead>
+<tr>
+<th>操作符名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$currentDate</code></td>
+<td>将字段的值设置为当前日期时间或者时间戳</td>
+</tr>
+<tr>
+<td><code>$inc</code></td>
+<td>字段的值加上或者减去给定的值</td>
+</tr>
+<tr>
+<td><code>$min</code></td>
+<td>对字段复制，值为给定的值和当前值较小的那个</td>
+</tr>
+<tr>
+<td><code>$max</code></td>
+<td>对字段复制，值为给定的值和当前值较大的那个</td>
+</tr>
+<tr>
+<td><code>$mul</code></td>
+<td>字段的值乘以给定的值</td>
+</tr>
+<tr>
+<td><code>$rename</code></td>
+<td>对字段名称重命名</td>
+</tr>
+<tr>
+<td><code>$set</code></td>
+<td>对字段赋值。这里是可以替换整个文档，也可以设置文档下某个字段的值</td>
+</tr>
+<tr>
+<td><code>$setOnInsert</code></td>
+<td>如果更新的时候匹配不到现有文档而发生插入操作的时候，给对应的字段赋值</td>
+</tr>
+<tr>
+<td><code>$unset</code></td>
+<td>从文档中删除字段</td>
+</tr>
+</tbody>
+</table>
+<h3 id=行为-1>行为</h3>
+<ul>
+<li>
+<p>执行update操作的用户需要有update，find和insert的权限</p>
+</li>
+<li>
+<p><code>db.collection.updateOne</code>只更新匹配到的文档里的第一个</p>
+</li>
+</ul>
 <style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
 </article>

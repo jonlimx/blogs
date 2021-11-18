@@ -132,12 +132,12 @@ Nov 16, 2021</span>
 <h3 id=定义>定义</h3>
 <p><strong><code>db.collection.insertOne()</code></strong></p>
 <p>语法：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.collection.insertOne<span class=o>(</span>
-<span class=ln>2</span>   &lt;document&gt;,
-<span class=ln>3</span>   <span class=o>{</span>
-<span class=ln>4</span>      writeConcern: &lt;document&gt;
-<span class=ln>5</span>   <span class=o>}</span>
-<span class=ln>6</span><span class=o>)</span>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=nx>db</span><span class=p>.</span><span class=nx>collection</span><span class=p>.</span><span class=nx>insertOne</span><span class=p>(</span>
+<span class=ln>2</span>   <span class=o>&lt;</span><span class=nb>document</span><span class=o>&gt;</span><span class=p>,</span>
+<span class=ln>3</span>   <span class=p>{</span>
+<span class=ln>4</span>      <span class=nx>writeConcern</span><span class=o>:</span> <span class=o>&lt;</span><span class=nb>document</span><span class=o>&gt;</span>
+<span class=ln>5</span>   <span class=p>}</span>
+<span class=ln>6</span><span class=p>)</span>
 </code></pre></div><p>参数：</p>
 <table>
 <thead>
@@ -180,34 +180,34 @@ Nov 16, 2021</span>
 <span class=ln>4</span>   <span class=nx>print</span> <span class=p>(</span><span class=nx>e</span><span class=p>);</span>
 <span class=ln>5</span><span class=p>};</span>
 </code></pre></div><p>返回值：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=ln>1</span><span class=p>{</span>
-<span class=ln>2</span>   <span class=nt>&#34;acknowledged&#34;</span> <span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
-<span class=ln>3</span>   <span class=nt>&#34;insertedId&#34;</span> <span class=p>:</span> <span class=err>ObjectId(</span><span class=s2>&#34;56fc40f9d735c28df206d078&#34;</span><span class=err>)</span>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=p>{</span>
+<span class=ln>2</span>   <span class=s2>&#34;acknowledged&#34;</span> <span class=o>:</span> <span class=kc>true</span><span class=p>,</span>
+<span class=ln>3</span>   <span class=s2>&#34;insertedId&#34;</span> <span class=o>:</span> <span class=nx>ObjectId</span><span class=p>(</span><span class=s2>&#34;56fc40f9d735c28df206d078&#34;</span><span class=p>)</span>
 <span class=ln>4</span><span class=p>}</span>
 </code></pre></div><p><strong>插入的时候指定主键</strong></p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.products.insertOne<span class=o>({</span>_id: 10, item: <span class=s2>&#34;card&#34;</span>, qty: 15<span class=o>})</span>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=nx>db</span><span class=p>.</span><span class=nx>products</span><span class=p>.</span><span class=nx>insertOne</span><span class=p>({</span><span class=nx>_id</span><span class=o>:</span> <span class=mi>10</span><span class=p>,</span> <span class=nx>item</span><span class=o>:</span> <span class=s2>&#34;card&#34;</span><span class=p>,</span> <span class=nx>qty</span><span class=o>:</span> <span class=mi>15</span><span class=p>})</span>
 </code></pre></div><p>如果指定的值为10主键<code>_id</code>已经存在，这时候插入报类似下面的错误：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=ln> 1</span><span class=p>{</span>
-<span class=ln> 2</span>	<span class=nt>&#34;index&#34;</span> <span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
-<span class=ln> 3</span>	<span class=nt>&#34;code&#34;</span> <span class=p>:</span> <span class=mi>11000</span><span class=p>,</span>
-<span class=ln> 4</span>	<span class=nt>&#34;errmsg&#34;</span> <span class=p>:</span> <span class=s2>&#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: 11.0 }&#34;</span><span class=p>,</span>
-<span class=ln> 5</span>	<span class=nt>&#34;op&#34;</span> <span class=p>:</span> <span class=p>{</span>
-<span class=ln> 6</span>		<span class=nt>&#34;_id&#34;</span> <span class=p>:</span> <span class=mi>11</span><span class=p>,</span>
-<span class=ln> 7</span>		<span class=nt>&#34;item&#34;</span> <span class=p>:</span> <span class=s2>&#34;card&#34;</span><span class=p>,</span>
-<span class=ln> 8</span>		<span class=nt>&#34;qty&#34;</span> <span class=p>:</span> <span class=mi>15</span>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln> 1</span><span class=p>{</span>
+<span class=ln> 2</span>	<span class=s2>&#34;index&#34;</span> <span class=o>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln> 3</span>	<span class=s2>&#34;code&#34;</span> <span class=o>:</span> <span class=mi>11000</span><span class=p>,</span>
+<span class=ln> 4</span>	<span class=s2>&#34;errmsg&#34;</span> <span class=o>:</span> <span class=s2>&#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: 11.0 }&#34;</span><span class=p>,</span>
+<span class=ln> 5</span>	<span class=s2>&#34;op&#34;</span> <span class=o>:</span> <span class=p>{</span>
+<span class=ln> 6</span>		<span class=s2>&#34;_id&#34;</span> <span class=o>:</span> <span class=mi>11</span><span class=p>,</span>
+<span class=ln> 7</span>		<span class=s2>&#34;item&#34;</span> <span class=o>:</span> <span class=s2>&#34;card&#34;</span><span class=p>,</span>
+<span class=ln> 8</span>		<span class=s2>&#34;qty&#34;</span> <span class=o>:</span> <span class=mi>15</span>
 <span class=ln> 9</span>	<span class=p>}</span>
 <span class=ln>10</span><span class=p>}</span>
 </code></pre></div><h2 id=多个文档插入>多个文档插入</h2>
 <h3 id=定义-1>定义</h3>
 <p><strong><code>db.collection.insertMany()</code></strong></p>
 <p>语法：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.collection.insertMany<span class=o>(</span>
-<span class=ln>2</span>   <span class=o>[</span> &lt;document 1&gt; , &lt;document 2&gt;, ... <span class=o>]</span>,
-<span class=ln>3</span>   <span class=o>{</span>
-<span class=ln>4</span>      writeConcern: &lt;document&gt;,
-<span class=ln>5</span>      ordered: &lt;boolean&gt;
-<span class=ln>6</span>   <span class=o>}</span>
-<span class=ln>7</span><span class=o>)</span>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=nx>db</span><span class=p>.</span><span class=nx>collection</span><span class=p>.</span><span class=nx>insertMany</span><span class=p>(</span>
+<span class=ln>2</span>   <span class=p>[</span> <span class=o>&lt;</span><span class=nb>document</span> <span class=mi>1</span><span class=o>&gt;</span> <span class=p>,</span> <span class=o>&lt;</span><span class=nb>document</span> <span class=mi>2</span><span class=o>&gt;</span><span class=p>,</span> <span class=p>...</span> <span class=p>],</span>
+<span class=ln>3</span>   <span class=p>{</span>
+<span class=ln>4</span>      <span class=nx>writeConcern</span><span class=o>:</span> <span class=o>&lt;</span><span class=nb>document</span><span class=o>&gt;</span><span class=p>,</span>
+<span class=ln>5</span>      <span class=nx>ordered</span><span class=o>:</span> <span class=o>&lt;</span><span class=kr>boolean</span><span class=o>&gt;</span>
+<span class=ln>6</span>   <span class=p>}</span>
+<span class=ln>7</span><span class=p>)</span>
 </code></pre></div><p>参数：</p>
 <table>
 <thead>
@@ -262,71 +262,71 @@ Nov 16, 2021</span>
 <span class=ln>8</span>   <span class=nx>print</span> <span class=p>(</span><span class=nx>e</span><span class=p>);</span>
 <span class=ln>9</span><span class=p>}</span>
 </code></pre></div><p>返回值：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=ln>1</span><span class=p>{</span>
-<span class=ln>2</span>	<span class=nt>&#34;acknowledged&#34;</span> <span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
-<span class=ln>3</span>	<span class=nt>&#34;insertedIds&#34;</span> <span class=p>:</span> <span class=p>[</span>
-<span class=ln>4</span>		<span class=err>ObjectId(</span><span class=s2>&#34;61937128eae4d2a457051eea&#34;</span><span class=err>)</span><span class=p>,</span>
-<span class=ln>5</span>		<span class=err>ObjectId(</span><span class=s2>&#34;61937128eae4d2a457051eeb&#34;</span><span class=err>)</span><span class=p>,</span>
-<span class=ln>6</span>		<span class=err>ObjectId(</span><span class=s2>&#34;61937128eae4d2a457051eec&#34;</span><span class=err>)</span>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=p>{</span>
+<span class=ln>2</span>	<span class=s2>&#34;acknowledged&#34;</span> <span class=o>:</span> <span class=kc>true</span><span class=p>,</span>
+<span class=ln>3</span>	<span class=s2>&#34;insertedIds&#34;</span> <span class=o>:</span> <span class=p>[</span>
+<span class=ln>4</span>		<span class=nx>ObjectId</span><span class=p>(</span><span class=s2>&#34;61937128eae4d2a457051eea&#34;</span><span class=p>),</span>
+<span class=ln>5</span>		<span class=nx>ObjectId</span><span class=p>(</span><span class=s2>&#34;61937128eae4d2a457051eeb&#34;</span><span class=p>),</span>
+<span class=ln>6</span>		<span class=nx>ObjectId</span><span class=p>(</span><span class=s2>&#34;61937128eae4d2a457051eec&#34;</span><span class=p>)</span>
 <span class=ln>7</span>	<span class=p>]</span>
 <span class=ln>8</span><span class=p>}</span>
 </code></pre></div><p><strong>插入的时候指定重复主键</strong></p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.products.insertMany<span class=o>(</span> <span class=o>[</span>
-<span class=ln>2</span>      <span class=o>{</span>_id:ObjectId<span class=o>(</span><span class=s2>&#34;61937128eae4d2a457051eea&#34;</span><span class=o>)</span>,item: <span class=s2>&#34;card&#34;</span>, qty: <span class=m>15</span> <span class=o>}</span>,
-<span class=ln>3</span>      <span class=o>{</span> item: <span class=s2>&#34;envelope&#34;</span>, qty: <span class=m>20</span> <span class=o>}</span>,
-<span class=ln>4</span>      <span class=o>{</span> item: <span class=s2>&#34;stamps&#34;</span> , qty: <span class=m>30</span> <span class=o>}</span>
-<span class=ln>5</span>   <span class=o>]</span> <span class=o>)</span><span class=p>;</span>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=nx>db</span><span class=p>.</span><span class=nx>products</span><span class=p>.</span><span class=nx>insertMany</span><span class=p>(</span> <span class=p>[</span>
+<span class=ln>2</span>      <span class=p>{</span><span class=nx>_id</span><span class=o>:</span><span class=nx>ObjectId</span><span class=p>(</span><span class=s2>&#34;61937128eae4d2a457051eea&#34;</span><span class=p>),</span><span class=nx>item</span><span class=o>:</span> <span class=s2>&#34;card&#34;</span><span class=p>,</span> <span class=nx>qty</span><span class=o>:</span> <span class=mi>15</span> <span class=p>},</span>
+<span class=ln>3</span>      <span class=p>{</span> <span class=nx>item</span><span class=o>:</span> <span class=s2>&#34;envelope&#34;</span><span class=p>,</span> <span class=nx>qty</span><span class=o>:</span> <span class=mi>20</span> <span class=p>},</span>
+<span class=ln>4</span>      <span class=p>{</span> <span class=nx>item</span><span class=o>:</span> <span class=s2>&#34;stamps&#34;</span> <span class=p>,</span> <span class=nx>qty</span><span class=o>:</span> <span class=mi>30</span> <span class=p>}</span>
+<span class=ln>5</span>   <span class=p>]</span> <span class=p>);</span>
 </code></pre></div><p>由于键值为<code>61937128eae4d2a457051eea</code>的文档已经存在，导致该文档插入失败；又因为<code>ordered</code>默认值为<code>true</code>，后续的插入操作停止</p>
 <p>返回值：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=ln> 1</span><span class=p>{</span>
-<span class=ln> 2</span>	<span class=nt>&#34;writeErrors&#34;</span> <span class=p>:</span> <span class=p>[</span>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln> 1</span><span class=p>{</span>
+<span class=ln> 2</span>	<span class=s2>&#34;writeErrors&#34;</span> <span class=o>:</span> <span class=p>[</span>
 <span class=ln> 3</span>		<span class=p>{</span>
-<span class=ln> 4</span>			<span class=nt>&#34;index&#34;</span> <span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
-<span class=ln> 5</span>			<span class=nt>&#34;code&#34;</span> <span class=p>:</span> <span class=mi>11000</span><span class=p>,</span>
-<span class=ln> 6</span>			<span class=nt>&#34;errmsg&#34;</span> <span class=p>:</span> <span class=s2>&#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: ObjectId(&#39;61937128eae4d2a457051eea&#39;) }&#34;</span><span class=p>,</span>
-<span class=ln> 7</span>			<span class=nt>&#34;op&#34;</span> <span class=p>:</span> <span class=p>{</span>
-<span class=ln> 8</span>				<span class=nt>&#34;_id&#34;</span> <span class=p>:</span> <span class=err>ObjectId(</span><span class=s2>&#34;61937128eae4d2a457051eea&#34;</span><span class=err>)</span><span class=p>,</span>
-<span class=ln> 9</span>				<span class=nt>&#34;item&#34;</span> <span class=p>:</span> <span class=s2>&#34;card&#34;</span><span class=p>,</span>
-<span class=ln>10</span>				<span class=nt>&#34;qty&#34;</span> <span class=p>:</span> <span class=mi>15</span>
+<span class=ln> 4</span>			<span class=s2>&#34;index&#34;</span> <span class=o>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln> 5</span>			<span class=s2>&#34;code&#34;</span> <span class=o>:</span> <span class=mi>11000</span><span class=p>,</span>
+<span class=ln> 6</span>			<span class=s2>&#34;errmsg&#34;</span> <span class=o>:</span> <span class=s2>&#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: ObjectId(&#39;61937128eae4d2a457051eea&#39;) }&#34;</span><span class=p>,</span>
+<span class=ln> 7</span>			<span class=s2>&#34;op&#34;</span> <span class=o>:</span> <span class=p>{</span>
+<span class=ln> 8</span>				<span class=s2>&#34;_id&#34;</span> <span class=o>:</span> <span class=nx>ObjectId</span><span class=p>(</span><span class=s2>&#34;61937128eae4d2a457051eea&#34;</span><span class=p>),</span>
+<span class=ln> 9</span>				<span class=s2>&#34;item&#34;</span> <span class=o>:</span> <span class=s2>&#34;card&#34;</span><span class=p>,</span>
+<span class=ln>10</span>				<span class=s2>&#34;qty&#34;</span> <span class=o>:</span> <span class=mi>15</span>
 <span class=ln>11</span>			<span class=p>}</span>
 <span class=ln>12</span>		<span class=p>}</span>
 <span class=ln>13</span>	<span class=p>],</span>
-<span class=ln>14</span>	<span class=nt>&#34;writeConcernErrors&#34;</span> <span class=p>:</span> <span class=p>[</span> <span class=p>],</span>
-<span class=ln>15</span>	<span class=nt>&#34;nInserted&#34;</span> <span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
-<span class=ln>16</span>	<span class=nt>&#34;nUpserted&#34;</span> <span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
-<span class=ln>17</span>	<span class=nt>&#34;nMatched&#34;</span> <span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
-<span class=ln>18</span>	<span class=nt>&#34;nModified&#34;</span> <span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
-<span class=ln>19</span>	<span class=nt>&#34;nRemoved&#34;</span> <span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
-<span class=ln>20</span>	<span class=nt>&#34;upserted&#34;</span> <span class=p>:</span> <span class=p>[</span> <span class=p>]</span>
+<span class=ln>14</span>	<span class=s2>&#34;writeConcernErrors&#34;</span> <span class=o>:</span> <span class=p>[</span> <span class=p>],</span>
+<span class=ln>15</span>	<span class=s2>&#34;nInserted&#34;</span> <span class=o>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln>16</span>	<span class=s2>&#34;nUpserted&#34;</span> <span class=o>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln>17</span>	<span class=s2>&#34;nMatched&#34;</span> <span class=o>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln>18</span>	<span class=s2>&#34;nModified&#34;</span> <span class=o>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln>19</span>	<span class=s2>&#34;nRemoved&#34;</span> <span class=o>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln>20</span>	<span class=s2>&#34;upserted&#34;</span> <span class=o>:</span> <span class=p>[</span> <span class=p>]</span>
 <span class=ln>21</span><span class=p>}</span>
 </code></pre></div><p><strong>插入的时候指定重复主键且ordered=false</strong></p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.products.insertMany<span class=o>(</span> <span class=o>[</span>
-<span class=ln>2</span>      <span class=o>{</span>_id:ObjectId<span class=o>(</span><span class=s2>&#34;61937128eae4d2a457051eea&#34;</span><span class=o>)</span>,item: <span class=s2>&#34;card&#34;</span>, qty: <span class=m>15</span> <span class=o>}</span>,
-<span class=ln>3</span>      <span class=o>{</span> item: <span class=s2>&#34;envelope&#34;</span>, qty: <span class=m>20</span> <span class=o>}</span>,
-<span class=ln>4</span>      <span class=o>{</span> item: <span class=s2>&#34;stamps&#34;</span> , qty: <span class=m>30</span> <span class=o>}</span>
-<span class=ln>5</span>   <span class=o>]</span> ,
-<span class=ln>6</span>   <span class=o>{</span>ordered: false<span class=o>})</span><span class=p>;</span>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=nx>db</span><span class=p>.</span><span class=nx>products</span><span class=p>.</span><span class=nx>insertMany</span><span class=p>(</span> <span class=p>[</span>
+<span class=ln>2</span>      <span class=p>{</span><span class=nx>_id</span><span class=o>:</span><span class=nx>ObjectId</span><span class=p>(</span><span class=s2>&#34;61937128eae4d2a457051eea&#34;</span><span class=p>),</span><span class=nx>item</span><span class=o>:</span> <span class=s2>&#34;card&#34;</span><span class=p>,</span> <span class=nx>qty</span><span class=o>:</span> <span class=mi>15</span> <span class=p>},</span>
+<span class=ln>3</span>      <span class=p>{</span> <span class=nx>item</span><span class=o>:</span> <span class=s2>&#34;envelope&#34;</span><span class=p>,</span> <span class=nx>qty</span><span class=o>:</span> <span class=mi>20</span> <span class=p>},</span>
+<span class=ln>4</span>      <span class=p>{</span> <span class=nx>item</span><span class=o>:</span> <span class=s2>&#34;stamps&#34;</span> <span class=p>,</span> <span class=nx>qty</span><span class=o>:</span> <span class=mi>30</span> <span class=p>}</span>
+<span class=ln>5</span>   <span class=p>]</span> <span class=p>,</span>
+<span class=ln>6</span>   <span class=p>{</span><span class=nx>ordered</span><span class=o>:</span> <span class=kc>false</span><span class=p>});</span>
 </code></pre></div><p>返回值 - 第一条插入失败，后面两条插入成功</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=ln> 1</span><span class=p>{</span>
-<span class=ln> 2</span>	<span class=nt>&#34;writeErrors&#34;</span> <span class=p>:</span> <span class=p>[</span>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln> 1</span><span class=p>{</span>
+<span class=ln> 2</span>	<span class=s2>&#34;writeErrors&#34;</span> <span class=o>:</span> <span class=p>[</span>
 <span class=ln> 3</span>		<span class=p>{</span>
-<span class=ln> 4</span>			<span class=nt>&#34;index&#34;</span> <span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
-<span class=ln> 5</span>			<span class=nt>&#34;code&#34;</span> <span class=p>:</span> <span class=mi>11000</span><span class=p>,</span>
-<span class=ln> 6</span>			<span class=nt>&#34;errmsg&#34;</span> <span class=p>:</span> <span class=s2>&#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: ObjectId(&#39;61937128eae4d2a457051eea&#39;) }&#34;</span><span class=p>,</span>
-<span class=ln> 7</span>			<span class=nt>&#34;op&#34;</span> <span class=p>:</span> <span class=p>{</span>
-<span class=ln> 8</span>				<span class=nt>&#34;_id&#34;</span> <span class=p>:</span> <span class=err>ObjectId(</span><span class=s2>&#34;61937128eae4d2a457051eea&#34;</span><span class=err>)</span><span class=p>,</span>
-<span class=ln> 9</span>				<span class=nt>&#34;item&#34;</span> <span class=p>:</span> <span class=s2>&#34;card&#34;</span><span class=p>,</span>
-<span class=ln>10</span>				<span class=nt>&#34;qty&#34;</span> <span class=p>:</span> <span class=mi>15</span>
+<span class=ln> 4</span>			<span class=s2>&#34;index&#34;</span> <span class=o>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln> 5</span>			<span class=s2>&#34;code&#34;</span> <span class=o>:</span> <span class=mi>11000</span><span class=p>,</span>
+<span class=ln> 6</span>			<span class=s2>&#34;errmsg&#34;</span> <span class=o>:</span> <span class=s2>&#34;E11000 duplicate key error collection: jonlimx_db.products index: _id_ dup key: { _id: ObjectId(&#39;61937128eae4d2a457051eea&#39;) }&#34;</span><span class=p>,</span>
+<span class=ln> 7</span>			<span class=s2>&#34;op&#34;</span> <span class=o>:</span> <span class=p>{</span>
+<span class=ln> 8</span>				<span class=s2>&#34;_id&#34;</span> <span class=o>:</span> <span class=nx>ObjectId</span><span class=p>(</span><span class=s2>&#34;61937128eae4d2a457051eea&#34;</span><span class=p>),</span>
+<span class=ln> 9</span>				<span class=s2>&#34;item&#34;</span> <span class=o>:</span> <span class=s2>&#34;card&#34;</span><span class=p>,</span>
+<span class=ln>10</span>				<span class=s2>&#34;qty&#34;</span> <span class=o>:</span> <span class=mi>15</span>
 <span class=ln>11</span>			<span class=p>}</span>
 <span class=ln>12</span>		<span class=p>}</span>
 <span class=ln>13</span>	<span class=p>],</span>
-<span class=ln>14</span>	<span class=nt>&#34;writeConcernErrors&#34;</span> <span class=p>:</span> <span class=p>[</span> <span class=p>],</span>
-<span class=ln>15</span>	<span class=nt>&#34;nInserted&#34;</span> <span class=p>:</span> <span class=mi>2</span><span class=p>,</span>
-<span class=ln>16</span>	<span class=nt>&#34;nUpserted&#34;</span> <span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
-<span class=ln>17</span>	<span class=nt>&#34;nMatched&#34;</span> <span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
-<span class=ln>18</span>	<span class=nt>&#34;nModified&#34;</span> <span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
-<span class=ln>19</span>	<span class=nt>&#34;nRemoved&#34;</span> <span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
-<span class=ln>20</span>	<span class=nt>&#34;upserted&#34;</span> <span class=p>:</span> <span class=p>[</span> <span class=p>]</span>
+<span class=ln>14</span>	<span class=s2>&#34;writeConcernErrors&#34;</span> <span class=o>:</span> <span class=p>[</span> <span class=p>],</span>
+<span class=ln>15</span>	<span class=s2>&#34;nInserted&#34;</span> <span class=o>:</span> <span class=mi>2</span><span class=p>,</span>
+<span class=ln>16</span>	<span class=s2>&#34;nUpserted&#34;</span> <span class=o>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln>17</span>	<span class=s2>&#34;nMatched&#34;</span> <span class=o>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln>18</span>	<span class=s2>&#34;nModified&#34;</span> <span class=o>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln>19</span>	<span class=s2>&#34;nRemoved&#34;</span> <span class=o>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln>20</span>	<span class=s2>&#34;upserted&#34;</span> <span class=o>:</span> <span class=p>[</span> <span class=p>]</span>
 <span class=ln>21</span><span class=p>}</span>
 </code></pre></div><style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
