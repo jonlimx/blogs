@@ -288,7 +288,7 @@ Nov 17, 2021</span>
 <tr>
 <td><code>arrayFilters</code></td>
 <td>数组</td>
-<td>可选。用于匹配要更新的文档下的数组元素</td>
+<td>可选。用于匹配要更新的文档下的数组元素，即对数组元素的条件限制</td>
 </tr>
 <tr>
 <td><code>hint</code></td>
@@ -306,7 +306,7 @@ Nov 17, 2021</span>
 <li><code>acknowledgeed</code> - 如果指定了<code>writeConcern</code>，值为 <code>true</code> ；如果<code>writeConcern</code>是disable的，值为<code>false</code></li>
 </ul>
 <h3 id=操作表达式>操作表达式</h3>
-<p>更新操作表达式由操作符和操作对象组成，具体格式如下：</p>
+<p>更新操作表达式由<a href=https://docs.mongodb.com/manual/reference/operator/update/>操作符</a>和操作对象组成，具体格式如下：</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=p>{</span>
 <span class=ln>2</span>   <span class=o>&lt;</span><span class=nx>operator1</span><span class=o>&gt;:</span> <span class=p>{</span> <span class=o>&lt;</span><span class=nx>field1</span><span class=o>&gt;:</span> <span class=o>&lt;</span><span class=nx>value1</span><span class=o>&gt;</span><span class=p>,</span> <span class=p>...</span> <span class=p>},</span>
 <span class=ln>3</span>   <span class=o>&lt;</span><span class=nx>operator2</span><span class=o>&gt;:</span> <span class=p>{</span> <span class=o>&lt;</span><span class=nx>field2</span><span class=o>&gt;:</span> <span class=o>&lt;</span><span class=nx>value2</span><span class=o>&gt;</span><span class=p>,</span> <span class=p>...</span> <span class=p>},</span>
@@ -367,6 +367,91 @@ Nov 17, 2021</span>
 <tr>
 <td><code>$unset</code></td>
 <td>从文档中删除字段</td>
+</tr>
+</tbody>
+</table>
+<h4 id=数组操作符>数组操作符</h4>
+<table>
+<thead>
+<tr>
+<th>操作符名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$</code></td>
+<td>占位符。表示符合匹配条件的第一个数组。元素类型可能是基本类型，也可能是文档</td>
+</tr>
+<tr>
+<td><code>$[]</code></td>
+<td>占位符。表示符合匹配条件的所有数组。<strong>即先根据条件匹配到符合条件的文档，然后对文档下面的数组所有元素进行更新</strong></td>
+</tr>
+<tr>
+<td><code>$[&lt;identifier>]</code></td>
+<td>占位符，这个需要和<code>arrayFilters</code>一起使用，用于更新符合特定条件的数组元素。这里的<code>identifier</code>类似于变量，引用数组元素。例如：<code>{$set: {"grades.$[elem]": 100}}, {arrayFilters: [{"elem": {$gt: 80}}]}</code></td>
+</tr>
+<tr>
+<td><code>$addToSet</code></td>
+<td>将元素添加到数组里。如果文档字段本身不是数组类型则会失败。另外数组里如果已经存在相同的元素则不再往里添加</td>
+</tr>
+<tr>
+<td><code>$pop</code></td>
+<td>删除数组里的第一个或者最后一个元素。`{ $pop: { <field>: &lt;-1</td>
+</tr>
+<tr>
+<td><code>$pull</code></td>
+<td>将符合条件的元素从数组里删除，注意删除的时候是根据<code>$pull</code>后面带的条件删除。如果作用于非数组字段那么将会出错。`{ $pull: { <field1>: &lt;value</td>
+</tr>
+<tr>
+<td><code>$push</code></td>
+<td>与<code>addToSet</code>类似，但是<code>$push</code>也会把重复元素插入到数组，默认是插入到数组末尾</td>
+</tr>
+<tr>
+<td><code>$pusllAll</code></td>
+<td>与<code>$pull</code>类似，但是<code>pullAll</code>是基于给定的列表，将列表中的元素从原来数组中删除。<code>{ $pullAll: { &lt;field1>: [ &lt;value1>, &lt;value2> ... ], ... } }</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id=修饰符操作符>修饰符操作符</h4>
+<table>
+<thead>
+<tr>
+<th>操作符名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$each</code></td>
+<td><code>$each</code>后面跟一个数组，用于修饰<code>$push</code>和<code>$addToSet</code>，将后面的数组里的元素添加到匹配的数组里</td>
+</tr>
+<tr>
+<td><code>$position</code></td>
+<td>用于修饰<code>$push</code>，指定从数组 什么位置插入</td>
+</tr>
+<tr>
+<td><code>$slice</code></td>
+<td>与<code>$push</code>和 <code>$each</code>一起使用，先执行插入操作，而后对结果做切片处理，比如保留后面几个元素或者前面几个元素</td>
+</tr>
+<tr>
+<td><code>$sort</code></td>
+<td>与<code>$push</code>和<code>$each</code>一起使用，在执行插入的时候对元素进行排序</td>
+</tr>
+</tbody>
+</table>
+<h4 id=位运算操作符>位运算操作符</h4>
+<table>
+<thead>
+<tr>
+<th>作符名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$bit</code></td>
+<td>对整型数做位运算</td>
 </tr>
 </tbody>
 </table>

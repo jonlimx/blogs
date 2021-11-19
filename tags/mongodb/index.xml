@@ -159,7 +159,7 @@
 &lt;tr>
 &lt;td>&lt;code>arrayFilters&lt;/code>&lt;/td>
 &lt;td>数组&lt;/td>
-&lt;td>可选。用于匹配要更新的文档下的数组元素&lt;/td>
+&lt;td>可选。用于匹配要更新的文档下的数组元素，即对数组元素的条件限制&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;code>hint&lt;/code>&lt;/td>
@@ -177,7 +177,7 @@
 &lt;li>&lt;code>acknowledgeed&lt;/code> - 如果指定了&lt;code>writeConcern&lt;/code>，值为 &lt;code>true&lt;/code> ；如果&lt;code>writeConcern&lt;/code>是disable的，值为&lt;code>false&lt;/code>&lt;/li>
 &lt;/ul>
 &lt;h3 id="操作表达式">操作表达式&lt;/h3>
-&lt;p>更新操作表达式由操作符和操作对象组成，具体格式如下：&lt;/p>
+&lt;p>更新操作表达式由&lt;a href="https://docs.mongodb.com/manual/reference/operator/update/">操作符&lt;/a>和操作对象组成，具体格式如下：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span>
 &lt;span class="ln">2&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">operator1&lt;/span>&lt;span class="o">&amp;gt;:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">field1&lt;/span>&lt;span class="o">&amp;gt;:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">value1&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">...&lt;/span> &lt;span class="p">},&lt;/span>
 &lt;span class="ln">3&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">operator2&lt;/span>&lt;span class="o">&amp;gt;:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">field2&lt;/span>&lt;span class="o">&amp;gt;:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">value2&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">...&lt;/span> &lt;span class="p">},&lt;/span>
@@ -238,6 +238,91 @@
 &lt;tr>
 &lt;td>&lt;code>$unset&lt;/code>&lt;/td>
 &lt;td>从文档中删除字段&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h4 id="数组操作符">数组操作符&lt;/h4>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>操作符名称&lt;/th>
+&lt;th>描述&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>$&lt;/code>&lt;/td>
+&lt;td>占位符。表示符合匹配条件的第一个数组。元素类型可能是基本类型，也可能是文档&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$[]&lt;/code>&lt;/td>
+&lt;td>占位符。表示符合匹配条件的所有数组。&lt;strong>即先根据条件匹配到符合条件的文档，然后对文档下面的数组所有元素进行更新&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$[&amp;lt;identifier&amp;gt;]&lt;/code>&lt;/td>
+&lt;td>占位符，这个需要和&lt;code>arrayFilters&lt;/code>一起使用，用于更新符合特定条件的数组元素。这里的&lt;code>identifier&lt;/code>类似于变量，引用数组元素。例如：&lt;code>{$set: {&amp;quot;grades.$[elem]&amp;quot;: 100}}, {arrayFilters: [{&amp;quot;elem&amp;quot;: {$gt: 80}}]}&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$addToSet&lt;/code>&lt;/td>
+&lt;td>将元素添加到数组里。如果文档字段本身不是数组类型则会失败。另外数组里如果已经存在相同的元素则不再往里添加&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$pop&lt;/code>&lt;/td>
+&lt;td>删除数组里的第一个或者最后一个元素。`{ $pop: { &lt;field>: &amp;lt;-1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$pull&lt;/code>&lt;/td>
+&lt;td>将符合条件的元素从数组里删除，注意删除的时候是根据&lt;code>$pull&lt;/code>后面带的条件删除。如果作用于非数组字段那么将会出错。`{ $pull: { &lt;field1>: &amp;lt;value&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$push&lt;/code>&lt;/td>
+&lt;td>与&lt;code>addToSet&lt;/code>类似，但是&lt;code>$push&lt;/code>也会把重复元素插入到数组，默认是插入到数组末尾&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$pusllAll&lt;/code>&lt;/td>
+&lt;td>与&lt;code>$pull&lt;/code>类似，但是&lt;code>pullAll&lt;/code>是基于给定的列表，将列表中的元素从原来数组中删除。&lt;code>{ $pullAll: { &amp;lt;field1&amp;gt;: [ &amp;lt;value1&amp;gt;, &amp;lt;value2&amp;gt; ... ], ... } }&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h4 id="修饰符操作符">修饰符操作符&lt;/h4>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>操作符名称&lt;/th>
+&lt;th>描述&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>$each&lt;/code>&lt;/td>
+&lt;td>&lt;code>$each&lt;/code>后面跟一个数组，用于修饰&lt;code>$push&lt;/code>和&lt;code>$addToSet&lt;/code>，将后面的数组里的元素添加到匹配的数组里&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$position&lt;/code>&lt;/td>
+&lt;td>用于修饰&lt;code>$push&lt;/code>，指定从数组 什么位置插入&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$slice&lt;/code>&lt;/td>
+&lt;td>与&lt;code>$push&lt;/code>和 &lt;code>$each&lt;/code>一起使用，先执行插入操作，而后对结果做切片处理，比如保留后面几个元素或者前面几个元素&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$sort&lt;/code>&lt;/td>
+&lt;td>与&lt;code>$push&lt;/code>和&lt;code>$each&lt;/code>一起使用，在执行插入的时候对元素进行排序&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h4 id="位运算操作符">位运算操作符&lt;/h4>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>作符名称&lt;/th>
+&lt;th>描述&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>$bit&lt;/code>&lt;/td>
+&lt;td>对整型数做位运算&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
