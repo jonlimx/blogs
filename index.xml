@@ -108,7 +108,8 @@
 &lt;span class="ln">4&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="更新文档">更新文档&lt;/h2>
 &lt;h3 id="定义-1">定义&lt;/h3>
-&lt;p>&lt;strong>&lt;code>db.collection.updateOne(filter, update, options)&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>更新单个文档： &lt;strong>&lt;code>db.collection.updateOne(filter, update, options)&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>更新多个文档：&lt;code>db.collection.updateMany(filter, update, options)&lt;/code>&lt;/p>
 &lt;p>语法：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">collection&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">updateOne&lt;/span>&lt;span class="p">(&lt;/span>
 &lt;span class="ln"> 2&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">filter&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
@@ -121,6 +122,18 @@
 &lt;span class="ln"> 9&lt;/span> &lt;span class="nx">hint&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">document&lt;/span>&lt;span class="o">|&lt;/span>&lt;span class="nx">string&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="c1">// Available starting in MongoDB 4.2.1
 &lt;/span>&lt;span class="ln">10&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
 &lt;span class="ln">11&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">12&lt;/span>
+&lt;span class="ln">13&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">collection&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">updateMany&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">filter&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">update&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="nx">upsert&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kr">boolean&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="nx">writeConcern&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">document&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="nx">collation&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">document&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="nx">arrayFilters&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">filterdocument1&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">...&lt;/span> &lt;span class="p">],&lt;/span>
+&lt;span class="ln">21&lt;/span> &lt;span class="nx">hint&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">document&lt;/span>&lt;span class="o">|&lt;/span>&lt;span class="nx">string&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="c1">// Available starting in MongoDB 4.2.1
+&lt;/span>&lt;span class="ln">22&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">23&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>参数：&lt;/p>
 &lt;table>
 &lt;thead>
@@ -328,13 +341,59 @@
 &lt;/table>
 &lt;h3 id="行为-1">行为&lt;/h3>
 &lt;ul>
-&lt;li>
-&lt;p>执行update操作的用户需要有update，find和insert的权限&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;code>db.collection.updateOne&lt;/code>只更新匹配到的文档里的第一个&lt;/p>
-&lt;/li>
-&lt;/ul></description></item><item><title>MongoDB学习笔记（二）</title><link>https://www.jonathanlin.top/posts/mongo-notes-02/</link><pubDate>Tue, 16 Nov 2021 15:03:57 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-02/</guid><description>
+&lt;li>执行update操作的用户需要有update，find和insert的权限&lt;/li>
+&lt;li>&lt;code>db.collection.updateOne&lt;/code>只更新匹配到的文档里的第一个&lt;/li>
+&lt;li>当&lt;code>Upset&lt;/code>设置为&lt;code>true&lt;/code>的时候且是作用在分片集合上时，匹配条件里必须要包含分片键值或者&lt;code>_id&lt;/code>字段&lt;/li>
+&lt;li>如果更新大小固定的集合（capped collection）会使得文档大小发生变化，则更新失败&lt;/li>
+&lt;li>无法从时序集合（time series collections）中更新文档&lt;/li>
+&lt;/ul>
+&lt;h3 id="示例-1">示例&lt;/h3>
+&lt;p>&lt;strong>Upset更新&lt;/strong>&lt;/p>
+&lt;p>给定下面的集合：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;name&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Central Perk Cafe&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;Borough&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Manhattan&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;violations&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">3&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">2&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;name&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Rock A Feller Bar and Grill&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;Borough&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Queens&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;violations&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;name&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Empire State Pub&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;Borough&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Brooklyn&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;violations&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>执行以下命令：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">restaurant&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">updateOne&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;span class="ln">2&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Pizza Rat&amp;#39;s Pizzaria&amp;#34;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="nx">$set&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">violations&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">7&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">borough&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Manhattan&amp;#34;&lt;/span>&lt;span class="p">}},&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="nx">upsert&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">5&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>由于查找对应的记录且&lt;code>upsert&lt;/code>为&lt;code>true&lt;/code>，因此会以新的记录插入&lt;/p>
+&lt;p>&lt;strong>更新数组元素&lt;/strong>&lt;/p>
+&lt;p>给定下面的集合：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">students&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">insert&lt;/span>&lt;span class="p">([&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;grades&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="mi">95&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">92&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">90&lt;/span> &lt;span class="p">]&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;grades&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="mi">98&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">100&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">102&lt;/span> &lt;span class="p">]&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;grades&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="mi">95&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">110&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">100&lt;/span> &lt;span class="p">]&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">5&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>执行下面的命令，将&lt;code>_id&lt;/code>为2的记录中值大于等于100数组元素的值设置为100。&lt;code>filter&lt;/code>筛选出了数组元素大于100的文档，而后对第一个文档指定更新操作&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">students&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">updateOne&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">grades&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">$gte&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">100&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">$set&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;grades.$[element]&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">100&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">arrayFilters&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;element&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">$gte&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">100&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">]&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">5&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>更新文档数组里的特定的元素&lt;/strong>&lt;/p>
+&lt;p>给定下面的集合：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">students2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">insert&lt;/span>&lt;span class="p">([&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="s2">&amp;#34;grades&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;grade&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">80&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;mean&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">75&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;std&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">6&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;grade&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">85&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;mean&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">90&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;std&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">4&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;grade&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">85&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;mean&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">85&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;std&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">6&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="p">]&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="s2">&amp;#34;grades&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;grade&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">90&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;mean&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">75&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;std&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">6&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;grade&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">87&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;mean&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">90&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;std&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">3&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="s2">&amp;#34;grade&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">85&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;mean&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">85&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;std&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">4&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="p">]&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">18&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>执行下面的命令，将&lt;code>_id&lt;/code>为1的文档中，文档数组里&lt;code>grade&lt;/code>大于等于85的数组元素中的&lt;code>mean&lt;/code>设置为100&lt;/p></description></item><item><title>MongoDB学习笔记（二）</title><link>https://www.jonathanlin.top/posts/mongo-notes-02/</link><pubDate>Tue, 16 Nov 2021 15:03:57 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-02/</guid><description>
 &lt;h2 id="单个文档插入操作">单个文档插入操作&lt;/h2>
 &lt;h3 id="定义">定义&lt;/h3>
 &lt;p>&lt;strong>&lt;code>db.collection.insertOne()&lt;/code>&lt;/strong>&lt;/p>
