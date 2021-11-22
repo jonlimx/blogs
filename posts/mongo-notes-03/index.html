@@ -1,10 +1,10 @@
 <!doctype html><html lang=zh data-figures class=page>
 <head>
-<title>MongoDB学习笔记（三） | Standing on the Shoulder of Giants</title>
+<title>MongoDB学习笔记（三）- 文档删除、更新 | Standing on the Shoulder of Giants</title>
 <meta charset=utf-8>
-<meta property="og:title" content="MongoDB学习笔记（三） | Standing on the Shoulder of Giants">
-<meta itemprop=name content="MongoDB学习笔记（三） | Standing on the Shoulder of Giants">
-<meta name=application-name content="MongoDB学习笔记（三） | Standing on the Shoulder of Giants">
+<meta property="og:title" content="MongoDB学习笔记（三）- 文档删除、更新 | Standing on the Shoulder of Giants">
+<meta itemprop=name content="MongoDB学习笔记（三）- 文档删除、更新 | Standing on the Shoulder of Giants">
+<meta name=application-name content="MongoDB学习笔记（三）- 文档删除、更新 | Standing on the Shoulder of Giants">
 <meta property="og:site_name" content="Jonathan Lin">
 <meta name=description content>
 <meta itemprop=description content>
@@ -27,9 +27,9 @@
 1db.collection.deleteOne( 2 <filter>, 3 { 4 writeConcern: <document>, …">
 <meta name=twitter:card content="summary">
 <meta name=twitter:creator content>
-<meta name=twitter:title content="MongoDB学习笔记（三）">
+<meta name=twitter:title content="MongoDB学习笔记（三）- 文档删除、更新">
 <meta property="og:url" content="https://www.jonathanlin.top/posts/mongo-notes-03/">
-<meta property="og:title" content="MongoDB学习笔记（三）">
+<meta property="og:title" content="MongoDB学习笔记（三）- 文档删除、更新">
 <meta property="og:description" content="删除文档 定义 删除单个文档：db.collection.deleteOne()
 删除多个文档：db.collection.deleteMany()
 语法：
@@ -87,7 +87,7 @@
 <main>
 <div class="grid-inverse wrap content">
 <article class=post_content>
-<h1 class=post_title>MongoDB学习笔记（三）</h1>
+<h1 class=post_title>MongoDB学习笔记（三）- 文档删除、更新</h1>
 <div class=post_meta>
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
@@ -98,9 +98,9 @@ Nov 17, 2021</span>
 <span class=page_only>&nbsp;·
 <div class=post_share>
 分享到:
-<a href="https://twitter.com/intent/tweet?text=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%89%ef%bc%89&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-03%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
+<a href="https://twitter.com/intent/tweet?text=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%89%ef%bc%89-%20%e6%96%87%e6%a1%a3%e5%88%a0%e9%99%a4%e3%80%81%e6%9b%b4%e6%96%b0&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-03%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
 </a>
-<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-03%2f&t=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%89%ef%bc%89" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
+<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-03%2f&t=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%89%ef%bc%89-%20%e6%96%87%e6%a1%a3%e5%88%a0%e9%99%a4%e3%80%81%e6%9b%b4%e6%96%b0" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
 </a>
 <a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
 </a>
@@ -127,6 +127,7 @@ Nov 17, 2021</span>
 <li><a href=#示例-1>示例</a></li>
 </ul>
 </li>
+<li><a href=#删除集合和数据库>删除集合和数据库</a></li>
 </ul>
 </nav>
 <h2 id=删除文档>删除文档</h2>
@@ -524,7 +525,16 @@ Nov 17, 2021</span>
 <span class=ln>17</span>   <span class=p>}</span>
 <span class=ln>18</span><span class=p>])</span>
 </code></pre></div><p>执行下面的命令，将<code>_id</code>为1的文档中，文档数组里<code>grade</code>大于等于85的数组元素中的<code>mean</code>设置为100</p>
-<style>.utterances{max-width:100%}</style>
+<h2 id=删除集合和数据库>删除集合和数据库</h2>
+<p>命令 - 删除集合以及和该集合关联的索引</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=nx>db</span><span class=p>.</span><span class=nx>collection</span><span class=p>.</span><span class=nx>drop</span><span class=p>(</span><span class=o>&lt;</span><span class=nx>options</span><span class=o>&gt;</span><span class=p>)</span>
+</code></pre></div><p>命令 - 删除数据库</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln>1</span><span class=nx>db</span><span class=p>.</span><span class=nx>dropDatabase</span><span class=p>(</span><span class=o>&lt;</span><span class=nx>writeConcern</span><span class=o>&gt;</span><span class=p>)</span>
+<span class=ln>2</span>
+<span class=ln>3</span><span class=nx>ex</span><span class=o>:</span>
+<span class=ln>4</span><span class=nx>use</span> <span class=nx>temp</span>
+<span class=ln>5</span><span class=nx>db</span><span class=p>.</span><span class=nx>dropDatabase</span><span class=p>()</span>
+</code></pre></div><style>.utterances{max-width:100%}</style>
 <script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
 </article>
 <aside class=sidebar>
@@ -540,7 +550,7 @@ Nov 17, 2021</span>
 <h2 class=mt-4>最新文章</h2>
 <ul class=flex-column>
 <li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-02/ class=nav-link title=MongoDB学习笔记（二）>MongoDB学习笔记（二）</a>
+<a href=https://www.jonathanlin.top/posts/mongo-notes-02/ class=nav-link title="MongoDB学习笔记（二）- 文档插入">MongoDB学习笔记（二）- 文档插入</a>
 </li>
 <li>
 <a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-03/ class=nav-link title="C Primer Plus读书笔记（三）">C Primer Plus读书笔记（三）</a>
@@ -549,7 +559,7 @@ Nov 17, 2021</span>
 <a href=https://www.jonathanlin.top/posts/regex-cheatsheet/ class=nav-link title="Regex Cheatsheet">Regex Cheatsheet</a>
 </li>
 <li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-01/ class=nav-link title=MongoDB学习笔记（一）>MongoDB学习笔记（一）</a>
+<a href=https://www.jonathanlin.top/posts/mongo-notes-01/ class=nav-link title="MongoDB学习笔记（一）- 文档查询和投影">MongoDB学习笔记（一）- 文档查询和投影</a>
 </li>
 <li>
 <a href=https://www.jonathanlin.top/posts/c-primer-plus-handson/ class=nav-link title="C Primer Plus 编程练习">C Primer Plus 编程练习</a>

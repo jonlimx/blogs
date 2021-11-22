@@ -1,10 +1,10 @@
 <!doctype html><html lang=zh data-figures class=page>
 <head>
-<title>MongoDB学习笔记（一） | Standing on the Shoulder of Giants</title>
+<title>MongoDB学习笔记（一）- 文档查询和投影 | Standing on the Shoulder of Giants</title>
 <meta charset=utf-8>
-<meta property="og:title" content="MongoDB学习笔记（一） | Standing on the Shoulder of Giants">
-<meta itemprop=name content="MongoDB学习笔记（一） | Standing on the Shoulder of Giants">
-<meta name=application-name content="MongoDB学习笔记（一） | Standing on the Shoulder of Giants">
+<meta property="og:title" content="MongoDB学习笔记（一）- 文档查询和投影 | Standing on the Shoulder of Giants">
+<meta itemprop=name content="MongoDB学习笔记（一）- 文档查询和投影 | Standing on the Shoulder of Giants">
+<meta name=application-name content="MongoDB学习笔记（一）- 文档查询和投影 | Standing on the Shoulder of Giants">
 <meta property="og:site_name" content="Jonathan Lin">
 <meta name=description content>
 <meta itemprop=description content>
@@ -26,9 +26,9 @@
 1brew tap mongodb/brew   安装mongo全家桶，包括社区版服务端，Shell …">
 <meta name=twitter:card content="summary">
 <meta name=twitter:creator content>
-<meta name=twitter:title content="MongoDB学习笔记（一）">
+<meta name=twitter:title content="MongoDB学习笔记（一）- 文档查询和投影">
 <meta property="og:url" content="https://www.jonathanlin.top/posts/mongo-notes-01/">
-<meta property="og:title" content="MongoDB学习笔记（一）">
+<meta property="og:title" content="MongoDB学习笔记（一）- 文档查询和投影">
 <meta property="og:description" content="安装mongodb 我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用brew来安装，使用以下命令：
   添加官方tap
 1brew tap mongodb/brew   安装mongo全家桶，包括社区版服务端，Shell …">
@@ -85,7 +85,7 @@
 <main>
 <div class="grid-inverse wrap content">
 <article class=post_content>
-<h1 class=post_title>MongoDB学习笔记（一）</h1>
+<h1 class=post_title>MongoDB学习笔记（一）- 文档查询和投影</h1>
 <div class=post_meta>
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
@@ -96,9 +96,9 @@ Aug 5, 2021</span>
 <span class=page_only>&nbsp;·
 <div class=post_share>
 分享到:
-<a href="https://twitter.com/intent/tweet?text=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%80%ef%bc%89&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-01%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
+<a href="https://twitter.com/intent/tweet?text=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%80%ef%bc%89-%20%e6%96%87%e6%a1%a3%e6%9f%a5%e8%af%a2%e5%92%8c%e6%8a%95%e5%bd%b1&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-01%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
 </a>
-<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-01%2f&t=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%80%ef%bc%89" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
+<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-01%2f&t=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%80%ef%bc%89-%20%e6%96%87%e6%a1%a3%e6%9f%a5%e8%af%a2%e5%92%8c%e6%8a%95%e5%bd%b1" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
 </a>
 <a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
 </a>
@@ -611,10 +611,10 @@ Aug 5, 2021</span>
 <h2 class=mt-4>最新文章</h2>
 <ul class=flex-column>
 <li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-03/ class=nav-link title=MongoDB学习笔记（三）>MongoDB学习笔记（三）</a>
+<a href=https://www.jonathanlin.top/posts/mongo-notes-03/ class=nav-link title="MongoDB学习笔记（三）- 文档删除、更新">MongoDB学习笔记（三）- 文档删除、更新</a>
 </li>
 <li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-02/ class=nav-link title=MongoDB学习笔记（二）>MongoDB学习笔记（二）</a>
+<a href=https://www.jonathanlin.top/posts/mongo-notes-02/ class=nav-link title="MongoDB学习笔记（二）- 文档插入">MongoDB学习笔记（二）- 文档插入</a>
 </li>
 <li>
 <a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-03/ class=nav-link title="C Primer Plus读书笔记（三）">C Primer Plus读书笔记（三）</a>
