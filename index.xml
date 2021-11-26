@@ -1,4 +1,73 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/</link><description>Recent content on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 17 Nov 2021 10:05:06 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/index.xml" rel="self" type="application/rss+xml"/><item><title>MongoDB学习笔记（三）- 文档删除、更新</title><link>https://www.jonathanlin.top/posts/mongo-notes-03/</link><pubDate>Wed, 17 Nov 2021 10:05:06 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-03/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/</link><description>Recent content on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Tue, 23 Nov 2021 09:50:25 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/index.xml" rel="self" type="application/rss+xml"/><item><title>MongoDB学习笔记（四）- 聚合框架</title><link>https://www.jonathanlin.top/posts/mongo-notes-04/</link><pubDate>Tue, 23 Nov 2021 09:50:25 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-04/</guid><description>
+&lt;p>Mongo Aggregation Framework聚合框架是一个计算框架，由管道（pipeline）和步骤（stage）组成，如下图所示：&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20211123100530719.png" alt="Pipeline/Stage">&lt;/p>
+&lt;ol>
+&lt;li>原始的文档作为原始的输入数据&lt;/li>
+&lt;li>每个步骤对输入数据进行处理，处理的结果作为下一个处理步骤的输入&lt;/li>
+&lt;li>最终的结果也就是管道处理的结果，是由多个步骤处理完成&lt;/li>
+&lt;/ol>
+&lt;h3 id="定义">定义&lt;/h3>
+&lt;p>聚合框架命令如下：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="nx">pipeline&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="nx">$stage1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">$stage2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">...&lt;/span>&lt;span class="nx">$stageN&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;span class="ln">2&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">COLLECTION&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">aggregate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">pipeline&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">options&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>支持的步骤列表详见：&lt;a href="https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline/">Aggregation Pipeline Stages — MongoDB Manual&lt;/a>。常见的的步骤如下：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Stage&lt;/th>
+&lt;th>Description&lt;/th>
+&lt;th>~ SQL&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>$match&lt;/code>&lt;/td>
+&lt;td>过滤&lt;/td>
+&lt;td>WHERE&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$project&lt;/code>&lt;/td>
+&lt;td>投影&lt;/td>
+&lt;td>AS&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$sort&lt;/code>&lt;/td>
+&lt;td>排序&lt;/td>
+&lt;td>ORDER BY&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$group&lt;/code>&lt;/td>
+&lt;td>分组&lt;/td>
+&lt;td>GROUP BY&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$skip/$limit&lt;/code>&lt;/td>
+&lt;td>结果限制&lt;/td>
+&lt;td>SKIP / LIMIT&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$lookup&lt;/code>&lt;/td>
+&lt;td>左外连接&lt;/td>
+&lt;td>LEFT OUTER JOIN&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$unwind&lt;/code>&lt;/td>
+&lt;td>展开数组&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$graphLookup&lt;/code>&lt;/td>
+&lt;td>图搜索&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>$facet / $bucket&lt;/code>&lt;/td>
+&lt;td>分面搜索&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>MongoDB学习笔记（三）- 文档删除、更新</title><link>https://www.jonathanlin.top/posts/mongo-notes-03/</link><pubDate>Wed, 17 Nov 2021 10:05:06 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-03/</guid><description>
 &lt;h2 id="删除文档">删除文档&lt;/h2>
 &lt;h3 id="定义">定义&lt;/h3>
 &lt;p>删除单个文档：&lt;strong>&lt;code>db.collection.deleteOne()&lt;/code>&lt;/strong>&lt;/p>

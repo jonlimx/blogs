@@ -86,6 +86,49 @@
 <div class=excerpt>
 <div class=excerpt_header>
 <h3 class=post_link>
+<a href=https://www.jonathanlin.top/posts/mongo-notes-04/ title="MongoDB学习笔记（四）- 聚合框架">MongoDB学习笔记（四）- 聚合框架</a>
+</h3>
+<div class=post_meta>
+<span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
+<span class=post_date>
+Nov 23, 2021</span>
+<span class=post_time> · 1 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/mongodb title=mongodb class="post_tag button button_translucent">mongodb
+</a>
+</span>
+<span class=page_only>&nbsp;·
+<div class=post_share>
+分享到:
+<a href="https://twitter.com/intent/tweet?text=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e5%9b%9b%ef%bc%89-%20%e8%81%9a%e5%90%88%e6%a1%86%e6%9e%b6&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-04%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
+</a>
+<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-04%2f&t=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e5%9b%9b%ef%bc%89-%20%e8%81%9a%e5%90%88%e6%a1%86%e6%9e%b6" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
+</a>
+<a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
+</a>
+<a href=https://www.jonathanlin.top/posts/mongo-notes-04/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
+</a>
+</div>
+</span>
+</div>
+</div>
+<div class="excerpt_footer partition">
+<div class=excerpt_thumbnail>
+<img src=https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/mongodb150.png alt="MongoDB学习笔记（四）- 聚合框架">
+</div>
+<div>
+<p class=pale>
+Mongo Aggregation Framework聚合框架是一个计算框架，由管道（pipeline）和步骤（stage）组成，如下图所示：
+原始的文档作为原始的输入数据 每个步骤对输入数据进行处理，处理的结果作为下一个处理步骤的输入 最终的结果也就是管道处理的结果，是由多个步骤处理完成 定义 聚合框架命令如下：
+1pipeline = [$stage1, $stage2, ...$stageN]; 2 3db.&lt;COLLECTION>.aggregate(pipeline, options); 支持的步骤列表详见：Aggregation Pipeline Stages — MongoDB Manual。常见的的步 …
+</p>
+<a href=https://www.jonathanlin.top/posts/mongo-notes-04/ title=阅读更多 class="excerpt_more button">阅读更多</a>
+</div>
+</div>
+</div>
+</li>
+<li class=post_item>
+<div class=excerpt>
+<div class=excerpt_header>
+<h3 class=post_link>
 <a href=https://www.jonathanlin.top/posts/mongo-notes-03/ title="MongoDB学习笔记（三）- 文档删除、更新">MongoDB学习笔记（三）- 文档删除、更新</a>
 </h3>
 <div class=post_meta>
@@ -455,6 +498,9 @@ ch03. 数据和C 思考问题：
 <h2 class=mt-4>最新文章</h2>
 <ul class=flex-column>
 <li>
+<a href=https://www.jonathanlin.top/posts/mongo-notes-04/ class=nav-link title="MongoDB学习笔记（四）- 聚合框架">MongoDB学习笔记（四）- 聚合框架</a>
+</li>
+<li>
 <a href=https://www.jonathanlin.top/posts/mongo-notes-03/ class=nav-link title="MongoDB学习笔记（三）- 文档删除、更新">MongoDB学习笔记（三）- 文档删除、更新</a>
 </li>
 <li>
@@ -475,16 +521,13 @@ ch03. 数据和C 思考问题：
 <li>
 <a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-02/ class=nav-link title="C Primer Plus读书笔记（二）">C Primer Plus读书笔记（二）</a>
 </li>
-<li>
-<a href=https://www.jonathanlin.top/posts/go-concurrency-best-practice/ class=nav-link title="[译]Go Concurrency Best Practice">[译]Go Concurrency Best Practice</a>
-</li>
 </ul>
 <div>
 <h2 class="mt-4 taxonomy" id=categories-section>分类</h2>
 <nav class=tags_nav>
 <a href=https://www.jonathanlin.top/categories/notes/ class="post_tag button button_translucent" title=notes>
 NOTES
-<span class=button_tally>8</span>
+<span class=button_tally>9</span>
 </a>
 <a href=https://www.jonathanlin.top/categories/translation/ class="post_tag button button_translucent" title=translation>
 TRANSLATION
@@ -511,12 +554,12 @@ C
 C-PRIMER-PLUS
 <span class=button_tally>4</span>
 </a>
-<a href=https://www.jonathanlin.top/tags/goroutine/ class="post_tag button button_translucent" title=goroutine>
-GOROUTINE
-<span class=button_tally>3</span>
-</a>
 <a href=https://www.jonathanlin.top/tags/mongodb/ class="post_tag button button_translucent" title=mongodb>
 MONGODB
+<span class=button_tally>4</span>
+</a>
+<a href=https://www.jonathanlin.top/tags/goroutine/ class="post_tag button button_translucent" title=goroutine>
+GOROUTINE
 <span class=button_tally>3</span>
 </a>
 <a href=https://www.jonathanlin.top/tags/concurrency-trap/ class="post_tag button button_translucent" title=concurrency-trap>
