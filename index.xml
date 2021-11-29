@@ -897,6 +897,7 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
+&lt;p>**const的修饰对象：**取决于和谁挨得近。如果和数据类型挨得近，那么是修饰对应的数据类型是const类型；如果和&lt;code>*&lt;/code>挨得近，则修饰指针，即指针本身的值不可以改变（不可以指向别处）&lt;/p>
 &lt;p>此外还需要注意：&lt;/p>
 &lt;ul>
 &lt;li>
@@ -1009,16 +1010,29 @@
 &lt;/li>
 &lt;li>字符串数组和初始化
 &lt;ul>
-&lt;li>&lt;code>char name[10] = &amp;quot;Jonathan&amp;quot;&lt;/code> - 在字符个数少于定义的数组个数时，用&lt;code>'\0'&lt;/code>补足。注意，如果用单个字符赋值是，例如&lt;code>char name[10] = {'J', 'o', 'n', 'a', 't', 'h','a','n','\n'}&lt;/code>，最后一个字符一定得是&lt;code>'\0'&lt;/code>，否则会被认定是字符数组而不是字符串&lt;/li>
+&lt;li>&lt;code>char name[10] = &amp;quot;Jonathan&amp;quot;&lt;/code> - 在字符个数少于定义的数组个数时，用&lt;code>'\0'&lt;/code>补足。注意，如果用单个字符赋值，例如&lt;code>char name[10] = {'J', 'o', 'n', 'a', 't', 'h','a','n','\0'}&lt;/code>，最后一个字符一定得是&lt;code>'\0'&lt;/code>，否则会被认定是字符数组而不是字符串&lt;/li>
 &lt;li>&lt;code>char name[] = &amp;quot;Jonathan&amp;quot;&lt;/code> - 这种不给定数组长度，那么编译器自动根据给定的字符串计算长度，当然最后会加上&lt;code>'\0'&lt;/code>&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>数组和指针的区别 - 既然字符串可以使用字符数组来表示，而后数组实际上又是和指针相通，那么指针自然可以表示字符串
 &lt;ul>
 &lt;li>&lt;code>char * head = &amp;quot;I love you&amp;quot;&lt;/code> - 这里的head是指针变量，因此可以修改head使得它指向其他的字符串&lt;/li>
-&lt;li>&lt;code>char heart[] = &amp;quot;I love you&amp;quot; &lt;/code> - 这里的heart是常量，因为数组的值就是数组首个元素的地址，这个值是固定。因此不可以对heart本身再赋值。比如：&lt;code>heart = head&lt;/code>这个是不成立的&lt;/li>
+&lt;li>&lt;code>char heart[] = &amp;quot;I love you&amp;quot; &lt;/code> - 这里的heart是常量，因为数组变量的值就是数组首个元素的地址，这个值是固定。因此不可以对heart本身再赋值。比如：&lt;code>heart = head&lt;/code>这个是不成立的&lt;/li>
 &lt;li>&lt;code>char * head = &amp;quot;I love you&amp;quot;;*(head + 5) = 'T'&lt;/code> - &lt;strong>这是不推荐的做法&lt;/strong>，不同的编译器可能会导致不同的行为。对于&lt;code>&amp;quot;I love you&amp;quot;&lt;/code>这个字符串而言是存放在静态存储区，这里通过head修改了对应的静态存储区的值，会导致引用该字符串的所有其他变量都发生变化。因此，&lt;strong>建议在把指针初始化为字符串常量的时候使用const修饰符&lt;/strong>，即：&lt;code>const char * head = &amp;quot;I love you&amp;quot;&lt;/code>&lt;/li>
 &lt;li>对于&lt;code>char heart[] = &amp;quot;I love you&amp;quot;&lt;/code>而言，实际上&lt;code>heart&lt;/code>并不是指向&lt;code>&amp;quot;I love you&amp;quot;&lt;/code>的静态存储区，数组实际上是获得了&lt;code>&amp;quot;I love you&amp;quot;&lt;/code>的副本。&lt;strong>所以，如果打算修改字符串，应该用数组形式而不是用指针&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>几种字符串输入方式的比较 - 字符串输入首先是需要预留存储该字符串的控件，然后使用输入函数获取字符串
+&lt;ul>
+&lt;li>&lt;code>scanf(&amp;quot;%s&amp;quot;, aStr)&lt;/code> - 只能读取一个单词&lt;/li>
+&lt;li>&lt;code>gets(astr) / puts(astr)&lt;/code> - 读取整行的输入直到遇到换行符，&lt;strong>然后丢弃换行符，接着在末尾添加一个空字符使其成为一个C字符串&lt;/strong>。&lt;strong>注意：&lt;/strong>&lt;code>gets&lt;/code>只有一个参数，即字符串的首地址，因此无法判断输入的字符串是否有足够的空间存储。如果超过了存储空间内，会出现不可预知的问题。&lt;code>puts&lt;/code>会在字符串末尾添加换行符&lt;/li>
+&lt;li>&lt;code>fgets(astr,len,ioin)/fputs(astr, ioout)&lt;/code> - 通常和&lt;code>fputs&lt;/code>配合使用。有三个参数1) 字符串变量用于接收字符串 2) 字符串的长度（如果是n，最大那么读入n-1个字符，最后一个字符用&lt;code>\0&lt;/code>填充。在存储空间充足的情况下会把换行符也存储下来） 3) 指定要读入的文件，如果是键盘读入，则以&lt;code>stdin&lt;/code>作为输入。&lt;code>fputs&lt;/code>不会在字符串末尾添加换行符。&lt;strong>&lt;code>fgets&lt;/code>函数返回指向char的指针。如果读到文件末尾，则返回一个特殊的指针NULL&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>空字符和空指针
+&lt;ul>
+&lt;li>空字符：对应的编码是0，是整数类型&lt;/li>
+&lt;li>空指针：是一个指针类型，指向一个无效的地址，它不会与任何数据的有效地址对应&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul></description></item><item><title>Regex Cheatsheet</title><link>https://www.jonathanlin.top/posts/regex-cheatsheet/</link><pubDate>Thu, 02 Sep 2021 13:59:45 +0800</pubDate><guid>https://www.jonathanlin.top/posts/regex-cheatsheet/</guid><description>
@@ -3655,7 +3669,7 @@
 &lt;p>使用scanf读取字符串的时候，&lt;strong>输入空格则停止读取&lt;/strong>&lt;/p>
 &lt;/li>
 &lt;li>
-&lt;p>使用scanf读取字符串的时候，变量不需要通过&amp;amp;取地址（因为字符数组本身就是一个指针？？）&lt;/p>
+&lt;p>使用scanf读取字符串的时候，变量不需要通过&amp;amp;取地址（因为字符数组本身就是一个指针）&lt;/p>
 &lt;/li>
 &lt;li>
 &lt;p>&amp;quot;x&amp;quot;和'x'的区别：前者是char数组，实际占用两个字符，后者是char类型，一个字符&lt;/p>
