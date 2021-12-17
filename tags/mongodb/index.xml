@@ -11,7 +11,7 @@
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="nx">pipeline&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="nx">$stage1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">$stage2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">...&lt;/span>&lt;span class="nx">$stageN&lt;/span>&lt;span class="p">];&lt;/span>
 &lt;span class="ln">2&lt;/span>
 &lt;span class="ln">3&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">COLLECTION&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">aggregate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">pipeline&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">options&lt;/span>&lt;span class="p">);&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>支持的步骤列表详见：&lt;a href="https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline/">Aggregation Pipeline Stages — MongoDB Manual&lt;/a>。常见的的步骤如下：&lt;/p>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>具体的每个步骤支持的操作非常丰富，需要查阅相应的文档。支持的步骤列表详见：&lt;a href="https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline/">Aggregation Pipeline Stages — MongoDB Manual&lt;/a>。常见的的步骤如下：&lt;/p>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -67,7 +67,84 @@
 &lt;td>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
-&lt;/table></description></item><item><title>MongoDB学习笔记（三）- 文档删除、更新</title><link>https://www.jonathanlin.top/posts/mongo-notes-03/</link><pubDate>Wed, 17 Nov 2021 10:05:06 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-03/</guid><description>
+&lt;/table>
+&lt;p>&lt;strong>$match：&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">$match&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">query&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>query的格式跟&lt;code>db.collection.find&lt;/code>的格式一样&lt;/p>
+&lt;p>&lt;strong>$project格式：&lt;/strong>&lt;/p>
+&lt;p>将所需的字段投影出来传递给下一个步骤。字段可以是文档中存在的，也可以是通过表达式生成的自定义字段&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">$project&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">specification&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>specification(s)：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>格式&lt;/th>
+&lt;th>说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>&amp;lt;field&amp;gt;: &amp;lt;1 or true&amp;gt;&lt;/code>&lt;/td>
+&lt;td>包含字段。除了使用1或者true，非0的整数都看作是true&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>_id: &amp;lt;0 or false&amp;gt;&lt;/code>&lt;/td>
+&lt;td>排除&lt;code>_id&lt;/code>字段，默认是包含&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>&amp;lt;field&amp;gt;: &amp;lt;expression&amp;gt;&lt;/code>&lt;/td>
+&lt;td>生成一个新的字段，或者对现有字段通过表达式赋值&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>&amp;lt;field&amp;gt;:&amp;lt;0 or false&amp;gt;&lt;/code>&lt;/td>
+&lt;td>排除字段&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;strong>$sort格式：&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">$sort&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">field1&lt;/span>&lt;span class="o">&amp;gt;:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">sort&lt;/span> &lt;span class="nx">order&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">field2&lt;/span>&lt;span class="o">&amp;gt;:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">sort&lt;/span> &lt;span class="nx">order&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">...&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>按字段进行排序，根据&lt;code>sort order&lt;/code>的值不同判定是升序还是降序：1代表升序，-1代表降序&lt;/p>
+&lt;p>&lt;strong>$group格式：&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln">2&lt;/span> &lt;span class="nx">$group&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">expression&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="c1">// Group By Expression
+&lt;/span>&lt;span class="ln">5&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">field1&lt;/span>&lt;span class="o">&amp;gt;:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">accumulator1&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">expression1&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">6&lt;/span> &lt;span class="p">...&lt;/span>
+&lt;span class="ln">7&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">8&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>_id&lt;/code>：必填字段。该字段指明分组的条件 - 可以按照文档中某个字段分组或者干脆不分组。按照文档某个字段分组时，通过&lt;code>$&lt;/code>引用文档字段，然后按组对文档做聚合。如果不分组，那么&lt;code>_id&lt;/code>指定为&lt;code>null&lt;/code>，这样对符合条件的所有文档做聚合&lt;/p>
+&lt;p>&lt;code>filedN&lt;/code>：可选字段。存储聚合计算的结果。mongo支持的聚合计算运算符参考&lt;a href="https://docs.mongodb.com/manual/reference/operator/aggregation/group/#std-label-accumulators-group">$group (aggregation) — MongoDB Manual&lt;/a>&lt;/p>
+&lt;p>&lt;strong>$skip/$limit格式：&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">$limit&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">positive&lt;/span> &lt;span class="mi">64&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">bit&lt;/span> &lt;span class="nx">integer&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="c1">// 从结果集中选取top N传递给下一个步骤
+&lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">$skip&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">positive&lt;/span> &lt;span class="mi">64&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">bit&lt;/span> &lt;span class="nx">integer&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="c1">// 跳过结果集中的top N把剩余的结果传递给下一个步骤
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="示例">示例&lt;/h3>
+&lt;p>给定下面的数据集：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cust_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;abc1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ord_date&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">ISODate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2012-11-02T17:04:11.102Z&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">status&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;A&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">amount&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">50&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">2&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cust_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;xyz1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ord_date&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">ISODate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2013-10-01T17:04:11.102Z&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">status&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;A&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">amount&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">100&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">3&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cust_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;xyz1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ord_date&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">ISODate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2013-10-12T17:04:11.102Z&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">status&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;D&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">amount&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">25&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cust_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;xyz1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ord_date&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">ISODate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2013-10-11T17:04:11.102Z&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">status&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;D&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">amount&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">125&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">5&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cust_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;abc1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ord_date&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">ISODate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2013-11-12T17:04:11.102Z&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">status&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;A&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">amount&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">25&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>分组求和&lt;/strong>&lt;/p>
+&lt;p>对&lt;code>status&lt;/code>为A的数据，按照&lt;code>cust_id&lt;/code>进行分组，而后对&lt;code>amount&lt;/code>进行求和：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="c1">// 命令
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">orders&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">aggregate&lt;/span>&lt;span class="p">([&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$match&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">status&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;A&amp;#34;&lt;/span>&lt;span class="p">}},&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$group&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$cust_id&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">total&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$sum&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$amount&amp;#34;&lt;/span>&lt;span class="p">}}}&lt;/span>
+&lt;span class="ln"> 5&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;span class="ln"> 6&lt;/span>
+&lt;span class="ln"> 7&lt;/span>&lt;span class="c1">// 结果
+&lt;/span>&lt;span class="ln"> 8&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="p">[&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;abc1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="s2">&amp;#34;total&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">75&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;xyz1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="s2">&amp;#34;total&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">100&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">17&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>MongoDB学习笔记（三）- 文档删除、更新</title><link>https://www.jonathanlin.top/posts/mongo-notes-03/</link><pubDate>Wed, 17 Nov 2021 10:05:06 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-03/</guid><description>
 &lt;h2 id="删除文档">删除文档&lt;/h2>
 &lt;h3 id="定义">定义&lt;/h3>
 &lt;p>删除单个文档：&lt;strong>&lt;code>db.collection.deleteOne()&lt;/code>&lt;/strong>&lt;/p>
