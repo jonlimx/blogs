@@ -4,20 +4,20 @@
 &lt;/blockquote>
 &lt;h3 id="单机版三节点副本集搭建">单机版三节点副本集搭建&lt;/h3>
 &lt;p>在一台Ubuntu机器上，通过配置文件的方式启动三个&lt;code>mongod&lt;/code>实例。各个参数的说明请参考&lt;a href="https://docs.mongodb.com/manual/reference/configuration-options/">Configuration File Options — MongoDB Manual&lt;/a>。示例配置文件和说明如下：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="nx">systemLog&lt;/span>&lt;span class="o">:&lt;/span>
-&lt;span class="ln"> 2&lt;/span> &lt;span class="nx">destination&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">file&lt;/span>
-&lt;span class="ln"> 3&lt;/span> &lt;span class="nx">path&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="err">/data/dbx/mongod.log // x替换成1，2，3对应三个不同的mongod实例&lt;/span>
-&lt;span class="ln"> 4&lt;/span> &lt;span class="nx">logAppend&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;span class="ln"> 5&lt;/span>&lt;span class="nx">storage&lt;/span>&lt;span class="o">:&lt;/span>
-&lt;span class="ln"> 6&lt;/span> &lt;span class="nx">dbPath&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="err">/data/dbx // x替换成1，2，3对应三个不同的mongod实例&lt;/span>
-&lt;span class="ln"> 7&lt;/span>&lt;span class="nx">net&lt;/span>&lt;span class="o">:&lt;/span>
-&lt;span class="ln"> 8&lt;/span> &lt;span class="nx">bindIp&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">0.0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="mf">0.0&lt;/span> &lt;span class="err">#&lt;/span> &lt;span class="nx">允许远程连接&lt;/span>
-&lt;span class="ln"> 9&lt;/span> &lt;span class="nx">port&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">xxxx&lt;/span> &lt;span class="c1">// 三个实例使用端口依次为28017，28018，28019
-&lt;/span>&lt;span class="ln">10&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">replication&lt;/span>&lt;span class="o">:&lt;/span>
-&lt;span class="ln">11&lt;/span> &lt;span class="nx">replSetName&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">jonlimxrs&lt;/span> &lt;span class="c1">// rs的名字，可根据需要命名
-&lt;/span>&lt;span class="ln">12&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">processManagement&lt;/span>&lt;span class="o">:&lt;/span>
-&lt;span class="ln">13&lt;/span> &lt;span class="nx">fork&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>启动三个mongod实例：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="ln"> 1&lt;/span>&lt;span class="nt">systemLog&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nt">destination&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">file&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nt">path&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/data/dbx/mongod.log&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c"># x替换成1，2，3对应三个不同的mongod实例&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nt">logAppend&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="ln"> 5&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="nt">storage&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="ln"> 6&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nt">dbPath&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/data/dbx&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c"># x替换成1，2，3对应三个不同的mongod实例&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="ln"> 7&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="nt">net&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="ln"> 8&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nt">bindIp&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">0.0.0.0&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c"># 允许远程连接&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="ln"> 9&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nt">port&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">xxxx &lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c"># 三个实例使用端口依次为28017，28018，28019&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="ln">10&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="nt">replication&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="ln">11&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nt">replSetName&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">jonlimxrs&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c"># rs的名字，可根据需要命名&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="ln">12&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="nt">processManagement&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="ln">13&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nt">fork&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>启动三个mongod实例：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>mongod -f /data/db1/mongod.conf
 &lt;span class="ln">2&lt;/span>mongod -f /data/db2/mongod.conf
 &lt;span class="ln">3&lt;/span>mongod -f /data/db3/mongod.conf

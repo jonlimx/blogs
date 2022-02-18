@@ -121,20 +121,20 @@ Feb 17, 2022</span>
 </blockquote>
 <h3 id=单机版三节点副本集搭建>单机版三节点副本集搭建</h3>
 <p>在一台Ubuntu机器上，通过配置文件的方式启动三个<code>mongod</code>实例。各个参数的说明请参考<a href=https://docs.mongodb.com/manual/reference/configuration-options/>Configuration File Options — MongoDB Manual</a>。示例配置文件和说明如下：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=ln> 1</span><span class=nx>systemLog</span><span class=o>:</span>
-<span class=ln> 2</span>  <span class=nx>destination</span><span class=o>:</span> <span class=nx>file</span>
-<span class=ln> 3</span>  <span class=nx>path</span><span class=o>:</span> <span class=err>/data/dbx/mongod.log // x替换成1，2，3对应三个不同的mongod实例</span>
-<span class=ln> 4</span>  <span class=nx>logAppend</span><span class=o>:</span> <span class=kc>true</span>
-<span class=ln> 5</span><span class=nx>storage</span><span class=o>:</span>
-<span class=ln> 6</span>  <span class=nx>dbPath</span><span class=o>:</span> <span class=err>/data/dbx // x替换成1，2，3对应三个不同的mongod实例</span>
-<span class=ln> 7</span><span class=nx>net</span><span class=o>:</span>
-<span class=ln> 8</span>  <span class=nx>bindIp</span><span class=o>:</span> <span class=mf>0.0</span><span class=p>.</span><span class=mf>0.0</span> <span class=err>#</span> <span class=nx>允许远程连接</span>
-<span class=ln> 9</span>  <span class=nx>port</span><span class=o>:</span> <span class=nx>xxxx</span>   <span class=c1>// 三个实例使用端口依次为28017，28018，28019
-</span><span class=ln>10</span><span class=c1></span><span class=nx>replication</span><span class=o>:</span>
-<span class=ln>11</span>  <span class=nx>replSetName</span><span class=o>:</span> <span class=nx>jonlimxrs</span> <span class=c1>// rs的名字，可根据需要命名
-</span><span class=ln>12</span><span class=c1></span><span class=nx>processManagement</span><span class=o>:</span>
-<span class=ln>13</span>  <span class=nx>fork</span><span class=o>:</span> <span class=kc>true</span>
-</code></pre></div><p>启动三个mongod实例：</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=ln> 1</span><span class=nt>systemLog</span><span class=p>:</span><span class=w>
+</span><span class=ln> 2</span><span class=w>  </span><span class=nt>destination</span><span class=p>:</span><span class=w> </span><span class=l>file</span><span class=w>
+</span><span class=ln> 3</span><span class=w>  </span><span class=nt>path</span><span class=p>:</span><span class=w> </span><span class=l>/data/dbx/mongod.log</span><span class=w> </span><span class=c># x替换成1，2，3对应三个不同的mongod实例</span><span class=w>
+</span><span class=ln> 4</span><span class=w>  </span><span class=nt>logAppend</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=ln> 5</span><span class=w></span><span class=nt>storage</span><span class=p>:</span><span class=w>
+</span><span class=ln> 6</span><span class=w>  </span><span class=nt>dbPath</span><span class=p>:</span><span class=w> </span><span class=l>/data/dbx</span><span class=w> </span><span class=c># x替换成1，2，3对应三个不同的mongod实例</span><span class=w>
+</span><span class=ln> 7</span><span class=w></span><span class=nt>net</span><span class=p>:</span><span class=w>
+</span><span class=ln> 8</span><span class=w>  </span><span class=nt>bindIp</span><span class=p>:</span><span class=w> </span><span class=m>0.0.0.0</span><span class=w> </span><span class=c># 允许远程连接</span><span class=w>
+</span><span class=ln> 9</span><span class=w>  </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=l>xxxx  </span><span class=w> </span><span class=c># 三个实例使用端口依次为28017，28018，28019</span><span class=w>
+</span><span class=ln>10</span><span class=w></span><span class=nt>replication</span><span class=p>:</span><span class=w>
+</span><span class=ln>11</span><span class=w>  </span><span class=nt>replSetName</span><span class=p>:</span><span class=w> </span><span class=l>jonlimxrs</span><span class=w> </span><span class=c># rs的名字，可根据需要命名</span><span class=w>
+</span><span class=ln>12</span><span class=w></span><span class=nt>processManagement</span><span class=p>:</span><span class=w>
+</span><span class=ln>13</span><span class=w>  </span><span class=nt>fork</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></code></pre></div><p>启动三个mongod实例：</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>mongod -f /data/db1/mongod.conf
 <span class=ln>2</span>mongod -f /data/db2/mongod.conf
 <span class=ln>3</span>mongod -f /data/db3/mongod.conf
