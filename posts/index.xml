@@ -1,4 +1,111 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/posts/</link><description>Recent content in Posts on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Tue, 23 Nov 2021 09:50:25 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>MongoDB学习笔记（四）- 聚合框架</title><link>https://www.jonathanlin.top/posts/mongo-notes-04/</link><pubDate>Tue, 23 Nov 2021 09:50:25 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-04/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/posts/</link><description>Recent content in Posts on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Thu, 17 Feb 2022 09:43:53 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>MongoDB学习笔记（五）- MongoDB复制集读写事务</title><link>https://www.jonathanlin.top/posts/mongo-notes-05/</link><pubDate>Thu, 17 Feb 2022 09:43:53 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-05/</guid><description>
+&lt;blockquote>
+&lt;p>部分内容来自唐建法(TJ)老师的&lt;a href="https://time.geekbang.org/course/intro/100040001?tab=catalog">MongoDB 高手课 (geekbang.org)&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="单机版三节点副本集搭建">单机版三节点副本集搭建&lt;/h3>
+&lt;p>在一台Ubuntu机器上，通过配置文件的方式启动三个&lt;code>mongod&lt;/code>实例。各个参数的说明请参考&lt;a href="https://docs.mongodb.com/manual/reference/configuration-options/">Configuration File Options — MongoDB Manual&lt;/a>。示例配置文件和说明如下：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="nx">systemLog&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="nx">destination&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">file&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="nx">path&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="err">/data/dbx/mongod.log // x替换成1，2，3对应三个不同的mongod实例&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="nx">logAppend&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kc">true&lt;/span>
+&lt;span class="ln"> 5&lt;/span>&lt;span class="nx">storage&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="nx">dbPath&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="err">/data/dbx // x替换成1，2，3对应三个不同的mongod实例&lt;/span>
+&lt;span class="ln"> 7&lt;/span>&lt;span class="nx">net&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="nx">bindIp&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">0.0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="mf">0.0&lt;/span> &lt;span class="err">#&lt;/span> &lt;span class="nx">允许远程连接&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="nx">port&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">xxxx&lt;/span> &lt;span class="c1">// 三个实例使用端口依次为28017，28018，28019
+&lt;/span>&lt;span class="ln">10&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">replication&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="nx">replSetName&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">jonlimxrs&lt;/span> &lt;span class="c1">// rs的名字，可根据需要命名
+&lt;/span>&lt;span class="ln">12&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">processManagement&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="nx">fork&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kc">true&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>启动三个mongod实例：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>mongod -f /data/db1/mongod.conf
+&lt;span class="ln">2&lt;/span>mongod -f /data/db2/mongod.conf
+&lt;span class="ln">3&lt;/span>mongod -f /data/db3/mongod.conf
+&lt;span class="ln">4&lt;/span>
+&lt;span class="ln">5&lt;/span>➜ ~ ps -ef &lt;span class="p">|&lt;/span> grep mongod
+&lt;span class="ln">6&lt;/span>root &lt;span class="m">1719&lt;/span> &lt;span class="m">1&lt;/span> &lt;span class="m">0&lt;/span> Feb16 ? 00:10:13 mongod -f ./mongod.conf
+&lt;span class="ln">7&lt;/span>root &lt;span class="m">1771&lt;/span> &lt;span class="m">1&lt;/span> &lt;span class="m">0&lt;/span> Feb16 ? 00:10:18 mongod -f ../db2/mongod.conf
+&lt;span class="ln">8&lt;/span>root &lt;span class="m">1823&lt;/span> &lt;span class="m">1&lt;/span> &lt;span class="m">0&lt;/span> Feb16 ? 00:10:13 mongod -f ../db3/mongod.conf
+&lt;span class="ln">9&lt;/span>ability &lt;span class="m">5595&lt;/span> &lt;span class="m">5477&lt;/span> &lt;span class="m">0&lt;/span> 10:20 pts/0 00:00:00 grep --color&lt;span class="o">=&lt;/span>auto --exclude-dir&lt;span class="o">=&lt;/span>.bzr --exclude-dir&lt;span class="o">=&lt;/span>CVS --exclude-dir&lt;span class="o">=&lt;/span>.git --exclude-dir&lt;span class="o">=&lt;/span>.hg --exclude-dir&lt;span class="o">=&lt;/span>.svn --exclude-dir&lt;span class="o">=&lt;/span>.idea --exclude-dir&lt;span class="o">=&lt;/span>.tox mongod
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>连接第一个实例，然后在第一个实例上初始化副本集：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="err">➜&lt;/span> &lt;span class="o">~&lt;/span> &lt;span class="nx">mongo&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="nx">port&lt;/span> &lt;span class="mi">28017&lt;/span>
+&lt;span class="ln">2&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="nx">rs&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">initiate&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;span class="ln">3&lt;/span> &lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;jonlimxrs&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">4&lt;/span> &lt;span class="nx">members&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nx">host&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;192.168.50.27:28017&amp;#34;&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">5&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nx">host&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;192.168.50.27:28018&amp;#34;&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">6&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nx">host&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;192.168.50.27:28019&amp;#34;&lt;/span> &lt;span class="p">}]})&lt;/span> &lt;span class="c1">// 这里我使用的IP，生产环境应该使用DNS而不是IP
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>初始化完毕后，需要在所有的SECONDARY节点上启用读操作：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="nx">jonlimxrs&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="nx">SECONDARY&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">test&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">find&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln"> 2&lt;/span>&lt;span class="nb">Error&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">error&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="s2">&amp;#34;topologyVersion&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="s2">&amp;#34;processId&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="nx">ObjectId&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;620cb55a0e2488713ea2053f&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="s2">&amp;#34;counter&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="nx">NumberLong&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="s2">&amp;#34;ok&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="s2">&amp;#34;errmsg&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;not master and slaveOk=false&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="s2">&amp;#34;code&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">13435&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="s2">&amp;#34;codeName&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;NotPrimaryNoSecondaryOk&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="c1">// 默认不允许读操作
+&lt;/span>&lt;span class="ln">11&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="s2">&amp;#34;$clusterTime&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="s2">&amp;#34;clusterTime&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="nx">Timestamp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1645066026&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="s2">&amp;#34;signature&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="s2">&amp;#34;hash&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="nx">BinData&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="s2">&amp;#34;AAAAAAAAAAAAAAAAAAAAAAAAAAA=&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="s2">&amp;#34;keyId&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="nx">NumberLong&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="s2">&amp;#34;operationTime&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="nx">Timestamp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1645066026&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">19&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">20&lt;/span>
+&lt;span class="ln">21&lt;/span>&lt;span class="nx">jonlimxrs&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="nx">SECONDARY&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="nx">rs&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">secondaryOk&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="c1">// 启用读操作
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="writeconcern介绍">writeConcern介绍&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">w&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">value&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">j&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kr">boolean&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">wtimeout&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">number&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>在插入、更新和删除操作的时候可以指定&lt;code>writeConcern&lt;/code>，意义在意该操作在个&lt;code>w&lt;/code>节点上完成才算成功，否则操作被阻塞。&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>参数&lt;/th>
+&lt;th>说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>w&lt;/td>
+&lt;td>节点的个数。可以指定具体的数，但是不能超过总的节点数。通常指定为&lt;code>majority&lt;/code>，有投票资格的节点个数的一半（向下取整）加1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>j&lt;/td>
+&lt;td>如果是&lt;code>true&lt;/code>说明操作需要落盘（journal文件）&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>wtimeout&lt;/td>
+&lt;td>操作超时时间，单位是毫秒。如果不指定该参数，或者值设置为0，那么在正常返回之前，相应的操作将一直阻塞&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>详细介绍请参看&lt;a href="https://docs.mongodb.com/manual/reference/write-concern/">Write Concern — MongoDB Manual&lt;/a>&lt;/p>
+&lt;p>现在通过设置SECONDARY的延时来模拟异常情况，来观察&lt;code>writeConcern&lt;/code>的作用：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="nx">jonlimxrs&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="nx">PRIMARY&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="nx">conf&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nx">rs&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">conf&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln"> 2&lt;/span>&lt;span class="nx">jonlimxrs&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="nx">PRIMARY&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="nx">conf&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">members&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="nx">secondaryDelaySecs&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="c1">// 设置数据同步延迟时间，单位秒
+&lt;/span>&lt;span class="ln"> 3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">jonlimxrs&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="nx">PRIMARY&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="nx">conf&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">members&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="nx">priority&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span> &lt;span class="c1">// 设置为0是的不能被选举成为Primary
+&lt;/span>&lt;span class="ln"> 4&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">jonlimxrs&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="nx">PRIMARY&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="nx">rs&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">reconfig&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">conf&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 5&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="s2">&amp;#34;host&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;192.168.50.27:28018&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="s2">&amp;#34;arbiterOnly&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kc">false&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="s2">&amp;#34;buildIndexes&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="s2">&amp;#34;hidden&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kc">false&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="s2">&amp;#34;priority&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="s2">&amp;#34;tags&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{},&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="s2">&amp;#34;secondaryDelaySecs&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="s2">&amp;#34;votes&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;span class="ln">15&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">16&lt;/span>
+&lt;span class="ln">17&lt;/span>&lt;span class="nx">jonlimxrs&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="nx">PRIMARY&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">test&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">insertOne&lt;/span>&lt;span class="p">({&lt;/span>&lt;span class="nx">count&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mi">1000&lt;/span>&lt;span class="p">},{&lt;/span>&lt;span class="nx">writeConcern&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="nx">w&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">}})&lt;/span>
+&lt;span class="ln">18&lt;/span>&lt;span class="c1">// 大约5秒后返回
+&lt;/span>&lt;span class="ln">19&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="s2">&amp;#34;acknowledged&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">21&lt;/span> &lt;span class="s2">&amp;#34;insertedId&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="nx">ObjectId&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;620f5fad9a5fd7bf5a122785&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">22&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>MongoDB学习笔记（四）- 聚合框架</title><link>https://www.jonathanlin.top/posts/mongo-notes-04/</link><pubDate>Tue, 23 Nov 2021 09:50:25 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-04/</guid><description>
 &lt;p>Mongo Aggregation Framework聚合框架是一个计算框架，由管道（pipeline）和步骤（stage）组成，如下图所示：&lt;/p>
 &lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20211123100530719.png" alt="Pipeline/Stage">&lt;/p>
 &lt;ol>
@@ -53,7 +160,7 @@
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;code>$unwind&lt;/code>&lt;/td>
-&lt;td>展开数组&lt;/td>
+&lt;td>展开数组，将数组的每一个元素都展开到父文档里&lt;/td>
 &lt;td>&lt;/td>
 &lt;/tr>
 &lt;tr>
@@ -119,31 +226,206 @@
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">$limit&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">positive&lt;/span> &lt;span class="mi">64&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">bit&lt;/span> &lt;span class="nx">integer&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="c1">// 从结果集中选取top N传递给下一个步骤
 &lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">$skip&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">positive&lt;/span> &lt;span class="mi">64&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">bit&lt;/span> &lt;span class="nx">integer&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="c1">// 跳过结果集中的top N把剩余的结果传递给下一个步骤
 &lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="示例">示例&lt;/h3>
-&lt;p>给定下面的数据集：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cust_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;abc1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ord_date&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">ISODate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2012-11-02T17:04:11.102Z&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">status&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;A&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">amount&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">50&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;span class="ln">2&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cust_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;xyz1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ord_date&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">ISODate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2013-10-01T17:04:11.102Z&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">status&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;A&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">amount&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">100&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;span class="ln">3&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cust_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;xyz1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ord_date&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">ISODate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2013-10-12T17:04:11.102Z&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">status&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;D&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">amount&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">25&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;span class="ln">4&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cust_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;xyz1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ord_date&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">ISODate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2013-10-11T17:04:11.102Z&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">status&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;D&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">amount&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">125&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;span class="ln">5&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cust_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;abc1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ord_date&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">ISODate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2013-11-12T17:04:11.102Z&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">status&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;A&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">amount&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">25&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>分组求和&lt;/strong>&lt;/p>
-&lt;p>对&lt;code>status&lt;/code>为A的数据，按照&lt;code>cust_id&lt;/code>进行分组，而后对&lt;code>amount&lt;/code>进行求和：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="c1">// 命令
-&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">orders&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">aggregate&lt;/span>&lt;span class="p">([&lt;/span>
-&lt;span class="ln"> 3&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$match&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">status&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;A&amp;#34;&lt;/span>&lt;span class="p">}},&lt;/span>
-&lt;span class="ln"> 4&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$group&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$cust_id&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">total&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$sum&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$amount&amp;#34;&lt;/span>&lt;span class="p">}}}&lt;/span>
-&lt;span class="ln"> 5&lt;/span>&lt;span class="p">])&lt;/span>
-&lt;span class="ln"> 6&lt;/span>
-&lt;span class="ln"> 7&lt;/span>&lt;span class="c1">// 结果
+&lt;p>以下示例基于mock数据库，单个文档示例如下：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$oid&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;5dbe7a545368f69de2b4d36e&amp;#34;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="s2">&amp;#34;city&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Champlinberg&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="s2">&amp;#34;country&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Malaysia&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="s2">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Destinee Schneider&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="s2">&amp;#34;orderDate&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$date&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;2019-03-26T03:20:08.805Z&amp;#34;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="s2">&amp;#34;orderLines&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="s2">&amp;#34;product&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Refined Fresh Tuna&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="s2">&amp;#34;sku&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;2057&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="s2">&amp;#34;qty&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">25&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="s2">&amp;#34;price&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">56.00&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="s2">&amp;#34;cost&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">46.48&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="s2">&amp;#34;product&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Refined Concrete Ball&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="s2">&amp;#34;sku&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;1738&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="s2">&amp;#34;qty&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">61&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="s2">&amp;#34;price&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">47.00&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="s2">&amp;#34;cost&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">47&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">21&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">22&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">23&lt;/span> &lt;span class="s2">&amp;#34;product&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Rustic Granite Towels&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">24&lt;/span> &lt;span class="s2">&amp;#34;sku&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;500&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">25&lt;/span> &lt;span class="s2">&amp;#34;qty&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">62&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">26&lt;/span> &lt;span class="s2">&amp;#34;price&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">74.00&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;span class="ln">27&lt;/span> &lt;span class="s2">&amp;#34;cost&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">62.16&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">28&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">29&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">30&lt;/span> &lt;span class="s2">&amp;#34;product&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Refined Rubber Salad&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">31&lt;/span> &lt;span class="s2">&amp;#34;sku&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;1400&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">32&lt;/span> &lt;span class="s2">&amp;#34;qty&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">73&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">33&lt;/span> &lt;span class="s2">&amp;#34;price&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">93.00&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;span class="ln">34&lt;/span> &lt;span class="s2">&amp;#34;cost&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">87.42&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">35&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">36&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">37&lt;/span> &lt;span class="s2">&amp;#34;product&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Intelligent Wooden Towels&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">38&lt;/span> &lt;span class="s2">&amp;#34;sku&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;5674&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">39&lt;/span> &lt;span class="s2">&amp;#34;qty&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">72&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">40&lt;/span> &lt;span class="s2">&amp;#34;price&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">84.00&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;span class="ln">41&lt;/span> &lt;span class="s2">&amp;#34;cost&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">68.88&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">42&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">43&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">44&lt;/span> &lt;span class="s2">&amp;#34;product&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Refined Steel Bacon&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">45&lt;/span> &lt;span class="s2">&amp;#34;sku&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;5009&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">46&lt;/span> &lt;span class="s2">&amp;#34;qty&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">8&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">47&lt;/span> &lt;span class="s2">&amp;#34;price&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">53.00&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;span class="ln">48&lt;/span> &lt;span class="s2">&amp;#34;cost&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">50.35&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">49&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">50&lt;/span> &lt;span class="p">],&lt;/span>
+&lt;span class="ln">51&lt;/span> &lt;span class="s2">&amp;#34;phone&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;425.956.7743 x4621&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">52&lt;/span> &lt;span class="s2">&amp;#34;shippingFee&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">8.00&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;span class="ln">53&lt;/span> &lt;span class="s2">&amp;#34;state&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Texas&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">54&lt;/span> &lt;span class="s2">&amp;#34;status&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;created&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">55&lt;/span> &lt;span class="s2">&amp;#34;street&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;493 Hilll Curve&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">56&lt;/span> &lt;span class="s2">&amp;#34;total&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">407&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;span class="ln">57&lt;/span> &lt;span class="s2">&amp;#34;userId&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">3573&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">58&lt;/span> &lt;span class="s2">&amp;#34;zip&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;24344-1715&amp;#34;&lt;/span>
+&lt;span class="ln">59&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>计算总销量&lt;/strong>&lt;/p>
+&lt;p>计算到目前为止的总销售额&lt;/p>
+&lt;ul>
+&lt;li>无论订单状态&lt;/li>
+&lt;li>不限制时间范围&lt;/li>
+&lt;li>不算运费&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="c1">// 查询命令
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">orders&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">aggregate&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$group&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kc">null&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">totalAmout&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$sum&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$total&amp;#34;&lt;/span>&lt;span class="p">}}}&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="p">]&lt;/span>
+&lt;span class="ln"> 6&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 7&lt;/span>&lt;span class="c1">// 查询结果
 &lt;/span>&lt;span class="ln"> 8&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="p">[&lt;/span>
 &lt;span class="ln"> 9&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;span class="ln">10&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;abc1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">11&lt;/span> &lt;span class="s2">&amp;#34;total&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">75&lt;/span>
-&lt;span class="ln">12&lt;/span> &lt;span class="p">},&lt;/span>
-&lt;span class="ln">13&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;span class="ln">14&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;xyz1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">15&lt;/span> &lt;span class="s2">&amp;#34;total&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">100&lt;/span>
-&lt;span class="ln">16&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;span class="ln">17&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;span class="ln">10&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kc">null&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="s2">&amp;#34;totalAmout&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">44019609&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">13&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>计算Q1已完成的订单金额&lt;/strong>&lt;/p>
+&lt;p>查询2019年第一季度（1月1日~3月31日）订单中已完成（completed）状态的总金额和总数量&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="c1">// 查询命令
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">orders&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">aggregate&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$match&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;orderDate&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$gte&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nb">Date&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2019-01-01&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">$lt&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nb">Date&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2019-04-01&amp;#34;&lt;/span>&lt;span class="p">)},&lt;/span> &lt;span class="s2">&amp;#34;status&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;completed&amp;#34;&lt;/span>&lt;span class="p">}},&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$group&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kc">null&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">total&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$sum&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$total&amp;#34;&lt;/span>&lt;span class="p">},&lt;/span> &lt;span class="nx">shippingFee&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$sum&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$shippingFee&amp;#34;&lt;/span>&lt;span class="p">},&lt;/span> &lt;span class="nx">orderCount&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$count&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{}}}},&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$project&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">count&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$orderCount&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">grandTotal&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$add&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;$total&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;$shippingFee&amp;#34;&lt;/span>&lt;span class="p">]}}}&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="p">]&lt;/span>
+&lt;span class="ln"> 8&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln"> 9&lt;/span>&lt;span class="c1">// 查询结果
+&lt;/span>&lt;span class="ln">10&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="p">[&lt;/span>
+&lt;span class="ln">11&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">5875&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="s2">&amp;#34;grandTotal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mf">2636376.00&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;span class="ln">15&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>计算月销量&lt;/strong>&lt;/p>
+&lt;p>计算前半年每个月的销售额和总订单数。&lt;/p>
+&lt;ul>
+&lt;li>不算运费&lt;/li>
+&lt;li>不算取消（cancelled）状态的订单&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="c1">// 查询命令
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">orders&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">aggregate&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$match&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;orderDate&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$lt&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nb">Date&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2019-07-01&amp;#34;&lt;/span>&lt;span class="p">)},&lt;/span> &lt;span class="s2">&amp;#34;status&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$ne&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;cancelled&amp;#34;&lt;/span>&lt;span class="p">}}},&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$group&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$month&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$orderDate&amp;#34;&lt;/span>&lt;span class="p">},&lt;/span> &lt;span class="nx">count&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$count&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{}},&lt;/span> &lt;span class="nx">total&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$sum&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$total&amp;#34;&lt;/span>&lt;span class="p">}}},&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$sort&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">}},&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$project&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;month&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$_id&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;total&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">}}&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="p">]&lt;/span>
+&lt;span class="ln"> 9&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">10&lt;/span>&lt;span class="c1">// 查询结果
+&lt;/span>&lt;span class="ln">11&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="p">[&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">8249&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="s2">&amp;#34;month&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="s2">&amp;#34;total&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">3620936&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">7387&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="s2">&amp;#34;month&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="s2">&amp;#34;total&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">3258201&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">21&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">22&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">23&lt;/span> &lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">8167&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">24&lt;/span> &lt;span class="s2">&amp;#34;month&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">25&lt;/span> &lt;span class="s2">&amp;#34;total&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">3574185&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">26&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">27&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">28&lt;/span> &lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">8038&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">29&lt;/span> &lt;span class="s2">&amp;#34;month&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">30&lt;/span> &lt;span class="s2">&amp;#34;total&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">3551291&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">31&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">32&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">33&lt;/span> &lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">8163&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">34&lt;/span> &lt;span class="s2">&amp;#34;month&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">35&lt;/span> &lt;span class="s2">&amp;#34;total&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">3590503&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">36&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">37&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">38&lt;/span> &lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">7942&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">39&lt;/span> &lt;span class="s2">&amp;#34;month&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">6&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">40&lt;/span> &lt;span class="s2">&amp;#34;total&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;$numberDecimal&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">3496645&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">41&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">42&lt;/span> &lt;span class="p">...&lt;/span>
+&lt;span class="ln">43&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>地区销量Top1&lt;/strong>&lt;/p>
+&lt;p>计算第一季度每个州（state）销量最多的&lt;code>sku&lt;/code>第一名。&lt;/p>
+&lt;ul>
+&lt;li>只算&lt;code>complete&lt;/code>订单&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">orders&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">aggregate&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;span class="ln"> 2&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$match&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;status&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;completed&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;orderDate&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$lt&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nb">Date&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2019-04-01&amp;#34;&lt;/span>&lt;span class="p">)}}},&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$unwind&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$orderLines&amp;#34;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$group&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">state&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$state&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">sku&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$orderLines.sku&amp;#34;&lt;/span>&lt;span class="p">},&lt;/span> &lt;span class="nx">count&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$sum&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$orderLines.qty&amp;#34;&lt;/span>&lt;span class="p">}}},&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$sort&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;_id.state&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">count&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">}},&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$group&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$_id.state&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">sku&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$first&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$_id.sku&amp;#34;&lt;/span>&lt;span class="p">},&lt;/span> &lt;span class="nx">count&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$first&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$count&amp;#34;&lt;/span>&lt;span class="p">}}},&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$sort&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">}}&lt;/span>
+&lt;span class="ln"> 9&lt;/span> &lt;span class="p">]&lt;/span>
+&lt;span class="ln">10&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>统计SKU销售件数&lt;/strong>&lt;/p>
+&lt;p>统计每个&lt;code>sku&lt;/code>在第一季度销售的次数&lt;/p>
+&lt;ul>
+&lt;li>不算取消（cancelled）状态的订单&lt;/li>
+&lt;li>按销售数量降序排列&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln"> 1&lt;/span>&lt;span class="c1">// 查询命令
+&lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">orders&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">aggregate&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;span class="ln"> 3&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;span class="ln"> 4&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$match&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;orderDate&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$lt&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nb">Date&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;2019-04-01&amp;#34;&lt;/span>&lt;span class="p">)},&lt;/span> &lt;span class="s2">&amp;#34;status&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$ne&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;cancelled&amp;#34;&lt;/span>&lt;span class="p">}}},&lt;/span>
+&lt;span class="ln"> 5&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$unwind&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$orderLines&amp;#34;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;span class="ln"> 6&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$group&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$orderLines.sku&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">count&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$sum&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$orderLines.qty&amp;#34;&lt;/span>&lt;span class="p">}}},&lt;/span>
+&lt;span class="ln"> 7&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">$sort&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">count&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">}}&lt;/span>
+&lt;span class="ln"> 8&lt;/span> &lt;span class="p">]&lt;/span>
+&lt;span class="ln"> 9&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">10&lt;/span>&lt;span class="c1">// 查询结果
+&lt;/span>&lt;span class="ln">11&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="p">[&lt;/span>
+&lt;span class="ln">12&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">13&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;4751&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">14&lt;/span> &lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">2115&lt;/span>
+&lt;span class="ln">15&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">16&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">17&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;798&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">18&lt;/span> &lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1945&lt;/span>
+&lt;span class="ln">19&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">20&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">21&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;3863&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">22&lt;/span> &lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1913&lt;/span>
+&lt;span class="ln">23&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">24&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">25&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;2558&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">26&lt;/span> &lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1896&lt;/span>
+&lt;span class="ln">27&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">28&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="ln">29&lt;/span> &lt;span class="s2">&amp;#34;_id&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;2049&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">30&lt;/span> &lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">1859&lt;/span>
+&lt;span class="ln">31&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;span class="ln">32&lt;/span> &lt;span class="p">...&lt;/span>
+&lt;span class="ln">33&lt;/span>&lt;span class="p">]&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div></description></item><item><title>MongoDB学习笔记（三）- 文档删除、更新</title><link>https://www.jonathanlin.top/posts/mongo-notes-03/</link><pubDate>Wed, 17 Nov 2021 10:05:06 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-03/</guid><description>
 &lt;h2 id="删除文档">删除文档&lt;/h2>
 &lt;h3 id="定义">定义&lt;/h3>
