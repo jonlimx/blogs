@@ -1421,24 +1421,25 @@
 &lt;tbody>
 &lt;tr>
 &lt;td>&lt;code>scanf(&amp;quot;%s&amp;quot;, str)&lt;/code>&lt;/td>
-&lt;td>输入空格则停止读取，即只能读取一个单词&lt;/td>
+&lt;td>以第一个非空白字符作为开始，以下一个空白字符作为结束。如果指定了字段宽度，则根据宽度或者空白字符作为终止&lt;/td>
 &lt;td>&lt;code>printf(&amp;quot;%s&amp;quot;,str)&lt;/code>&lt;/td>
 &lt;td>打印一个字符串，不自动添加换行符&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;code>gets(astr)&lt;/code>&lt;/td>
-&lt;td>读取整行。如果字符串过长&lt;strong>可能导致缓冲区溢出&lt;/strong>&lt;/td>
+&lt;td>读取整行，丢弃换行符。如果字符串过长&lt;strong>可能导致缓冲区溢出&lt;/strong>&lt;/td>
 &lt;td>&lt;code>puts(astr)&lt;/code>&lt;/td>
-&lt;td>打印一个字符串，&lt;strong>自动在末尾添加换行符&lt;/strong>&lt;/td>
+&lt;td>打印一个字符串（最后一个字符是'\0'），&lt;strong>自动在末尾添加换行符&lt;/strong>&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;code>fgets(astr,len,ioin)&lt;/code>&lt;/td>
-&lt;td>从流中读取字符串。可能是文件流或者标准输入流&lt;/td>
+&lt;td>从流中读取字符串，保留换行符。可能是文件流或者标准输入流。当读到文件结尾时返回&lt;code>NULL&lt;/code>&lt;/td>
 &lt;td>&lt;code>fputs(astr, ioout)&lt;/code>&lt;/td>
 &lt;td>输入字符串到流，不会自动添加换行符&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
+&lt;p>&lt;strong>注意：&lt;/strong>&lt;code>gets&lt;/code>/&lt;code>puts&lt;/code>和&lt;code>fgets&lt;/code>/&lt;code>fputs&lt;/code>应尽量配对使用，否则可能出现换行错乱的情况&lt;/p>
 &lt;p>代码解读1：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;stdio.h&amp;#34;&lt;/span>&lt;span class="cp">
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="cp">#define STLEN 5
@@ -1456,20 +1457,19 @@
 &lt;/span>&lt;span class="ln">14&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln">15&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%s&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">words&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;span class="ln">16&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;span class="ln">17&lt;/span>
-&lt;span class="ln">18&lt;/span>&lt;span class="p">}&lt;/span>
-&lt;span class="ln">19&lt;/span>
-&lt;span class="ln">20&lt;/span>&lt;span class="err">➜&lt;/span> &lt;span class="n">ch11&lt;/span> &lt;span class="p">.&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">out&lt;/span>
-&lt;span class="ln">21&lt;/span>&lt;span class="n">Enter&lt;/span> &lt;span class="n">string&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">empty&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">exit&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">17&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;span class="ln">18&lt;/span>
+&lt;span class="ln">19&lt;/span>&lt;span class="err">➜&lt;/span> &lt;span class="n">ch11&lt;/span> &lt;span class="p">.&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">out&lt;/span>
+&lt;span class="ln">20&lt;/span>&lt;span class="n">Enter&lt;/span> &lt;span class="n">string&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">empty&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">exit&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="ln">21&lt;/span>&lt;span class="n">hello&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">jonathan&lt;/span>
 &lt;span class="ln">22&lt;/span>&lt;span class="n">hello&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">jonathan&lt;/span>
-&lt;span class="ln">23&lt;/span>&lt;span class="n">hello&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">jonathan&lt;/span>
-&lt;span class="ln">24&lt;/span>
-&lt;span class="ln">25&lt;/span>&lt;span class="n">fgets&lt;/span> &lt;span class="n">Done&lt;/span>&lt;span class="o">!&lt;/span>
-&lt;span class="ln">26&lt;/span>&lt;span class="n">hello&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">jonathan&lt;/span>
-&lt;span class="ln">27&lt;/span>&lt;span class="n">hello&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;span class="ln">28&lt;/span>&lt;span class="n">this&lt;/span>
-&lt;span class="ln">29&lt;/span>&lt;span class="n">is&lt;/span>
-&lt;span class="ln">30&lt;/span>&lt;span class="n">jonathan&lt;/span>
+&lt;span class="ln">23&lt;/span>
+&lt;span class="ln">24&lt;/span>&lt;span class="n">fgets&lt;/span> &lt;span class="n">Done&lt;/span>&lt;span class="o">!&lt;/span>
+&lt;span class="ln">25&lt;/span>&lt;span class="n">hello&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">jonathan&lt;/span>
+&lt;span class="ln">26&lt;/span>&lt;span class="n">hello&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="ln">27&lt;/span>&lt;span class="n">this&lt;/span>
+&lt;span class="ln">28&lt;/span>&lt;span class="n">is&lt;/span>
+&lt;span class="ln">29&lt;/span>&lt;span class="n">jonathan&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>代码解读2：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln"> 1&lt;/span>&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
 &lt;/span>&lt;span class="ln"> 2&lt;/span>&lt;span class="cp">#define STLEN 10
@@ -1478,7 +1478,7 @@
 &lt;span class="ln"> 5&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">words&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">STLEN&lt;/span>&lt;span class="p">];&lt;/span>
 &lt;span class="ln"> 6&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln"> 7&lt;/span> &lt;span class="n">puts&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Enter strings (empty line to quit):&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
-&lt;span class="ln"> 8&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">fgets&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">words&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">STLEN&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">stdin&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="nb">NULL&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">words&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="sc">&amp;#39;\n&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 当按下回车后，缓冲区里的内容会发送给fgets函数。fgets会根据STLEN按长度来接收，不要忘记最后一个是&amp;#39;\0&amp;#39;
+&lt;span class="ln"> 8&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">fgets&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">words&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">STLEN&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">stdin&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="nb">NULL&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">words&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="sc">&amp;#39;\n&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 当按下回车后，缓冲区里的内容会发送给fgets函数。fgets会根据STLEN按长度来接收，不要忘记最后一个是&amp;#39;\0&amp;#39;，这个&amp;#39;\0&amp;#39;是自动补上去的
 &lt;/span>&lt;span class="ln"> 9&lt;/span>&lt;span class="c1">&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;span class="ln">10&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;span class="ln">11&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">words&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="sc">&amp;#39;\n&amp;#39;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">words&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="sc">&amp;#39;\0&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 这里就先将下标移动到当前words的最后一个位置。取决于输入的字符串的长度。如果最后一个是回车，那么说明输入的长度小于STLEN
