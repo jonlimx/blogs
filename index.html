@@ -87,6 +87,93 @@
 <div class=excerpt>
 <div class=excerpt_header>
 <h3 class=post_link>
+<a href=https://www.jonathanlin.top/posts/mqtt-note-02/ title=Mac下安装和配置Mosquitto>Mac下安装和配置Mosquitto</a>
+</h3>
+<div class=post_meta>
+<span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
+<span class=post_date>
+Feb 22, 2022</span>
+<span class=post_time> · 1 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/mqtt title=MQTT class="post_tag button button_translucent">MQTT
+</a>
+</span>
+<span class=page_only>&nbsp;·
+<div class=post_share>
+分享到:
+<a href="https://twitter.com/intent/tweet?text=Mac%e4%b8%8b%e5%ae%89%e8%a3%85%e5%92%8c%e9%85%8d%e7%bd%aeMosquitto&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmqtt-note-02%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
+</a>
+<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmqtt-note-02%2f&t=Mac%e4%b8%8b%e5%ae%89%e8%a3%85%e5%92%8c%e9%85%8d%e7%bd%aeMosquitto" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
+</a>
+<a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
+</a>
+<a href=https://www.jonathanlin.top/posts/mqtt-note-02/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
+</a>
+</div>
+</span>
+</div>
+</div>
+<div class="excerpt_footer partition">
+<div class=excerpt_thumbnail>
+<img src=https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/mosquitto.png alt=Mac下安装和配置Mosquitto>
+</div>
+<div>
+<p class=pale>
+安装 Mac下通过brew安装Mosquitto只需要一条简单的命令：brew install mosquitto
+安装完成后，默认情况下可执行文件和配置文件的位置如下：
+1➜ ~ ll /usr/local/bin | grep mosquitto 2lrwxr-xr-x 1 jonathanlin admin 47B Nov 25 11:48 mosquitto_ctrl -> ../Cellar/mosquitto/2.0.10_1/bin/mosquitto_ctrl 3lrwxr-xr-x 1 jonathanlin admin 49B Nov 25 11:48 mosquitto_passwd -> …
+</p>
+<a href=https://www.jonathanlin.top/posts/mqtt-note-02/ title=阅读更多 class="excerpt_more button">阅读更多</a>
+</div>
+</div>
+</div>
+</li>
+<li class=post_item>
+<div class=excerpt>
+<div class=excerpt_header>
+<h3 class=post_link>
+<a href=https://www.jonathanlin.top/posts/mqtt-note-01/ title=MQTT关键知识点>MQTT关键知识点</a>
+</h3>
+<div class=post_meta>
+<span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
+<span class=post_date>
+Feb 22, 2022</span>
+<span class=post_time> · 1 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/mqtt title=MQTT class="post_tag button button_translucent">MQTT
+</a>
+</span>
+<span class=page_only>&nbsp;·
+<div class=post_share>
+分享到:
+<a href="https://twitter.com/intent/tweet?text=MQTT%e5%85%b3%e9%94%ae%e7%9f%a5%e8%af%86%e7%82%b9&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmqtt-note-01%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
+</a>
+<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmqtt-note-01%2f&t=MQTT%e5%85%b3%e9%94%ae%e7%9f%a5%e8%af%86%e7%82%b9" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
+</a>
+<a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
+</a>
+<a href=https://www.jonathanlin.top/posts/mqtt-note-01/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
+</a>
+</div>
+</span>
+</div>
+</div>
+<div class="excerpt_footer partition">
+<div class=excerpt_thumbnail>
+<img src=https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/mqtt200.png alt=MQTT关键知识点>
+</div>
+<div>
+<p class=pale>
+角色 MQTT Broker - 消息代理服务器 MQTT Client - 消息发布者，通过QoS和Topic发布和订阅消息。MQTT Client可以同时是Publisher和Subscriber 主题名和主题过滤器 以下内容多来自MQTT3.1.1规范
+MQTT Client通过主题发布和订阅消息。主题名可以有不同层级，通过/划分。主题可能是 管理员在服务端预先定义好的，也可能是服务端收到第一个订阅或使用那个主题名的应用消息时动态添加 的。主题过滤器通过在主题名中引入通配符来匹配一个或者多个主题。
+主题语义和用法 主题名和主题过滤器必须符合下列规则：
+所有的主题名和主题过滤器必须至少包含一个字符 主题名和主题过滤器是 …
+</p>
+<a href=https://www.jonathanlin.top/posts/mqtt-note-01/ title=阅读更多 class="excerpt_more button">阅读更多</a>
+</div>
+</div>
+</div>
+</li>
+<li class=post_item>
+<div class=excerpt>
+<div class=excerpt_header>
+<h3 class=post_link>
 <a href=https://www.jonathanlin.top/posts/mongo-notes-05/ title="MongoDB学习笔记（五）- MongoDB复制集读写事务">MongoDB学习笔记（五）- MongoDB复制集读写事务</a>
 </h3>
 <div class=post_meta>
@@ -117,7 +204,7 @@ Feb 17, 2022</span>
 </div>
 <div>
 <p class=pale>
-部分内容来自唐建法(TJ)老师的MongoDB 高手课 (geekbang.org)
+内容来自唐建法(TJ)老师的MongoDB 高手课 (geekbang.org)
 单机版三节点副本集搭建 在一台Ubuntu机器上，通过配置文件的方式启动三个mongod实例。各个参数的说明请参考Configuration File Options — MongoDB Manual。示例配置文件和说明如下：
 1systemLog:2destination:file3path:/data/dbx/mongod.log# x替换成1，2，3对应三个不同的mongod实例4logAppend:true5storage:6dbPath:/data/dbx# x替换成1，2，3对应三个不同的mongod实 …
 </p>
@@ -437,97 +524,6 @@ ch06. C控制语句：循环 编写一个程序，提示用户输入大写字母
 </div>
 </div>
 </li>
-<li class=post_item>
-<div class=excerpt>
-<div class=excerpt_header>
-<h3 class=post_link>
-<a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-02/ title="C Primer Plus读书笔记（二）">C Primer Plus读书笔记（二）</a>
-</h3>
-<div class=post_meta>
-<span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
-<span class=post_date>
-Jul 19, 2021</span>
-<span class=post_time> · 2 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
-</a><a href=https://www.jonathanlin.top/tags/c-primer-plus title="C Primer Plus" class="post_tag button button_translucent">C Primer Plus
-</a>
-</span>
-<span class=page_only>&nbsp;·
-<div class=post_share>
-分享到:
-<a href="https://twitter.com/intent/tweet?text=C%20Primer%20Plus%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0%ef%bc%88%e4%ba%8c%ef%bc%89&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fc-primer-plus-notes-02%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
-</a>
-<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fc-primer-plus-notes-02%2f&t=C%20Primer%20Plus%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0%ef%bc%88%e4%ba%8c%ef%bc%89" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
-</a>
-<a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
-</a>
-<a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-02/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
-</a>
-</div>
-</span>
-</div>
-</div>
-<div class="excerpt_footer partition">
-<div class=excerpt_thumbnail>
-<img src=https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/c-primer-plus.png alt="C Primer Plus读书笔记（二）">
-</div>
-<div>
-<p class=pale>
-本文是《C Primer Plus》第六章至第八章读书笔记，持续更新中。
-ch06. C控制语句：循环 C语言支持哪些循环控制关键字 循环体中（里）变量的作用域 可以通过scanf函数控制循环 - 如果输入数据无法转换成指定类型的时候，scanf函数返回0
-while循环部分要点：只有测试条件之后的单独语句（简单或者符合语句）才是循环部分 （一般编程习惯好的都不会出现这种情况，但是也得了解如果出现这种情况到底是因为什么。现代高级的IDE都会有相应的提醒）
-1int n = 0; 2while (n &lt; 3) 3 printf("n is %d\n", n); 4 n++; // 这里的n++已经 …
-</p>
-<a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-02/ title=阅读更多 class="excerpt_more button">阅读更多</a>
-</div>
-</div>
-</div>
-</li>
-<li class=post_item>
-<div class=excerpt>
-<div class=excerpt_header>
-<h3 class=post_link>
-<a href=https://www.jonathanlin.top/posts/go-concurrency-best-practice/ title="[译]Go Concurrency Best Practice">[译]Go Concurrency Best Practice</a>
-</h3>
-<div class=post_meta>
-<span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
-<span class=post_date>
-Jul 12, 2021</span>
-<span class=post_time> · 5 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/golang title=golang class="post_tag button button_translucent">golang
-</a><a href=https://www.jonathanlin.top/tags/goroutine title=goroutine class="post_tag button button_translucent">goroutine
-</a><a href=https://www.jonathanlin.top/tags/concurrency title=Concurrency class="post_tag button button_translucent">Concurrency
-</a>
-</span>
-<span class=page_only>&nbsp;·
-<div class=post_share>
-分享到:
-<a href="https://twitter.com/intent/tweet?text=%5b%e8%af%91%5dGo%20Concurrency%20Best%20Practice&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fgo-concurrency-best-practice%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
-</a>
-<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fgo-concurrency-best-practice%2f&t=%5b%e8%af%91%5dGo%20Concurrency%20Best%20Practice" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
-</a>
-<a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
-</a>
-<a href=https://www.jonathanlin.top/posts/go-concurrency-best-practice/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
-</a>
-</div>
-</span>
-</div>
-</div>
-<div class="excerpt_footer partition">
-<div class=excerpt_thumbnail>
-<img src=https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/gocurrency150.png alt="[译]Go Concurrency Best Practice">
-</div>
-<div>
-<p class=pale>
-Dave Cheney 2019年在QCon上分享的一些Go编程的原则很有参考价值。我摘录了关于并发的部分，这部分是关于Go编发编程的一些原则和思想。
-原文链接：Practical Go: Real world advice for writing maintainable Go programs (cheney.net)
-通常选择Go来做项目，往往是因为它的并发特性。Go团队已经不遗余力的让Go在并发方面即能节省资源又能满足性能要求。然而，使用Go的并发特性写出低性能或者不稳定的代码是完全可能的。在最后我想留给你们一些我关于如何避免使用Go并发特定带来的一些隐患的建议。
-支持并发特性的语句channel，select和go在Go特 …
-</p>
-<a href=https://www.jonathanlin.top/posts/go-concurrency-best-practice/ title=阅读更多 class="excerpt_more button">阅读更多</a>
-</div>
-</div>
-</div>
-</li>
 <li>
 <ul class="pagination pagination-default">
 <li class="page-item disabled">
@@ -564,6 +560,12 @@ Dave Cheney 2019年在QCon上分享的一些Go编程的原则很有参考价值�
 <h2 class=mt-4>最新文章</h2>
 <ul class=flex-column>
 <li>
+<a href=https://www.jonathanlin.top/posts/mqtt-note-02/ class=nav-link title=Mac下安装和配置Mosquitto>Mac下安装和配置Mosquitto</a>
+</li>
+<li>
+<a href=https://www.jonathanlin.top/posts/mqtt-note-01/ class=nav-link title=MQTT关键知识点>MQTT关键知识点</a>
+</li>
+<li>
 <a href=https://www.jonathanlin.top/posts/mongo-notes-05/ class=nav-link title="MongoDB学习笔记（五）- MongoDB复制集读写事务">MongoDB学习笔记（五）- MongoDB复制集读写事务</a>
 </li>
 <li>
@@ -581,19 +583,13 @@ Dave Cheney 2019年在QCon上分享的一些Go编程的原则很有参考价值�
 <li>
 <a href=https://www.jonathanlin.top/posts/regex-cheatsheet/ class=nav-link title="Regex Cheatsheet">Regex Cheatsheet</a>
 </li>
-<li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-01/ class=nav-link title="MongoDB学习笔记（一）- 文档查询和投影">MongoDB学习笔记（一）- 文档查询和投影</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/c-primer-plus-handson/ class=nav-link title="C Primer Plus 编程练习">C Primer Plus 编程练习</a>
-</li>
 </ul>
 <div>
 <h2 class="mt-4 taxonomy" id=categories-section>分类</h2>
 <nav class=tags_nav>
 <a href=https://www.jonathanlin.top/categories/notes/ class="post_tag button button_translucent" title=notes>
 NOTES
-<span class=button_tally>10</span>
+<span class=button_tally>12</span>
 </a>
 <a href=https://www.jonathanlin.top/categories/translation/ class="post_tag button button_translucent" title=translation>
 TRANSLATION
@@ -630,6 +626,10 @@ GOROUTINE
 </a>
 <a href=https://www.jonathanlin.top/tags/concurrency-trap/ class="post_tag button button_translucent" title=concurrency-trap>
 CONCURRENCY-TRAP
+<span class=button_tally>2</span>
+</a>
+<a href=https://www.jonathanlin.top/tags/mqtt/ class="post_tag button button_translucent" title=mqtt>
+MQTT
 <span class=button_tally>2</span>
 </a>
 <a href=https://www.jonathanlin.top/tags/protobuf/ class="post_tag button button_translucent" title=protobuf>

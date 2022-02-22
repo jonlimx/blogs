@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MQTT on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/mqtt/</link><description>Recent content in MQTT on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Tue, 22 Feb 2022 14:32:04 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/mqtt/index.xml" rel="self" type="application/rss+xml"/><item><title>Mac下安装和配置Mosquitto</title><link>https://www.jonathanlin.top/posts/mqtt-note-02/</link><pubDate>Tue, 22 Feb 2022 14:32:04 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-02/</guid><description>
+&lt;h3 id="安装">安装&lt;/h3>
+&lt;p>Mac下通过&lt;code>brew&lt;/code>安装Mosquitto只需要一条简单的命令：&lt;code>brew install mosquitto&lt;/code>&lt;/p>
+&lt;p>安装完成后，默认情况下可执行文件和配置文件的位置如下：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>➜ ~ ll /usr/local/bin &lt;span class="p">|&lt;/span> grep mosquitto
+&lt;span class="ln">2&lt;/span>lrwxr-xr-x &lt;span class="m">1&lt;/span> jonathanlin admin 47B Nov &lt;span class="m">25&lt;/span> 11:48 mosquitto_ctrl -&amp;gt; ../Cellar/mosquitto/2.0.10_1/bin/mosquitto_ctrl
+&lt;span class="ln">3&lt;/span>lrwxr-xr-x &lt;span class="m">1&lt;/span> jonathanlin admin 49B Nov &lt;span class="m">25&lt;/span> 11:48 mosquitto_passwd -&amp;gt; ../Cellar/mosquitto/2.0.10_1/bin/mosquitto_passwd
+&lt;span class="ln">4&lt;/span>lrwxr-xr-x &lt;span class="m">1&lt;/span> jonathanlin admin 46B Nov &lt;span class="m">25&lt;/span> 11:48 mosquitto_pub -&amp;gt; ../Cellar/mosquitto/2.0.10_1/bin/mosquitto_pub
+&lt;span class="ln">5&lt;/span>lrwxr-xr-x &lt;span class="m">1&lt;/span> jonathanlin admin 45B Nov &lt;span class="m">25&lt;/span> 11:48 mosquitto_rr -&amp;gt; ../Cellar/mosquitto/2.0.10_1/bin/mosquitto_rr
+&lt;span class="ln">6&lt;/span>lrwxr-xr-x &lt;span class="m">1&lt;/span> jonathanlin admin 46B Nov &lt;span class="m">25&lt;/span> 11:48 mosquitto_sub -&amp;gt; ../Cellar/mosquitto/2.0.10_1/bin/mosquitto_sub
+&lt;span class="ln">7&lt;/span>
+&lt;span class="ln">8&lt;/span>➜ ~ ll /usr/local/etc/mosquitto &lt;span class="p">|&lt;/span> grep mosquitto.conf
+&lt;span class="ln">9&lt;/span>lrwxr-xr-x &lt;span class="m">1&lt;/span> jonathanlin admin 60B Nov &lt;span class="m">25&lt;/span> 11:48 mosquitto.conf -&amp;gt; ../../Cellar/mosquitto/2.0.10_1/etc/mosquitto/mosquitto.conf
+&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="配置">配置&lt;/h3>
+&lt;p>修改配置文件，显式关闭匿名访问，同时指定账号密码保存路径：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>allow_anonymous &lt;span class="nb">true&lt;/span>
+&lt;span class="ln">2&lt;/span>password_file /Users/jonathanlin/Workspace/mosquitto/pwd
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>使用&lt;code>mosquitto_passwd&lt;/code>创建两个测试账号：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>➜ mosquitto mosquitto_passwd -c ~/Workspace/mosquitto/pwd admin
+&lt;span class="ln">2&lt;/span>Password:
+&lt;span class="ln">3&lt;/span>Reenter password:
+&lt;span class="ln">4&lt;/span>
+&lt;span class="ln">5&lt;/span>➜ mosquitto mosquitto_passwd ~/Workspace/mosquitto/pwd user &lt;span class="c1"># 这里不再需要-c参数，否则是覆盖之前的文件&lt;/span>
+&lt;span class="ln">6&lt;/span>Password:
+&lt;span class="ln">7&lt;/span>Reenter password:
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>通过&lt;code>brew&lt;/code>启动&lt;code>mosquitto&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>➜ mosquitto brew services start &lt;span class="nv">mosquitto&lt;/span>
+&lt;span class="ln">2&lt;/span>&lt;span class="o">==&lt;/span>&amp;gt; Successfully started &lt;span class="sb">`&lt;/span>mosquitto&lt;span class="sb">`&lt;/span> &lt;span class="o">(&lt;/span>label: homebrew.mxcl.mosquitto&lt;span class="o">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>或者执行二进制文件：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>➜ ~ /usr/local/sbin/mosquitto -c /usr/local/etc/mosquitto/mosquitto.conf
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>使用&lt;code>mosquitto_sub&lt;/code>订阅一个主题：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>➜ mosquitto mosquitto_sub -u admin -P &lt;span class="m">1234&lt;/span> -t &lt;span class="s1">&amp;#39;topic-test&amp;#39;&lt;/span> -v
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>使用&lt;code>mosquitto_pub&lt;/code>往主题里发送消息：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>➜ ~ mosquitto_pub -u admin -P &lt;span class="m">1234&lt;/span> -t &lt;span class="s1">&amp;#39;topic-test&amp;#39;&lt;/span> -m &lt;span class="s1">&amp;#39;test&amp;#39;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>MQTT关键知识点</title><link>https://www.jonathanlin.top/posts/mqtt-note-01/</link><pubDate>Tue, 22 Feb 2022 09:59:18 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-01/</guid><description>
+&lt;h3 id="角色">角色&lt;/h3>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/mqtt-publish-subscribe-20220222113341799.png" alt="mqtt-publish-subscribe">&lt;/p>
+&lt;ul>
+&lt;li>MQTT Broker - 消息代理服务器&lt;/li>
+&lt;li>MQTT Client - 消息发布者，通过QoS和Topic发布和订阅消息。MQTT Client可以同时是Publisher和Subscriber&lt;/li>
+&lt;/ul>
+&lt;h3 id="主题名和主题过滤器">主题名和主题过滤器&lt;/h3>
+&lt;blockquote>
+&lt;p>以下内容多来自MQTT3.1.1规范&lt;/p>
+&lt;/blockquote>
+&lt;p>MQTT Client通过主题发布和订阅消息。主题名可以有不同层级，通过&lt;code>/&lt;/code>划分。主题可能是 管理员在服务端预先定义好的，也可能是服务端收到第一个订阅或使用那个主题名的应用消息时动态添加 的。主题过滤器通过在主题名中引入通配符来匹配一个或者多个主题。&lt;/p>
+&lt;h4 id="主题语义和用法">主题语义和用法&lt;/h4>
+&lt;p>主题名和主题过滤器必须符合下列规则：&lt;/p>
+&lt;ul>
+&lt;li>所有的主题名和主题过滤器必须至少包含一个字符&lt;/li>
+&lt;li>主题名和主题过滤器是区分大小写的&lt;/li>
+&lt;li>主题名和主题过滤器可以包含空格&lt;/li>
+&lt;li>主题名或主题过滤器以前置或后置斜杠&amp;quot;/&amp;quot;区分&lt;/li>
+&lt;li>只包含斜杠&amp;quot;/&amp;quot;的主题名或主题过滤器是合法的&lt;/li>
+&lt;li>主题名和主题过滤器不能包含空字符 (Unicode U+0000)&lt;/li>
+&lt;li>主题名和主题过滤器是 UTF-8 编码字符串，它们不能超过 65535字节&lt;/li>
+&lt;/ul>
+&lt;p>例如：&lt;/p>
+&lt;ul>
+&lt;li>&amp;quot;ACCOUNTS&amp;quot;和&amp;quot;Accounts&amp;quot;是不同的主题名&lt;/li>
+&lt;li>&amp;quot;Accounts payable&amp;quot;是合法的主题名&lt;/li>
+&lt;li>&amp;quot;/finance&amp;quot; 和 &amp;quot;finance&amp;quot;是不同的&lt;/li>
+&lt;/ul>
+&lt;h4 id="多层通配符">多层通配符&lt;code>#&lt;/code>&lt;/h4>
+&lt;p>&lt;strong>&lt;code>#&lt;/code>&lt;/strong> 用于匹配主题中的任意层级的通配符。多层通配符必须是主题过滤器的最后一个字符，用于匹配它的父级和任意数量的子层级。例如，&amp;quot;sport/tennis/player1/#&amp;quot; 匹配下列主题名：&lt;/p>
+&lt;ul>
+&lt;li>&amp;quot;sport/tennis/player1&amp;quot;&lt;/li>
+&lt;li>&amp;quot;sport/tennis/player1/ranking&amp;quot;&lt;/li>
+&lt;li>&amp;quot;sport/tennis/player1/score/wimbledon&amp;quot;&lt;/li>
+&lt;/ul>
+&lt;p>一些其他的例子：&lt;/p>
+&lt;ul>
+&lt;li>&amp;quot;sport/#&amp;quot;也匹配单独的 &amp;quot;sport&amp;quot; ，因为&amp;quot;#&amp;quot; 包括它的父级&lt;/li>
+&lt;li>&amp;quot;sport/tennis/#&amp;quot;也是有效的&lt;/li>
+&lt;li>&amp;quot;sport/tennis#&amp;quot;是无效的&lt;/li>
+&lt;li>&amp;quot;sport/tennis/#/ranking&amp;quot;是无效的&lt;/li>
+&lt;/ul>
+&lt;h4 id="单层通配符">单层通配符&lt;code>+&lt;/code>&lt;/h4>
+&lt;p>在主题过滤器的任意层级都可以使用单层通配符，包括第一个和最后一个层级。它占据的是主题过滤器的整个层级，匹配的是特定的某个层级，&lt;strong>不能匹配子层级&lt;/strong>。例如，对于主题过滤器&amp;quot;sport/tennis/+&amp;quot;：&lt;/p>
+&lt;ul>
+&lt;li>&amp;quot;sport/tennis/player1&amp;quot; - 匹配&lt;/li>
+&lt;li>&amp;quot;sport/tennis/player2&amp;quot; - 匹配&lt;/li>
+&lt;li>&amp;quot;sport/tennis/player1/ranking&amp;quot; - 不匹配&lt;/li>
+&lt;/ul>
+&lt;p>一些其他的例子：&lt;/p>
+&lt;ul>
+&lt;li>&amp;quot;sport/+&amp;quot;不匹配 &amp;quot;sport&amp;quot;但是却匹配 &amp;quot;sport/&amp;quot;&lt;/li>
+&lt;li>&amp;quot;+&amp;quot;是有效的&lt;/li>
+&lt;li>&amp;quot;+/tennis/#&amp;quot;是有效的&lt;/li>
+&lt;li>&amp;quot;sport+&amp;quot;是无效的&lt;/li>
+&lt;li>&amp;quot;sport/+/player1&amp;quot;也是有效的&lt;/li>
+&lt;li>&amp;quot;/finance&amp;quot;匹配 &amp;quot;+/+&amp;quot;和 &amp;quot;/+&amp;quot;，但是不匹配&amp;quot;+&amp;quot;&lt;/li>
+&lt;/ul>
+&lt;h4 id="以开头的主题">以&lt;code>$&lt;/code>开头的主题&lt;/h4>
+&lt;p>服务端不能将&amp;quot;$&amp;quot;字符开头的主题名和&amp;quot;#/+&amp;quot;开头的主题过滤器匹配。&amp;quot;$&amp;quot;字符开头的主题名应该用于其他目的&lt;/p>
+&lt;ul>
+&lt;li>&amp;quot;$SYS/ &amp;quot;被广泛用作包含服务器特定信息或控制接口的主题的前缀&lt;/li>
+&lt;li>应用不能使用 &amp;quot;$&amp;quot; 字符开头的主题 （也就是MQTT Client用于交互业务数据的主题）&lt;/li>
+&lt;li>订阅 &amp;quot;#&amp;quot;的客户端不会收到任何发布到以&amp;quot;$&amp;quot;开头主题的消息&lt;/li>
+&lt;li>订阅 &amp;quot;+/monitor/Clients&amp;quot; 的客户端不会收到任何发布到&amp;quot; $SYS/monitor/Clients&amp;quot;的消息&lt;/li>
+&lt;li>订阅 &amp;quot;$SYS/#&amp;quot;的客户端会收到发布到以&amp;quot;$SYS/&amp;quot;开头主题的消息&lt;/li>
+&lt;li>订阅 &amp;quot;$SYS/monitor/+&amp;quot;的客户端会收到发布到&amp;quot;$SYS/monitor/Clients&amp;quot;主题的消息&lt;/li>
+&lt;li>如果客户端想同时接受以&amp;quot; $SYS/&amp;quot;开头主题的消息和不以&amp;quot;$&amp;quot; 开头主题的消息，它需要同时 订阅&amp;quot;#&amp;quot;和&amp;quot;$SYS/#&amp;quot;&lt;/li>
+&lt;/ul></description></item></channel></rss>

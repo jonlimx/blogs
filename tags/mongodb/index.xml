@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>mongodb on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/mongodb/</link><description>Recent content in mongodb on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Thu, 17 Feb 2022 09:43:53 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/mongodb/index.xml" rel="self" type="application/rss+xml"/><item><title>MongoDB学习笔记（五）- MongoDB复制集读写事务</title><link>https://www.jonathanlin.top/posts/mongo-notes-05/</link><pubDate>Thu, 17 Feb 2022 09:43:53 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-05/</guid><description>
 &lt;blockquote>
-&lt;p>部分内容来自唐建法(TJ)老师的&lt;a href="https://time.geekbang.org/course/intro/100040001?tab=catalog">MongoDB 高手课 (geekbang.org)&lt;/a>&lt;/p>
+&lt;p>内容来自唐建法(TJ)老师的&lt;a href="https://time.geekbang.org/course/intro/100040001?tab=catalog">MongoDB 高手课 (geekbang.org)&lt;/a>&lt;/p>
 &lt;/blockquote>
 &lt;h3 id="单机版三节点副本集搭建">单机版三节点副本集搭建&lt;/h3>
 &lt;p>在一台Ubuntu机器上，通过配置文件的方式启动三个&lt;code>mongod&lt;/code>实例。各个参数的说明请参考&lt;a href="https://docs.mongodb.com/manual/reference/configuration-options/">Configuration File Options — MongoDB Manual&lt;/a>。示例配置文件和说明如下：&lt;/p>
@@ -105,6 +105,50 @@
 &lt;span class="ln">20&lt;/span> &lt;span class="s2">&amp;#34;acknowledged&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
 &lt;span class="ln">21&lt;/span> &lt;span class="s2">&amp;#34;insertedId&amp;#34;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="nx">ObjectId&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;620f5fad9a5fd7bf5a122785&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;span class="ln">22&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="readpreference和readpreferencetags">readPreference和&lt;strong>readPreferenceTags&lt;/strong>&lt;/h3>
+&lt;p>readPreference决定了从哪一个节点读取数据，可配置的值如下表。根据场景的不同选择从不同的节点读取数据。&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>选项&lt;/th>
+&lt;th>说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>primary&lt;/td>
+&lt;td>只从主节点读取&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>primaryPreferred&lt;/td>
+&lt;td>优先从主节点读取，如果不可用就从从节点读取&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>secondary&lt;/td>
+&lt;td>只从从节点读取&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>secondaryPreferred&lt;/td>
+&lt;td>优先从从节点读取，如果不可用就从主节点读取&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>nearest&lt;/td>
+&lt;td>从时延最小的节点读取&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>关于&lt;strong>readPreference&lt;/strong>的更多介绍请参考：&lt;a href="https://docs.mongodb.com/manual/core/read-preference/">Read Preference — MongoDB Manual&lt;/a>&lt;/p>
+&lt;p>readPreferenceTags与readPreference类似，通过对节点打上特定的标签，读取的时候可以选择从具有特定标签的节点读取。详见：&lt;a href="https://docs.mongodb.com/manual/core/read-preference-tags/#std-label-replica-set-read-preference-tag-sets">Read Preference Tag Sets — MongoDB Manual&lt;/a>&lt;/p>
+&lt;p>连接字符串上设置这两个参数的方式：&lt;a href="https://docs.mongodb.com/manual/reference/connection-string/">Connection String URI Format — MongoDB Manual&lt;/a>&lt;/p>
+&lt;p>现在通过&lt;code>db.fsyncLock()&lt;/code> 锁定从节点写入来模拟从节点不可用的情况：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="ln">1&lt;/span>&lt;span class="c1">// 分别在两个从节点执行db.fsyncLock()
+&lt;/span>&lt;span class="ln">2&lt;/span>&lt;span class="c1">// 192.168.50.27:28018
+&lt;/span>&lt;span class="ln">3&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">jonlimxrs&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="nx">SECONDARY&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">fsyncLock&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">4&lt;/span>&lt;span class="c1">// 192.168.50.27:28019
+&lt;/span>&lt;span class="ln">5&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">jonlimxrs&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="nx">SECONDARY&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">fsyncLock&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="ln">6&lt;/span>&lt;span class="nx">jonlimxrs&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="nx">PRIMARY&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">test&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">insertOne&lt;/span>&lt;span class="p">({&lt;/span>&lt;span class="nx">a&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mi">1001&lt;/span>&lt;span class="p">},{&lt;/span>&lt;span class="nx">wtimeout&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mi">1000&lt;/span>&lt;span class="p">})&lt;/span> &lt;span class="c1">// 主节点插入
+&lt;/span>&lt;span class="ln">7&lt;/span>&lt;span class="c1">// 从节点上查不到数据
+&lt;/span>&lt;span class="ln">8&lt;/span>&lt;span class="c1">&lt;/span>&lt;span class="nx">jonlimxrs&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="nx">SECONDARY&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">test&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">find&lt;/span>&lt;span class="p">({&lt;/span>&lt;span class="nx">a&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mi">1001&lt;/span>&lt;span class="p">}).&lt;/span>&lt;span class="nx">readPref&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;secondary&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div></description></item><item><title>MongoDB学习笔记（四）- 聚合框架</title><link>https://www.jonathanlin.top/posts/mongo-notes-04/</link><pubDate>Tue, 23 Nov 2021 09:50:25 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mongo-notes-04/</guid><description>
 &lt;p>Mongo Aggregation Framework聚合框架是一个计算框架，由管道（pipeline）和步骤（stage）组成，如下图所示：&lt;/p>
 &lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20211123100530719.png" alt="Pipeline/Stage">&lt;/p>
