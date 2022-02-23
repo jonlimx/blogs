@@ -1293,6 +1293,7 @@
 &lt;p>指针和数组&lt;/p>
 &lt;ul>
 &lt;li>&lt;strong>数组名是该数组首元素的地址&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>声明数组将分配存储数组的空间，而声明指针只是分配存储一个地址的空间&lt;/strong>&lt;/li>
 &lt;li>指针加1表示增加一个存储单元。这里的存储单元实际上对应指针所指向对象的数据类型对应的字节数&lt;/li>
 &lt;li>数组加1后的地址是下一个元素的地址&lt;/li>
 &lt;li>举例来说，定义一个数组&lt;code>ar&lt;/code>：
