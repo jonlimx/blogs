@@ -88,7 +88,7 @@ ch09. 函数   函数原型、函数定义和函数调用 函数的参数列表�
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
 Sep 8, 2021</span>
-<span class=post_time> · 4 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
+<span class=post_time> · 5 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
 </a><a href=https://www.jonathanlin.top/tags/c-primer-plus title="C Primer Plus" class="post_tag button button_translucent">C Primer Plus
 </a>
 </span>
@@ -592,6 +592,34 @@ Sep 8, 2021</span>
 <ul>
 <li>空字符：对应的编码是0，是整数类型</li>
 <li>空指针：是一个指针类型，指向一个无效的地址，它不会与任何数据的有效地址对应</li>
+</ul>
+</li>
+<li>
+<p>两个和字符(串)相关的系统库</p>
+<ul>
+<li><code>string.h</code> - 大量操作字符串的函数</li>
+<li><code>strlib.h</code> - 大量字符串和数值转化的函数</li>
+</ul>
+</li>
+<li>
+<p>命令行参数</p>
+<ul>
+<li>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln>1</span><span class=cm>/* repeat.c */</span>
+<span class=ln>2</span><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=kt>char</span><span class=o>*</span> <span class=n>argv</span><span class=p>[]){...}</span>
+</code></pre></div></li>
+<li>
+<p><code>agrc</code> - argument count，命令行参数的个数。通常命令名为第一个参数</p>
+</li>
+<li>
+<p><code>argv</code> - argument value，字符串数组，存放参数的值</p>
+</li>
+<li>
+<p>例如：repeat I am fine，argc为4，对应的值存放在argv数组里</p>
+</li>
+<li>
+<p>例如：repeat "I am fine"，这里argc为2，I am fine为一个字符串</p>
+</li>
 </ul>
 </li>
 </ul>
