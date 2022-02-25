@@ -32,7 +32,14 @@
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>➜ mosquitto mosquitto_sub -u admin -P &lt;span class="m">1234&lt;/span> -t &lt;span class="s1">&amp;#39;topic-test&amp;#39;&lt;/span> -v
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>使用&lt;code>mosquitto_pub&lt;/code>往主题里发送消息：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>➜ ~ mosquitto_pub -u admin -P &lt;span class="m">1234&lt;/span> -t &lt;span class="s1">&amp;#39;topic-test&amp;#39;&lt;/span> -m &lt;span class="s1">&amp;#39;test&amp;#39;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>MQTT关键知识点</title><link>https://www.jonathanlin.top/posts/mqtt-note-01/</link><pubDate>Tue, 22 Feb 2022 09:59:18 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-01/</guid><description>
+&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>MQTT杂记</title><link>https://www.jonathanlin.top/posts/mqtt-note-01/</link><pubDate>Tue, 22 Feb 2022 09:59:18 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-01/</guid><description>
+&lt;blockquote>
+&lt;p>本文记录一些学些MQTT的过程中的重点和难点，学习材料包括：&lt;/p>
+&lt;ul>
+&lt;li>MQTT协议规范&lt;/li>
+&lt;li>&lt;a href="https://www.cnblogs.com/schips/p/12266847.html">MQTT 协议学习： 总结 与 各种定义的速查表 - schips - 博客园 (cnblogs.com)&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
 &lt;h3 id="角色">角色&lt;/h3>
 &lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/mqtt-publish-subscribe-20220222113341799.png" alt="mqtt-publish-subscribe">&lt;/p>
 &lt;ul>
@@ -101,4 +108,77 @@
 &lt;li>订阅 &amp;quot;$SYS/#&amp;quot;的客户端会收到发布到以&amp;quot;$SYS/&amp;quot;开头主题的消息&lt;/li>
 &lt;li>订阅 &amp;quot;$SYS/monitor/+&amp;quot;的客户端会收到发布到&amp;quot;$SYS/monitor/Clients&amp;quot;主题的消息&lt;/li>
 &lt;li>如果客户端想同时接受以&amp;quot; $SYS/&amp;quot;开头主题的消息和不以&amp;quot;$&amp;quot; 开头主题的消息，它需要同时 订阅&amp;quot;#&amp;quot;和&amp;quot;$SYS/#&amp;quot;&lt;/li>
+&lt;/ul>
+&lt;h3 id="剩余长度的计算">剩余长度的计算&lt;/h3>
+&lt;p>MQTT 控制报文由三部分组成，按照 下图描述的顺序:&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20220224155932690.png" alt="image-20220224155932690">&lt;/p>
+&lt;p>每个 MQTT 控制报文都包含一个固定报头。下图描述了固定报头的格式：&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20220224155952188.png" alt="image-20220224155952188">&lt;/p>
+&lt;p>控制报文类型和标志位就不再赘述，请参考MQTT协议规范。这里重点记录一下剩余长度的含义以及计算方式。&lt;/p>
+&lt;p>剩余长度(Remaining Length)表示当前报文剩余部分的字节数，&lt;strong>包括可变报头(Variable header)和负载(Payload)的数据&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>剩余长度字段使用一个变长度编码方案，可能用byte2~byte5来编码表示剩余长度&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>对于小于128的值使用单字节编码，大于128的值使用低7位编码数据，最到位指示后续是否有更多的字节&lt;/p>
+&lt;blockquote>
+&lt;p>这里第一次读可能不是太好理解，展开来说一下：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>byte2 ~ byte 5&lt;/th>
+&lt;th>二进制&lt;/th>
+&lt;th>解释&lt;/th>
+&lt;th>剩余长度最小值&lt;/th>
+&lt;th>剩余长度最大值&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>byte2&lt;/td>
+&lt;td>0XXX XXX&lt;/td>
+&lt;td>高位为0，仅byte2用于编码剩余长度&lt;/td>
+&lt;td>0 (0x00)&lt;/td>
+&lt;td>127 (0x7F)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>byte2byte3&lt;/td>
+&lt;td>1XXX XXXX 0XXX XXXX&lt;/td>
+&lt;td>高位为1，byte2和byte3用于编码剩余长度&lt;/td>
+&lt;td>128 (0x80, 0x01)&lt;/td>
+&lt;td>16 383 (0xFF, 0x7F)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>byte2byte3byte4&lt;/td>
+&lt;td>1XXX XXXX 1XXX XXXX 0XXX XXXX&lt;/td>
+&lt;td>byte2和byte3的高位为1，byte2，byte3和byte4用于编码剩余长度&lt;/td>
+&lt;td>16384 (0x80, 0x80, 0x01)&lt;/td>
+&lt;td>2097151 (0xFF, 0xFF, 0x7F)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Byte2byte3byte4byte5&lt;/td>
+&lt;td>1XXX XXXX 1XXX XXXX 1XXX XXXX 0XXX XXXX&lt;/td>
+&lt;td>byte2，byte3和byte4的高位为1，byte2，byte3，byte4和byte5用于编码剩余长度&lt;/td>
+&lt;td>2097152 (0x80, 0x80, 0x80, 0x01)&lt;/td>
+&lt;td>268435455 (0xFF, 0xFF, 0xFF, 0x7F)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>
+&lt;p>剩余长度不包括用于编码剩余长度字段本身的字节数&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>剩余长度单位是字节&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>对于byte2~byte5，计算剩余长度数值的时候，遵循以下的算法：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="ln">1&lt;/span>&lt;span class="n">len&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">byte5&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="err">进制&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;~&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mh">0x80&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mi">128&lt;/span>&lt;span class="o">^&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">byte4&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="err">进制&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;~&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mh">0x80&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mi">128&lt;/span>&lt;span class="o">^&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">byte3&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="err">进制&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;~&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mh">0x80&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mi">128&lt;/span>&lt;span class="o">^&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">byte2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="err">进制&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;~&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mh">0x80&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mi">128&lt;/span>&lt;span class="o">^&lt;/span>&lt;span class="mi">0&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>以剩余长度最大值0xFF, 0xFF, 0xFF, 0x7F，计算过程如下：&lt;/p>
+&lt;ul>
+&lt;li>0xFF - 这个需要去掉最高位就是0X7F（0111 1111），对应十进制127&lt;/li>
+&lt;li>套用上面的公式：&lt;code>127*128^3 + 127*128^2 + 127*128 + 127 = 268435455 bytes = 256MB&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
 &lt;/ul></description></item></channel></rss>
