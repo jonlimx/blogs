@@ -1,755 +1,147 @@
-<!doctype html><html lang=zh data-figures class=page>
-<head>
-<title>C Primer Plus读书笔记（三） | Standing on the Shoulder of Giants</title>
-<meta charset=utf-8>
-<meta property="og:title" content="C Primer Plus读书笔记（三） | Standing on the Shoulder of Giants">
-<meta itemprop=name content="C Primer Plus读书笔记（三） | Standing on the Shoulder of Giants">
-<meta name=application-name content="C Primer Plus读书笔记（三） | Standing on the Shoulder of Giants">
-<meta property="og:site_name" content="Jonathan Lin">
-<meta name=description content>
-<meta itemprop=description content>
-<meta property="og:description" content>
-<meta name=twitter:description content>
-<base href=https://www.jonathanlin.top/posts/c-primer-plus-notes-03/>
-<link rel=canonical href=https://www.jonathanlin.top/posts/c-primer-plus-notes-03/ itemprop=url>
-<meta name=url content="https://www.jonathanlin.top/posts/c-primer-plus-notes-03/">
-<meta property="og:url" content="https://www.jonathanlin.top/posts/c-primer-plus-notes-03/">
-<meta property="og:locale" content="zh-cn">
-<meta name=language content="Chinese">
-<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta http-equiv=x-ua-compatible content="IE=edge">
-<script>var _hmt=_hmt||[];(function(){var a=document.createElement("script"),b;a.src="https://hm.baidu.com/hm.js?d60a5d9f17547c322bf9ce50cc9b5954",b=document.getElementsByTagName("script")[0],b.parentNode.insertBefore(a,b)})()</script>
-<meta property="og:locale" content="zh">
-<meta property="og:type" content="article">
-<meta name=description content="本文是《C Primer Plus》第九章至第十一章读书笔记，持续更新中。
-ch09. 函数   函数原型、函数定义和函数调用 函数的参数列表和返回值 形参和实参 函数类型     函数原型：任何程序在使用函数之前都要声明改函数的类型。在函数调用前需要声明函数原型。函数原型是告诉编译器函数的类型。对于较小的函数，也可以 …">
-<meta name=twitter:card content="summary">
-<meta name=twitter:creator content>
-<meta name=twitter:title content="C Primer Plus读书笔记（三）">
-<meta property="og:url" content="https://www.jonathanlin.top/posts/c-primer-plus-notes-03/">
-<meta property="og:title" content="C Primer Plus读书笔记（三）">
-<meta property="og:description" content="本文是《C Primer Plus》第九章至第十一章读书笔记，持续更新中。
-ch09. 函数   函数原型、函数定义和函数调用 函数的参数列表和返回值 形参和实参 函数类型     函数原型：任何程序在使用函数之前都要声明改函数的类型。在函数调用前需要声明函数原型。函数原型是告诉编译器函数的类型。对于较小的函数，也可以 …">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/c-primer-plus.png">
-<link rel=apple-touch-icon sizes=180x180 href=https://www.jonathanlin.top/icons/apple-touch-icon.png>
-<link rel=icon type=image/png sizes=32x32 href=https://www.jonathanlin.top/icons/favicon-32x32.png>
-<link rel=manifest href=https://www.jonathanlin.top/icons/site.webmanifest>
-<link rel=canonical href=https://www.jonathanlin.top/posts/c-primer-plus-notes-03/>
-<link rel=preload href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" as=style crossorigin=anonymous>
-<link rel=preload href=https://www.jonathanlin.top/js/bundle.min.617c4c3549a10c9fe7e1bb91e87f0722f6a285b59e742c7123c755df9fb33530bae76060ebd303966dd0e1c09813e679f8042802b7fd059315ef1345f0429ad2.js as=script integrity="sha512-YXxMNUmhDJ/n4buR6H8HIvaihbWedCxxI8dV35+zNTC652Bg69MDlm3Q4cCYE+Z5+AQoArf9BZMV7xNF8EKa0g==" crossorigin=anonymous>
-<link rel=stylesheet type=text/css href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" crossorigin=anonymous>
-</head>
-<body data-code=10 data-lines=true id=documentTop>
-<header class=nav_header>
-<nav class=nav><a href=https://www.jonathanlin.top/ class="nav_brand nav_item" title="Standing on the Shoulder of Giants">Standing on the Shoulder of Giants
-<div class=nav_close>
-<div><svg class="icon"><use xlink:href="#open-menu"/></svg><svg class="icon"><use xlink:href="#closeme"/></svg></div>
-</div>
-</a>
-<div class="nav_body nav_body_left">
-<div class=nav_parent>
-<a href=https://www.jonathanlin.top/ class=nav_item title=Home>Home </a>
-</div>
-<div class=nav_parent>
-<a href=https://www.jonathanlin.top/post/rich-content/ class=nav_item title=Archives>Archives </a>
-</div>
-<div class=nav_parent>
-<a href=https://www.jonathanlin.top/ class=nav_item title=Links>Links <img src=https://www.jonathanlin.top/icons/caret-icon.svg alt=icon class=nav_icon></a>
-<div class=nav_sub>
-<span class=nav_child></span>
+<!doctype html><html lang=zh data-figures class=page><head><title>C Primer Plus读书笔记（三） | Standing on the Shoulder of Giants</title><meta charset=utf-8><meta property="og:title" content="C Primer Plus读书笔记（三） | Standing on the Shoulder of Giants"><meta itemprop=name content="C Primer Plus读书笔记（三） | Standing on the Shoulder of Giants"><meta name=application-name content="C Primer Plus读书笔记（三） | Standing on the Shoulder of Giants"><meta property="og:site_name" content="Jonathan Lin"><meta name=description content><meta itemprop=description content><meta property="og:description" content><meta name=twitter:description content><base href=https://www.jonathanlin.top/posts/c-primer-plus-notes-03/><link rel=canonical href=https://www.jonathanlin.top/posts/c-primer-plus-notes-03/ itemprop=url><meta name=url content="https://www.jonathanlin.top/posts/c-primer-plus-notes-03/"><meta property="og:url" content="https://www.jonathanlin.top/posts/c-primer-plus-notes-03/"><meta property="og:locale" content="zh-cn"><meta name=language content="Chinese"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta http-equiv=x-ua-compatible content="IE=edge"><script>var _hmt=_hmt||[];(function(){var e=document.createElement("script"),t;e.src="https://hm.baidu.com/hm.js?d60a5d9f17547c322bf9ce50cc9b5954",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta name=description content="本文是《C Primer Plus》第九章至第十一章读书笔记，持续更新中。
+ch09. 函数   函数原型、函数定义和函数调用 函数的参数列表和返回值 形参和实参 函数类型     函数原型：任何程序在使用函数之前都要声明改函数的类型。在函数调用前需要声明函数原型。函数原型是告诉编译器函数的类型。对于较小的函数，也可以 …"><meta name=twitter:card content="summary"><meta name=twitter:creator content><meta name=twitter:title content="C Primer Plus读书笔记（三）"><meta property="og:url" content="https://www.jonathanlin.top/posts/c-primer-plus-notes-03/"><meta property="og:title" content="C Primer Plus读书笔记（三）"><meta property="og:description" content="本文是《C Primer Plus》第九章至第十一章读书笔记，持续更新中。
+ch09. 函数   函数原型、函数定义和函数调用 函数的参数列表和返回值 形参和实参 函数类型     函数原型：任何程序在使用函数之前都要声明改函数的类型。在函数调用前需要声明函数原型。函数原型是告诉编译器函数的类型。对于较小的函数，也可以 …"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/jonlimx/blogs/image/c-primer-plus.png"><link rel=apple-touch-icon sizes=180x180 href=https://www.jonathanlin.top/icons/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://www.jonathanlin.top/icons/favicon-32x32.png><link rel=manifest href=https://www.jonathanlin.top/icons/site.webmanifest><link rel=canonical href=https://www.jonathanlin.top/posts/c-primer-plus-notes-03/><link rel=preload href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" as=style crossorigin=anonymous><link rel=preload href=https://www.jonathanlin.top/js/bundle.min.b3a64e063a6b898aeac9bfb2e2409159c622a4c66378b743ea225f8597ba68d905542adbfbf2a921ad6be5274e9f5bf5dfc681da26f1c27b7a8e2d12f6781756.js as=script integrity="sha512-s6ZOBjpriYrqyb+y4kCRWcYipMZjeLdD6iJfhZe6aNkFVCrb+/KpIa1r5SdOn1v138aB2ibxwnt6ji0S9ngXVg==" crossorigin=anonymous><link rel=stylesheet type=text/css href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" crossorigin=anonymous></head><body data-code=10 data-lines=true id=documentTop><header class=nav_header><nav class=nav><a href=https://www.jonathanlin.top/ class="nav_brand nav_item" title="Standing on the Shoulder of Giants">Standing on the Shoulder of Giants<div class=nav_close><div><svg class="icon"><use xlink:href="#open-menu"/></svg><svg class="icon"><use xlink:href="#closeme"/></svg></div></div></a><div class="nav_body nav_body_left"><div class=nav_parent><a href=https://www.jonathanlin.top/ class=nav_item title=Home>Home</a></div><div class=nav_parent><a href=https://www.jonathanlin.top/post/rich-content/ class=nav_item title=Archives>Archives</a></div><div class=nav_parent><a href=https://www.jonathanlin.top/ class=nav_item title=Links>Links <img src=https://www.jonathanlin.top/icons/caret-icon.svg alt=icon class=nav_icon></a><div class=nav_sub><span class=nav_child></span>
 <a href=https://www.linkedin.com/ class="nav_child nav_item" title=LinkedIn>LinkedIn</a>
-<a href=https://twitter.com/ class="nav_child nav_item" title=Twitter>Twitter</a>
-</div>
-</div>
-<div class=nav_parent>
-<a href=https://www.jonathanlin.top/about/ class=nav_item title=About>About </a>
-</div>
-<div class=follow>
-<a href=https://github.com/jonlimx><svg class="icon"><use xlink:href="#github"/></svg>
-</a>
-<a href=https://twitter.com/#><svg class="icon"><use xlink:href="#twitter"/></svg>
-</a>
-<a href=https://www.linkedin.com/in/#><svg class="icon"><use xlink:href="#linkedin"/></svg>
-</a>
-<a href=https://www.jonathanlin.top/index.xml><svg class="icon"><use xlink:href="#rss"/></svg>
-</a>
-<div class=color_mode>
-<input type=checkbox class=color_choice id=mode>
-</div>
-</div>
-</div>
-</nav>
-</header>
-<main>
-<div class="grid-inverse wrap content">
-<article class=post_content>
-<h1 class=post_title>C Primer Plus读书笔记（三）</h1>
-<div class=post_meta>
-<span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
-<span class=post_date>
-Sep 8, 2021</span>
-<span class=post_time> · 5 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
-</a><a href=https://www.jonathanlin.top/tags/c-primer-plus title="C Primer Plus" class="post_tag button button_translucent">C Primer Plus
-</a>
-</span>
-<span class=page_only>&nbsp;·
-<div class=post_share>
-分享到:
-<a href="https://twitter.com/intent/tweet?text=C%20Primer%20Plus%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%89%ef%bc%89&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fc-primer-plus-notes-03%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
-</a>
-<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fc-primer-plus-notes-03%2f&t=C%20Primer%20Plus%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%89%ef%bc%89" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
-</a>
-<a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
-</a>
-<a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-03/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
-</a>
-</div>
-</span>
-</div>
-<h2>文章目录</h2>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#ch09-函数>ch09. 函数</a></li>
-<li><a href=#ch10-数组和指针>ch10. 数组和指针</a></li>
-<li><a href=#ch11-字符串和字符串函数>ch11. 字符串和字符串函数</a></li>
-</ul>
-</nav>
-<p><em>本文是《C Primer Plus》第九章至第十一章读书笔记，持续更新中。</em></p>
-<h2 id=ch09-函数>ch09. 函数</h2>
-<blockquote>
-<ol>
-<li>函数原型、函数定义和函数调用</li>
-<li>函数的参数列表和返回值</li>
-<li>形参和实参</li>
-<li>函数类型</li>
-</ol>
-</blockquote>
-<ul>
-<li>
-<p>函数原型：任何程序在使用函数之前都要声明改函数的类型。<strong>在函数调用前需要声明函数原型</strong>。函数原型是告诉编译器函数的类型。对于较小的函数，也可以把函数定义放在主调函数之前，这时候的函数定义也就是函数声明</p>
-</li>
-<li>
-<p>函数定义：提供函数的实际代码</p>
-</li>
-<li>
-<p>声明带有参数的函数时，可以只给定参数的类型而不需要提供参数的名字，比如：<code>void show_n_char(char, int);</code></p>
-</li>
-<li>
-<p>函数参数 - 主调函数通过参数将值传递给被调函数</p>
-<ul>
-<li>形式参数(formal argument) - 函数定义和声明中，参数列表里定义的参数</li>
-<li>实际参数(actual argument) - 具体的值，是主调函数赋值给形式参数的值，可以是常量、变量或者表达式。<strong>在被调函数中使用的实际参数的值，是主调函数以拷贝的方式传递给被调函数，因此在被调函数中需值的修改不会影响原始数据</strong></li>
-</ul>
-</li>
-<li>
-<p>返回值 - 被调函数通过返回值将值传递给主调函数</p>
-</li>
-<li>
-<p>函数类型，实际上是指函数的返回值类型</p>
-</li>
-<li>
-<p>递归</p>
-<ul>
-<li>每一级递归函数里的变量都是私有的，即都属于对应层级的递归</li>
-<li>递归函数可能会快速消耗计算机内存，甚至耗尽。因此递归函数的层级受限于内存空间</li>
-<li>此外，递归本质是函数调用，由于递归引发的多次函数调用，对性能会有一定的影响</li>
-</ul>
-</li>
-<li>
-<p>头文件 - 把函数原型和已定义的字符常量（#define)放在头文件中是一个良好的习惯，这样只需要在使用这些函数或者字符常量的地方通过#include引入头文件即可，避免了重复声明函数原型</p>
-</li>
-<li>
-<p>指针</p>
-<ul>
-<li>是一个值为内存地址的变量，也称为指针变量</li>
-<li>取地址操作：<code>ptr = &pooh</code>，将<code>pooh</code>地址赋给指针变量<code>ptr</code></li>
-<li>取值操作/间接运算法操作/解引用操作：<code>val = *ptr</code>。实际上<code>ptr = &amp;pooh; val = *ptr;</code> 等价于<code>val = pooh</code></li>
-<li>声明指针：<code>int * pi; char * pc; float pf</code></li>
-</ul>
-</li>
-<li>
-<p>函数参数的值传递和地址传递</p>
-<ul>
-<li><code>function(int num)</code> - 值传递，一般用于基于值进行计算</li>
-<li><code>function(int* num)</code> - 地址传递，一般用于在被调函数中修改主调函数的值</li>
-</ul>
-</li>
-</ul>
-<h2 id=ch10-数组和指针>ch10. 数组和指针</h2>
-<blockquote>
-<ol>
-<li>数组如何创建</li>
-<li>指针如何创建和使用</li>
-<li>数组和指针有何关系</li>
-<li>多维数组</li>
-</ol>
-</blockquote>
-<ul>
-<li>
-<p>数组：数据类型相同的一系列元素组成。声明数组必须告诉编译器数组的<strong>元素个数</strong>和元素<strong>数据类型</strong></p>
-</li>
-<li>
-<p>数组初始化：</p>
-<ul>
-<li>以逗号分割的值列表（花括号里）来初始化数组，如：<code>int powers[3] = {1,2,3};</code>。注意，这种用花括号形式的赋值只能在初始化的时候，其他时候则不行</li>
-<li>经常使用符号常量来指定数组大小，如：<code>int days[MONTHs] = {31,28,31};</code></li>
-<li><code>const</code>数组和变量一样，都是表示只读类型，即初始化后只能读不能写</li>
-<li>使用数组前必须初始化，如果不初始化就读取，那么读取到的值不可靠</li>
-<li>如果只初始化部分数组元素，剩余的元素的值默认被设置为0</li>
-<li>创建数组时可以不指定数组大小，让编译器自动匹配数组大小，如：<code>int days[] = {31,28,31};</code></li>
-</ul>
-</li>
-<li>
-<p>指定初始化器</p>
-<ul>
-<li>使用指定初始化器，可以给特定下标的元素赋值，其他元素保持默认，如：<code>int staff[] = {1,[6]=4,9,10};</code>，第0号元素为1，第6，7，8号元素分别是4，9和10，剩余元素默认为0</li>
-<li>如果多次初始化指定元素，后面的会覆盖前面的</li>
-</ul>
-</li>
-<li>
-<p>多维数组在计算机内部是按顺序存放数据</p>
-</li>
-<li>
-<p>二维数组初始化：</p>
-<ul>
-<li>
-<p>可以看成是元素类型为一维数组的一维数组</p>
-</li>
-<li>
-<p><code>int sg[2][3] = {{5,6},{7,8}}</code> 定义了两行三列的二维数组，但是每行都只初始化了前两个元素，因此每行的第三个元素初始化为0</p>
-</li>
-<li>
-<p>另一种初始化方式是只用一对大括号，大括号里面的值依次按行付给数组元素。例如：<code>int sg[2][3]={5,6,7,8}</code>，这样第一行的元素分别是5，6和7。而第二行是8和0</p>
-</li>
-</ul>
-</li>
-<li>
-<p>指针和数组</p>
-<ul>
-<li><strong>数组名是该数组首元素的地址</strong></li>
-<li><strong>声明数组将分配存储数组的空间，而声明指针只是分配存储一个地址的空间</strong></li>
-<li>指针加1表示增加一个存储单元。这里的存储单元实际上对应指针所指向对象的数据类型对应的字节数</li>
-<li>数组加1后的地址是下一个元素的地址</li>
-<li>举例来说，定义一个数组<code>ar</code>：
-<ul>
-<li><code>ar[n] = *(ar+n)</code></li>
-<li><code>ar + n</code>的意义是：先定位到ar的位置，也就是首个元素的地址，然后移动n个存储单元</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>函数和数组</p>
-<ul>
-<li>处理数组的函数实际上是用指针作为参数</li>
-<li>在函数原型或者函数定义中，<code>int *ar</code>和<code>int[] ar</code>等价，也只有在函数原型或者定义中，这二者才能互换。<strong>但是只有ar是指针变量的时候，才能使用<code>ar++</code>这种操作，并且不支持<code>++ar</code></strong></li>
-<li>函数原型中指定数组的两种方式：1）通过指针来指定数组首元素的地址 2）使用数组的定义</li>
-</ul>
-</li>
-<li>
-<p>在函数原型或者定义中指定数组元素个数的两种方式</p>
-<ol>
-<li>
-<p>在函数原型或者定义中指定数组的大小</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln>1</span><span class=kt>int</span> <span class=nf>sum</span><span class=p>(</span><span class=kt>int</span><span class=o>*</span> <span class=n>ar</span><span class=p>,</span> <span class=kt>int</span> <span class=n>n</span><span class=p>)</span>
-<span class=ln>2</span><span class=p>{</span>
-<span class=ln>3</span>	<span class=kt>int</span> <span class=n>total</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
-<span class=ln>4</span>	<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>n</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span>
-<span class=ln>5</span>	<span class=p>{</span>
-<span class=ln>6</span>		<span class=n>total</span> <span class=o>+=</span> <span class=n>ar</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
-<span class=ln>7</span>	<span class=p>}</span>
-<span class=ln>8</span>	<span class=k>return</span> <span class=n>total</span><span class=p>;</span>
-<span class=ln>9</span><span class=p>}</span>
-</code></pre></div></li>
-<li>
-<p>在函数原型或者定义中指定数组的开始处和结束处</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln> 1</span><span class=kt>int</span> <span class=nf>sump</span><span class=p>(</span><span class=kt>int</span><span class=o>*</span> <span class=n>start</span><span class=p>,</span> <span class=kt>int</span><span class=o>*</span> <span class=n>end</span><span class=p>)</span>
-<span class=ln> 2</span><span class=p>{</span>
-<span class=ln> 3</span>	<span class=kt>int</span> <span class=n>total</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
-<span class=ln> 4</span>	<span class=k>while</span> <span class=p>(</span><span class=n>start</span> <span class=o>&lt;</span> <span class=n>end</span><span class=p>)</span>
-<span class=ln> 5</span>	<span class=p>{</span>
-<span class=ln> 6</span>		<span class=n>total</span> <span class=o>+=</span> <span class=o>*</span><span class=p>(</span><span class=n>start</span><span class=o>++</span><span class=p>);</span>
-<span class=ln> 7</span>	<span class=p>}</span>
-<span class=ln> 8</span>	<span class=k>return</span> <span class=n>total</span><span class=p>;</span>
-<span class=ln> 9</span><span class=p>}</span>
-<span class=ln>10</span><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
-<span class=ln>11</span><span class=p>{</span>
-<span class=ln>12</span>	<span class=kt>int</span> <span class=n>numbers</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span> <span class=p>};</span>
-<span class=ln>13</span>	<span class=n>printf</span><span class=p>(</span><span class=s>&#34;sump(): %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>sump</span><span class=p>(</span><span class=n>numbers</span><span class=p>,</span> <span class=n>numbers</span> <span class=o>+</span> <span class=n>SIZE</span><span class=p>));</span>
-<span class=ln>14</span>	<span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
-<span class=ln>15</span><span class=p>}</span>
-</code></pre></div><p>几点需要注意：</p>
-<ul>
-<li><code>end</code>实际上是指向数组最后一个元素的后面</li>
-<li>C保证在分配数组空间的时候，确保最后一个元素后面的第一个位置的指针仍然有效，<strong>但是对存储在该位置上的值未做保证</strong></li>
-<li>上面例子中，<code>numbers + SIZE</code>就是指向最后一个元素的后面</li>
-</ul>
-</li>
-</ol>
-</li>
-<li>
-<p>指针的几种操作</p>
-<ul>
-<li>赋值：<code>ptr = &val</code>，把地址付给指针</li>
-<li>解引用：<code>*</code>运算符给出指针指向的地址上存储的值。<strong>注意：千万不要解引用未初始化的指针</strong></li>
-<li>取值：<code>ptr2 = &ptr1</code>，指针变量也有自己的地址和值</li>
-<li>指针与整数n相加：指针对应的地址+数组元素的数据类型的大小（字节为单位）*n， 实际上相当于数组的下标往后移动几个</li>
-<li>递增指针：实际相当于加1，数组下标往后移动一个</li>
-<li>指针减去一个整数：与整数相加相反，数组下标往前移动</li>
-<li>递减指针：数组下标往前移动一个</li>
-<li>指针求差：两个指针分别指向同一个数组的不同元素，通过计算求出两个元素之间的距离</li>
-<li>比较：两个指针都指向相同的类型才能比较</li>
-</ul>
-</li>
-<li>
-<p>在函数（参数）中传递数组</p>
-<ul>
-<li>数组时以指针的方式传递。如果数组也通过副本的方式传递，那么会占用大量的内容</li>
-<li>由于数组时通过指针传递，因此是可以在函数中直接修改参数的值</li>
-<li>为了避免在函数中修改参数的值，应该将数组声明为<code>const</code>，例如：<code>int sum(const int ar[], int n);</code></li>
-<li><code>const</code>并不是要求原数组是常量，而是函数处理数组时将其视为常量。如果不小心在函数中修改了数组的值，编译器会报错</li>
-</ul>
-</li>
-<li>
-<p>const的几种用法</p>
-<table>
-<thead>
-<tr>
-<th style=text-align:left>定义</th>
-<th>指针是否可以修改指向别处</th>
-<th>指针指向的值是否可以修改</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style=text-align:left><code>double rates[3] = {11.1, 22.2, 33.3}; const double * pd = rates;</code></td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td style=text-align:left><code>double rates[3] = {11.1, 22.2, 33.3}; double * const pd = rates;</code></td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td style=text-align:left><code>double rates[3] = {11.1, 22.2, 33.3}; const double * const pd = rates;</code></td>
-<td>否</td>
-<td>否</td>
-</tr>
-</tbody>
-</table>
-<p>**const的修饰对象：**取决于和谁挨得近。如果和数据类型挨得近，那么是修饰对应的数据类型是const类型；如果和<code>*</code>挨得近，则修饰指针，即指针本身的值不可以改变（不可以指向别处）</p>
-<p>此外还需要注意：</p>
-<ul>
-<li>
-<p>把<code>const</code>数据或者非<code>const</code>数据的地址初始化为指向<code>const</code>的指针是合法的。指向<code>const</code>的指针意义在于无法通过该指针修改相应地址对应的值：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln>1</span><span class=kt>double</span> <span class=n>rates1</span><span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mf>11.1</span><span class=p>,</span> <span class=mf>22.2</span><span class=p>,</span> <span class=mf>33.3</span> <span class=p>};</span>
-<span class=ln>2</span><span class=k>const</span> <span class=kt>double</span> <span class=n>rates2</span><span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mf>44.4</span><span class=p>,</span> <span class=mf>55.5</span><span class=p>,</span> <span class=mf>66.6</span> <span class=p>};</span>
-<span class=ln>3</span><span class=k>const</span> <span class=kt>double</span> <span class=o>*</span> <span class=n>pd1</span> <span class=o>=</span> <span class=n>rates1</span><span class=p>;</span>
-<span class=ln>4</span><span class=k>const</span> <span class=kt>double</span> <span class=o>*</span> <span class=n>pd2</span> <span class=o>=</span> <span class=n>rates2</span><span class=p>;</span>
-</code></pre></div></li>
-<li>
-<p>只能把非<code>const</code>数据的地址赋给普通指针。由于可以通过<strong>普通指针</strong>修改指向的地址对应的值，因此如果将<code>const</code>数据的地址赋给普通指针，那么<code>const</code>数据将变的可以修改，这是<strong>不合理</strong>的，这个将产生不可预期的结果</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln>1</span><span class=k>const</span> <span class=kt>double</span> <span class=n>rates2</span><span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mf>44.4</span><span class=p>,</span> <span class=mf>55.5</span><span class=p>,</span> <span class=mf>66.6</span> <span class=p>};</span>
-<span class=ln>2</span><span class=kt>double</span> <span class=o>*</span> <span class=n>pd3</span> <span class=o>=</span> <span class=n>rates2</span><span class=p>;</span> <span class=c1>// 不应该这么做
-</span></code></pre></div></li>
-</ul>
-</li>
-<li>
-<p>二维数组 - <code>int zippo[4][2] = {{ 2, 4 }, { 6, 8 }, { 1, 3 }, { 5, 7 }}</code></p>
-<ul>
-<li>
-<p>本质是数组元素为一维数组的一维数组</p>
-</li>
-<li>
-<p><code>zippo</code>：首元素地址，首元素为一维数组<code>{2, 4}</code>，因此又是<code>{2, 4}</code>的首地址，也就是元素2的地址</p>
-</li>
-<li>
-<p><code>zippo[n]</code>：第n个元素的地址，也就是第n+1行的起始地址</p>
-</li>
-<li>
-<p><strong>对于二维数组，需要两次解引用才能取到某个具体的值</strong></p>
-<table>
-<thead>
-<tr>
-<th>表达式</th>
-<th>解释</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>zippo</code></td>
-<td>首元素地址，实际上是第一行元素的起始地址。<code>*zippo</code>取到第一行元素，<code>**zippo</code>取到第一行元素的第一个元素</td>
-</tr>
-<tr>
-<td><code>zippo + 2</code></td>
-<td>第3行元素的地址</td>
-</tr>
-<tr>
-<td><code>*(zippo + 2)</code></td>
-<td>第3行元素的首元素地址</td>
-</tr>
-<tr>
-<td><code>*(zippo + 2)+1</code></td>
-<td>第3行元素的第2个元素的地址</td>
-</tr>
-<tr>
-<td><code>*(*(zippo + 2)+1)</code></td>
-<td>第3行元素的第2个元素的值</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li>
-<p><code>int (*px)[2]</code> - 指向一个二维数组，且这个二维数组有两列，即n * 2。**注意：**要和<code>int *px[2]</code>区分开，因为<code>[]</code>的优先级高于<code>*</code>，因此<code>px</code>先和<code>[]</code>结合这样就声明为元素个数为2的一维数组，然后该一维数组的元素数据类型是<code>int*</code>，也就是：含有两个int指针的一维数组</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln> 1</span><span class=kt>int</span> <span class=n>a1_20</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span> <span class=p>};</span>
-<span class=ln> 2</span>	<span class=kt>int</span> <span class=n>a1_21</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span> <span class=p>};</span>
-<span class=ln> 3</span>
-<span class=ln> 4</span>	<span class=kt>int</span> <span class=n>a1_3</span><span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span> <span class=p>};</span>
-<span class=ln> 5</span>	<span class=kt>int</span> <span class=n>a1_5</span><span class=p>[</span><span class=mi>5</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span> <span class=p>};</span>
-<span class=ln> 6</span>
-<span class=ln> 7</span>	<span class=kt>int</span><span class=o>*</span> <span class=n>a2_1</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=n>a1_3</span><span class=p>,</span> <span class=n>a1_5</span> <span class=p>};</span>
-<span class=ln> 8</span>	<span class=kt>int</span><span class=o>*</span> <span class=n>a2_2</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=n>a1_20</span><span class=p>,</span> <span class=n>a1_21</span> <span class=p>};</span>
-<span class=ln> 9</span>
-<span class=ln>10</span>	<span class=c1>// 下面这两种都不行。int (*)[2] 表示的指向四个元素的指针，即元素为int[4]的一位数组，也就是n*2的二维数组
-</span><span class=ln>11</span><span class=c1></span>  <span class=c1>//	int (* a2_3)[2] = { a1_20, a1_21 };
-</span><span class=ln>12</span><span class=c1></span>  <span class=c1>//	int (* a2_4)[2] = {{ 1, 2, }, { 1, 2 }};
-</span><span class=ln>13</span><span class=c1></span>	<span class=kt>int</span> <span class=n>a22</span><span class=p>[][</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=p>{{</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span> <span class=p>},</span> <span class=p>{</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span> <span class=p>}};</span>
-<span class=ln>14</span>	<span class=kt>int</span> <span class=p>(</span><span class=o>*</span> <span class=n>a2_5</span><span class=p>)[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=n>a22</span><span class=p>;</span>
-</code></pre></div></li>
-<li>
-<p>函数声明中的参数是二维数组时，下面两种方式的定义都是等价：</p>
-<ul>
-<li><code>void somefunction(int (*pt)[4])</code></li>
-<li><code>void somefunction(int pt[][4])</code> - 对于这种形式，第一个方括号一定留空，这样代表是一个指针，且该指针指向元素为4个元素的数组。第二个方括号里一定有一个值，否则pt这个指针无从知道它所指向的对象大小</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>定长数组和变长数组</p>
-<ul>
-<li>定长数组：数组的长度是固定的，声明的时候需要使用常量或者常量表达式来指定数组的大小</li>
-<li>变长数组：创建数组的时候，可以使用变量来指定数组的大小。创建之后，则无法再修改数组大小。比如可以定义一个出来任意行列的二维数组：
-<ul>
-<li><code>int sum2d(int rows, int cols, int ar[rows][colds]</code>) - <strong>注意：</strong><code>rows</code>和<code>cols</code>必须放在<code>ar</code>的定义前面</li>
-<li><code>int sum2d(int,int,int ar[*][*])</code></li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>复合字面量</p>
-<ul>
-<li>字面量 - 5是int类型字面量，'c'是char类型的字面量，81.3是double类型的字面量...</li>
-<li><code>(int [])(50,20,90)</code>是一维数组字面量，二维数组类似，这些就是复合字面量</li>
-<li>复合字面量可以很方便的给函数传递数组参数而不必事先创建数组，实际上复合字面量就是匿名数组</li>
-</ul>
-</li>
-</ul>
-<h2 id=ch11-字符串和字符串函数>ch11. 字符串和字符串函数</h2>
-<blockquote>
-<ol>
-<li>字符串的表示形式</li>
-<li>C库中的字符和字符串函数的使用</li>
-</ol>
-</blockquote>
-<p><strong>几种定义字符串的方式：</strong></p>
-<ul>
-<li>
-<p>字符串常量 - 用双引号括起来的内容称为字符串常量。编译器会在双引号的字符末尾自动加入<code>\0</code>字符</p>
-<ul>
-<li>字符串常量属于静态存储类别，即该字符串只被存储一次</li>
-<li><strong>双引号括起来的内容被视为指向该字符串的存储位置的指针</strong>。例如：<code>*"space farers"</code>表示的是对"space farers"的存储位置的地址解引用，那么取到的值就是该字符串的首个字符<code>s</code></li>
-<li>如果字符串中带有引号，那么需要在引号前面添加反斜杠</li>
-</ul>
-</li>
-<li>
-<p>字符串数组和初始化</p>
-<ul>
-<li><code>char name[10] = "Jonathan"</code> - 在字符个数少于定义的数组个数时，用<code>'\0'</code>补足。注意，如果用单个字符赋值，例如<code>char name[10] = {'J', 'o', 'n', 'a', 't', 'h','a','n','\0'}</code>，最后一个字符一定得是<code>'\0'</code>，否则会被认定是字符数组而不是字符串</li>
-<li><code>char name[] = "Jonathan"</code> - 这种不给定数组长度，那么编译器自动根据给定的字符串计算长度，当然最后会加上<code>'\0'</code></li>
-</ul>
-</li>
-<li>
-<p>数组和指针的区别 - 既然字符串可以使用字符数组来表示，而后数组实际上又是和指针相通，那么指针自然可以表示字符串</p>
-<ul>
-<li><code>char * head = "I love you"</code> - 这里的head是指针变量，因此可以修改head使得它指向其他的字符串</li>
-<li><code>char heart[] = "I love you" </code> - 这里的heart是常量，因为数组变量的值就是数组首个元素的地址，这个值是固定。因此不可以对heart本身再赋值。比如：<code>heart = head</code>这个是不成立的</li>
-<li><code>char * head = "I love you";*(head + 5) = 'T'</code> - <strong>这是不推荐的做法</strong>，不同的编译器可能会导致不同的行为。对于<code>"I love you"</code>这个字符串而言是存放在静态存储区，这里通过head修改了对应的静态存储区的值，会导致引用该字符串的所有其他变量都发生变化。因此，<strong>建议在把指针初始化为字符串常量的时候使用const修饰符</strong>，即：<code>const char * head = "I love you"</code></li>
-<li>对于<code>char heart[] = "I love you"</code>而言，实际上<code>heart</code>并不是指向<code>"I love you"</code>的静态存储区，数组实际上是获得了<code>"I love you"</code>的副本。<strong>所以，如果打算修改字符串，应该用数组形式而不是用指针</strong></li>
-</ul>
-</li>
-<li>
-<p>几种字符串输入方式的比较 - 字符串输入首先是需要预留存储该字符串的控件，然后使用输入函数获取字符串</p>
-<ul>
-<li>
-<p><code>scanf("%s", aStr)</code> - 只能读取一个单词</p>
-</li>
-<li>
-<p><code>gets(astr) / puts(astr)</code> - 读取整行的输入直到遇到换行符，<strong>然后丢弃换行符，接着在末尾添加一个空字符使其成为一个C字符串</strong>。<strong>注意：</strong><code>gets</code>只有一个参数，即字符串的首地址，因此无法判断输入的字符串是否有足够的空间存储。如果超过了存储空间内，会出现不可预知的问题。<code>puts</code>会在字符串末尾添加换行符</p>
-</li>
-<li>
-<p><code>fgets(astr,len,ioin)/fputs(astr, ioout)</code> - 通常和<code>fputs</code>配合使用。有三个参数1) 字符串变量用于接收字符串 2) 字符串的长度（如果是n，最大那么读入n-1个字符，最后一个字符用<code>\0</code>填充。在存储空间充足的情况下会把换行符也存储下来） 3) 指定要读入的文件，如果是键盘读入，则以<code>stdin</code>作为输入。<code>fputs</code>不会在字符串末尾添加换行符。<strong><code>fgets</code>函数返回指向char的指针。如果读到文件末尾或者文件里空行，则返回一个特殊的指针NULL</strong></p>
-<table>
-<thead>
-<tr>
-<th>输入函数</th>
-<th>说明</th>
-<th>输出函数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>scanf("%s", str)</code></td>
-<td>以第一个非空白字符作为开始，以下一个空白字符作为结束。如果指定了字段宽度，则根据宽度或者空白字符作为终止</td>
-<td><code>printf("%s",str)</code></td>
-<td>打印一个字符串，不自动添加换行符</td>
-</tr>
-<tr>
-<td><code>gets(astr)</code></td>
-<td>读取整行，丢弃换行符。如果字符串过长<strong>可能导致缓冲区溢出</strong></td>
-<td><code>puts(astr)</code></td>
-<td>打印一个字符串（最后一个字符是'\0'），<strong>自动在末尾添加换行符</strong></td>
-</tr>
-<tr>
-<td><code>fgets(astr,len,ioin)</code></td>
-<td>从流中读取字符串，保留换行符。可能是文件流或者标准输入流。当读到文件结尾时返回<code>NULL</code></td>
-<td><code>fputs(astr, ioout)</code></td>
-<td>输入字符串到流，不会自动添加换行符</td>
-</tr>
-</tbody>
-</table>
-<p><strong>注意：</strong><code>gets</code>/<code>puts</code>和<code>fgets</code>/<code>fputs</code>应尽量配对使用，否则可能出现换行错乱的情况</p>
-<p>代码解读1：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln> 1</span><span class=cp>#include</span> <span class=cpf>&#34;stdio.h&#34;</span><span class=cp>
-</span><span class=ln> 2</span><span class=cp>#define STLEN 5
-</span><span class=ln> 3</span><span class=cp></span><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
-<span class=ln> 4</span><span class=p>{</span>
-<span class=ln> 5</span>	<span class=n>puts</span><span class=p>(</span><span class=s>&#34;Enter string (empty to exit)&#34;</span><span class=p>);</span>
-<span class=ln> 6</span>	<span class=kt>char</span> <span class=n>words</span><span class=p>[</span><span class=n>STLEN</span><span class=p>];</span>
-<span class=ln> 7</span>	<span class=k>while</span> <span class=p>(</span><span class=n>fgets</span><span class=p>(</span><span class=n>words</span><span class=p>,</span> <span class=n>STLEN</span><span class=p>,</span> <span class=n>stdin</span><span class=p>)</span> <span class=o>!=</span> <span class=nb>NULL</span> <span class=o>&amp;&amp;</span> <span class=n>words</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>!=</span> <span class=sc>&#39;\n&#39;</span><span class=p>)</span>
-<span class=ln> 8</span>	<span class=p>{</span>
-<span class=ln> 9</span>		<span class=n>fputs</span><span class=p>(</span><span class=n>words</span><span class=p>,</span> <span class=n>stdout</span><span class=p>);</span> <span class=c1>// 如果输入的字符串长度超过STLEN，那么就先处理长度范围内的数据，然后继续处理剩余的
-</span><span class=ln>10</span><span class=c1></span>	<span class=p>}</span>
-<span class=ln>11</span>	<span class=n>puts</span><span class=p>(</span><span class=s>&#34;fgets Done!&#34;</span><span class=p>);</span>
-<span class=ln>12</span>
-<span class=ln>13</span>	<span class=k>while</span> <span class=p>(</span><span class=n>scanf</span><span class=p>(</span><span class=s>&#34;%s&#34;</span><span class=p>,</span> <span class=n>words</span><span class=p>)</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>)</span> <span class=c1>// 字符串被空格分隔
-</span><span class=ln>14</span><span class=c1></span>	<span class=p>{</span>
-<span class=ln>15</span>		<span class=n>printf</span><span class=p>(</span><span class=s>&#34;%s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>words</span><span class=p>);</span>
-<span class=ln>16</span>	<span class=p>}</span>
-<span class=ln>17</span><span class=p>}</span>
-<span class=ln>18</span>
-<span class=ln>19</span><span class=err>➜</span>  <span class=n>ch11</span> <span class=p>.</span><span class=o>/</span><span class=n>a</span><span class=p>.</span><span class=n>out</span>
-<span class=ln>20</span><span class=n>Enter</span> <span class=n>string</span> <span class=p>(</span><span class=n>empty</span> <span class=n>to</span> <span class=n>exit</span><span class=p>)</span>
-<span class=ln>21</span><span class=n>hello</span><span class=p>,</span> <span class=n>this</span> <span class=n>is</span> <span class=n>jonathan</span>
-<span class=ln>22</span><span class=n>hello</span><span class=p>,</span> <span class=n>this</span> <span class=n>is</span> <span class=n>jonathan</span>
-<span class=ln>23</span>
-<span class=ln>24</span><span class=n>fgets</span> <span class=n>Done</span><span class=o>!</span>
-<span class=ln>25</span><span class=n>hello</span><span class=p>,</span> <span class=n>this</span> <span class=n>is</span> <span class=n>jonathan</span>
-<span class=ln>26</span><span class=n>hello</span><span class=p>,</span>
-<span class=ln>27</span><span class=n>this</span>
-<span class=ln>28</span><span class=n>is</span>
-<span class=ln>29</span><span class=n>jonathan</span>
-</code></pre></div><p>代码解读2：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln> 1</span><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
-</span><span class=ln> 2</span><span class=cp>#define STLEN 10
-</span><span class=ln> 3</span><span class=cp></span><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
-<span class=ln> 4</span><span class=p>{</span>
-<span class=ln> 5</span>	<span class=kt>char</span> <span class=n>words</span><span class=p>[</span><span class=n>STLEN</span><span class=p>];</span>
-<span class=ln> 6</span>	<span class=kt>int</span> <span class=n>i</span><span class=p>;</span>
-<span class=ln> 7</span>	<span class=n>puts</span><span class=p>(</span><span class=s>&#34;Enter strings (empty line to quit):&#34;</span><span class=p>);</span>
-<span class=ln> 8</span>	<span class=k>while</span> <span class=p>(</span><span class=n>fgets</span><span class=p>(</span><span class=n>words</span><span class=p>,</span> <span class=n>STLEN</span><span class=p>,</span> <span class=n>stdin</span><span class=p>)</span> <span class=o>!=</span> <span class=nb>NULL</span> <span class=o>&amp;&amp;</span> <span class=n>words</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>!=</span> <span class=sc>&#39;\n&#39;</span><span class=p>)</span> <span class=c1>// 当按下回车后，缓冲区里的内容会发送给fgets函数。fgets会根据STLEN按长度来接收，不要忘记最后一个是&#39;\0&#39;，这个&#39;\0&#39;是自动补上去的
-</span><span class=ln> 9</span><span class=c1></span>	<span class=p>{</span>
-<span class=ln>10</span>		<span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
-<span class=ln>11</span>		<span class=k>while</span> <span class=p>(</span><span class=n>words</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>!=</span> <span class=sc>&#39;\n&#39;</span> <span class=o>&amp;&amp;</span> <span class=n>words</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>!=</span> <span class=sc>&#39;\0&#39;</span><span class=p>)</span> <span class=c1>// 这里就先将下标移动到当前words的最后一个位置。取决于输入的字符串的长度。如果最后一个是回车，那么说明输入的长度小于STLEN
-</span><span class=ln>12</span><span class=c1></span>			<span class=n>i</span><span class=o>++</span><span class=p>;</span>
-<span class=ln>13</span>		<span class=k>if</span> <span class=p>(</span><span class=n>words</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=sc>&#39;\n&#39;</span><span class=p>)</span> <span class=c1>// 长度小于STLEN
-</span><span class=ln>14</span><span class=c1></span>			<span class=n>words</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=sc>&#39;\0&#39;</span><span class=p>;</span>
-<span class=ln>15</span>		<span class=k>else</span>
-<span class=ln>16</span>			<span class=k>while</span> <span class=p>(</span><span class=n>getchar</span><span class=p>()</span> <span class=o>!=</span> <span class=sc>&#39;\n&#39;</span><span class=p>)</span> <span class=c1>// 如果输入长度大于STLEN，则丢弃掉超过STLEN之外的字符
-</span><span class=ln>17</span><span class=c1></span>				<span class=k>continue</span><span class=p>;</span>
-<span class=ln>18</span>		<span class=n>puts</span><span class=p>(</span><span class=n>words</span><span class=p>);</span>
-<span class=ln>19</span>	<span class=p>}</span>
-<span class=ln>20</span>	<span class=n>puts</span><span class=p>(</span><span class=s>&#34;Done&#34;</span><span class=p>);</span>
-<span class=ln>21</span>	<span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
-<span class=ln>22</span><span class=p>}</span>
-<span class=ln>23</span>
-<span class=ln>24</span><span class=err>➜</span>  <span class=n>iwanttodebug</span> <span class=p>.</span><span class=o>/</span><span class=n>a</span><span class=p>.</span><span class=n>out</span>
-<span class=ln>25</span><span class=n>Enter</span> <span class=n>strings</span> <span class=p>(</span><span class=n>empty</span> <span class=n>line</span> <span class=n>to</span> <span class=n>quit</span><span class=p>)</span><span class=o>:</span>
-<span class=ln>26</span><span class=n>hello</span> <span class=n>world</span>
-<span class=ln>27</span><span class=n>hello</span> <span class=n>wor</span>
-<span class=ln>28</span><span class=n>hello</span>
-<span class=ln>29</span><span class=n>hello</span>
-<span class=ln>30</span>
-<span class=ln>31</span><span class=n>Done</span>
-</code></pre></div></li>
-</ul>
-</li>
-<li>
-<p>空字符和空指针</p>
-<ul>
-<li>空字符：对应的编码是0，是整数类型</li>
-<li>空指针：是一个指针类型，指向一个无效的地址，它不会与任何数据的有效地址对应</li>
-</ul>
-</li>
-<li>
-<p>两个和字符(串)相关的系统库</p>
-<ul>
-<li><code>string.h</code> - 大量操作字符串的函数</li>
-<li><code>strlib.h</code> - 大量字符串和数值转化的函数</li>
-</ul>
-</li>
-<li>
-<p>命令行参数</p>
-<ul>
-<li>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=ln>1</span><span class=cm>/* repeat.c */</span>
-<span class=ln>2</span><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=kt>char</span><span class=o>*</span> <span class=n>argv</span><span class=p>[]){...}</span>
-</code></pre></div></li>
-<li>
-<p><code>agrc</code> - argument count，命令行参数的个数。通常命令名为第一个参数</p>
-</li>
-<li>
-<p><code>argv</code> - argument value，字符串数组，存放参数的值</p>
-</li>
-<li>
-<p>例如：repeat I am fine，argc为4，对应的值存放在argv数组里</p>
-</li>
-<li>
-<p>例如：repeat "I am fine"，这里argc为2，I am fine为一个字符串</p>
-</li>
-</ul>
-</li>
-</ul>
-<style>.utterances{max-width:100%}</style>
-<script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
-</article>
-<aside class=sidebar>
-<section class=sidebar_inner>
-<div class=author_header>
-<img src=https://www.jonathanlin.top/images/jonathanlin.png alt="Jonathan Lin photo">
-<h2>Jonathan Lin</h2>
-</div>
-<div class=author_bio>
-大龄编程爱好者，摄影爱好者。喜欢徒步喜欢户外，喜欢有事没事拍拍孩子，记录生活记录孩子成长
-</div>
-<a href=https://www.jonathanlin.top/about/ class="button mt-1" role=button title=阅读更多>阅读更多</a>
-<h2 class=mt-4>最新文章</h2>
-<ul class=flex-column>
-<li>
-<a href=https://www.jonathanlin.top/posts/mqtt-note-02/ class=nav-link title=Mac下安装和配置Mosquitto>Mac下安装和配置Mosquitto</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/mqtt-note-01/ class=nav-link title=MQTT杂记>MQTT杂记</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-05/ class=nav-link title="MongoDB学习笔记（五）- MongoDB复制集读写事务">MongoDB学习笔记（五）- MongoDB复制集读写事务</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-04/ class=nav-link title="MongoDB学习笔记（四）- 聚合框架">MongoDB学习笔记（四）- 聚合框架</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-03/ class=nav-link title="MongoDB学习笔记（三）- 文档删除、更新">MongoDB学习笔记（三）- 文档删除、更新</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-02/ class=nav-link title="MongoDB学习笔记（二）- 文档插入">MongoDB学习笔记（二）- 文档插入</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/regex-cheatsheet/ class=nav-link title="Regex Cheatsheet">Regex Cheatsheet</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-01/ class=nav-link title="MongoDB学习笔记（一）- 文档查询和投影">MongoDB学习笔记（一）- 文档查询和投影</a>
-</li>
-</ul>
-<div>
-<h2 class="mt-4 taxonomy" id=categories-section>分类</h2>
-<nav class=tags_nav>
-<a href=https://www.jonathanlin.top/categories/notes/ class="post_tag button button_translucent" title=notes>
-NOTES
-<span class=button_tally>12</span>
-</a>
-<a href=https://www.jonathanlin.top/categories/translation/ class="post_tag button button_translucent" title=translation>
-TRANSLATION
-<span class=button_tally>5</span>
-</a>
-<a href=https://www.jonathanlin.top/categories/how-to/ class="post_tag button button_translucent" title=how-to>
-HOW-TO
-<span class=button_tally>1</span>
-</a>
-</nav>
-</div>
-<div>
-<h2 class="mt-4 taxonomy" id=tags-section>标签</h2>
-<nav class=tags_nav>
-<a href=https://www.jonathanlin.top/tags/golang/ class="post_tag button button_translucent" title=golang>
-GOLANG
-<span class=button_tally>5</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/mongodb/ class="post_tag button button_translucent" title=mongodb>
-MONGODB
-<span class=button_tally>5</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/c/ class="post_tag button button_translucent" title=c>
-C
-<span class=button_tally>4</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/c-primer-plus/ class="post_tag button button_translucent" title=c-primer-plus>
-C-PRIMER-PLUS
-<span class=button_tally>4</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/goroutine/ class="post_tag button button_translucent" title=goroutine>
-GOROUTINE
-<span class=button_tally>3</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/concurrency-trap/ class="post_tag button button_translucent" title=concurrency-trap>
-CONCURRENCY-TRAP
-<span class=button_tally>2</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/mqtt/ class="post_tag button button_translucent" title=mqtt>
-MQTT
-<span class=button_tally>2</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/protobuf/ class="post_tag button button_translucent" title=protobuf>
-PROTOBUF
-<span class=button_tally>2</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/concurrency/ class="post_tag button button_translucent" title=concurrency>
-CONCURRENCY
-<span class=button_tally>1</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/github-action/ class="post_tag button button_translucent" title=github-action>
-GITHUB-ACTION
-<span class=button_tally>1</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/github-pages/ class="post_tag button button_translucent" title=github-pages>
-GITHUB-PAGES
-<span class=button_tally>1</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/hugo/ class="post_tag button button_translucent" title=hugo>
-HUGO
-<span class=button_tally>1</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/regex/ class="post_tag button button_translucent" title=regex>
-REGEX
-<span class=button_tally>1</span>
-</a>
-</nav>
-</div>
-</section>
-</aside>
-</div>
-</main><svg width="0" height="0" class="hidden"><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook"><path d="M437 0H75C33.648.0.0 33.648.0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352.0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.001 18.001" id="twitter"><path d="M15.891 4.013c.808-.496 1.343-1.173 1.605-2.034a8.68 8.68.0 01-2.351.861c-.703-.756-1.593-1.14-2.66-1.14-1.043.0-1.924.366-2.643 1.078A3.56 3.56.0 008.766 5.383c0 .309.039.585.117.819-3.076-.105-5.622-1.381-7.628-3.837-.34.601-.51 1.213-.51 1.846.0 1.301.549 2.332 1.645 3.089-.625-.053-1.176-.211-1.645-.47.0.929.273 1.705.82 2.388a3.623 3.623.0 002.115 1.291c-.312.08-.641.118-.979.118-.312.0-.533-.026-.664-.083.23.757.664 1.371 1.291 1.841a3.652 3.652.0 002.152.743C4.148 14.173 2.625 14.69.902 14.69c-.422.0-.721-.006-.902-.038 1.697 1.102 3.586 1.649 5.676 1.649 2.139.0 4.029-.542 5.674-1.626 1.645-1.078 2.859-2.408 3.639-3.974a10.77 10.77.0 001.172-4.892v-.468a7.788 7.788.0 001.84-1.921 8.142 8.142.0 01-2.11.593z"/></symbol><symbol aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="mail"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V4e2c0 26.5-21.5 48-48 48H48c-26.5.0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5.0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="calendar"><path d="M452 40h-24V0h-40v40H124V0H84v40H60C26.916 40 0 66.916.0 1e2v352c0 33.084 26.916 60 60 60h392c33.084.0 60-26.916 60-60V1e2c0-33.084-26.916-60-60-60zm20 412c0 11.028-8.972 20-20 20H60c-11.028.0-20-8.972-20-20V188h432v264zm0-304H40v-48c0-11.028 8.972-20 20-20h24v40h40V80h264v40h40V80h24c11.028.0 20 8.972 20 20v48z"/><path d="M76 230h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 310h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 390h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80-80h40v40h-40z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="github"><path d="M255.968 5.329C114.624 5.329.0 120.401.0 262.353c0 113.536 73.344 209.856 175.104 243.872 12.8 2.368 17.472-5.568 17.472-12.384.0-6.112-.224-22.272-.352-43.712-71.2 15.52-86.24-34.464-86.24-34.464-11.616-29.696-28.416-37.6-28.416-37.6-23.264-15.936 1.728-15.616 1.728-15.616 25.696 1.824 39.2 26.496 39.2 26.496 22.848 39.264 59.936 27.936 74.528 21.344 2.304-16.608 8.928-27.936 16.256-34.368-56.832-6.496-116.608-28.544-116.608-127.008.0-28.064 9.984-51.008 26.368-68.992-2.656-6.496-11.424-32.64 2.496-68 0 0 21.504-6.912 70.4 26.336 20.416-5.696 42.304-8.544 64.096-8.64 21.728.128 43.648 2.944 64.096 8.672 48.864-33.248 70.336-26.336 70.336-26.336 13.952 35.392 5.184 61.504 2.56 68 16.416 17.984 26.304 40.928 26.304 68.992.0 98.72-59.84 120.448-116.864 126.816 9.184 7.936 17.376 23.616 17.376 47.584.0 34.368-.32 62.08-.32 70.496.0 6.88 4.608 14.88 17.6 12.352C438.72 472.145 512 375.857 512 262.353 512 120.401 397.376 5.329 255.968 5.329z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212" id="gitlab"><path d="M12.3 74.7h54L43.3 3c-1-3.6-6.4-3.6-7.6.0L12.3 74.8z"/><path d="M12.3 74.7.5 111c-1 3.2.0 6.8 3 8.8l101.6 74-92.5-119z"/><path d="M105 193.7l-38.6-119h-54l92.7 119z"/><path d="M105 193.7l38.7-119H66.4l38.7 119z"/><path d="M105 193.7l38.7-119H198l-93 119z"/><path d="M198 74.7l11.6 36.2c1 3 0 6.6-3 8.6l-101.5 74 93-119z"/><path d="M198 74.7h-54.3L167 3c1.2-3.6 6.4-3.6 7.6.0L198 74.8z"/></symbol><symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="rss"><circle cx="3.429" cy="20.571" r="3.429"/><path d="M11.429 24h4.57C15.999 15.179 8.821 8.001.0 8v4.572c6.302.001 11.429 5.126 11.429 11.428z"/><path d="M24 24C24 10.766 13.234.0.0.0v4.571c10.714.0 19.43 8.714 19.43 19.429z"/></symbol><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="linkedin"><path d="M437 0H75C33.648.0.0 33.648.0 75v362c0 41.352 33.648 75 75 75h362c41.352.0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zM181 406h-60V196h60zm0-240h-60v-60h60zm210 240h-60V286c0-16.54-13.46-30-30-30s-30 13.46-30 30v120h-60V196h60v11.309C286.719 202.422 296.93 196 316 196c40.691.043 75 36.547 75 79.688zm0 0"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612" id="arrow"><path d="M604.501 440.509 325.398 134.956c-5.331-5.357-12.423-7.627-19.386-7.27-6.989-.357-14.056 1.913-19.387 7.27L7.499 440.509c-9.999 10.024-9.999 26.298.0 36.323s26.223 10.024 36.222.0l262.293-287.164L568.28 476.832c9.999 10.024 26.222 10.024 36.221.0 9.999-10.023 9.999-26.298.0-36.323z"/></symbol><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="carly"><path d="M504.971 239.029 448 182.059V84c0-46.317-37.682-84-84-84h-44c-13.255.0-24 10.745-24 24s10.745 24 24 24h44c19.851.0 36 16.149 36 36v108c0 6.365 2.529 12.47 7.029 16.971L454.059 256l-47.029 47.029A24.002 24.002.0 004e2 320v108c0 19.851-16.149 36-36 36h-44c-13.255.0-24 10.745-24 24s10.745 24 24 24h44c46.318.0 84-37.683 84-84v-98.059l56.971-56.971c9.372-9.372 9.372-24.568.0-33.941zM112 192V84c0-19.851 16.149-36 36-36h44c13.255.0 24-10.745 24-24S205.255.0 192 0h-44c-46.318.0-84 37.683-84 84v98.059l-56.971 56.97c-9.373 9.373-9.373 24.568.0 33.941L64 329.941V428c0 46.317 37.682 84 84 84h44c13.255.0 24-10.745 24-24s-10.745-24-24-24h-44c-19.851.0-36-16.149-36-36V320c0-6.365-2.529-12.47-7.029-16.971L57.941 256l47.029-47.029A24.002 24.002.0 00112 192z"/></symbol><symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="copy"><path d="M23 2.75A2.75 2.75.0 0020.25.0H8.75A2.75 2.75.0 006 2.75v13.5A2.75 2.75.0 008.75 19h11.5A2.75 2.75.0 0023 16.25zM18.25 14.5h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5zm0-3h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5zm0-3h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5z"/><path d="M8.75 20.5A4.255 4.255.0 014.5 16.25V2.75c0-.086.02-.166.025-.25H3.75A2.752 2.752.0 001 5.25v16A2.752 2.752.0 003.75 24h12a2.752 2.752.0 002.75-2.75v-.75z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.001 512.001" id="closeme"><path d="M284.286 256.002 506.143 34.144c7.811-7.811 7.811-20.475.0-28.285-7.811-7.81-20.475-7.811-28.285.0L256 227.717 34.143 5.859c-7.811-7.811-20.475-7.811-28.285.0-7.81 7.811-7.811 20.475.0 28.285l221.857 221.857L5.858 477.859c-7.811 7.811-7.811 20.475.0 28.285a19.938 19.938.0 0014.143 5.857 19.94 19.94.0 0014.143-5.857L256 284.287l221.857 221.857c3.905 3.905 9.024 5.857 14.143 5.857s10.237-1.952 14.143-5.857c7.811-7.811 7.811-20.475.0-28.285L284.286 256.002z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="open-menu"><path d="M492 236H20c-11.046.0-20 8.954-20 20s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20zm0-160H20C8.954 76 0 84.954.0 96s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20zm0 320H20c-11.046.0-20 8.954-20 20s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="instagram"><path d="M12 2.163c3.204.0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849.0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204.0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849.0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741.0 8.333.014 7.053.072c-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403.0-6.162 2.759-6.162 6.162S8.597 18.163 12 18.163s6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zM12 16c-2.209.0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796.0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795.0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="youtube"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23.0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23.0C23.512 20.55 23.971 18.196 24 12c-.029-6.185-.484-8.549-4.385-8.816zM9 16V8l8 3.993L9 16z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="stackoverflow"><path d="M21 27v-8h3v11H0V19h3v8h18z"/><path d="M17.1.2 15 1.8l7.9 10.6 2.1-1.6L17.1.2zm3.7 14.7L10.6 6.4l1.7-2 10.2 8.5-1.7 2zM7.2 12.3l12 5.6 1.1-2.4-12-5.6-1.1 2.4zm-1.8 6.8 13.56 1.96.17-2.38-13.26-2.55-.47 2.97zM19 25H5v-3h14v3z"/></symbol></svg>
-<footer class=footer>
-<div class="footer_inner wrap pale">
-<img src=https://www.jonathanlin.top/icons/apple-touch-icon.png class="icon icon_2 transparent" alt="Standing on the Shoulder of Giants">
-<span class=copyright>
-Copyright © 2022 Jonathan Lin. All rights reserved.
-</span><a class=to_top href=#documentTop><svg class="icon"><use xlink:href="#arrow"/></svg>
-</a>
-</div>
-</footer>
-<script type=text/javascript src=https://www.jonathanlin.top/js/bundle.min.617c4c3549a10c9fe7e1bb91e87f0722f6a285b59e742c7123c755df9fb33530bae76060ebd303966dd0e1c09813e679f8042802b7fd059315ef1345f0429ad2.js integrity="sha512-YXxMNUmhDJ/n4buR6H8HIvaihbWedCxxI8dV35+zNTC652Bg69MDlm3Q4cCYE+Z5+AQoArf9BZMV7xNF8EKa0g==" crossorigin=anonymous></script>
-</body>
-</html>
+<a href=https://twitter.com/ class="nav_child nav_item" title=Twitter>Twitter</a></div></div><div class=nav_parent><a href=https://www.jonathanlin.top/about/ class=nav_item title=About>About</a></div><div class=follow><a href=https://github.com/jonlimx><svg class="icon"><use xlink:href="#github"/></svg></a><a href=https://twitter.com/#><svg class="icon"><use xlink:href="#twitter"/></svg></a><a href=https://www.linkedin.com/in/#><svg class="icon"><use xlink:href="#linkedin"/></svg></a><a href=https://www.jonathanlin.top/index.xml><svg class="icon"><use xlink:href="#rss"/></svg></a><div class=color_mode><input type=checkbox class=color_choice id=mode></div></div></div></nav></header><main><div class="grid-inverse wrap content"><article class=post_content><h1 class=post_title>C Primer Plus读书笔记（三）</h1><div class=post_meta><span><svg class="icon"><use xlink:href="#calendar"/></svg></span><span class=post_date>Sep 8, 2021</span>
+<span class=post_time>· 4 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/c title=C class="post_tag button button_translucent">C
+</a><a href=https://www.jonathanlin.top/tags/c-primer-plus title="C Primer Plus" class="post_tag button button_translucent">C Primer Plus</a></span>
+<span class=page_only>&nbsp;·<div class=post_share>分享到:
+<a href="https://twitter.com/intent/tweet?text=C%20Primer%20Plus%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%89%ef%bc%89&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fc-primer-plus-notes-03%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg></a><a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fc-primer-plus-notes-03%2f&t=C%20Primer%20Plus%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%89%ef%bc%89" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg></a><a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg></a><a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-03/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg></a></div></span></div><h2>文章目录</h2><nav id=TableOfContents><ul><li><a href=#ch09-函数>ch09. 函数</a></li><li><a href=#ch10-数组和指针>ch10. 数组和指针</a></li><li><a href=#ch11-字符串和字符串函数>ch11. 字符串和字符串函数</a></li></ul></nav><p><em>本文是《C Primer Plus》第九章至第十一章读书笔记，持续更新中。</em></p><h2 id=ch09-函数>ch09. 函数</h2><blockquote><ol><li>函数原型、函数定义和函数调用</li><li>函数的参数列表和返回值</li><li>形参和实参</li><li>函数类型</li></ol></blockquote><ul><li><p>函数原型：任何程序在使用函数之前都要声明改函数的类型。<strong>在函数调用前需要声明函数原型</strong>。函数原型是告诉编译器函数的类型。对于较小的函数，也可以把函数定义放在主调函数之前，这时候的函数定义也就是函数声明</p></li><li><p>函数定义：提供函数的实际代码</p></li><li><p>声明带有参数的函数时，可以只给定参数的类型而不需要提供参数的名字，比如：<code>void show_n_char(char, int);</code></p></li><li><p>函数参数 - 主调函数通过参数将值传递给被调函数</p><ul><li>形式参数(formal argument) - 函数定义和声明中，参数列表里定义的参数</li><li>实际参数(actual argument) - 具体的值，是主调函数赋值给形式参数的值，可以是常量、变量或者表达式。<strong>在被调函数中使用的实际参数的值，是主调函数以拷贝的方式传递给被调函数，因此在被调函数中需值的修改不会影响原始数据</strong></li></ul></li><li><p>返回值 - 被调函数通过返回值将值传递给主调函数</p></li><li><p>函数类型，实际上是指函数的返回值类型</p></li><li><p>递归</p><ul><li>每一级递归函数里的变量都是私有的，即都属于对应层级的递归</li><li>递归函数可能会快速消耗计算机内存，甚至耗尽。因此递归函数的层级受限于内存空间</li><li>此外，递归本质是函数调用，由于递归引发的多次函数调用，对性能会有一定的影响</li></ul></li><li><p>头文件 - 把函数原型和已定义的字符常量（#define)放在头文件中是一个良好的习惯，这样只需要在使用这些函数或者字符常量的地方通过#include引入头文件即可，避免了重复声明函数原型</p></li><li><p>指针</p><ul><li>是一个值为内存地址的变量，也称为指针变量</li><li>取地址操作：<code>ptr = &pooh</code>，将<code>pooh</code>地址赋给指针变量<code>ptr</code></li><li>取值操作/间接运算法操作/解引用操作：<code>val = *ptr</code>。实际上<code>ptr = &amp;pooh; val = *ptr;</code> 等价于<code>val = pooh</code></li><li>声明指针：<code>int * pi; char * pc; float pf</code></li></ul></li><li><p>函数参数的值传递和地址传递</p><ul><li><code>function(int num)</code> - 值传递，一般用于基于值进行计算</li><li><code>function(int* num)</code> - 地址传递，一般用于在被调函数中修改主调函数的值</li></ul></li></ul><h2 id=ch10-数组和指针>ch10. 数组和指针</h2><blockquote><ol><li>数组如何创建</li><li>指针如何创建和使用</li><li>数组和指针有何关系</li><li>多维数组</li></ol></blockquote><ul><li><p>数组：数据类型相同的一系列元素组成。声明数组必须告诉编译器数组的<strong>元素个数</strong>和元素<strong>数据类型</strong></p></li><li><p>数组初始化：</p><ul><li>以逗号分割的值列表（花括号里）来初始化数组，如：<code>int powers[3] = {1,2,3};</code>。注意，这种用花括号形式的赋值只能在初始化的时候，其他时候则不行</li><li>经常使用符号常量来指定数组大小，如：<code>int days[MONTHs] = {31,28,31};</code></li><li><code>const</code>数组和变量一样，都是表示只读类型，即初始化后只能读不能写</li><li>使用数组前必须初始化，如果不初始化就读取，那么读取到的值不可靠</li><li>如果只初始化部分数组元素，剩余的元素的值默认被设置为0</li><li>创建数组时可以不指定数组大小，让编译器自动匹配数组大小，如：<code>int days[] = {31,28,31};</code></li></ul></li><li><p>指定初始化器</p><ul><li>使用指定初始化器，可以给特定下标的元素赋值，其他元素保持默认，如：<code>int staff[] = {1,[6]=4,9,10};</code>，第0号元素为1，第6，7，8号元素分别是4，9和10，剩余元素默认为0</li><li>如果多次初始化指定元素，后面的会覆盖前面的</li></ul></li><li><p>多维数组在计算机内部是按顺序存放数据</p></li><li><p>二维数组初始化：</p><ul><li><p>可以看成是元素类型为一维数组的一维数组</p></li><li><p><code>int sg[2][3] = {{5,6},{7,8}}</code> 定义了两行三列的二维数组，但是每行都只初始化了前两个元素，因此每行的第三个元素初始化为0</p></li><li><p>另一种初始化方式是只用一对大括号，大括号里面的值依次按行付给数组元素。例如：<code>int sg[2][3]={5,6,7,8}</code>，这样第一行的元素分别是5，6和7。而第二行是8和0</p></li></ul></li><li><p>指针和数组</p><ul><li><strong>数组名是该数组首元素的地址</strong></li><li><strong>声明数组将分配存储数组的空间，而声明指针只是分配存储一个地址的空间</strong></li><li>指针加1表示增加一个存储单元。这里的存储单元实际上对应指针所指向对象的数据类型对应的字节数</li><li>数组加1后的地址是下一个元素的地址</li><li>举例来说，定义一个数组<code>ar</code>：<ul><li><code>ar[n] = *(ar+n)</code></li><li><code>ar + n</code>的意义是：先定位到ar的位置，也就是首个元素的地址，然后移动n个存储单元</li></ul></li></ul></li><li><p>函数和数组</p><ul><li>处理数组的函数实际上是用指针作为参数</li><li>在函数原型或者函数定义中，<code>int *ar</code>和<code>int[] ar</code>等价，也只有在函数原型或者定义中，这二者才能互换。<strong>但是只有ar是指针变量的时候，才能使用<code>ar++</code>这种操作，并且不支持<code>++ar</code></strong></li><li>函数原型中指定数组的两种方式：1）通过指针来指定数组首元素的地址 2）使用数组的定义</li></ul></li><li><p>在函数原型或者定义中指定数组元素个数的两种方式</p><ol><li><p>在函数原型或者定义中指定数组的大小</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=ln>1</span><span class=cl><span class=kt>int</span> <span class=nf>sum</span><span class=p>(</span><span class=kt>int</span><span class=o>*</span> <span class=n>ar</span><span class=p>,</span> <span class=kt>int</span> <span class=n>n</span><span class=p>)</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=ln>3</span><span class=cl>	<span class=kt>int</span> <span class=n>total</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=ln>4</span><span class=cl>	<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>n</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=ln>5</span><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=ln>6</span><span class=cl>		<span class=n>total</span> <span class=o>+=</span> <span class=n>ar</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
+</span></span><span class=line><span class=ln>7</span><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=ln>8</span><span class=cl>	<span class=k>return</span> <span class=n>total</span><span class=p>;</span>
+</span></span><span class=line><span class=ln>9</span><span class=cl><span class=p>}</span>
+</span></span></code></pre></div></li><li><p>在函数原型或者定义中指定数组的开始处和结束处</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=ln> 1</span><span class=cl><span class=kt>int</span> <span class=nf>sump</span><span class=p>(</span><span class=kt>int</span><span class=o>*</span> <span class=n>start</span><span class=p>,</span> <span class=kt>int</span><span class=o>*</span> <span class=n>end</span><span class=p>)</span>
+</span></span><span class=line><span class=ln> 2</span><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=ln> 3</span><span class=cl>	<span class=kt>int</span> <span class=n>total</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=ln> 4</span><span class=cl>	<span class=k>while</span> <span class=p>(</span><span class=n>start</span> <span class=o>&lt;</span> <span class=n>end</span><span class=p>)</span>
+</span></span><span class=line><span class=ln> 5</span><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=ln> 6</span><span class=cl>		<span class=n>total</span> <span class=o>+=</span> <span class=o>*</span><span class=p>(</span><span class=n>start</span><span class=o>++</span><span class=p>);</span>
+</span></span><span class=line><span class=ln> 7</span><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=ln> 8</span><span class=cl>	<span class=k>return</span> <span class=n>total</span><span class=p>;</span>
+</span></span><span class=line><span class=ln> 9</span><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=ln>10</span><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=ln>11</span><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=ln>12</span><span class=cl>	<span class=kt>int</span> <span class=n>numbers</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span> <span class=p>};</span>
+</span></span><span class=line><span class=ln>13</span><span class=cl>	<span class=n>printf</span><span class=p>(</span><span class=s>&#34;sump(): %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>sump</span><span class=p>(</span><span class=n>numbers</span><span class=p>,</span> <span class=n>numbers</span> <span class=o>+</span> <span class=n>SIZE</span><span class=p>));</span>
+</span></span><span class=line><span class=ln>14</span><span class=cl>	<span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=ln>15</span><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>几点需要注意：</p><ul><li><code>end</code>实际上是指向数组最后一个元素的后面</li><li>C保证在分配数组空间的时候，确保最后一个元素后面的第一个位置的指针仍然有效，<strong>但是对存储在该位置上的值未做保证</strong></li><li>上面例子中，<code>numbers + SIZE</code>就是指向最后一个元素的后面</li></ul></li></ol></li><li><p>指针的几种操作</p><ul><li>赋值：<code>ptr = &val</code>，把地址付给指针</li><li>解引用：<code>*</code>运算符给出指针指向的地址上存储的值。<strong>注意：千万不要解引用未初始化的指针</strong></li><li>取值：<code>ptr2 = &ptr1</code>，指针变量也有自己的地址和值</li><li>指针与整数n相加：指针对应的地址+数组元素的数据类型的大小（字节为单位）*n， 实际上相当于数组的下标往后移动几个</li><li>递增指针：实际相当于加1，数组下标往后移动一个</li><li>指针减去一个整数：与整数相加相反，数组下标往前移动</li><li>递减指针：数组下标往前移动一个</li><li>指针求差：两个指针分别指向同一个数组的不同元素，通过计算求出两个元素之间的距离</li><li>比较：两个指针都指向相同的类型才能比较</li></ul></li><li><p>在函数（参数）中传递数组</p><ul><li>数组时以指针的方式传递。如果数组也通过副本的方式传递，那么会占用大量的内容</li><li>由于数组时通过指针传递，因此是可以在函数中直接修改参数的值</li><li>为了避免在函数中修改参数的值，应该将数组声明为<code>const</code>，例如：<code>int sum(const int ar[], int n);</code></li><li><code>const</code>并不是要求原数组是常量，而是函数处理数组时将其视为常量。如果不小心在函数中修改了数组的值，编译器会报错</li></ul></li><li><p>const的几种用法</p><table><thead><tr><th style=text-align:left>定义</th><th>指针是否可以修改指向别处</th><th>指针指向的值是否可以修改</th></tr></thead><tbody><tr><td style=text-align:left><code>double rates[3] = {11.1, 22.2, 33.3}; const double * pd = rates;</code></td><td>是</td><td>否</td></tr><tr><td style=text-align:left><code>double rates[3] = {11.1, 22.2, 33.3}; double * const pd = rates;</code></td><td>否</td><td>是</td></tr><tr><td style=text-align:left><code>double rates[3] = {11.1, 22.2, 33.3}; const double * const pd = rates;</code></td><td>否</td><td>否</td></tr></tbody></table><p>**const的修饰对象：**取决于和谁挨得近。如果和数据类型挨得近，那么是修饰对应的数据类型是const类型；如果和<code>*</code>挨得近，则修饰指针，即指针本身的值不可以改变（不可以指向别处）</p><p>此外还需要注意：</p><ul><li><p>把<code>const</code>数据或者非<code>const</code>数据的地址初始化为指向<code>const</code>的指针是合法的。指向<code>const</code>的指针意义在于无法通过该指针修改相应地址对应的值：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=ln>1</span><span class=cl><span class=kt>double</span> <span class=n>rates1</span><span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mf>11.1</span><span class=p>,</span> <span class=mf>22.2</span><span class=p>,</span> <span class=mf>33.3</span> <span class=p>};</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl><span class=k>const</span> <span class=kt>double</span> <span class=n>rates2</span><span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mf>44.4</span><span class=p>,</span> <span class=mf>55.5</span><span class=p>,</span> <span class=mf>66.6</span> <span class=p>};</span>
+</span></span><span class=line><span class=ln>3</span><span class=cl><span class=k>const</span> <span class=kt>double</span> <span class=o>*</span> <span class=n>pd1</span> <span class=o>=</span> <span class=n>rates1</span><span class=p>;</span>
+</span></span><span class=line><span class=ln>4</span><span class=cl><span class=k>const</span> <span class=kt>double</span> <span class=o>*</span> <span class=n>pd2</span> <span class=o>=</span> <span class=n>rates2</span><span class=p>;</span>
+</span></span></code></pre></div></li><li><p>只能把非<code>const</code>数据的地址赋给普通指针。由于可以通过<strong>普通指针</strong>修改指向的地址对应的值，因此如果将<code>const</code>数据的地址赋给普通指针，那么<code>const</code>数据将变的可以修改，这是<strong>不合理</strong>的，这个将产生不可预期的结果</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=ln>1</span><span class=cl><span class=k>const</span> <span class=kt>double</span> <span class=n>rates2</span><span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mf>44.4</span><span class=p>,</span> <span class=mf>55.5</span><span class=p>,</span> <span class=mf>66.6</span> <span class=p>};</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl><span class=kt>double</span> <span class=o>*</span> <span class=n>pd3</span> <span class=o>=</span> <span class=n>rates2</span><span class=p>;</span> <span class=c1>// 不应该这么做
+</span></span></span></code></pre></div></li></ul></li><li><p>二维数组 - <code>int zippo[4][2] = {{ 2, 4 }, { 6, 8 }, { 1, 3 }, { 5, 7 }}</code></p><ul><li><p>本质是数组元素为一维数组的一维数组</p></li><li><p><code>zippo</code>：首元素地址，首元素为一维数组<code>{2, 4}</code>，因此又是<code>{2, 4}</code>的首地址，也就是元素2的地址</p></li><li><p><code>zippo[n]</code>：第n个元素的地址，也就是第n+1行的起始地址</p></li><li><p><strong>对于二维数组，需要两次解引用才能取到某个具体的值</strong></p><table><thead><tr><th>表达式</th><th>解释</th></tr></thead><tbody><tr><td><code>zippo</code></td><td>首元素地址，实际上是第一行元素的起始地址。<code>*zippo</code>取到第一行元素，<code>**zippo</code>取到第一行元素的第一个元素</td></tr><tr><td><code>zippo + 2</code></td><td>第3行元素的地址</td></tr><tr><td><code>*(zippo + 2)</code></td><td>第3行元素的首元素地址</td></tr><tr><td><code>*(zippo + 2)+1</code></td><td>第3行元素的第2个元素的地址</td></tr><tr><td><code>*(*(zippo + 2)+1)</code></td><td>第3行元素的第2个元素的值</td></tr></tbody></table></li><li><p><code>int (*px)[2]</code> - 指向一个二维数组，且这个二维数组有两列，即n * 2。**注意：**要和<code>int *px[2]</code>区分开，因为<code>[]</code>的优先级高于<code>*</code>，因此<code>px</code>先和<code>[]</code>结合这样就声明为元素个数为2的一维数组，然后该一维数组的元素数据类型是<code>int*</code>，也就是：含有两个int指针的一维数组</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=ln> 1</span><span class=cl><span class=kt>int</span> <span class=n>a1_20</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span> <span class=p>};</span>
+</span></span><span class=line><span class=ln> 2</span><span class=cl>	<span class=kt>int</span> <span class=n>a1_21</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span> <span class=p>};</span>
+</span></span><span class=line><span class=ln> 3</span><span class=cl>
+</span></span><span class=line><span class=ln> 4</span><span class=cl>	<span class=kt>int</span> <span class=n>a1_3</span><span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span> <span class=p>};</span>
+</span></span><span class=line><span class=ln> 5</span><span class=cl>	<span class=kt>int</span> <span class=n>a1_5</span><span class=p>[</span><span class=mi>5</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span> <span class=p>};</span>
+</span></span><span class=line><span class=ln> 6</span><span class=cl>
+</span></span><span class=line><span class=ln> 7</span><span class=cl>	<span class=kt>int</span><span class=o>*</span> <span class=n>a2_1</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=n>a1_3</span><span class=p>,</span> <span class=n>a1_5</span> <span class=p>};</span>
+</span></span><span class=line><span class=ln> 8</span><span class=cl>	<span class=kt>int</span><span class=o>*</span> <span class=n>a2_2</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> <span class=n>a1_20</span><span class=p>,</span> <span class=n>a1_21</span> <span class=p>};</span>
+</span></span><span class=line><span class=ln> 9</span><span class=cl>
+</span></span><span class=line><span class=ln>10</span><span class=cl>	<span class=c1>// 下面这两种都不行。int (*)[2] 表示的指向四个元素的指针，即元素为int[4]的一位数组，也就是n*2的二维数组
+</span></span></span><span class=line><span class=ln>11</span><span class=cl><span class=c1></span>  <span class=c1>//	int (* a2_3)[2] = { a1_20, a1_21 };
+</span></span></span><span class=line><span class=ln>12</span><span class=cl><span class=c1></span>  <span class=c1>//	int (* a2_4)[2] = {{ 1, 2, }, { 1, 2 }};
+</span></span></span><span class=line><span class=ln>13</span><span class=cl><span class=c1></span>	<span class=kt>int</span> <span class=n>a22</span><span class=p>[][</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=p>{{</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span> <span class=p>},</span> <span class=p>{</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span> <span class=p>}};</span>
+</span></span><span class=line><span class=ln>14</span><span class=cl>	<span class=kt>int</span> <span class=p>(</span><span class=o>*</span> <span class=n>a2_5</span><span class=p>)[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=n>a22</span><span class=p>;</span>
+</span></span></code></pre></div></li><li><p>函数声明中的参数是二维数组时，下面两种方式的定义都是等价：</p><ul><li><code>void somefunction(int (*pt)[4])</code></li><li><code>void somefunction(int pt[][4])</code> - 对于这种形式，第一个方括号一定留空，这样代表是一个指针，且该指针指向元素为4个元素的数组。第二个方括号里一定有一个值，否则pt这个指针无从知道它所指向的对象大小</li></ul></li></ul></li><li><p>定长数组和变长数组</p><ul><li>定长数组：数组的长度是固定的，声明的时候需要使用常量或者常量表达式来指定数组的大小</li><li>变长数组：创建数组的时候，可以使用变量来指定数组的大小。创建之后，则无法再修改数组大小。比如可以定义一个出来任意行列的二维数组：<ul><li><code>int sum2d(int rows, int cols, int ar[rows][colds]</code>) - <strong>注意：</strong><code>rows</code>和<code>cols</code>必须放在<code>ar</code>的定义前面</li><li><code>int sum2d(int,int,int ar[*][*])</code></li></ul></li></ul></li><li><p>复合字面量</p><ul><li>字面量 - 5是int类型字面量，'c'是char类型的字面量，81.3是double类型的字面量...</li><li><code>(int [])(50,20,90)</code>是一维数组字面量，二维数组类似，这些就是复合字面量</li><li>复合字面量可以很方便的给函数传递数组参数而不必事先创建数组，实际上复合字面量就是匿名数组</li></ul></li></ul><h2 id=ch11-字符串和字符串函数>ch11. 字符串和字符串函数</h2><blockquote><ol><li>字符串的表示形式</li><li>C库中的字符和字符串函数的使用</li></ol></blockquote><p><strong>几种定义字符串的方式：</strong></p><ul><li><p>字符串常量 - 用双引号括起来的内容称为字符串常量。编译器会在双引号的字符末尾自动加入<code>\0</code>字符</p><ul><li>字符串常量属于静态存储类别，即该字符串只被存储一次</li><li><strong>双引号括起来的内容被视为指向该字符串的存储位置的指针</strong>。例如：<code>*"space farers"</code>表示的是对"space farers"的存储位置的地址解引用，那么取到的值就是该字符串的首个字符<code>s</code></li><li>如果字符串中带有引号，那么需要在引号前面添加反斜杠</li></ul></li><li><p>字符串数组和初始化</p><ul><li><code>char name[10] = "Jonathan"</code> - 在字符个数少于定义的数组个数时，用<code>'\0'</code>补足。注意，如果用单个字符赋值，例如<code>char name[10] = {'J', 'o', 'n', 'a', 't', 'h','a','n','\0'}</code>，最后一个字符一定得是<code>'\0'</code>，否则会被认定是字符数组而不是字符串</li><li><code>char name[] = "Jonathan"</code> - 这种不给定数组长度，那么编译器自动根据给定的字符串计算长度，当然最后会加上<code>'\0'</code></li></ul></li><li><p>数组和指针的区别 - 既然字符串可以使用字符数组来表示，而后数组实际上又是和指针相通，那么指针自然可以表示字符串</p><ul><li><code>char * head = "I love you"</code> - 这里的head是指针变量，因此可以修改head使得它指向其他的字符串</li><li><code>char heart[] = "I love you"</code> - 这里的heart是常量，因为数组变量的值就是数组首个元素的地址，这个值是固定。因此不可以对heart本身再赋值。比如：<code>heart = head</code>这个是不成立的</li><li><code>char * head = "I love you";*(head + 5) = 'T'</code> - <strong>这是不推荐的做法</strong>，不同的编译器可能会导致不同的行为。对于<code>"I love you"</code>这个字符串而言是存放在静态存储区，这里通过head修改了对应的静态存储区的值，会导致引用该字符串的所有其他变量都发生变化。因此，<strong>建议在把指针初始化为字符串常量的时候使用const修饰符</strong>，即：<code>const char * head = "I love you"</code></li><li>对于<code>char heart[] = "I love you"</code>而言，实际上<code>heart</code>并不是指向<code>"I love you"</code>的静态存储区，数组实际上是获得了<code>"I love you"</code>的副本。<strong>所以，如果打算修改字符串，应该用数组形式而不是用指针</strong></li></ul></li><li><p>几种字符串输入方式的比较 - 字符串输入首先是需要预留存储该字符串的控件，然后使用输入函数获取字符串</p><ul><li><p><code>scanf("%s", aStr)</code> - 只能读取一个单词</p></li><li><p><code>gets(astr) / puts(astr)</code> - 读取整行的输入直到遇到换行符，<strong>然后丢弃换行符，接着在末尾添加一个空字符使其成为一个C字符串</strong>。<strong>注意：</strong><code>gets</code>只有一个参数，即字符串的首地址，因此无法判断输入的字符串是否有足够的空间存储。如果超过了存储空间内，会出现不可预知的问题。<code>puts</code>会在字符串末尾添加换行符</p></li><li><p><code>fgets(astr,len,ioin)/fputs(astr, ioout)</code> - 通常和<code>fputs</code>配合使用。有三个参数1) 字符串变量用于接收字符串 2) 字符串的长度（如果是n，最大那么读入n-1个字符，最后一个字符用<code>\0</code>填充。在存储空间充足的情况下会把换行符也存储下来） 3) 指定要读入的文件，如果是键盘读入，则以<code>stdin</code>作为输入。<code>fputs</code>不会在字符串末尾添加换行符。<strong><code>fgets</code>函数返回指向char的指针。如果读到文件末尾或者文件里空行，则返回一个特殊的指针NULL</strong></p><table><thead><tr><th>输入函数</th><th>说明</th><th>输出函数</th><th>说明</th></tr></thead><tbody><tr><td><code>scanf("%s", str)</code></td><td>以第一个非空白字符作为开始，以下一个空白字符作为结束。如果指定了字段宽度，则根据宽度或者空白字符作为终止</td><td><code>printf("%s",str)</code></td><td>打印一个字符串，不自动添加换行符</td></tr><tr><td><code>gets(astr)</code></td><td>读取整行，丢弃换行符。如果字符串过长<strong>可能导致缓冲区溢出</strong></td><td><code>puts(astr)</code></td><td>打印一个字符串（最后一个字符是'\0'），<strong>自动在末尾添加换行符</strong></td></tr><tr><td><code>fgets(astr,len,ioin)</code></td><td>从流中读取字符串，保留换行符。可能是文件流或者标准输入流。当读到文件结尾时返回<code>NULL</code></td><td><code>fputs(astr, ioout)</code></td><td>输入字符串到流，不会自动添加换行符</td></tr></tbody></table><p><strong>注意：</strong><code>gets</code>/<code>puts</code>和<code>fgets</code>/<code>fputs</code>应尽量配对使用，否则可能出现换行错乱的情况</p><p>代码解读1：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=ln> 1</span><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;stdio.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=ln> 2</span><span class=cl><span class=cp>#define STLEN 5
+</span></span></span><span class=line><span class=ln> 3</span><span class=cl><span class=cp></span><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=ln> 4</span><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=ln> 5</span><span class=cl>	<span class=n>puts</span><span class=p>(</span><span class=s>&#34;Enter string (empty to exit)&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=ln> 6</span><span class=cl>	<span class=kt>char</span> <span class=n>words</span><span class=p>[</span><span class=n>STLEN</span><span class=p>];</span>
+</span></span><span class=line><span class=ln> 7</span><span class=cl>	<span class=k>while</span> <span class=p>(</span><span class=n>fgets</span><span class=p>(</span><span class=n>words</span><span class=p>,</span> <span class=n>STLEN</span><span class=p>,</span> <span class=n>stdin</span><span class=p>)</span> <span class=o>!=</span> <span class=nb>NULL</span> <span class=o>&amp;&amp;</span> <span class=n>words</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>!=</span> <span class=sc>&#39;\n&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=ln> 8</span><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=ln> 9</span><span class=cl>		<span class=n>fputs</span><span class=p>(</span><span class=n>words</span><span class=p>,</span> <span class=n>stdout</span><span class=p>);</span> <span class=c1>// 如果输入的字符串长度超过STLEN，那么就先处理长度范围内的数据，然后继续处理剩余的
+</span></span></span><span class=line><span class=ln>10</span><span class=cl><span class=c1></span>	<span class=p>}</span>
+</span></span><span class=line><span class=ln>11</span><span class=cl>	<span class=n>puts</span><span class=p>(</span><span class=s>&#34;fgets Done!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=ln>12</span><span class=cl>
+</span></span><span class=line><span class=ln>13</span><span class=cl>	<span class=k>while</span> <span class=p>(</span><span class=n>scanf</span><span class=p>(</span><span class=s>&#34;%s&#34;</span><span class=p>,</span> <span class=n>words</span><span class=p>)</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>)</span> <span class=c1>// 字符串被空格分隔
+</span></span></span><span class=line><span class=ln>14</span><span class=cl><span class=c1></span>	<span class=p>{</span>
+</span></span><span class=line><span class=ln>15</span><span class=cl>		<span class=n>printf</span><span class=p>(</span><span class=s>&#34;%s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>words</span><span class=p>);</span>
+</span></span><span class=line><span class=ln>16</span><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=ln>17</span><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=ln>18</span><span class=cl>
+</span></span><span class=line><span class=ln>19</span><span class=cl><span class=err>➜</span>  <span class=n>ch11</span> <span class=p>.</span><span class=o>/</span><span class=n>a</span><span class=p>.</span><span class=n>out</span>
+</span></span><span class=line><span class=ln>20</span><span class=cl><span class=n>Enter</span> <span class=n>string</span> <span class=p>(</span><span class=n>empty</span> <span class=n>to</span> <span class=n>exit</span><span class=p>)</span>
+</span></span><span class=line><span class=ln>21</span><span class=cl><span class=n>hello</span><span class=p>,</span> <span class=n>this</span> <span class=n>is</span> <span class=n>jonathan</span>
+</span></span><span class=line><span class=ln>22</span><span class=cl><span class=n>hello</span><span class=p>,</span> <span class=n>this</span> <span class=n>is</span> <span class=n>jonathan</span>
+</span></span><span class=line><span class=ln>23</span><span class=cl>
+</span></span><span class=line><span class=ln>24</span><span class=cl><span class=n>fgets</span> <span class=n>Done</span><span class=o>!</span>
+</span></span><span class=line><span class=ln>25</span><span class=cl><span class=n>hello</span><span class=p>,</span> <span class=n>this</span> <span class=n>is</span> <span class=n>jonathan</span>
+</span></span><span class=line><span class=ln>26</span><span class=cl><span class=n>hello</span><span class=p>,</span>
+</span></span><span class=line><span class=ln>27</span><span class=cl><span class=n>this</span>
+</span></span><span class=line><span class=ln>28</span><span class=cl><span class=n>is</span>
+</span></span><span class=line><span class=ln>29</span><span class=cl><span class=n>jonathan</span>
+</span></span></code></pre></div><p>代码解读2：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=ln> 1</span><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=ln> 2</span><span class=cl><span class=cp>#define STLEN 10
+</span></span></span><span class=line><span class=ln> 3</span><span class=cl><span class=cp></span><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=ln> 4</span><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=ln> 5</span><span class=cl>	<span class=kt>char</span> <span class=n>words</span><span class=p>[</span><span class=n>STLEN</span><span class=p>];</span>
+</span></span><span class=line><span class=ln> 6</span><span class=cl>	<span class=kt>int</span> <span class=n>i</span><span class=p>;</span>
+</span></span><span class=line><span class=ln> 7</span><span class=cl>	<span class=n>puts</span><span class=p>(</span><span class=s>&#34;Enter strings (empty line to quit):&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=ln> 8</span><span class=cl>	<span class=k>while</span> <span class=p>(</span><span class=n>fgets</span><span class=p>(</span><span class=n>words</span><span class=p>,</span> <span class=n>STLEN</span><span class=p>,</span> <span class=n>stdin</span><span class=p>)</span> <span class=o>!=</span> <span class=nb>NULL</span> <span class=o>&amp;&amp;</span> <span class=n>words</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>!=</span> <span class=sc>&#39;\n&#39;</span><span class=p>)</span> <span class=c1>// 当按下回车后，缓冲区里的内容会发送给fgets函数。fgets会根据STLEN按长度来接收，不要忘记最后一个是&#39;\0&#39;，这个&#39;\0&#39;是自动补上去的
+</span></span></span><span class=line><span class=ln> 9</span><span class=cl><span class=c1></span>	<span class=p>{</span>
+</span></span><span class=line><span class=ln>10</span><span class=cl>		<span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=ln>11</span><span class=cl>		<span class=k>while</span> <span class=p>(</span><span class=n>words</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>!=</span> <span class=sc>&#39;\n&#39;</span> <span class=o>&amp;&amp;</span> <span class=n>words</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>!=</span> <span class=sc>&#39;\0&#39;</span><span class=p>)</span> <span class=c1>// 这里就先将下标移动到当前words的最后一个位置。取决于输入的字符串的长度。如果最后一个是回车，那么说明输入的长度小于STLEN
+</span></span></span><span class=line><span class=ln>12</span><span class=cl><span class=c1></span>			<span class=n>i</span><span class=o>++</span><span class=p>;</span>
+</span></span><span class=line><span class=ln>13</span><span class=cl>		<span class=k>if</span> <span class=p>(</span><span class=n>words</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=sc>&#39;\n&#39;</span><span class=p>)</span> <span class=c1>// 长度小于STLEN
+</span></span></span><span class=line><span class=ln>14</span><span class=cl><span class=c1></span>			<span class=n>words</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=sc>&#39;\0&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=ln>15</span><span class=cl>		<span class=k>else</span>
+</span></span><span class=line><span class=ln>16</span><span class=cl>			<span class=k>while</span> <span class=p>(</span><span class=n>getchar</span><span class=p>()</span> <span class=o>!=</span> <span class=sc>&#39;\n&#39;</span><span class=p>)</span> <span class=c1>// 如果输入长度大于STLEN，则丢弃掉超过STLEN之外的字符
+</span></span></span><span class=line><span class=ln>17</span><span class=cl><span class=c1></span>				<span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=ln>18</span><span class=cl>		<span class=n>puts</span><span class=p>(</span><span class=n>words</span><span class=p>);</span>
+</span></span><span class=line><span class=ln>19</span><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=ln>20</span><span class=cl>	<span class=n>puts</span><span class=p>(</span><span class=s>&#34;Done&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=ln>21</span><span class=cl>	<span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=ln>22</span><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=ln>23</span><span class=cl>
+</span></span><span class=line><span class=ln>24</span><span class=cl><span class=err>➜</span>  <span class=n>iwanttodebug</span> <span class=p>.</span><span class=o>/</span><span class=n>a</span><span class=p>.</span><span class=n>out</span>
+</span></span><span class=line><span class=ln>25</span><span class=cl><span class=n>Enter</span> <span class=n>strings</span> <span class=p>(</span><span class=n>empty</span> <span class=n>line</span> <span class=n>to</span> <span class=n>quit</span><span class=p>)</span><span class=o>:</span>
+</span></span><span class=line><span class=ln>26</span><span class=cl><span class=n>hello</span> <span class=n>world</span>
+</span></span><span class=line><span class=ln>27</span><span class=cl><span class=n>hello</span> <span class=n>wor</span>
+</span></span><span class=line><span class=ln>28</span><span class=cl><span class=n>hello</span>
+</span></span><span class=line><span class=ln>29</span><span class=cl><span class=n>hello</span>
+</span></span><span class=line><span class=ln>30</span><span class=cl>
+</span></span><span class=line><span class=ln>31</span><span class=cl><span class=n>Done</span>
+</span></span></code></pre></div></li></ul></li><li><p>空字符和空指针</p><ul><li>空字符：对应的编码是0，是整数类型</li><li>空指针：是一个指针类型，指向一个无效的地址，它不会与任何数据的有效地址对应</li></ul></li><li><p>两个和字符(串)相关的系统库</p><ul><li><code>string.h</code> - 大量操作字符串的函数</li><li><code>strlib.h</code> - 大量字符串和数值转化的函数</li></ul></li><li><p>命令行参数</p><ul><li><div class=highlight><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=ln>1</span><span class=cl><span class=cm>/* repeat.c */</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=kt>char</span><span class=o>*</span> <span class=n>argv</span><span class=p>[]){...}</span>
+</span></span></code></pre></div></li><li><p><code>agrc</code> - argument count，命令行参数的个数。通常命令名为第一个参数</p></li><li><p><code>argv</code> - argument value，字符串数组，存放参数的值</p></li><li><p>例如：repeat I am fine，argc为4，对应的值存放在argv数组里</p></li><li><p>例如：repeat "I am fine"，这里argc为2，I am fine为一个字符串</p></li></ul></li></ul><style>.utterances{max-width:100%}</style><script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script></article><aside class=sidebar><section class=sidebar_inner><div class=author_header><img src=https://www.jonathanlin.top/images/jonathanlin.png alt="Jonathan Lin photo"><h2>Jonathan Lin</h2></div><div class=author_bio>大龄编程爱好者，摄影爱好者。喜欢徒步喜欢户外，喜欢有事没事拍拍孩子，记录生活记录孩子成长</div><a href=https://www.jonathanlin.top/about/ class="button mt-1" role=button title=阅读更多>阅读更多</a><h2 class=mt-4>最新文章</h2><ul class=flex-column><li><a href=https://www.jonathanlin.top/posts/mqtt-note-02/ class=nav-link title=Mac下安装和配置Mosquitto>Mac下安装和配置Mosquitto</a></li><li><a href=https://www.jonathanlin.top/posts/mqtt-note-01/ class=nav-link title=MQTT杂记>MQTT杂记</a></li><li><a href=https://www.jonathanlin.top/posts/mongo-notes-05/ class=nav-link title="MongoDB学习笔记（五）- MongoDB复制集读写事务">MongoDB学习笔记（五）- MongoDB复制集读写事务</a></li><li><a href=https://www.jonathanlin.top/posts/mongo-notes-04/ class=nav-link title="MongoDB学习笔记（四）- 聚合框架">MongoDB学习笔记（四）- 聚合框架</a></li><li><a href=https://www.jonathanlin.top/posts/mongo-notes-03/ class=nav-link title="MongoDB学习笔记（三）- 文档删除、更新">MongoDB学习笔记（三）- 文档删除、更新</a></li><li><a href=https://www.jonathanlin.top/posts/mongo-notes-02/ class=nav-link title="MongoDB学习笔记（二）- 文档插入">MongoDB学习笔记（二）- 文档插入</a></li><li><a href=https://www.jonathanlin.top/posts/regex-cheatsheet/ class=nav-link title="Regex Cheatsheet">Regex Cheatsheet</a></li><li><a href=https://www.jonathanlin.top/posts/mongo-notes-01/ class=nav-link title="MongoDB学习笔记（一）- 文档查询和投影">MongoDB学习笔记（一）- 文档查询和投影</a></li></ul><div><h2 class="mt-4 taxonomy" id=categories-section>分类</h2><nav class=tags_nav><a href=https://www.jonathanlin.top/categories/notes/ class="post_tag button button_translucent" title=notes>NOTES
+<span class=button_tally>12</span></a>
+<a href=https://www.jonathanlin.top/categories/translation/ class="post_tag button button_translucent" title=translation>TRANSLATION
+<span class=button_tally>5</span></a>
+<a href=https://www.jonathanlin.top/categories/how-to/ class="post_tag button button_translucent" title=how-to>HOW-TO
+<span class=button_tally>1</span></a></nav></div><div><h2 class="mt-4 taxonomy" id=tags-section>标签</h2><nav class=tags_nav><a href=https://www.jonathanlin.top/tags/golang/ class="post_tag button button_translucent" title=golang>GOLANG
+<span class=button_tally>5</span></a>
+<a href=https://www.jonathanlin.top/tags/mongodb/ class="post_tag button button_translucent" title=mongodb>MONGODB
+<span class=button_tally>5</span></a>
+<a href=https://www.jonathanlin.top/tags/c/ class="post_tag button button_translucent" title=c>C
+<span class=button_tally>4</span></a>
+<a href=https://www.jonathanlin.top/tags/c-primer-plus/ class="post_tag button button_translucent" title=c-primer-plus>C-PRIMER-PLUS
+<span class=button_tally>4</span></a>
+<a href=https://www.jonathanlin.top/tags/goroutine/ class="post_tag button button_translucent" title=goroutine>GOROUTINE
+<span class=button_tally>3</span></a>
+<a href=https://www.jonathanlin.top/tags/concurrency-trap/ class="post_tag button button_translucent" title=concurrency-trap>CONCURRENCY-TRAP
+<span class=button_tally>2</span></a>
+<a href=https://www.jonathanlin.top/tags/mqtt/ class="post_tag button button_translucent" title=mqtt>MQTT
+<span class=button_tally>2</span></a>
+<a href=https://www.jonathanlin.top/tags/protobuf/ class="post_tag button button_translucent" title=protobuf>PROTOBUF
+<span class=button_tally>2</span></a>
+<a href=https://www.jonathanlin.top/tags/concurrency/ class="post_tag button button_translucent" title=concurrency>CONCURRENCY
+<span class=button_tally>1</span></a>
+<a href=https://www.jonathanlin.top/tags/github-action/ class="post_tag button button_translucent" title=github-action>GITHUB-ACTION
+<span class=button_tally>1</span></a>
+<a href=https://www.jonathanlin.top/tags/github-pages/ class="post_tag button button_translucent" title=github-pages>GITHUB-PAGES
+<span class=button_tally>1</span></a>
+<a href=https://www.jonathanlin.top/tags/hugo/ class="post_tag button button_translucent" title=hugo>HUGO
+<span class=button_tally>1</span></a>
+<a href=https://www.jonathanlin.top/tags/regex/ class="post_tag button button_translucent" title=regex>REGEX
+<span class=button_tally>1</span></a></nav></div></section></aside></div></main><svg width="0" height="0" class="hidden"><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook"><path d="M437 0H75C33.648.0.0 33.648.0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352.0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.001 18.001" id="twitter"><path d="M15.891 4.013c.808-.496 1.343-1.173 1.605-2.034a8.68 8.68.0 01-2.351.861c-.703-.756-1.593-1.14-2.66-1.14-1.043.0-1.924.366-2.643 1.078A3.56 3.56.0 008.766 5.383c0 .309.039.585.117.819-3.076-.105-5.622-1.381-7.628-3.837-.34.601-.51 1.213-.51 1.846.0 1.301.549 2.332 1.645 3.089-.625-.053-1.176-.211-1.645-.47.0.929.273 1.705.82 2.388a3.623 3.623.0 002.115 1.291c-.312.08-.641.118-.979.118-.312.0-.533-.026-.664-.083.23.757.664 1.371 1.291 1.841a3.652 3.652.0 002.152.743C4.148 14.173 2.625 14.69.902 14.69c-.422.0-.721-.006-.902-.038 1.697 1.102 3.586 1.649 5.676 1.649 2.139.0 4.029-.542 5.674-1.626 1.645-1.078 2.859-2.408 3.639-3.974a10.77 10.77.0 001.172-4.892v-.468a7.788 7.788.0 001.84-1.921 8.142 8.142.0 01-2.11.593z"/></symbol><symbol aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="mail"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V4e2c0 26.5-21.5 48-48 48H48c-26.5.0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5.0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="calendar"><path d="M452 40h-24V0h-40v40H124V0H84v40H60C26.916 40 0 66.916.0 1e2v352c0 33.084 26.916 60 60 60h392c33.084.0 60-26.916 60-60V1e2c0-33.084-26.916-60-60-60zm20 412c0 11.028-8.972 20-20 20H60c-11.028.0-20-8.972-20-20V188h432v264zm0-304H40v-48c0-11.028 8.972-20 20-20h24v40h40V80h264v40h40V80h24c11.028.0 20 8.972 20 20v48z"/><path d="M76 230h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 310h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 390h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80-80h40v40h-40z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="github"><path d="M255.968 5.329C114.624 5.329.0 120.401.0 262.353c0 113.536 73.344 209.856 175.104 243.872 12.8 2.368 17.472-5.568 17.472-12.384.0-6.112-.224-22.272-.352-43.712-71.2 15.52-86.24-34.464-86.24-34.464-11.616-29.696-28.416-37.6-28.416-37.6-23.264-15.936 1.728-15.616 1.728-15.616 25.696 1.824 39.2 26.496 39.2 26.496 22.848 39.264 59.936 27.936 74.528 21.344 2.304-16.608 8.928-27.936 16.256-34.368-56.832-6.496-116.608-28.544-116.608-127.008.0-28.064 9.984-51.008 26.368-68.992-2.656-6.496-11.424-32.64 2.496-68 0 0 21.504-6.912 70.4 26.336 20.416-5.696 42.304-8.544 64.096-8.64 21.728.128 43.648 2.944 64.096 8.672 48.864-33.248 70.336-26.336 70.336-26.336 13.952 35.392 5.184 61.504 2.56 68 16.416 17.984 26.304 40.928 26.304 68.992.0 98.72-59.84 120.448-116.864 126.816 9.184 7.936 17.376 23.616 17.376 47.584.0 34.368-.32 62.08-.32 70.496.0 6.88 4.608 14.88 17.6 12.352C438.72 472.145 512 375.857 512 262.353 512 120.401 397.376 5.329 255.968 5.329z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212" id="gitlab"><path d="M12.3 74.7h54L43.3 3c-1-3.6-6.4-3.6-7.6.0L12.3 74.8z"/><path d="M12.3 74.7.5 111c-1 3.2.0 6.8 3 8.8l101.6 74-92.5-119z"/><path d="M105 193.7l-38.6-119h-54l92.7 119z"/><path d="M105 193.7l38.7-119H66.4l38.7 119z"/><path d="M105 193.7l38.7-119H198l-93 119z"/><path d="M198 74.7l11.6 36.2c1 3 0 6.6-3 8.6l-101.5 74 93-119z"/><path d="M198 74.7h-54.3L167 3c1.2-3.6 6.4-3.6 7.6.0L198 74.8z"/></symbol><symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="rss"><circle cx="3.429" cy="20.571" r="3.429"/><path d="M11.429 24h4.57C15.999 15.179 8.821 8.001.0 8v4.572c6.302.001 11.429 5.126 11.429 11.428z"/><path d="M24 24C24 10.766 13.234.0.0.0v4.571c10.714.0 19.43 8.714 19.43 19.429z"/></symbol><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="linkedin"><path d="M437 0H75C33.648.0.0 33.648.0 75v362c0 41.352 33.648 75 75 75h362c41.352.0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zM181 406h-60V196h60zm0-240h-60v-60h60zm210 240h-60V286c0-16.54-13.46-30-30-30s-30 13.46-30 30v120h-60V196h60v11.309C286.719 202.422 296.93 196 316 196c40.691.043 75 36.547 75 79.688zm0 0"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612" id="arrow"><path d="M604.501 440.509 325.398 134.956c-5.331-5.357-12.423-7.627-19.386-7.27-6.989-.357-14.056 1.913-19.387 7.27L7.499 440.509c-9.999 10.024-9.999 26.298.0 36.323s26.223 10.024 36.222.0l262.293-287.164L568.28 476.832c9.999 10.024 26.222 10.024 36.221.0 9.999-10.023 9.999-26.298.0-36.323z"/></symbol><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="carly"><path d="M504.971 239.029 448 182.059V84c0-46.317-37.682-84-84-84h-44c-13.255.0-24 10.745-24 24s10.745 24 24 24h44c19.851.0 36 16.149 36 36v108c0 6.365 2.529 12.47 7.029 16.971L454.059 256l-47.029 47.029A24.002 24.002.0 004e2 320v108c0 19.851-16.149 36-36 36h-44c-13.255.0-24 10.745-24 24s10.745 24 24 24h44c46.318.0 84-37.683 84-84v-98.059l56.971-56.971c9.372-9.372 9.372-24.568.0-33.941zM112 192V84c0-19.851 16.149-36 36-36h44c13.255.0 24-10.745 24-24S205.255.0 192 0h-44c-46.318.0-84 37.683-84 84v98.059l-56.971 56.97c-9.373 9.373-9.373 24.568.0 33.941L64 329.941V428c0 46.317 37.682 84 84 84h44c13.255.0 24-10.745 24-24s-10.745-24-24-24h-44c-19.851.0-36-16.149-36-36V320c0-6.365-2.529-12.47-7.029-16.971L57.941 256l47.029-47.029A24.002 24.002.0 00112 192z"/></symbol><symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="copy"><path d="M23 2.75A2.75 2.75.0 0020.25.0H8.75A2.75 2.75.0 006 2.75v13.5A2.75 2.75.0 008.75 19h11.5A2.75 2.75.0 0023 16.25zM18.25 14.5h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5zm0-3h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5zm0-3h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5z"/><path d="M8.75 20.5A4.255 4.255.0 014.5 16.25V2.75c0-.086.02-.166.025-.25H3.75A2.752 2.752.0 001 5.25v16A2.752 2.752.0 003.75 24h12a2.752 2.752.0 002.75-2.75v-.75z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.001 512.001" id="closeme"><path d="M284.286 256.002 506.143 34.144c7.811-7.811 7.811-20.475.0-28.285-7.811-7.81-20.475-7.811-28.285.0L256 227.717 34.143 5.859c-7.811-7.811-20.475-7.811-28.285.0-7.81 7.811-7.811 20.475.0 28.285l221.857 221.857L5.858 477.859c-7.811 7.811-7.811 20.475.0 28.285a19.938 19.938.0 0014.143 5.857 19.94 19.94.0 0014.143-5.857L256 284.287l221.857 221.857c3.905 3.905 9.024 5.857 14.143 5.857s10.237-1.952 14.143-5.857c7.811-7.811 7.811-20.475.0-28.285L284.286 256.002z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="open-menu"><path d="M492 236H20c-11.046.0-20 8.954-20 20s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20zm0-160H20C8.954 76 0 84.954.0 96s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20zm0 320H20c-11.046.0-20 8.954-20 20s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="instagram"><path d="M12 2.163c3.204.0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849.0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204.0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849.0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741.0 8.333.014 7.053.072c-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403.0-6.162 2.759-6.162 6.162S8.597 18.163 12 18.163s6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zM12 16c-2.209.0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796.0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795.0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="youtube"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23.0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23.0C23.512 20.55 23.971 18.196 24 12c-.029-6.185-.484-8.549-4.385-8.816zM9 16V8l8 3.993L9 16z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="stackoverflow"><path d="M21 27v-8h3v11H0V19h3v8h18z"/><path d="M17.1.2 15 1.8l7.9 10.6 2.1-1.6L17.1.2zm3.7 14.7L10.6 6.4l1.7-2 10.2 8.5-1.7 2zM7.2 12.3l12 5.6 1.1-2.4-12-5.6-1.1 2.4zm-1.8 6.8 13.56 1.96.17-2.38-13.26-2.55-.47 2.97zM19 25H5v-3h14v3z"/></symbol></svg><footer class=footer><div class="footer_inner wrap pale"><img src=https://www.jonathanlin.top/icons/apple-touch-icon.png class="icon icon_2 transparent" alt="Standing on the Shoulder of Giants">
+<span class=copyright>Copyright © 2022 Jonathan Lin. All rights reserved.
+</span><a class=to_top href=#documentTop><svg class="icon"><use xlink:href="#arrow"/></svg></a></div></footer><script type=text/javascript src=https://www.jonathanlin.top/js/bundle.min.b3a64e063a6b898aeac9bfb2e2409159c622a4c66378b743ea225f8597ba68d905542adbfbf2a921ad6be5274e9f5bf5dfc681da26f1c27b7a8e2d12f6781756.js integrity="sha512-s6ZOBjpriYrqyb+y4kCRWcYipMZjeLdD6iJfhZe6aNkFVCrb+/KpIa1r5SdOn1v138aB2ibxwnt6ji0S9ngXVg==" crossorigin=anonymous></script></body></html>

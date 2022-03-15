@@ -1,727 +1,150 @@
-<!doctype html><html lang=zh data-figures class=page>
-<head>
-<title>MongoDB学习笔记（一）- 文档查询和投影 | Standing on the Shoulder of Giants</title>
-<meta charset=utf-8>
-<meta property="og:title" content="MongoDB学习笔记（一）- 文档查询和投影 | Standing on the Shoulder of Giants">
-<meta itemprop=name content="MongoDB学习笔记（一）- 文档查询和投影 | Standing on the Shoulder of Giants">
-<meta name=application-name content="MongoDB学习笔记（一）- 文档查询和投影 | Standing on the Shoulder of Giants">
-<meta property="og:site_name" content="Jonathan Lin">
-<meta name=description content>
-<meta itemprop=description content>
-<meta property="og:description" content>
-<meta name=twitter:description content>
-<base href=https://www.jonathanlin.top/posts/mongo-notes-01/>
-<link rel=canonical href=https://www.jonathanlin.top/posts/mongo-notes-01/ itemprop=url>
-<meta name=url content="https://www.jonathanlin.top/posts/mongo-notes-01/">
-<meta property="og:url" content="https://www.jonathanlin.top/posts/mongo-notes-01/">
-<meta property="og:locale" content="zh-cn">
-<meta name=language content="Chinese">
-<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta http-equiv=x-ua-compatible content="IE=edge">
-<script>var _hmt=_hmt||[];(function(){var a=document.createElement("script"),b;a.src="https://hm.baidu.com/hm.js?d60a5d9f17547c322bf9ce50cc9b5954",b=document.getElementsByTagName("script")[0],b.parentNode.insertBefore(a,b)})()</script>
-<meta property="og:locale" content="zh">
-<meta property="og:type" content="article">
-<meta name=description content="安装mongodb 我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用brew来安装，使用以下命令：
+<!doctype html><html lang=zh data-figures class=page><head><title>MongoDB学习笔记（一）- 文档查询和投影 | Standing on the Shoulder of Giants</title><meta charset=utf-8><meta property="og:title" content="MongoDB学习笔记（一）- 文档查询和投影 | Standing on the Shoulder of Giants"><meta itemprop=name content="MongoDB学习笔记（一）- 文档查询和投影 | Standing on the Shoulder of Giants"><meta name=application-name content="MongoDB学习笔记（一）- 文档查询和投影 | Standing on the Shoulder of Giants"><meta property="og:site_name" content="Jonathan Lin"><meta name=description content><meta itemprop=description content><meta property="og:description" content><meta name=twitter:description content><base href=https://www.jonathanlin.top/posts/mongo-notes-01/><link rel=canonical href=https://www.jonathanlin.top/posts/mongo-notes-01/ itemprop=url><meta name=url content="https://www.jonathanlin.top/posts/mongo-notes-01/"><meta property="og:url" content="https://www.jonathanlin.top/posts/mongo-notes-01/"><meta property="og:locale" content="zh-cn"><meta name=language content="Chinese"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta http-equiv=x-ua-compatible content="IE=edge"><script>var _hmt=_hmt||[];(function(){var e=document.createElement("script"),t;e.src="https://hm.baidu.com/hm.js?d60a5d9f17547c322bf9ce50cc9b5954",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta name=description content="安装mongodb 我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用brew来安装，使用以下命令：
   添加官方tap
-1brew tap mongodb/brew   安装mongo全家桶，包括社区版服务端，Shell …">
-<meta name=twitter:card content="summary">
-<meta name=twitter:creator content>
-<meta name=twitter:title content="MongoDB学习笔记（一）- 文档查询和投影">
-<meta property="og:url" content="https://www.jonathanlin.top/posts/mongo-notes-01/">
-<meta property="og:title" content="MongoDB学习笔记（一）- 文档查询和投影">
-<meta property="og:description" content="安装mongodb 我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用brew来安装，使用以下命令：
+1brew tap mongodb/brew   安装mongo全家桶，包括社区版服务端，Shell …"><meta name=twitter:card content="summary"><meta name=twitter:creator content><meta name=twitter:title content="MongoDB学习笔记（一）- 文档查询和投影"><meta property="og:url" content="https://www.jonathanlin.top/posts/mongo-notes-01/"><meta property="og:title" content="MongoDB学习笔记（一）- 文档查询和投影"><meta property="og:description" content="安装mongodb 我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用brew来安装，使用以下命令：
   添加官方tap
-1brew tap mongodb/brew   安装mongo全家桶，包括社区版服务端，Shell …">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/mongodb150.png">
-<link rel=apple-touch-icon sizes=180x180 href=https://www.jonathanlin.top/icons/apple-touch-icon.png>
-<link rel=icon type=image/png sizes=32x32 href=https://www.jonathanlin.top/icons/favicon-32x32.png>
-<link rel=manifest href=https://www.jonathanlin.top/icons/site.webmanifest>
-<link rel=canonical href=https://www.jonathanlin.top/posts/mongo-notes-01/>
-<link rel=preload href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" as=style crossorigin=anonymous>
-<link rel=preload href=https://www.jonathanlin.top/js/bundle.min.617c4c3549a10c9fe7e1bb91e87f0722f6a285b59e742c7123c755df9fb33530bae76060ebd303966dd0e1c09813e679f8042802b7fd059315ef1345f0429ad2.js as=script integrity="sha512-YXxMNUmhDJ/n4buR6H8HIvaihbWedCxxI8dV35+zNTC652Bg69MDlm3Q4cCYE+Z5+AQoArf9BZMV7xNF8EKa0g==" crossorigin=anonymous>
-<link rel=stylesheet type=text/css href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" crossorigin=anonymous>
-</head>
-<body data-code=10 data-lines=true id=documentTop>
-<header class=nav_header>
-<nav class=nav><a href=https://www.jonathanlin.top/ class="nav_brand nav_item" title="Standing on the Shoulder of Giants">Standing on the Shoulder of Giants
-<div class=nav_close>
-<div><svg class="icon"><use xlink:href="#open-menu"/></svg><svg class="icon"><use xlink:href="#closeme"/></svg></div>
-</div>
-</a>
-<div class="nav_body nav_body_left">
-<div class=nav_parent>
-<a href=https://www.jonathanlin.top/ class=nav_item title=Home>Home </a>
-</div>
-<div class=nav_parent>
-<a href=https://www.jonathanlin.top/post/rich-content/ class=nav_item title=Archives>Archives </a>
-</div>
-<div class=nav_parent>
-<a href=https://www.jonathanlin.top/ class=nav_item title=Links>Links <img src=https://www.jonathanlin.top/icons/caret-icon.svg alt=icon class=nav_icon></a>
-<div class=nav_sub>
-<span class=nav_child></span>
+1brew tap mongodb/brew   安装mongo全家桶，包括社区版服务端，Shell …"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/mongodb150.png"><link rel=apple-touch-icon sizes=180x180 href=https://www.jonathanlin.top/icons/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://www.jonathanlin.top/icons/favicon-32x32.png><link rel=manifest href=https://www.jonathanlin.top/icons/site.webmanifest><link rel=canonical href=https://www.jonathanlin.top/posts/mongo-notes-01/><link rel=preload href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" as=style crossorigin=anonymous><link rel=preload href=https://www.jonathanlin.top/js/bundle.min.b3a64e063a6b898aeac9bfb2e2409159c622a4c66378b743ea225f8597ba68d905542adbfbf2a921ad6be5274e9f5bf5dfc681da26f1c27b7a8e2d12f6781756.js as=script integrity="sha512-s6ZOBjpriYrqyb+y4kCRWcYipMZjeLdD6iJfhZe6aNkFVCrb+/KpIa1r5SdOn1v138aB2ibxwnt6ji0S9ngXVg==" crossorigin=anonymous><link rel=stylesheet type=text/css href=https://www.jonathanlin.top/css/styles.44fa81034ff7ea86cc966ac19f3832410f69e9e3d934b6314f12db45aa441d85959a242feb02ce9c112be4b1d4df423eaccb9633ecba2c6204dda4cb4901fc55.css integrity="sha512-RPqBA0/36obMlmrBnzgyQQ9p6ePZNLYxTxLbRapEHYWVmiQv6wLOnBEr5LHU30I+rMuWM+y6LGIE3aTLSQH8VQ==" crossorigin=anonymous></head><body data-code=10 data-lines=true id=documentTop><header class=nav_header><nav class=nav><a href=https://www.jonathanlin.top/ class="nav_brand nav_item" title="Standing on the Shoulder of Giants">Standing on the Shoulder of Giants<div class=nav_close><div><svg class="icon"><use xlink:href="#open-menu"/></svg><svg class="icon"><use xlink:href="#closeme"/></svg></div></div></a><div class="nav_body nav_body_left"><div class=nav_parent><a href=https://www.jonathanlin.top/ class=nav_item title=Home>Home</a></div><div class=nav_parent><a href=https://www.jonathanlin.top/post/rich-content/ class=nav_item title=Archives>Archives</a></div><div class=nav_parent><a href=https://www.jonathanlin.top/ class=nav_item title=Links>Links <img src=https://www.jonathanlin.top/icons/caret-icon.svg alt=icon class=nav_icon></a><div class=nav_sub><span class=nav_child></span>
 <a href=https://www.linkedin.com/ class="nav_child nav_item" title=LinkedIn>LinkedIn</a>
-<a href=https://twitter.com/ class="nav_child nav_item" title=Twitter>Twitter</a>
-</div>
-</div>
-<div class=nav_parent>
-<a href=https://www.jonathanlin.top/about/ class=nav_item title=About>About </a>
-</div>
-<div class=follow>
-<a href=https://github.com/jonlimx><svg class="icon"><use xlink:href="#github"/></svg>
-</a>
-<a href=https://twitter.com/#><svg class="icon"><use xlink:href="#twitter"/></svg>
-</a>
-<a href=https://www.linkedin.com/in/#><svg class="icon"><use xlink:href="#linkedin"/></svg>
-</a>
-<a href=https://www.jonathanlin.top/index.xml><svg class="icon"><use xlink:href="#rss"/></svg>
-</a>
-<div class=color_mode>
-<input type=checkbox class=color_choice id=mode>
-</div>
-</div>
-</div>
-</nav>
-</header>
-<main>
-<div class="grid-inverse wrap content">
-<article class=post_content>
-<h1 class=post_title>MongoDB学习笔记（一）- 文档查询和投影</h1>
-<div class=post_meta>
-<span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
-<span class=post_date>
-Aug 5, 2021</span>
-<span class=post_time> · 4 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/mongodb title=mongodb class="post_tag button button_translucent">mongodb
-</a>
-</span>
-<span class=page_only>&nbsp;·
-<div class=post_share>
-分享到:
-<a href="https://twitter.com/intent/tweet?text=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%80%ef%bc%89-%20%e6%96%87%e6%a1%a3%e6%9f%a5%e8%af%a2%e5%92%8c%e6%8a%95%e5%bd%b1&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-01%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg>
-</a>
-<a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-01%2f&t=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%80%ef%bc%89-%20%e6%96%87%e6%a1%a3%e6%9f%a5%e8%af%a2%e5%92%8c%e6%8a%95%e5%bd%b1" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg>
-</a>
-<a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg>
-</a>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-01/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg>
-</a>
-</div>
-</span>
-</div>
-<h2>文章目录</h2>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#安装mongodb>安装mongodb</a></li>
-<li><a href=#以服务的方式启动停止mongodb>以服务的方式启动/停止mongodb</a></li>
-<li><a href=#mongodb查询操作>mongodb查询操作</a>
-<ul>
-<li><a href=#方法定义>方法定义</a></li>
-<li><a href=#查询选择器>查询选择器</a></li>
-<li><a href=#projection投影>Projection(投影)</a></li>
-</ul>
-</li>
-<li><a href=#查询示例>查询示例</a></li>
-<li><a href=#投影示例>投影示例</a></li>
-</ul>
-</nav>
-<h2 id=安装mongodb>安装mongodb</h2>
-<p>我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用<code>brew</code>来安装，使用以下命令：</p>
-<ol>
-<li>
-<p>添加官方tap</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>brew tap mongodb/brew
-</code></pre></div></li>
-<li>
-<p>安装mongo全家桶，包括社区版服务端，Shell和数据库相关工具</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>brew install mongodb-community
-</code></pre></div></li>
-</ol>
-<p>安装完成后，对应的二进制文件和配置文件的位置如下：（Intel处理器）</p>
-<table>
-<thead>
-<tr>
-<th>文件</th>
-<th>位置</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>二进制可执行文件</td>
-<td>/usr/local/Cellar/mongodb-community/5.0.1/bin</td>
-</tr>
-<tr>
-<td>配置文件</td>
-<td>/usr/local/etc/mongod.conf</td>
-</tr>
-<tr>
-<td>日志文件</td>
-<td>/usr/local/var/log/mongodb</td>
-</tr>
-<tr>
-<td>数据文件</td>
-<td>/usr/local/var/mongodb</td>
-</tr>
-</tbody>
-</table>
-<p>MongoDB官方提供了以供学习用的示例数据集合，可以从https://atlas-education.s3.amazonaws.com/sampledata.archive下载，关于示例数据集的详细信息，可以参考：<a href=https://www.mongodb.com/developer/article/atlas-sample-datasets/#std-label-atlas-sample-data-local-installation>The MongoDB Atlas Sample Datasets</a>。</p>
-<h2 id=以服务的方式启动停止mongodb>以服务的方式启动/停止mongodb</h2>
-<p>启动mongodb服务：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>brew services start mongodb-community@5.0
-</code></pre></div><p>服务启动后，可以通过<code>mongo</code>命令连接并进入shell。</p>
-<p>停止mongodb服务：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>brew services stop mongodb-community@5.0
-</code></pre></div><h2 id=mongodb查询操作>mongodb查询操作</h2>
-<p>这里介绍的关于mongodb的查询操作（<strong>MQL</strong>）是通过<code>mongosh</code>方法来实现的，这些方法底层是基于<code>JavaScript</code>，但是如果你使用<code>JavaScript</code>来连接那么你应该参考相应语言的包（<a href=https://docs.mongodb.com/drivers/>idiomatic driver</a> ）。关于新增、删除和更新的方法可以查看文档：<a href=https://docs.mongodb.com/manual/reference/method/>mongosh Methods — MongoDB Manual</a>。这里记录一下查找方法的使用。</p>
-<h3 id=方法定义>方法定义</h3>
-<p>方法定义：<code>db.collection.find(query, projection)</code></p>
-<p>参数列表如下：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>参数类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>query</td>
-<td>document</td>
-<td>可选参数。使用<a href=#%E6%9F%A5%E8%AF%A2%E9%80%89%E6%8B%A9%E5%99%A8>查询选择器</a>构建查询条件。如果你希望返回集合里的所有文档，那么忽略这个参数，或者传递一个空的文档(<code>{}</code>)</td>
-</tr>
-<tr>
-<td>projecttion</td>
-<td>document</td>
-<td>可选参数。对查询结果进行筛选，选择性的返回指定的字段而不是包含文档里的所有字段。如果希望返回文档里的所有字段，则忽略该参数。关于更多细节，请参看：<a href=#Projection%E6%8A%95%E5%BD%B1>Projection(投影)</a></td>
-</tr>
-</tbody>
-</table>
-<p>构建query的时候，会涉及到字段或者嵌套字段。所谓嵌套字段是指子文档里的字段。指定嵌套的字段的方式有两种：</p>
-<ul>
-<li>点标记法：<code>"field.nestedfield": &lt;value></code></li>
-<li>嵌套的方式：<code>{ field: { nestedfield: &lt;value> } }</code> （**注意：**这种方式和点标记法不一样，这种方式将匹配名称为<code>filed</code>的子文档，子文档只包含一个名为<code>nestedfield</code>的字段）</li>
-</ul>
-<h3 id=查询选择器>查询选择器</h3>
-<p>这部分官网有很好的解释说明，详见：<a href=https://docs.mongodb.com/manual/reference/operator/query/#query-selectors>Query and Projection Operators — MongoDB Manual</a></p>
-<h4 id=比较>比较</h4>
-<table>
-<thead>
-<tr>
-<th>数学运算符（SQL）</th>
-<th>MQL运算符</th>
-<th>语法说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>=</td>
-<td>$eq</td>
-<td><code>{ &lt;field>: { $eq: &lt;value> } }</code> 如果<code>value</code>不是正则表达式，也可以写成<code>{ field: &lt;value> }</code></td>
-</tr>
-<tr>
-<td>></td>
-<td>$gt</td>
-<td><code>{field: {$gt: value} }</code></td>
-</tr>
-<tr>
-<td>>=</td>
-<td>$gte</td>
-<td><code>{field: {$gte: value} }</code></td>
-</tr>
-<tr>
-<td>in</td>
-<td>$in</td>
-<td><code>{ field: { $in: [&lt;value1>, &lt;value2>, ... &lt;valueN> ] } }</code> 字段的值<strong>在</strong>给定的数组里</td>
-</tr>
-<tr>
-<td>&lt;</td>
-<td>$lt</td>
-<td><code>{field: {$lt: value} }</code></td>
-</tr>
-<tr>
-<td>&lt;=</td>
-<td>$lte</td>
-<td><code>{ field: { $lte: value} }</code></td>
-</tr>
-<tr>
-<td>!=</td>
-<td>$ne</td>
-<td><code>{field: {$ne: value} }</code></td>
-</tr>
-<tr>
-<td>not in</td>
-<td>$nin</td>
-<td><code>{ field: { $nin: [ &lt;value1>, &lt;value2> ... &lt;valueN> ]} }</code>字段的值<strong>不在</strong>给定的数组里</td>
-</tr>
-</tbody>
-</table>
-<p><strong>注意：</strong> 在进行比较的时候，比较操作符两边的数据需要是相同的BSON类型（<a href=https://docs.mongodb.com/manual/reference/bson-type-comparison-order/#std-label-bson-types-comparison-order>Comparison/Sort Order — MongoDB Manual</a>）</p>
-<p>对于同一个字段的范围的判断，可以使用下面提到的<code>$and</code>逻辑运算，也可以简单的放在一起：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span>birth: <span class=o>{</span><span class=nv>$gt</span>: new Date<span class=o>(</span><span class=s2>&#34;1940-01-01&#34;</span><span class=o>)</span>, <span class=nv>$lt</span>: new Date<span class=o>(</span><span class=s2>&#34;1960-01-01&#34;</span><span class=o>)}})</span>
-</code></pre></div><p>或者：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span><span class=nv>$and</span>:<span class=o>[{</span>birth:<span class=o>{</span><span class=nv>$gt</span>: new Date<span class=o>(</span><span class=s2>&#34;1940-01-01&#34;</span><span class=o>)}}</span>,<span class=o>{</span>birth:<span class=o>{</span><span class=nv>$lt</span>: new Date<span class=o>(</span><span class=s2>&#34;1960-01-01&#34;</span><span class=o>)}}]})</span>
-</code></pre></div><h4 id=逻辑运算>逻辑运算</h4>
-<table>
-<thead>
-<tr>
-<th>MQL运算符</th>
-<th>语法说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>$and</td>
-<td><code>{ $and: [ { &lt;expression1> }, { &lt;expression2> } , ... , { &lt;expressionN> } ] }</code></td>
-</tr>
-<tr>
-<td>$not</td>
-<td><code>{ field: { $not: { &lt;operator-expression> } } }</code>注意<code>{ $not: { $gt: 1.99 } }</code>和<code>{ $lte: 1.99 }</code>不一样，<strong>如果字段不存在，前者会匹配到，但是后者得存在才能匹配到</strong>。原因是前者不大于1.99包括小于等于1.99，也包括不存在的，后者明确就是小于等于1.99</td>
-</tr>
-<tr>
-<td>$nor</td>
-<td><code>{ $nor: [ { &lt;expression1> }, { &lt;expression2> }, ... { &lt;expressionN> } ] }</code>匹配表达式列列表都不满足情况，<strong>如果表达式中涉及到的所有字段都不存在，也会匹配出来</strong></td>
-</tr>
-<tr>
-<td>$or</td>
-<td><code>{ $or: [ { &lt;expression1> }, { &lt;expression2> }, ... , { &lt;expressionN> } ] }</code>匹配表达式列表中的一个或者多个</td>
-</tr>
-</tbody>
-</table>
-<p><code>$not</code>用于修饰数学符号来实现不大于、不小于诸如此类，而<code>$and</code> <code>$not</code> <code>$nor</code>是用于逻辑表达式之间的运算(逻辑表达式由字段和数学表达式构成)，这里要区分开。</p>
-<h4 id=元素element>元素（Element）</h4>
-<table>
-<thead>
-<tr>
-<th>MQL运算符</th>
-<th>语法说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>$exists</td>
-<td><code>{ field: { $exists: &lt;boolean> } }</code>匹配某个字段是否存在。如果值是<code>true</code>那么会匹配到字段存在的或者值为<code>null</code>的</td>
-</tr>
-<tr>
-<td>$type</td>
-<td><code>{ field: { $type: &lt;BSON type> } }</code>或者<code>{ field: { $type: [ &lt;BSON type1> , &lt;BSON type2>, ... ] } }</code>根据字段的类型匹配，可以匹配某种特定类型，或者几种类型中的一种。<code>BSON</code>的支持的类型：<a href=https://docs.mongodb.com/manual/reference/operator/query/type/#std-label-document-type-available-types>$type — MongoDB Manual</a></td>
-</tr>
-</tbody>
-</table>
-<h4 id=评估evaluation>评估（Evaluation）</h4>
-<table>
-<thead>
-<tr>
-<th>MQL运算符</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>$expr</td>
-<td>在query中使用复杂表达式来查询文档 <a href=https://docs.mongodb.com/manual/reference/operator/query/expr/>$expr — MongoDB Manual</a></td>
-</tr>
-<tr>
-<td>$jsonSchema</td>
-<td>校验文档的schema</td>
-</tr>
-<tr>
-<td>$mod</td>
-<td>取模运算</td>
-</tr>
-<tr>
-<td>$regex</td>
-<td>使用正则表达式来匹配 <a href=https://docs.mongodb.com/manual/reference/operator/query/regex/>$regex — MongoDB Manual</a></td>
-</tr>
-<tr>
-<td>$text</td>
-<td>使用文本搜索来匹配字段，前提是这个字段上有text索引</td>
-</tr>
-<tr>
-<td>$where</td>
-<td>使用自定义的JS表达式或者方法进行匹配</td>
-</tr>
-</tbody>
-</table>
-<h4 id=数组array>数组（Array)</h4>
-<table>
-<thead>
-<tr>
-<th>MQL运算符</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>$all</td>
-<td>通过文档数组里的元素进行匹配，数组元素需要满足$all中定义的所有条件。类似$and</td>
-</tr>
-<tr>
-<td>$elemMatch</td>
-<td>通过文档数组里的元素进行匹配，数组元素中的一个或者多个需要满足条件</td>
-</tr>
-<tr>
-<td>$size</td>
-<td>通过文档数组元素的个数进行匹配</td>
-</tr>
-</tbody>
-</table>
-<h3 id=projection投影>Projection(投影)</h3>
-<p>投影的目的是将query的结果按要求返回，比如需要返回哪些字段、返回几个符合条件的数组元素。<strong>注意</strong>：</p>
-<ol>
-<li>包含或者排除，<strong>这二者在投影里是互斥的</strong>。即指定了包含的字段，那么结果仅返回指定的字段，如果指定了排除的字段，那么返回的结果不包含被排除的字段</li>
-<li><code>_id</code>是特例，默认是包含在返回结果里，如果不希望结果里返回，是需要在投影里排除掉。<code>_id</code>的排除是可以和其他字段的包含同时存在</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>Projection</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>&lt;field>: &lt;1 or true></code></td>
-<td>结果中包含某个字段。只要是非0的整型数字，都会被当成<code>true</code></td>
-</tr>
-<tr>
-<td><code>&lt;field>: &lt;0 or false></code></td>
-<td>结果中<strong>排除</strong>某个字段</td>
-</tr>
-<tr>
-<td><code>&lt;field>: &lt;aggregation expression></code></td>
-<td><em>TODO - 待补充</em></td>
-</tr>
-</tbody>
-</table>
-<p>关于对于数组的投影，参考以下操作符：</p>
-<table>
-<thead>
-<tr>
-<th>MQL运算符</th>
-<th>语法说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>$</td>
-<td><code>db.collection.find( { &lt;array>: &lt;condition> ... },{ "&lt;array>.$": 1 } )</code> <code>db.collection.find( { &lt;array.field>: &lt;condition> ...}, { "&lt;array>.$": 1 } )</code> 查找条件是基于文档内部的数组元素，通过<code>$</code>投影出符合条件的第一个数组元素</td>
-</tr>
-<tr>
-<td>$elemMatch</td>
-<td>与<code>$</code>类似，投影出符合条件的第一个数组元素。<code>$elemMatch</code>是在query的结果上，对数组元组的一个或者多个进行继续过滤：<code>db.collection.find( { query, array: {$elemMatch: {condition ...}} ... }</code></td>
-</tr>
-<tr>
-<td>$meta</td>
-<td>获取文档相关的元数据，包括<code>textScore</code>和<code>indexKey</code>。<code>textScore</code>和query中的<code>text</code>一起使用，表示文档和query的匹配程度；<code>indexKey</code>顾名思义获取文档对应的非text类型的索引键，主要用于调试目的（??）</td>
-</tr>
-<tr>
-<td>$slice</td>
-<td>返回符合query条件的数组元素的切片。<code>db.collection.find(&lt;query>,{ &lt;arrayField>: { $slice: &lt;number> } });</code>或者<code>db.collection.find(&lt;query>,{ &lt;arrayField>: { $slice: [ &lt;number>, &lt;number> ] } });</code></td>
-</tr>
-</tbody>
-</table>
-<h2 id=查询示例>查询示例</h2>
-<p>这个部分的数据来源是官方<code>bios</code>数据集：<a href=https://docs.mongodb.com/manual/reference/bios-example-collection/>The bios Example Collection — MongoDB Manual</a></p>
-<p><strong>查询所有文档</strong></p>
-<p><code>find()</code>方法的query部分不传值，或者传递一个空的文档，那么返回的接口就是所有文档。</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>()</span>
-</code></pre></div><p><strong>按照特定的值查询</strong></p>
-<ul>
-<li>
-<p>查找<code>_id</code>为5的文档：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span>_id: 5<span class=o>})</span>
-</code></pre></div></li>
-<li>
-<p>查找<code>name</code>子文档里<code>last</code>的值为"Hopper"的文档：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span><span class=s2>&#34;name.last&#34;</span>: <span class=s2>&#34;Hopper&#34;</span><span class=o>})</span>
-</code></pre></div></li>
-</ul>
-<p><strong>使用<a href=#%E6%9F%A5%E8%AF%A2%E9%80%89%E6%8B%A9%E5%99%A8%5D>查询选择器</a></strong></p>
-<ul>
-<li>
-<p>查找<code>_id</code>的值等于5或者等于<code>ObjectId("51e062189c6ae665454e301d")</code>的文档：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span>_id: <span class=o>{</span><span class=nv>$in</span>: <span class=o>[</span>5, ObjectId<span class=o>(</span><span class=s2>&#34;51e062189c6ae665454e301d&#34;</span><span class=o>)]}})</span>
-</code></pre></div></li>
-<li>
-<p>查找<code>birth</code>在1950之后的文档：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span>birth: <span class=o>{</span><span class=nv>$gt</span>: new Date<span class=o>(</span><span class=s2>&#34;1950-01-01&#34;</span><span class=o>)}})</span>
-</code></pre></div></li>
-<li>
-<p>使用正则表达式查找<code>name</code>子文档下<code>last</code>以N开头的文档：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
-<span class=ln>2</span>   <span class=o>{</span> <span class=s2>&#34;name.last&#34;</span>: <span class=o>{</span> <span class=nv>$regex</span>: /^N/ <span class=o>}</span> <span class=o>}</span>
-<span class=ln>3</span><span class=o>)</span>
-</code></pre></div><blockquote>
-<p><code>$regex</code>的语法格式如下：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span><span class=o>{</span> &lt;field&gt;: <span class=o>{</span> <span class=nv>$regex</span>: /pattern/, <span class=nv>$options</span>: <span class=s1>&#39;&lt;options&gt;&#39;</span> <span class=o>}</span> <span class=o>}</span>
-<span class=ln>2</span><span class=o>{</span> &lt;field&gt;: <span class=o>{</span> <span class=nv>$regex</span>: <span class=s1>&#39;pattern&#39;</span>, <span class=nv>$options</span>: <span class=s1>&#39;&lt;options&gt;&#39;</span> <span class=o>}</span> <span class=o>}</span>
-<span class=ln>3</span><span class=o>{</span> &lt;field&gt;: <span class=o>{</span> <span class=nv>$regex</span>: /pattern/&lt;options&gt; <span class=o>}</span> <span class=o>}</span>
-</code></pre></div></blockquote>
-</li>
-</ul>
-<p><strong>按照值范围查询</strong></p>
-<p>查找<code>birth</code>在1940和1960之间的文档：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span>birth: <span class=o>{</span><span class=nv>$gt</span>: new Date<span class=o>(</span><span class=s2>&#34;1940-01-01&#34;</span><span class=o>)</span>, <span class=nv>$lt</span>: new Date<span class=o>(</span><span class=s2>&#34;1960-01-01&#34;</span><span class=o>)}})</span>
-</code></pre></div><p><strong>根据多个条件查询</strong></p>
-<p>查找<code>birth</code>在1920之后，且<code>death</code>为false的文档：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span> <span class=o>{</span>
-<span class=ln>2</span>   birth: <span class=o>{</span> <span class=nv>$gt</span>: new Date<span class=o>(</span><span class=s1>&#39;1920-01-01&#39;</span><span class=o>)</span> <span class=o>}</span>,
-<span class=ln>3</span>   death: <span class=o>{</span> <span class=nv>$exists</span>: <span class=nb>false</span> <span class=o>}</span>
-<span class=ln>4</span><span class=o>}</span> <span class=o>)</span>
-</code></pre></div><p>或者使用<code>$and</code>操作符</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span><span class=nv>$and</span>: <span class=o>[</span>
-<span class=ln>2</span>    <span class=o>{</span>birth: <span class=o>{</span><span class=nv>$gt</span>: new Date<span class=o>(</span><span class=s2>&#34;1920-01-01&#34;</span><span class=o>)}}</span>,
-<span class=ln>3</span>    <span class=o>{</span>death: <span class=o>{</span><span class=nv>$exists</span>: false<span class=o>}}</span>
-<span class=ln>4</span><span class=o>]})</span>
-</code></pre></div><p><strong>精确匹配子文档</strong></p>
-<p>所谓精确匹配是指<strong>要求子文档的字段的个数以及字段顺序与给定的查询条件中的子文档一致</strong>。下面的例子中，要求匹配<code>name</code>子文档的<code>first</code>为Yukihiro，<code>last</code>为Matsumoto，文档中这两个字段的顺序也是要匹配上</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
-<span class=ln>2</span>    <span class=o>{</span> name: <span class=o>{</span> first: <span class=s2>&#34;Yukihiro&#34;</span>, last: <span class=s2>&#34;Matsumoto&#34;</span> <span class=o>}</span> <span class=o>}</span>
-<span class=ln>3</span><span class=o>)</span>
-</code></pre></div><p>下面的两种情况无法匹配成功：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=ln> 1</span><span class=p>{</span>
-<span class=ln> 2</span>   <span class=nt>&#34;first&#34;</span><span class=p>:</span> <span class=s2>&#34;Yukihiro&#34;</span><span class=p>,</span>
-<span class=ln> 3</span>   <span class=nt>&#34;aka&#34;</span><span class=p>:</span> <span class=s2>&#34;Matz&#34;</span><span class=p>,</span>
-<span class=ln> 4</span>   <span class=nt>&#34;last&#34;</span><span class=p>:</span> <span class=s2>&#34;Matsumoto&#34;</span>
-<span class=ln> 5</span><span class=p>}</span>
-<span class=ln> 6</span>
-<span class=ln> 7</span><span class=p>{</span>
-<span class=ln> 8</span>   <span class=nt>&#34;last&#34;</span><span class=p>:</span> <span class=s2>&#34;Matsumoto&#34;</span><span class=p>,</span>
-<span class=ln> 9</span>   <span class=nt>&#34;first&#34;</span><span class=p>:</span> <span class=s2>&#34;Yukihiro&#34;</span>
-<span class=ln>10</span><span class=p>}</span>
-</code></pre></div><p><strong>匹配子文档的字段</strong></p>
-<p>使用点标记法匹配子文档字段。例如查找<code>name</code>子文档下<code>first</code>为Yukihiro且<code>last</code>为Matsumoto的文档</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
-<span class=ln>2</span>   <span class=o>{</span>
-<span class=ln>3</span>     <span class=s2>&#34;name.first&#34;</span>: <span class=s2>&#34;Yukihiro&#34;</span>,
-<span class=ln>4</span>     <span class=s2>&#34;name.last&#34;</span>: <span class=s2>&#34;Matsumoto&#34;</span>
-<span class=ln>5</span>   <span class=o>}</span>
-<span class=ln>6</span><span class=o>)</span>
-</code></pre></div><p><strong>根据数组元素(数组元素类型为简单类型)来查找</strong></p>
-<ul>
-<li>
-<p>查找<code>contribs</code>数组里含有<code>UNIX</code>元素的文档（至少有一个元素符合即可）：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span>contribs: <span class=s2>&#34;UNIX&#34;</span><span class=o>})</span>
-</code></pre></div></li>
-<li>
-<p>查找<code>contribs</code>数组里含有<code>ALGOL</code>或者<code>Lisp</code>元素的文档（至少有一个元素在$in列表里）：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span>contribs: <span class=o>{</span><span class=nv>$in</span>: <span class=o>[</span><span class=s2>&#34;ALGOL&#34;</span>, <span class=s2>&#34;Lisp&#34;</span><span class=o>]}})</span>
-</code></pre></div></li>
-<li>
-<p>查找<code>contribs</code>数组里含有<code>ALGOL</code>和<code>Lisp</code>元素的文档（<strong>至少包含</strong>$all里定义的所有元素）：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span>contribs: <span class=o>{</span><span class=nv>$all</span>: <span class=o>[</span><span class=s2>&#34;ALGOL&#34;</span>, <span class=s2>&#34;Lisp&#34;</span><span class=o>]}})</span>
-</code></pre></div></li>
-<li>
-<p>查找<code>contribs</code>数组大小为4的文档：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>({</span>contribs: <span class=o>{</span><span class=nv>$size</span>: 4<span class=o>}})</span>
-</code></pre></div></li>
-</ul>
-<p><strong>根据数组元素(数组元素类型为文档类型)来查找</strong></p>
-<ul>
-<li>
-<p>查找<code>awards</code>数组下的子文档中的<code>award</code>的值为<code>Turing Award</code>的文档：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
-<span class=ln>2</span>   <span class=o>{</span> <span class=s2>&#34;awards.award&#34;</span>: <span class=s2>&#34;Turing Award&#34;</span> <span class=o>}</span>
-<span class=ln>3</span><span class=o>)</span>
-</code></pre></div></li>
-<li>
-<p>查找<code>awards</code>数组元素中<code>award</code>的值为<code>Turing Award</code>且<code>year</code>(这里必须要在一个数组元素同时满足)大于1999的文档：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
-<span class=ln>2</span>   <span class=o>{</span> awards: <span class=o>{</span> <span class=nv>$elemMatch</span>: <span class=o>{</span> award: <span class=s2>&#34;Turing Award&#34;</span>, year: <span class=o>{</span> <span class=nv>$gt</span>: <span class=m>2000</span> <span class=o>}</span> <span class=o>}</span> <span class=o>}</span> <span class=o>}</span>
-<span class=ln>3</span><span class=o>)</span>
-</code></pre></div><p>上面的查询可以匹配：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=ln> 1</span><span class=s2>&#34;awards&#34;</span><span class=err>:</span> <span class=p>[</span>
-<span class=ln> 2</span>      <span class=p>{</span>
-<span class=ln> 3</span>        <span class=nt>&#34;award&#34;</span><span class=p>:</span> <span class=s2>&#34;Rosing Prize&#34;</span><span class=p>,</span>
-<span class=ln> 4</span>        <span class=nt>&#34;year&#34;</span><span class=p>:</span> <span class=mi>1999</span><span class=p>,</span>
-<span class=ln> 5</span>        <span class=nt>&#34;by&#34;</span><span class=p>:</span> <span class=s2>&#34;Norwegian Data Association&#34;</span>
-<span class=ln> 6</span>      <span class=p>},</span>
-<span class=ln> 7</span>      <span class=p>{</span>
-<span class=ln> 8</span>        <span class=nt>&#34;award&#34;</span><span class=p>:</span> <span class=s2>&#34;Turing Award&#34;</span><span class=p>,</span>
-<span class=ln> 9</span>        <span class=nt>&#34;year&#34;</span><span class=p>:</span> <span class=mi>2001</span><span class=p>,</span>
-<span class=ln>10</span>        <span class=nt>&#34;by&#34;</span><span class=p>:</span> <span class=s2>&#34;ACM&#34;</span>
-<span class=ln>11</span>      <span class=p>},</span>
-<span class=ln>12</span>      <span class=p>{</span>
-<span class=ln>13</span>        <span class=nt>&#34;award&#34;</span><span class=p>:</span> <span class=s2>&#34;IEEE John von Neumann Medal&#34;</span><span class=p>,</span>
-<span class=ln>14</span>        <span class=nt>&#34;year&#34;</span><span class=p>:</span> <span class=mi>2001</span><span class=p>,</span>
-<span class=ln>15</span>        <span class=nt>&#34;by&#34;</span><span class=p>:</span> <span class=s2>&#34;IEEE&#34;</span>
-<span class=ln>16</span>      <span class=p>}</span>
-<span class=ln>17</span>    <span class=p>]</span>
-</code></pre></div><p><strong>但是无法匹配：</strong></p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=ln> 1</span><span class=s2>&#34;awards&#34;</span><span class=err>:</span> <span class=p>[</span>
-<span class=ln> 2</span>      <span class=p>{</span>
-<span class=ln> 3</span>        <span class=nt>&#34;award&#34;</span><span class=p>:</span> <span class=s2>&#34;Turing Award&#34;</span><span class=p>,</span>
-<span class=ln> 4</span>        <span class=nt>&#34;year&#34;</span><span class=p>:</span> <span class=mi>1983</span><span class=p>,</span>
-<span class=ln> 5</span>        <span class=nt>&#34;by&#34;</span><span class=p>:</span> <span class=s2>&#34;ACM&#34;</span>
-<span class=ln> 6</span>      <span class=p>},</span>
-<span class=ln> 7</span>      <span class=p>{</span>
-<span class=ln> 8</span>        <span class=nt>&#34;award&#34;</span><span class=p>:</span> <span class=s2>&#34;National Medal of Technology&#34;</span><span class=p>,</span>
-<span class=ln> 9</span>        <span class=nt>&#34;year&#34;</span><span class=p>:</span> <span class=mi>1998</span><span class=p>,</span>
-<span class=ln>10</span>        <span class=nt>&#34;by&#34;</span><span class=p>:</span> <span class=s2>&#34;United States&#34;</span>
-<span class=ln>11</span>      <span class=p>},</span>
-<span class=ln>12</span>      <span class=p>{</span>
-<span class=ln>13</span>        <span class=nt>&#34;award&#34;</span><span class=p>:</span> <span class=s2>&#34;Japan Prize&#34;</span><span class=p>,</span>
-<span class=ln>14</span>        <span class=nt>&#34;year&#34;</span><span class=p>:</span> <span class=mi>2011</span><span class=p>,</span>
-<span class=ln>15</span>        <span class=nt>&#34;by&#34;</span><span class=p>:</span> <span class=s2>&#34;The Japan Prize Foundation&#34;</span>
-<span class=ln>16</span>      <span class=p>}</span>
-<span class=ln>17</span>    <span class=p>]</span>
-</code></pre></div><p>如果这里不使用<code>elemMatch</code>而是使用下面的方式，结果返回的是<code>awards</code>元素里包含<code>award</code>为”Turing Award“和<code>year</code>大于1975的元素。这两个条件是要求<code>awards</code>下的所有元素里，满足这两个条件即可。这两个条件是限制在<code>awards</code>上，不是限制在单一的数组元素上，因此上面无法匹配的例子也可以被下面的查询匹配。</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
-<span class=ln>2</span>   <span class=o>{</span>
-<span class=ln>3</span>        <span class=s2>&#34;awards.award&#34;</span>: <span class=s2>&#34;Turing Award&#34;</span> ,
-<span class=ln>4</span>        <span class=s2>&#34;awards.year&#34;</span>: <span class=o>{</span><span class=nv>$gt</span>: 1975<span class=o>}</span>
-<span class=ln>5</span>   <span class=o>}</span>
-<span class=ln>6</span><span class=o>)</span>
-</code></pre></div></li>
-</ul>
-<h2 id=投影示例>投影示例</h2>
-<p><strong>指定要包含的字段</strong></p>
-<p>查找<code>bios</code>集合里所有文档并返回文档的<code>name</code>和<code>contribs</code>字段：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span> <span class=o>{</span> <span class=o>}</span>, <span class=o>{</span> name: 1, contribs: <span class=m>1</span> <span class=o>}</span> <span class=o>)</span>
-</code></pre></div><p><strong>指定要排除的字段</strong></p>
-<p>查找<code>bios</code>集合里<code>contribs</code>为OOP的集合，返回的时候排除掉<code>name.first</code>和<code>birth</code>字段：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
-<span class=ln>2</span>   <span class=o>{</span> contribs: <span class=s1>&#39;OOP&#39;</span> <span class=o>}</span>,
-<span class=ln>3</span>   <span class=o>{</span> <span class=s1>&#39;name.first&#39;</span>: 0, birth: <span class=m>0</span> <span class=o>}</span>
-<span class=ln>4</span><span class=o>)</span>
-</code></pre></div><p><strong>显式排除<code>_id</code>字段</strong></p>
-<p>查找<code>bios</code>集合里所有文档并返回文档的<code>name</code>和<code>contribs</code>字段但不包括<code>_id</code>：</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
-<span class=ln>2</span>   <span class=o>{</span> <span class=o>}</span>,
-<span class=ln>3</span>   <span class=o>{</span> name: 1, contribs: 1, _id: <span class=m>0</span> <span class=o>}</span>
-<span class=ln>4</span><span class=o>)</span>
-</code></pre></div><p><strong>对子文档和数组投影</strong></p>
-<p>查找<code>bios</code>集合里的所有文档并返回<code>name.last</code>，以及<code>contribs</code>数组里的前两个元素</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>db.bios.find<span class=o>(</span>
-<span class=ln>2</span>    <span class=o>{}</span>,
-<span class=ln>3</span>    <span class=o>{</span>_id: 0, <span class=s1>&#39;name.last&#39;</span>: 1, contribs: <span class=o>{</span><span class=nv>$slice</span>: 2<span class=o>}}</span>
-<span class=ln>4</span><span class=o>)</span>
-</code></pre></div><style>.utterances{max-width:100%}</style>
-<script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script>
-</article>
-<aside class=sidebar>
-<section class=sidebar_inner>
-<div class=author_header>
-<img src=https://www.jonathanlin.top/images/jonathanlin.png alt="Jonathan Lin photo">
-<h2>Jonathan Lin</h2>
-</div>
-<div class=author_bio>
-大龄编程爱好者，摄影爱好者。喜欢徒步喜欢户外，喜欢有事没事拍拍孩子，记录生活记录孩子成长
-</div>
-<a href=https://www.jonathanlin.top/about/ class="button mt-1" role=button title=阅读更多>阅读更多</a>
-<h2 class=mt-4>最新文章</h2>
-<ul class=flex-column>
-<li>
-<a href=https://www.jonathanlin.top/posts/mqtt-note-02/ class=nav-link title=Mac下安装和配置Mosquitto>Mac下安装和配置Mosquitto</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/mqtt-note-01/ class=nav-link title=MQTT杂记>MQTT杂记</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-05/ class=nav-link title="MongoDB学习笔记（五）- MongoDB复制集读写事务">MongoDB学习笔记（五）- MongoDB复制集读写事务</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-04/ class=nav-link title="MongoDB学习笔记（四）- 聚合框架">MongoDB学习笔记（四）- 聚合框架</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-03/ class=nav-link title="MongoDB学习笔记（三）- 文档删除、更新">MongoDB学习笔记（三）- 文档删除、更新</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/mongo-notes-02/ class=nav-link title="MongoDB学习笔记（二）- 文档插入">MongoDB学习笔记（二）- 文档插入</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-03/ class=nav-link title="C Primer Plus读书笔记（三）">C Primer Plus读书笔记（三）</a>
-</li>
-<li>
-<a href=https://www.jonathanlin.top/posts/regex-cheatsheet/ class=nav-link title="Regex Cheatsheet">Regex Cheatsheet</a>
-</li>
-</ul>
-<div>
-<h2 class="mt-4 taxonomy" id=categories-section>分类</h2>
-<nav class=tags_nav>
-<a href=https://www.jonathanlin.top/categories/notes/ class="post_tag button button_translucent" title=notes>
-NOTES
-<span class=button_tally>12</span>
-</a>
-<a href=https://www.jonathanlin.top/categories/translation/ class="post_tag button button_translucent" title=translation>
-TRANSLATION
-<span class=button_tally>5</span>
-</a>
-<a href=https://www.jonathanlin.top/categories/how-to/ class="post_tag button button_translucent" title=how-to>
-HOW-TO
-<span class=button_tally>1</span>
-</a>
-</nav>
-</div>
-<div>
-<h2 class="mt-4 taxonomy" id=tags-section>标签</h2>
-<nav class=tags_nav>
-<a href=https://www.jonathanlin.top/tags/golang/ class="post_tag button button_translucent" title=golang>
-GOLANG
-<span class=button_tally>5</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/mongodb/ class="post_tag button button_translucent" title=mongodb>
-MONGODB
-<span class=button_tally>5</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/c/ class="post_tag button button_translucent" title=c>
-C
-<span class=button_tally>4</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/c-primer-plus/ class="post_tag button button_translucent" title=c-primer-plus>
-C-PRIMER-PLUS
-<span class=button_tally>4</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/goroutine/ class="post_tag button button_translucent" title=goroutine>
-GOROUTINE
-<span class=button_tally>3</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/concurrency-trap/ class="post_tag button button_translucent" title=concurrency-trap>
-CONCURRENCY-TRAP
-<span class=button_tally>2</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/mqtt/ class="post_tag button button_translucent" title=mqtt>
-MQTT
-<span class=button_tally>2</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/protobuf/ class="post_tag button button_translucent" title=protobuf>
-PROTOBUF
-<span class=button_tally>2</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/concurrency/ class="post_tag button button_translucent" title=concurrency>
-CONCURRENCY
-<span class=button_tally>1</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/github-action/ class="post_tag button button_translucent" title=github-action>
-GITHUB-ACTION
-<span class=button_tally>1</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/github-pages/ class="post_tag button button_translucent" title=github-pages>
-GITHUB-PAGES
-<span class=button_tally>1</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/hugo/ class="post_tag button button_translucent" title=hugo>
-HUGO
-<span class=button_tally>1</span>
-</a>
-<a href=https://www.jonathanlin.top/tags/regex/ class="post_tag button button_translucent" title=regex>
-REGEX
-<span class=button_tally>1</span>
-</a>
-</nav>
-</div>
-</section>
-</aside>
-</div>
-</main><svg width="0" height="0" class="hidden"><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook"><path d="M437 0H75C33.648.0.0 33.648.0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352.0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.001 18.001" id="twitter"><path d="M15.891 4.013c.808-.496 1.343-1.173 1.605-2.034a8.68 8.68.0 01-2.351.861c-.703-.756-1.593-1.14-2.66-1.14-1.043.0-1.924.366-2.643 1.078A3.56 3.56.0 008.766 5.383c0 .309.039.585.117.819-3.076-.105-5.622-1.381-7.628-3.837-.34.601-.51 1.213-.51 1.846.0 1.301.549 2.332 1.645 3.089-.625-.053-1.176-.211-1.645-.47.0.929.273 1.705.82 2.388a3.623 3.623.0 002.115 1.291c-.312.08-.641.118-.979.118-.312.0-.533-.026-.664-.083.23.757.664 1.371 1.291 1.841a3.652 3.652.0 002.152.743C4.148 14.173 2.625 14.69.902 14.69c-.422.0-.721-.006-.902-.038 1.697 1.102 3.586 1.649 5.676 1.649 2.139.0 4.029-.542 5.674-1.626 1.645-1.078 2.859-2.408 3.639-3.974a10.77 10.77.0 001.172-4.892v-.468a7.788 7.788.0 001.84-1.921 8.142 8.142.0 01-2.11.593z"/></symbol><symbol aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="mail"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V4e2c0 26.5-21.5 48-48 48H48c-26.5.0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5.0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="calendar"><path d="M452 40h-24V0h-40v40H124V0H84v40H60C26.916 40 0 66.916.0 1e2v352c0 33.084 26.916 60 60 60h392c33.084.0 60-26.916 60-60V1e2c0-33.084-26.916-60-60-60zm20 412c0 11.028-8.972 20-20 20H60c-11.028.0-20-8.972-20-20V188h432v264zm0-304H40v-48c0-11.028 8.972-20 20-20h24v40h40V80h264v40h40V80h24c11.028.0 20 8.972 20 20v48z"/><path d="M76 230h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 310h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 390h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80-80h40v40h-40z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="github"><path d="M255.968 5.329C114.624 5.329.0 120.401.0 262.353c0 113.536 73.344 209.856 175.104 243.872 12.8 2.368 17.472-5.568 17.472-12.384.0-6.112-.224-22.272-.352-43.712-71.2 15.52-86.24-34.464-86.24-34.464-11.616-29.696-28.416-37.6-28.416-37.6-23.264-15.936 1.728-15.616 1.728-15.616 25.696 1.824 39.2 26.496 39.2 26.496 22.848 39.264 59.936 27.936 74.528 21.344 2.304-16.608 8.928-27.936 16.256-34.368-56.832-6.496-116.608-28.544-116.608-127.008.0-28.064 9.984-51.008 26.368-68.992-2.656-6.496-11.424-32.64 2.496-68 0 0 21.504-6.912 70.4 26.336 20.416-5.696 42.304-8.544 64.096-8.64 21.728.128 43.648 2.944 64.096 8.672 48.864-33.248 70.336-26.336 70.336-26.336 13.952 35.392 5.184 61.504 2.56 68 16.416 17.984 26.304 40.928 26.304 68.992.0 98.72-59.84 120.448-116.864 126.816 9.184 7.936 17.376 23.616 17.376 47.584.0 34.368-.32 62.08-.32 70.496.0 6.88 4.608 14.88 17.6 12.352C438.72 472.145 512 375.857 512 262.353 512 120.401 397.376 5.329 255.968 5.329z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212" id="gitlab"><path d="M12.3 74.7h54L43.3 3c-1-3.6-6.4-3.6-7.6.0L12.3 74.8z"/><path d="M12.3 74.7.5 111c-1 3.2.0 6.8 3 8.8l101.6 74-92.5-119z"/><path d="M105 193.7l-38.6-119h-54l92.7 119z"/><path d="M105 193.7l38.7-119H66.4l38.7 119z"/><path d="M105 193.7l38.7-119H198l-93 119z"/><path d="M198 74.7l11.6 36.2c1 3 0 6.6-3 8.6l-101.5 74 93-119z"/><path d="M198 74.7h-54.3L167 3c1.2-3.6 6.4-3.6 7.6.0L198 74.8z"/></symbol><symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="rss"><circle cx="3.429" cy="20.571" r="3.429"/><path d="M11.429 24h4.57C15.999 15.179 8.821 8.001.0 8v4.572c6.302.001 11.429 5.126 11.429 11.428z"/><path d="M24 24C24 10.766 13.234.0.0.0v4.571c10.714.0 19.43 8.714 19.43 19.429z"/></symbol><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="linkedin"><path d="M437 0H75C33.648.0.0 33.648.0 75v362c0 41.352 33.648 75 75 75h362c41.352.0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zM181 406h-60V196h60zm0-240h-60v-60h60zm210 240h-60V286c0-16.54-13.46-30-30-30s-30 13.46-30 30v120h-60V196h60v11.309C286.719 202.422 296.93 196 316 196c40.691.043 75 36.547 75 79.688zm0 0"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612" id="arrow"><path d="M604.501 440.509 325.398 134.956c-5.331-5.357-12.423-7.627-19.386-7.27-6.989-.357-14.056 1.913-19.387 7.27L7.499 440.509c-9.999 10.024-9.999 26.298.0 36.323s26.223 10.024 36.222.0l262.293-287.164L568.28 476.832c9.999 10.024 26.222 10.024 36.221.0 9.999-10.023 9.999-26.298.0-36.323z"/></symbol><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="carly"><path d="M504.971 239.029 448 182.059V84c0-46.317-37.682-84-84-84h-44c-13.255.0-24 10.745-24 24s10.745 24 24 24h44c19.851.0 36 16.149 36 36v108c0 6.365 2.529 12.47 7.029 16.971L454.059 256l-47.029 47.029A24.002 24.002.0 004e2 320v108c0 19.851-16.149 36-36 36h-44c-13.255.0-24 10.745-24 24s10.745 24 24 24h44c46.318.0 84-37.683 84-84v-98.059l56.971-56.971c9.372-9.372 9.372-24.568.0-33.941zM112 192V84c0-19.851 16.149-36 36-36h44c13.255.0 24-10.745 24-24S205.255.0 192 0h-44c-46.318.0-84 37.683-84 84v98.059l-56.971 56.97c-9.373 9.373-9.373 24.568.0 33.941L64 329.941V428c0 46.317 37.682 84 84 84h44c13.255.0 24-10.745 24-24s-10.745-24-24-24h-44c-19.851.0-36-16.149-36-36V320c0-6.365-2.529-12.47-7.029-16.971L57.941 256l47.029-47.029A24.002 24.002.0 00112 192z"/></symbol><symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="copy"><path d="M23 2.75A2.75 2.75.0 0020.25.0H8.75A2.75 2.75.0 006 2.75v13.5A2.75 2.75.0 008.75 19h11.5A2.75 2.75.0 0023 16.25zM18.25 14.5h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5zm0-3h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5zm0-3h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5z"/><path d="M8.75 20.5A4.255 4.255.0 014.5 16.25V2.75c0-.086.02-.166.025-.25H3.75A2.752 2.752.0 001 5.25v16A2.752 2.752.0 003.75 24h12a2.752 2.752.0 002.75-2.75v-.75z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.001 512.001" id="closeme"><path d="M284.286 256.002 506.143 34.144c7.811-7.811 7.811-20.475.0-28.285-7.811-7.81-20.475-7.811-28.285.0L256 227.717 34.143 5.859c-7.811-7.811-20.475-7.811-28.285.0-7.81 7.811-7.811 20.475.0 28.285l221.857 221.857L5.858 477.859c-7.811 7.811-7.811 20.475.0 28.285a19.938 19.938.0 0014.143 5.857 19.94 19.94.0 0014.143-5.857L256 284.287l221.857 221.857c3.905 3.905 9.024 5.857 14.143 5.857s10.237-1.952 14.143-5.857c7.811-7.811 7.811-20.475.0-28.285L284.286 256.002z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="open-menu"><path d="M492 236H20c-11.046.0-20 8.954-20 20s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20zm0-160H20C8.954 76 0 84.954.0 96s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20zm0 320H20c-11.046.0-20 8.954-20 20s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="instagram"><path d="M12 2.163c3.204.0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849.0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204.0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849.0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741.0 8.333.014 7.053.072c-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403.0-6.162 2.759-6.162 6.162S8.597 18.163 12 18.163s6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zM12 16c-2.209.0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796.0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795.0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="youtube"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23.0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23.0C23.512 20.55 23.971 18.196 24 12c-.029-6.185-.484-8.549-4.385-8.816zM9 16V8l8 3.993L9 16z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="stackoverflow"><path d="M21 27v-8h3v11H0V19h3v8h18z"/><path d="M17.1.2 15 1.8l7.9 10.6 2.1-1.6L17.1.2zm3.7 14.7L10.6 6.4l1.7-2 10.2 8.5-1.7 2zM7.2 12.3l12 5.6 1.1-2.4-12-5.6-1.1 2.4zm-1.8 6.8 13.56 1.96.17-2.38-13.26-2.55-.47 2.97zM19 25H5v-3h14v3z"/></symbol></svg>
-<footer class=footer>
-<div class="footer_inner wrap pale">
-<img src=https://www.jonathanlin.top/icons/apple-touch-icon.png class="icon icon_2 transparent" alt="Standing on the Shoulder of Giants">
-<span class=copyright>
-Copyright © 2022 Jonathan Lin. All rights reserved.
-</span><a class=to_top href=#documentTop><svg class="icon"><use xlink:href="#arrow"/></svg>
-</a>
-</div>
-</footer>
-<script type=text/javascript src=https://www.jonathanlin.top/js/bundle.min.617c4c3549a10c9fe7e1bb91e87f0722f6a285b59e742c7123c755df9fb33530bae76060ebd303966dd0e1c09813e679f8042802b7fd059315ef1345f0429ad2.js integrity="sha512-YXxMNUmhDJ/n4buR6H8HIvaihbWedCxxI8dV35+zNTC652Bg69MDlm3Q4cCYE+Z5+AQoArf9BZMV7xNF8EKa0g==" crossorigin=anonymous></script>
-</body>
-</html>
+<a href=https://twitter.com/ class="nav_child nav_item" title=Twitter>Twitter</a></div></div><div class=nav_parent><a href=https://www.jonathanlin.top/about/ class=nav_item title=About>About</a></div><div class=follow><a href=https://github.com/jonlimx><svg class="icon"><use xlink:href="#github"/></svg></a><a href=https://twitter.com/#><svg class="icon"><use xlink:href="#twitter"/></svg></a><a href=https://www.linkedin.com/in/#><svg class="icon"><use xlink:href="#linkedin"/></svg></a><a href=https://www.jonathanlin.top/index.xml><svg class="icon"><use xlink:href="#rss"/></svg></a><div class=color_mode><input type=checkbox class=color_choice id=mode></div></div></div></nav></header><main><div class="grid-inverse wrap content"><article class=post_content><h1 class=post_title>MongoDB学习笔记（一）- 文档查询和投影</h1><div class=post_meta><span><svg class="icon"><use xlink:href="#calendar"/></svg></span><span class=post_date>Aug 5, 2021</span>
+<span class=post_time>· 4 min read</span><span>&nbsp;· <a href=https://www.jonathanlin.top/tags/mongodb title=mongodb class="post_tag button button_translucent">mongodb</a></span>
+<span class=page_only>&nbsp;·<div class=post_share>分享到:
+<a href="https://twitter.com/intent/tweet?text=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%80%ef%bc%89-%20%e6%96%87%e6%a1%a3%e6%9f%a5%e8%af%a2%e5%92%8c%e6%8a%95%e5%bd%b1&url=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-01%2f&tw_p=tweetbutton" class=twitter title="分享到 Twitter" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#twitter"/></svg></a><a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwww.jonathanlin.top%2fposts%2fmongo-notes-01%2f&t=MongoDB%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0%ef%bc%88%e4%b8%80%ef%bc%89-%20%e6%96%87%e6%a1%a3%e6%9f%a5%e8%af%a2%e5%92%8c%e6%8a%95%e5%bd%b1" class=facebook title="分享到 Facebook" target=_blank rel=nofollow><svg class="icon"><use xlink:href="#facebook"/></svg></a><a href=#linkedinshare id=linkedinshare class=linkedin title="分享到 LinkedIn" rel=nofollow><svg class="icon"><use xlink:href="#linkedin"/></svg></a><a href=https://www.jonathanlin.top/posts/mongo-notes-01/ title="Copy Link" class="link link_yank"><svg class="icon"><use xlink:href="#copy"/></svg></a></div></span></div><h2>文章目录</h2><nav id=TableOfContents><ul><li><a href=#安装mongodb>安装mongodb</a></li><li><a href=#以服务的方式启动停止mongodb>以服务的方式启动/停止mongodb</a></li><li><a href=#mongodb查询操作>mongodb查询操作</a><ul><li><a href=#方法定义>方法定义</a></li><li><a href=#查询选择器>查询选择器</a></li><li><a href=#projection投影>Projection(投影)</a></li></ul></li><li><a href=#查询示例>查询示例</a></li><li><a href=#投影示例>投影示例</a></li></ul></nav><h2 id=安装mongodb>安装mongodb</h2><p>我使用的是macOS bigsur，因此这里记录的是在mac下安装mongodb社区版。在mac下最便捷的安装方式就是使用<code>brew</code>来安装，使用以下命令：</p><ol><li><p>添加官方tap</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>brew tap mongodb/brew
+</span></span></code></pre></div></li><li><p>安装mongo全家桶，包括社区版服务端，Shell和数据库相关工具</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>brew install mongodb-community
+</span></span></code></pre></div></li></ol><p>安装完成后，对应的二进制文件和配置文件的位置如下：（Intel处理器）</p><table><thead><tr><th>文件</th><th>位置</th></tr></thead><tbody><tr><td>二进制可执行文件</td><td>/usr/local/Cellar/mongodb-community/5.0.1/bin</td></tr><tr><td>配置文件</td><td>/usr/local/etc/mongod.conf</td></tr><tr><td>日志文件</td><td>/usr/local/var/log/mongodb</td></tr><tr><td>数据文件</td><td>/usr/local/var/mongodb</td></tr></tbody></table><p>MongoDB官方提供了以供学习用的示例数据集合，可以从https://atlas-education.s3.amazonaws.com/sampledata.archive下载，关于示例数据集的详细信息，可以参考：<a href=https://www.mongodb.com/developer/article/atlas-sample-datasets/#std-label-atlas-sample-data-local-installation>The MongoDB Atlas Sample Datasets</a>。</p><h2 id=以服务的方式启动停止mongodb>以服务的方式启动/停止mongodb</h2><p>启动mongodb服务：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>brew services start mongodb-community@5.0
+</span></span></code></pre></div><p>服务启动后，可以通过<code>mongo</code>命令连接并进入shell。</p><p>停止mongodb服务：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>brew services stop mongodb-community@5.0
+</span></span></code></pre></div><h2 id=mongodb查询操作>mongodb查询操作</h2><p>这里介绍的关于mongodb的查询操作（<strong>MQL</strong>）是通过<code>mongosh</code>方法来实现的，这些方法底层是基于<code>JavaScript</code>，但是如果你使用<code>JavaScript</code>来连接那么你应该参考相应语言的包（<a href=https://docs.mongodb.com/drivers/>idiomatic driver</a> ）。关于新增、删除和更新的方法可以查看文档：<a href=https://docs.mongodb.com/manual/reference/method/>mongosh Methods — MongoDB Manual</a>。这里记录一下查找方法的使用。</p><h3 id=方法定义>方法定义</h3><p>方法定义：<code>db.collection.find(query, projection)</code></p><p>参数列表如下：</p><table><thead><tr><th>参数</th><th>参数类型</th><th>描述</th></tr></thead><tbody><tr><td>query</td><td>document</td><td>可选参数。使用<a href=#%E6%9F%A5%E8%AF%A2%E9%80%89%E6%8B%A9%E5%99%A8>查询选择器</a>构建查询条件。如果你希望返回集合里的所有文档，那么忽略这个参数，或者传递一个空的文档(<code>{}</code>)</td></tr><tr><td>projecttion</td><td>document</td><td>可选参数。对查询结果进行筛选，选择性的返回指定的字段而不是包含文档里的所有字段。如果希望返回文档里的所有字段，则忽略该参数。关于更多细节，请参看：<a href=#Projection%E6%8A%95%E5%BD%B1>Projection(投影)</a></td></tr></tbody></table><p>构建query的时候，会涉及到字段或者嵌套字段。所谓嵌套字段是指子文档里的字段。指定嵌套的字段的方式有两种：</p><ul><li>点标记法：<code>"field.nestedfield": &lt;value></code></li><li>嵌套的方式：<code>{ field: { nestedfield: &lt;value> } }</code> （**注意：**这种方式和点标记法不一样，这种方式将匹配名称为<code>filed</code>的子文档，子文档只包含一个名为<code>nestedfield</code>的字段）</li></ul><h3 id=查询选择器>查询选择器</h3><p>这部分官网有很好的解释说明，详见：<a href=https://docs.mongodb.com/manual/reference/operator/query/#query-selectors>Query and Projection Operators — MongoDB Manual</a></p><h4 id=比较>比较</h4><table><thead><tr><th>数学运算符（SQL）</th><th>MQL运算符</th><th>语法说明</th></tr></thead><tbody><tr><td>=</td><td>$eq</td><td><code>{ &lt;field>: { $eq: &lt;value> } }</code> 如果<code>value</code>不是正则表达式，也可以写成<code>{ field: &lt;value> }</code></td></tr><tr><td>></td><td>$gt</td><td><code>{field: {$gt: value} }</code></td></tr><tr><td>>=</td><td>$gte</td><td><code>{field: {$gte: value} }</code></td></tr><tr><td>in</td><td>$in</td><td><code>{ field: { $in: [&lt;value1>, &lt;value2>, ... &lt;valueN> ] } }</code> 字段的值<strong>在</strong>给定的数组里</td></tr><tr><td>&lt;</td><td>$lt</td><td><code>{field: {$lt: value} }</code></td></tr><tr><td>&lt;=</td><td>$lte</td><td><code>{ field: { $lte: value} }</code></td></tr><tr><td>!=</td><td>$ne</td><td><code>{field: {$ne: value} }</code></td></tr><tr><td>not in</td><td>$nin</td><td><code>{ field: { $nin: [ &lt;value1>, &lt;value2> ... &lt;valueN> ]} }</code>字段的值<strong>不在</strong>给定的数组里</td></tr></tbody></table><p><strong>注意：</strong> 在进行比较的时候，比较操作符两边的数据需要是相同的BSON类型（<a href=https://docs.mongodb.com/manual/reference/bson-type-comparison-order/#std-label-bson-types-comparison-order>Comparison/Sort Order — MongoDB Manual</a>）</p><p>对于同一个字段的范围的判断，可以使用下面提到的<code>$and</code>逻辑运算，也可以简单的放在一起：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>({</span>birth: <span class=o>{</span><span class=nv>$gt</span>: new Date<span class=o>(</span><span class=s2>&#34;1940-01-01&#34;</span><span class=o>)</span>, <span class=nv>$lt</span>: new Date<span class=o>(</span><span class=s2>&#34;1960-01-01&#34;</span><span class=o>)}})</span>
+</span></span></code></pre></div><p>或者：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>({</span><span class=nv>$and</span>:<span class=o>[{</span>birth:<span class=o>{</span><span class=nv>$gt</span>: new Date<span class=o>(</span><span class=s2>&#34;1940-01-01&#34;</span><span class=o>)}}</span>,<span class=o>{</span>birth:<span class=o>{</span><span class=nv>$lt</span>: new Date<span class=o>(</span><span class=s2>&#34;1960-01-01&#34;</span><span class=o>)}}]})</span>
+</span></span></code></pre></div><h4 id=逻辑运算>逻辑运算</h4><table><thead><tr><th>MQL运算符</th><th>语法说明</th></tr></thead><tbody><tr><td>$and</td><td><code>{ $and: [ { &lt;expression1> }, { &lt;expression2> } , ... , { &lt;expressionN> } ] }</code></td></tr><tr><td>$not</td><td><code>{ field: { $not: { &lt;operator-expression> } } }</code>注意<code>{ $not: { $gt: 1.99 } }</code>和<code>{ $lte: 1.99 }</code>不一样，<strong>如果字段不存在，前者会匹配到，但是后者得存在才能匹配到</strong>。原因是前者不大于1.99包括小于等于1.99，也包括不存在的，后者明确就是小于等于1.99</td></tr><tr><td>$nor</td><td><code>{ $nor: [ { &lt;expression1> }, { &lt;expression2> }, ... { &lt;expressionN> } ] }</code>匹配表达式列列表都不满足情况，<strong>如果表达式中涉及到的所有字段都不存在，也会匹配出来</strong></td></tr><tr><td>$or</td><td><code>{ $or: [ { &lt;expression1> }, { &lt;expression2> }, ... , { &lt;expressionN> } ] }</code>匹配表达式列表中的一个或者多个</td></tr></tbody></table><p><code>$not</code>用于修饰数学符号来实现不大于、不小于诸如此类，而<code>$and</code> <code>$not</code> <code>$nor</code>是用于逻辑表达式之间的运算(逻辑表达式由字段和数学表达式构成)，这里要区分开。</p><h4 id=元素element>元素（Element）</h4><table><thead><tr><th>MQL运算符</th><th>语法说明</th></tr></thead><tbody><tr><td>$exists</td><td><code>{ field: { $exists: &lt;boolean> } }</code>匹配某个字段是否存在。如果值是<code>true</code>那么会匹配到字段存在的或者值为<code>null</code>的</td></tr><tr><td>$type</td><td><code>{ field: { $type: &lt;BSON type> } }</code>或者<code>{ field: { $type: [ &lt;BSON type1> , &lt;BSON type2>, ... ] } }</code>根据字段的类型匹配，可以匹配某种特定类型，或者几种类型中的一种。<code>BSON</code>的支持的类型：<a href=https://docs.mongodb.com/manual/reference/operator/query/type/#std-label-document-type-available-types>$type — MongoDB Manual</a></td></tr></tbody></table><h4 id=评估evaluation>评估（Evaluation）</h4><table><thead><tr><th>MQL运算符</th><th>说明</th></tr></thead><tbody><tr><td>$expr</td><td>在query中使用复杂表达式来查询文档 <a href=https://docs.mongodb.com/manual/reference/operator/query/expr/>$expr — MongoDB Manual</a></td></tr><tr><td>$jsonSchema</td><td>校验文档的schema</td></tr><tr><td>$mod</td><td>取模运算</td></tr><tr><td>$regex</td><td>使用正则表达式来匹配 <a href=https://docs.mongodb.com/manual/reference/operator/query/regex/>$regex — MongoDB Manual</a></td></tr><tr><td>$text</td><td>使用文本搜索来匹配字段，前提是这个字段上有text索引</td></tr><tr><td>$where</td><td>使用自定义的JS表达式或者方法进行匹配</td></tr></tbody></table><h4 id=数组array>数组（Array)</h4><table><thead><tr><th>MQL运算符</th><th>说明</th></tr></thead><tbody><tr><td>$all</td><td>通过文档数组里的元素进行匹配，数组元素需要满足$all中定义的所有条件。类似$and</td></tr><tr><td>$elemMatch</td><td>通过文档数组里的元素进行匹配，数组元素中的一个或者多个需要满足条件</td></tr><tr><td>$size</td><td>通过文档数组元素的个数进行匹配</td></tr></tbody></table><h3 id=projection投影>Projection(投影)</h3><p>投影的目的是将query的结果按要求返回，比如需要返回哪些字段、返回几个符合条件的数组元素。<strong>注意</strong>：</p><ol><li>包含或者排除，<strong>这二者在投影里是互斥的</strong>。即指定了包含的字段，那么结果仅返回指定的字段，如果指定了排除的字段，那么返回的结果不包含被排除的字段</li><li><code>_id</code>是特例，默认是包含在返回结果里，如果不希望结果里返回，是需要在投影里排除掉。<code>_id</code>的排除是可以和其他字段的包含同时存在</li></ol><table><thead><tr><th>Projection</th><th>描述</th></tr></thead><tbody><tr><td><code>&lt;field>: &lt;1 or true></code></td><td>结果中包含某个字段。只要是非0的整型数字，都会被当成<code>true</code></td></tr><tr><td><code>&lt;field>: &lt;0 or false></code></td><td>结果中<strong>排除</strong>某个字段</td></tr><tr><td><code>&lt;field>: &lt;aggregation expression></code></td><td><em>TODO - 待补充</em></td></tr></tbody></table><p>关于对于数组的投影，参考以下操作符：</p><table><thead><tr><th>MQL运算符</th><th>语法说明</th></tr></thead><tbody><tr><td>$</td><td><code>db.collection.find( { &lt;array>: &lt;condition> ... },{ "&lt;array>.$": 1 } )</code> <code>db.collection.find( { &lt;array.field>: &lt;condition> ...}, { "&lt;array>.$": 1 } )</code> 查找条件是基于文档内部的数组元素，通过<code>$</code>投影出符合条件的第一个数组元素</td></tr><tr><td>$elemMatch</td><td>与<code>$</code>类似，投影出符合条件的第一个数组元素。<code>$elemMatch</code>是在query的结果上，对数组元组的一个或者多个进行继续过滤：<code>db.collection.find( { query, array: {$elemMatch: {condition ...}} ... }</code></td></tr><tr><td>$meta</td><td>获取文档相关的元数据，包括<code>textScore</code>和<code>indexKey</code>。<code>textScore</code>和query中的<code>text</code>一起使用，表示文档和query的匹配程度；<code>indexKey</code>顾名思义获取文档对应的非text类型的索引键，主要用于调试目的（??）</td></tr><tr><td>$slice</td><td>返回符合query条件的数组元素的切片。<code>db.collection.find(&lt;query>,{ &lt;arrayField>: { $slice: &lt;number> } });</code>或者<code>db.collection.find(&lt;query>,{ &lt;arrayField>: { $slice: [ &lt;number>, &lt;number> ] } });</code></td></tr></tbody></table><h2 id=查询示例>查询示例</h2><p>这个部分的数据来源是官方<code>bios</code>数据集：<a href=https://docs.mongodb.com/manual/reference/bios-example-collection/>The bios Example Collection — MongoDB Manual</a></p><p><strong>查询所有文档</strong></p><p><code>find()</code>方法的query部分不传值，或者传递一个空的文档，那么返回的接口就是所有文档。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>()</span>
+</span></span></code></pre></div><p><strong>按照特定的值查询</strong></p><ul><li><p>查找<code>_id</code>为5的文档：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>({</span>_id: 5<span class=o>})</span>
+</span></span></code></pre></div></li><li><p>查找<code>name</code>子文档里<code>last</code>的值为"Hopper"的文档：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>({</span><span class=s2>&#34;name.last&#34;</span>: <span class=s2>&#34;Hopper&#34;</span><span class=o>})</span>
+</span></span></code></pre></div></li></ul><p><strong>使用<a href=#%E6%9F%A5%E8%AF%A2%E9%80%89%E6%8B%A9%E5%99%A8%5D>查询选择器</a></strong></p><ul><li><p>查找<code>_id</code>的值等于5或者等于<code>ObjectId("51e062189c6ae665454e301d")</code>的文档：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>({</span>_id: <span class=o>{</span><span class=nv>$in</span>: <span class=o>[</span>5, ObjectId<span class=o>(</span><span class=s2>&#34;51e062189c6ae665454e301d&#34;</span><span class=o>)]}})</span>
+</span></span></code></pre></div></li><li><p>查找<code>birth</code>在1950之后的文档：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>({</span>birth: <span class=o>{</span><span class=nv>$gt</span>: new Date<span class=o>(</span><span class=s2>&#34;1950-01-01&#34;</span><span class=o>)}})</span>
+</span></span></code></pre></div></li><li><p>使用正则表达式查找<code>name</code>子文档下<code>last</code>以N开头的文档：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>(</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl>   <span class=o>{</span> <span class=s2>&#34;name.last&#34;</span>: <span class=o>{</span> <span class=nv>$regex</span>: /^N/ <span class=o>}</span> <span class=o>}</span>
+</span></span><span class=line><span class=ln>3</span><span class=cl><span class=o>)</span>
+</span></span></code></pre></div><blockquote><p><code>$regex</code>的语法格式如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl><span class=o>{</span> &lt;field&gt;: <span class=o>{</span> <span class=nv>$regex</span>: /pattern/, <span class=nv>$options</span>: <span class=s1>&#39;&lt;options&gt;&#39;</span> <span class=o>}</span> <span class=o>}</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl><span class=o>{</span> &lt;field&gt;: <span class=o>{</span> <span class=nv>$regex</span>: <span class=s1>&#39;pattern&#39;</span>, <span class=nv>$options</span>: <span class=s1>&#39;&lt;options&gt;&#39;</span> <span class=o>}</span> <span class=o>}</span>
+</span></span><span class=line><span class=ln>3</span><span class=cl><span class=o>{</span> &lt;field&gt;: <span class=o>{</span> <span class=nv>$regex</span>: /pattern/&lt;options&gt; <span class=o>}</span> <span class=o>}</span>
+</span></span></code></pre></div></blockquote></li></ul><p><strong>按照值范围查询</strong></p><p>查找<code>birth</code>在1940和1960之间的文档：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>({</span>birth: <span class=o>{</span><span class=nv>$gt</span>: new Date<span class=o>(</span><span class=s2>&#34;1940-01-01&#34;</span><span class=o>)</span>, <span class=nv>$lt</span>: new Date<span class=o>(</span><span class=s2>&#34;1960-01-01&#34;</span><span class=o>)}})</span>
+</span></span></code></pre></div><p><strong>根据多个条件查询</strong></p><p>查找<code>birth</code>在1920之后，且<code>death</code>为false的文档：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>(</span> <span class=o>{</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl>   birth: <span class=o>{</span> <span class=nv>$gt</span>: new Date<span class=o>(</span><span class=s1>&#39;1920-01-01&#39;</span><span class=o>)</span> <span class=o>}</span>,
+</span></span><span class=line><span class=ln>3</span><span class=cl>   death: <span class=o>{</span> <span class=nv>$exists</span>: <span class=nb>false</span> <span class=o>}</span>
+</span></span><span class=line><span class=ln>4</span><span class=cl><span class=o>}</span> <span class=o>)</span>
+</span></span></code></pre></div><p>或者使用<code>$and</code>操作符</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>({</span><span class=nv>$and</span>: <span class=o>[</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl>    <span class=o>{</span>birth: <span class=o>{</span><span class=nv>$gt</span>: new Date<span class=o>(</span><span class=s2>&#34;1920-01-01&#34;</span><span class=o>)}}</span>,
+</span></span><span class=line><span class=ln>3</span><span class=cl>    <span class=o>{</span>death: <span class=o>{</span><span class=nv>$exists</span>: false<span class=o>}}</span>
+</span></span><span class=line><span class=ln>4</span><span class=cl><span class=o>]})</span>
+</span></span></code></pre></div><p><strong>精确匹配子文档</strong></p><p>所谓精确匹配是指<strong>要求子文档的字段的个数以及字段顺序与给定的查询条件中的子文档一致</strong>。下面的例子中，要求匹配<code>name</code>子文档的<code>first</code>为Yukihiro，<code>last</code>为Matsumoto，文档中这两个字段的顺序也是要匹配上</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>(</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl>    <span class=o>{</span> name: <span class=o>{</span> first: <span class=s2>&#34;Yukihiro&#34;</span>, last: <span class=s2>&#34;Matsumoto&#34;</span> <span class=o>}</span> <span class=o>}</span>
+</span></span><span class=line><span class=ln>3</span><span class=cl><span class=o>)</span>
+</span></span></code></pre></div><p>下面的两种情况无法匹配成功：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=ln> 1</span><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=ln> 2</span><span class=cl>   <span class=nt>&#34;first&#34;</span><span class=p>:</span> <span class=s2>&#34;Yukihiro&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=ln> 3</span><span class=cl>   <span class=nt>&#34;aka&#34;</span><span class=p>:</span> <span class=s2>&#34;Matz&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=ln> 4</span><span class=cl>   <span class=nt>&#34;last&#34;</span><span class=p>:</span> <span class=s2>&#34;Matsumoto&#34;</span>
+</span></span><span class=line><span class=ln> 5</span><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=ln> 6</span><span class=cl>
+</span></span><span class=line><span class=ln> 7</span><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=ln> 8</span><span class=cl>   <span class=nt>&#34;last&#34;</span><span class=p>:</span> <span class=s2>&#34;Matsumoto&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=ln> 9</span><span class=cl>   <span class=nt>&#34;first&#34;</span><span class=p>:</span> <span class=s2>&#34;Yukihiro&#34;</span>
+</span></span><span class=line><span class=ln>10</span><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><strong>匹配子文档的字段</strong></p><p>使用点标记法匹配子文档字段。例如查找<code>name</code>子文档下<code>first</code>为Yukihiro且<code>last</code>为Matsumoto的文档</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>(</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl>   <span class=o>{</span>
+</span></span><span class=line><span class=ln>3</span><span class=cl>     <span class=s2>&#34;name.first&#34;</span>: <span class=s2>&#34;Yukihiro&#34;</span>,
+</span></span><span class=line><span class=ln>4</span><span class=cl>     <span class=s2>&#34;name.last&#34;</span>: <span class=s2>&#34;Matsumoto&#34;</span>
+</span></span><span class=line><span class=ln>5</span><span class=cl>   <span class=o>}</span>
+</span></span><span class=line><span class=ln>6</span><span class=cl><span class=o>)</span>
+</span></span></code></pre></div><p><strong>根据数组元素(数组元素类型为简单类型)来查找</strong></p><ul><li><p>查找<code>contribs</code>数组里含有<code>UNIX</code>元素的文档（至少有一个元素符合即可）：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>({</span>contribs: <span class=s2>&#34;UNIX&#34;</span><span class=o>})</span>
+</span></span></code></pre></div></li><li><p>查找<code>contribs</code>数组里含有<code>ALGOL</code>或者<code>Lisp</code>元素的文档（至少有一个元素在$in列表里）：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>({</span>contribs: <span class=o>{</span><span class=nv>$in</span>: <span class=o>[</span><span class=s2>&#34;ALGOL&#34;</span>, <span class=s2>&#34;Lisp&#34;</span><span class=o>]}})</span>
+</span></span></code></pre></div></li><li><p>查找<code>contribs</code>数组里含有<code>ALGOL</code>和<code>Lisp</code>元素的文档（<strong>至少包含</strong>$all里定义的所有元素）：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>({</span>contribs: <span class=o>{</span><span class=nv>$all</span>: <span class=o>[</span><span class=s2>&#34;ALGOL&#34;</span>, <span class=s2>&#34;Lisp&#34;</span><span class=o>]}})</span>
+</span></span></code></pre></div></li><li><p>查找<code>contribs</code>数组大小为4的文档：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>({</span>contribs: <span class=o>{</span><span class=nv>$size</span>: 4<span class=o>}})</span>
+</span></span></code></pre></div></li></ul><p><strong>根据数组元素(数组元素类型为文档类型)来查找</strong></p><ul><li><p>查找<code>awards</code>数组下的子文档中的<code>award</code>的值为<code>Turing Award</code>的文档：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>(</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl>   <span class=o>{</span> <span class=s2>&#34;awards.award&#34;</span>: <span class=s2>&#34;Turing Award&#34;</span> <span class=o>}</span>
+</span></span><span class=line><span class=ln>3</span><span class=cl><span class=o>)</span>
+</span></span></code></pre></div></li><li><p>查找<code>awards</code>数组元素中<code>award</code>的值为<code>Turing Award</code>且<code>year</code>(这里必须要在一个数组元素同时满足)大于1999的文档：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>(</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl>   <span class=o>{</span> awards: <span class=o>{</span> <span class=nv>$elemMatch</span>: <span class=o>{</span> award: <span class=s2>&#34;Turing Award&#34;</span>, year: <span class=o>{</span> <span class=nv>$gt</span>: <span class=m>2000</span> <span class=o>}</span> <span class=o>}</span> <span class=o>}</span> <span class=o>}</span>
+</span></span><span class=line><span class=ln>3</span><span class=cl><span class=o>)</span>
+</span></span></code></pre></div><p>上面的查询可以匹配：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=ln> 1</span><span class=cl><span class=s2>&#34;awards&#34;</span><span class=err>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=ln> 2</span><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=ln> 3</span><span class=cl>        <span class=nt>&#34;award&#34;</span><span class=p>:</span> <span class=s2>&#34;Rosing Prize&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=ln> 4</span><span class=cl>        <span class=nt>&#34;year&#34;</span><span class=p>:</span> <span class=mi>1999</span><span class=p>,</span>
+</span></span><span class=line><span class=ln> 5</span><span class=cl>        <span class=nt>&#34;by&#34;</span><span class=p>:</span> <span class=s2>&#34;Norwegian Data Association&#34;</span>
+</span></span><span class=line><span class=ln> 6</span><span class=cl>      <span class=p>},</span>
+</span></span><span class=line><span class=ln> 7</span><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=ln> 8</span><span class=cl>        <span class=nt>&#34;award&#34;</span><span class=p>:</span> <span class=s2>&#34;Turing Award&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=ln> 9</span><span class=cl>        <span class=nt>&#34;year&#34;</span><span class=p>:</span> <span class=mi>2001</span><span class=p>,</span>
+</span></span><span class=line><span class=ln>10</span><span class=cl>        <span class=nt>&#34;by&#34;</span><span class=p>:</span> <span class=s2>&#34;ACM&#34;</span>
+</span></span><span class=line><span class=ln>11</span><span class=cl>      <span class=p>},</span>
+</span></span><span class=line><span class=ln>12</span><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=ln>13</span><span class=cl>        <span class=nt>&#34;award&#34;</span><span class=p>:</span> <span class=s2>&#34;IEEE John von Neumann Medal&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=ln>14</span><span class=cl>        <span class=nt>&#34;year&#34;</span><span class=p>:</span> <span class=mi>2001</span><span class=p>,</span>
+</span></span><span class=line><span class=ln>15</span><span class=cl>        <span class=nt>&#34;by&#34;</span><span class=p>:</span> <span class=s2>&#34;IEEE&#34;</span>
+</span></span><span class=line><span class=ln>16</span><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=ln>17</span><span class=cl>    <span class=p>]</span>
+</span></span></code></pre></div><p><strong>但是无法匹配：</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=ln> 1</span><span class=cl><span class=s2>&#34;awards&#34;</span><span class=err>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=ln> 2</span><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=ln> 3</span><span class=cl>        <span class=nt>&#34;award&#34;</span><span class=p>:</span> <span class=s2>&#34;Turing Award&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=ln> 4</span><span class=cl>        <span class=nt>&#34;year&#34;</span><span class=p>:</span> <span class=mi>1983</span><span class=p>,</span>
+</span></span><span class=line><span class=ln> 5</span><span class=cl>        <span class=nt>&#34;by&#34;</span><span class=p>:</span> <span class=s2>&#34;ACM&#34;</span>
+</span></span><span class=line><span class=ln> 6</span><span class=cl>      <span class=p>},</span>
+</span></span><span class=line><span class=ln> 7</span><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=ln> 8</span><span class=cl>        <span class=nt>&#34;award&#34;</span><span class=p>:</span> <span class=s2>&#34;National Medal of Technology&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=ln> 9</span><span class=cl>        <span class=nt>&#34;year&#34;</span><span class=p>:</span> <span class=mi>1998</span><span class=p>,</span>
+</span></span><span class=line><span class=ln>10</span><span class=cl>        <span class=nt>&#34;by&#34;</span><span class=p>:</span> <span class=s2>&#34;United States&#34;</span>
+</span></span><span class=line><span class=ln>11</span><span class=cl>      <span class=p>},</span>
+</span></span><span class=line><span class=ln>12</span><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=ln>13</span><span class=cl>        <span class=nt>&#34;award&#34;</span><span class=p>:</span> <span class=s2>&#34;Japan Prize&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=ln>14</span><span class=cl>        <span class=nt>&#34;year&#34;</span><span class=p>:</span> <span class=mi>2011</span><span class=p>,</span>
+</span></span><span class=line><span class=ln>15</span><span class=cl>        <span class=nt>&#34;by&#34;</span><span class=p>:</span> <span class=s2>&#34;The Japan Prize Foundation&#34;</span>
+</span></span><span class=line><span class=ln>16</span><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=ln>17</span><span class=cl>    <span class=p>]</span>
+</span></span></code></pre></div><p>如果这里不使用<code>elemMatch</code>而是使用下面的方式，结果返回的是<code>awards</code>元素里包含<code>award</code>为”Turing Award“和<code>year</code>大于1975的元素。这两个条件是要求<code>awards</code>下的所有元素里，满足这两个条件即可。这两个条件是限制在<code>awards</code>上，不是限制在单一的数组元素上，因此上面无法匹配的例子也可以被下面的查询匹配。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>(</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl>   <span class=o>{</span>
+</span></span><span class=line><span class=ln>3</span><span class=cl>        <span class=s2>&#34;awards.award&#34;</span>: <span class=s2>&#34;Turing Award&#34;</span> ,
+</span></span><span class=line><span class=ln>4</span><span class=cl>        <span class=s2>&#34;awards.year&#34;</span>: <span class=o>{</span><span class=nv>$gt</span>: 1975<span class=o>}</span>
+</span></span><span class=line><span class=ln>5</span><span class=cl>   <span class=o>}</span>
+</span></span><span class=line><span class=ln>6</span><span class=cl><span class=o>)</span>
+</span></span></code></pre></div></li></ul><h2 id=投影示例>投影示例</h2><p><strong>指定要包含的字段</strong></p><p>查找<code>bios</code>集合里所有文档并返回文档的<code>name</code>和<code>contribs</code>字段：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>(</span> <span class=o>{</span> <span class=o>}</span>, <span class=o>{</span> name: 1, contribs: <span class=m>1</span> <span class=o>}</span> <span class=o>)</span>
+</span></span></code></pre></div><p><strong>指定要排除的字段</strong></p><p>查找<code>bios</code>集合里<code>contribs</code>为OOP的集合，返回的时候排除掉<code>name.first</code>和<code>birth</code>字段：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>(</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl>   <span class=o>{</span> contribs: <span class=s1>&#39;OOP&#39;</span> <span class=o>}</span>,
+</span></span><span class=line><span class=ln>3</span><span class=cl>   <span class=o>{</span> <span class=s1>&#39;name.first&#39;</span>: 0, birth: <span class=m>0</span> <span class=o>}</span>
+</span></span><span class=line><span class=ln>4</span><span class=cl><span class=o>)</span>
+</span></span></code></pre></div><p><strong>显式排除<code>_id</code>字段</strong></p><p>查找<code>bios</code>集合里所有文档并返回文档的<code>name</code>和<code>contribs</code>字段但不包括<code>_id</code>：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>(</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl>   <span class=o>{</span> <span class=o>}</span>,
+</span></span><span class=line><span class=ln>3</span><span class=cl>   <span class=o>{</span> name: 1, contribs: 1, _id: <span class=m>0</span> <span class=o>}</span>
+</span></span><span class=line><span class=ln>4</span><span class=cl><span class=o>)</span>
+</span></span></code></pre></div><p><strong>对子文档和数组投影</strong></p><p>查找<code>bios</code>集合里的所有文档并返回<code>name.last</code>，以及<code>contribs</code>数组里的前两个元素</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=ln>1</span><span class=cl>db.bios.find<span class=o>(</span>
+</span></span><span class=line><span class=ln>2</span><span class=cl>    <span class=o>{}</span>,
+</span></span><span class=line><span class=ln>3</span><span class=cl>    <span class=o>{</span>_id: 0, <span class=s1>&#39;name.last&#39;</span>: 1, contribs: <span class=o>{</span><span class=nv>$slice</span>: 2<span class=o>}}</span>
+</span></span><span class=line><span class=ln>4</span><span class=cl><span class=o>)</span>
+</span></span></code></pre></div><style>.utterances{max-width:100%}</style><script src=https://utteranc.es/client.js repo=jonlimx/blogs issue-term=title theme=github-light crossorigin=anonymous async></script></article><aside class=sidebar><section class=sidebar_inner><div class=author_header><img src=https://www.jonathanlin.top/images/jonathanlin.png alt="Jonathan Lin photo"><h2>Jonathan Lin</h2></div><div class=author_bio>大龄编程爱好者，摄影爱好者。喜欢徒步喜欢户外，喜欢有事没事拍拍孩子，记录生活记录孩子成长</div><a href=https://www.jonathanlin.top/about/ class="button mt-1" role=button title=阅读更多>阅读更多</a><h2 class=mt-4>最新文章</h2><ul class=flex-column><li><a href=https://www.jonathanlin.top/posts/mqtt-note-02/ class=nav-link title=Mac下安装和配置Mosquitto>Mac下安装和配置Mosquitto</a></li><li><a href=https://www.jonathanlin.top/posts/mqtt-note-01/ class=nav-link title=MQTT杂记>MQTT杂记</a></li><li><a href=https://www.jonathanlin.top/posts/mongo-notes-05/ class=nav-link title="MongoDB学习笔记（五）- MongoDB复制集读写事务">MongoDB学习笔记（五）- MongoDB复制集读写事务</a></li><li><a href=https://www.jonathanlin.top/posts/mongo-notes-04/ class=nav-link title="MongoDB学习笔记（四）- 聚合框架">MongoDB学习笔记（四）- 聚合框架</a></li><li><a href=https://www.jonathanlin.top/posts/mongo-notes-03/ class=nav-link title="MongoDB学习笔记（三）- 文档删除、更新">MongoDB学习笔记（三）- 文档删除、更新</a></li><li><a href=https://www.jonathanlin.top/posts/mongo-notes-02/ class=nav-link title="MongoDB学习笔记（二）- 文档插入">MongoDB学习笔记（二）- 文档插入</a></li><li><a href=https://www.jonathanlin.top/posts/c-primer-plus-notes-03/ class=nav-link title="C Primer Plus读书笔记（三）">C Primer Plus读书笔记（三）</a></li><li><a href=https://www.jonathanlin.top/posts/regex-cheatsheet/ class=nav-link title="Regex Cheatsheet">Regex Cheatsheet</a></li></ul><div><h2 class="mt-4 taxonomy" id=categories-section>分类</h2><nav class=tags_nav><a href=https://www.jonathanlin.top/categories/notes/ class="post_tag button button_translucent" title=notes>NOTES
+<span class=button_tally>12</span></a>
+<a href=https://www.jonathanlin.top/categories/translation/ class="post_tag button button_translucent" title=translation>TRANSLATION
+<span class=button_tally>5</span></a>
+<a href=https://www.jonathanlin.top/categories/how-to/ class="post_tag button button_translucent" title=how-to>HOW-TO
+<span class=button_tally>1</span></a></nav></div><div><h2 class="mt-4 taxonomy" id=tags-section>标签</h2><nav class=tags_nav><a href=https://www.jonathanlin.top/tags/golang/ class="post_tag button button_translucent" title=golang>GOLANG
+<span class=button_tally>5</span></a>
+<a href=https://www.jonathanlin.top/tags/mongodb/ class="post_tag button button_translucent" title=mongodb>MONGODB
+<span class=button_tally>5</span></a>
+<a href=https://www.jonathanlin.top/tags/c/ class="post_tag button button_translucent" title=c>C
+<span class=button_tally>4</span></a>
+<a href=https://www.jonathanlin.top/tags/c-primer-plus/ class="post_tag button button_translucent" title=c-primer-plus>C-PRIMER-PLUS
+<span class=button_tally>4</span></a>
+<a href=https://www.jonathanlin.top/tags/goroutine/ class="post_tag button button_translucent" title=goroutine>GOROUTINE
+<span class=button_tally>3</span></a>
+<a href=https://www.jonathanlin.top/tags/concurrency-trap/ class="post_tag button button_translucent" title=concurrency-trap>CONCURRENCY-TRAP
+<span class=button_tally>2</span></a>
+<a href=https://www.jonathanlin.top/tags/mqtt/ class="post_tag button button_translucent" title=mqtt>MQTT
+<span class=button_tally>2</span></a>
+<a href=https://www.jonathanlin.top/tags/protobuf/ class="post_tag button button_translucent" title=protobuf>PROTOBUF
+<span class=button_tally>2</span></a>
+<a href=https://www.jonathanlin.top/tags/concurrency/ class="post_tag button button_translucent" title=concurrency>CONCURRENCY
+<span class=button_tally>1</span></a>
+<a href=https://www.jonathanlin.top/tags/github-action/ class="post_tag button button_translucent" title=github-action>GITHUB-ACTION
+<span class=button_tally>1</span></a>
+<a href=https://www.jonathanlin.top/tags/github-pages/ class="post_tag button button_translucent" title=github-pages>GITHUB-PAGES
+<span class=button_tally>1</span></a>
+<a href=https://www.jonathanlin.top/tags/hugo/ class="post_tag button button_translucent" title=hugo>HUGO
+<span class=button_tally>1</span></a>
+<a href=https://www.jonathanlin.top/tags/regex/ class="post_tag button button_translucent" title=regex>REGEX
+<span class=button_tally>1</span></a></nav></div></section></aside></div></main><svg width="0" height="0" class="hidden"><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook"><path d="M437 0H75C33.648.0.0 33.648.0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352.0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.001 18.001" id="twitter"><path d="M15.891 4.013c.808-.496 1.343-1.173 1.605-2.034a8.68 8.68.0 01-2.351.861c-.703-.756-1.593-1.14-2.66-1.14-1.043.0-1.924.366-2.643 1.078A3.56 3.56.0 008.766 5.383c0 .309.039.585.117.819-3.076-.105-5.622-1.381-7.628-3.837-.34.601-.51 1.213-.51 1.846.0 1.301.549 2.332 1.645 3.089-.625-.053-1.176-.211-1.645-.47.0.929.273 1.705.82 2.388a3.623 3.623.0 002.115 1.291c-.312.08-.641.118-.979.118-.312.0-.533-.026-.664-.083.23.757.664 1.371 1.291 1.841a3.652 3.652.0 002.152.743C4.148 14.173 2.625 14.69.902 14.69c-.422.0-.721-.006-.902-.038 1.697 1.102 3.586 1.649 5.676 1.649 2.139.0 4.029-.542 5.674-1.626 1.645-1.078 2.859-2.408 3.639-3.974a10.77 10.77.0 001.172-4.892v-.468a7.788 7.788.0 001.84-1.921 8.142 8.142.0 01-2.11.593z"/></symbol><symbol aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="mail"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V4e2c0 26.5-21.5 48-48 48H48c-26.5.0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5.0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="calendar"><path d="M452 40h-24V0h-40v40H124V0H84v40H60C26.916 40 0 66.916.0 1e2v352c0 33.084 26.916 60 60 60h392c33.084.0 60-26.916 60-60V1e2c0-33.084-26.916-60-60-60zm20 412c0 11.028-8.972 20-20 20H60c-11.028.0-20-8.972-20-20V188h432v264zm0-304H40v-48c0-11.028 8.972-20 20-20h24v40h40V80h264v40h40V80h24c11.028.0 20 8.972 20 20v48z"/><path d="M76 230h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 310h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 390h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80-80h40v40h-40z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="github"><path d="M255.968 5.329C114.624 5.329.0 120.401.0 262.353c0 113.536 73.344 209.856 175.104 243.872 12.8 2.368 17.472-5.568 17.472-12.384.0-6.112-.224-22.272-.352-43.712-71.2 15.52-86.24-34.464-86.24-34.464-11.616-29.696-28.416-37.6-28.416-37.6-23.264-15.936 1.728-15.616 1.728-15.616 25.696 1.824 39.2 26.496 39.2 26.496 22.848 39.264 59.936 27.936 74.528 21.344 2.304-16.608 8.928-27.936 16.256-34.368-56.832-6.496-116.608-28.544-116.608-127.008.0-28.064 9.984-51.008 26.368-68.992-2.656-6.496-11.424-32.64 2.496-68 0 0 21.504-6.912 70.4 26.336 20.416-5.696 42.304-8.544 64.096-8.64 21.728.128 43.648 2.944 64.096 8.672 48.864-33.248 70.336-26.336 70.336-26.336 13.952 35.392 5.184 61.504 2.56 68 16.416 17.984 26.304 40.928 26.304 68.992.0 98.72-59.84 120.448-116.864 126.816 9.184 7.936 17.376 23.616 17.376 47.584.0 34.368-.32 62.08-.32 70.496.0 6.88 4.608 14.88 17.6 12.352C438.72 472.145 512 375.857 512 262.353 512 120.401 397.376 5.329 255.968 5.329z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212" id="gitlab"><path d="M12.3 74.7h54L43.3 3c-1-3.6-6.4-3.6-7.6.0L12.3 74.8z"/><path d="M12.3 74.7.5 111c-1 3.2.0 6.8 3 8.8l101.6 74-92.5-119z"/><path d="M105 193.7l-38.6-119h-54l92.7 119z"/><path d="M105 193.7l38.7-119H66.4l38.7 119z"/><path d="M105 193.7l38.7-119H198l-93 119z"/><path d="M198 74.7l11.6 36.2c1 3 0 6.6-3 8.6l-101.5 74 93-119z"/><path d="M198 74.7h-54.3L167 3c1.2-3.6 6.4-3.6 7.6.0L198 74.8z"/></symbol><symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="rss"><circle cx="3.429" cy="20.571" r="3.429"/><path d="M11.429 24h4.57C15.999 15.179 8.821 8.001.0 8v4.572c6.302.001 11.429 5.126 11.429 11.428z"/><path d="M24 24C24 10.766 13.234.0.0.0v4.571c10.714.0 19.43 8.714 19.43 19.429z"/></symbol><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="linkedin"><path d="M437 0H75C33.648.0.0 33.648.0 75v362c0 41.352 33.648 75 75 75h362c41.352.0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zM181 406h-60V196h60zm0-240h-60v-60h60zm210 240h-60V286c0-16.54-13.46-30-30-30s-30 13.46-30 30v120h-60V196h60v11.309C286.719 202.422 296.93 196 316 196c40.691.043 75 36.547 75 79.688zm0 0"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612" id="arrow"><path d="M604.501 440.509 325.398 134.956c-5.331-5.357-12.423-7.627-19.386-7.27-6.989-.357-14.056 1.913-19.387 7.27L7.499 440.509c-9.999 10.024-9.999 26.298.0 36.323s26.223 10.024 36.222.0l262.293-287.164L568.28 476.832c9.999 10.024 26.222 10.024 36.221.0 9.999-10.023 9.999-26.298.0-36.323z"/></symbol><symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="carly"><path d="M504.971 239.029 448 182.059V84c0-46.317-37.682-84-84-84h-44c-13.255.0-24 10.745-24 24s10.745 24 24 24h44c19.851.0 36 16.149 36 36v108c0 6.365 2.529 12.47 7.029 16.971L454.059 256l-47.029 47.029A24.002 24.002.0 004e2 320v108c0 19.851-16.149 36-36 36h-44c-13.255.0-24 10.745-24 24s10.745 24 24 24h44c46.318.0 84-37.683 84-84v-98.059l56.971-56.971c9.372-9.372 9.372-24.568.0-33.941zM112 192V84c0-19.851 16.149-36 36-36h44c13.255.0 24-10.745 24-24S205.255.0 192 0h-44c-46.318.0-84 37.683-84 84v98.059l-56.971 56.97c-9.373 9.373-9.373 24.568.0 33.941L64 329.941V428c0 46.317 37.682 84 84 84h44c13.255.0 24-10.745 24-24s-10.745-24-24-24h-44c-19.851.0-36-16.149-36-36V320c0-6.365-2.529-12.47-7.029-16.971L57.941 256l47.029-47.029A24.002 24.002.0 00112 192z"/></symbol><symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="copy"><path d="M23 2.75A2.75 2.75.0 0020.25.0H8.75A2.75 2.75.0 006 2.75v13.5A2.75 2.75.0 008.75 19h11.5A2.75 2.75.0 0023 16.25zM18.25 14.5h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5zm0-3h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5zm0-3h-7.5a.75.75.0 010-1.5h7.5a.75.75.0 010 1.5z"/><path d="M8.75 20.5A4.255 4.255.0 014.5 16.25V2.75c0-.086.02-.166.025-.25H3.75A2.752 2.752.0 001 5.25v16A2.752 2.752.0 003.75 24h12a2.752 2.752.0 002.75-2.75v-.75z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.001 512.001" id="closeme"><path d="M284.286 256.002 506.143 34.144c7.811-7.811 7.811-20.475.0-28.285-7.811-7.81-20.475-7.811-28.285.0L256 227.717 34.143 5.859c-7.811-7.811-20.475-7.811-28.285.0-7.81 7.811-7.811 20.475.0 28.285l221.857 221.857L5.858 477.859c-7.811 7.811-7.811 20.475.0 28.285a19.938 19.938.0 0014.143 5.857 19.94 19.94.0 0014.143-5.857L256 284.287l221.857 221.857c3.905 3.905 9.024 5.857 14.143 5.857s10.237-1.952 14.143-5.857c7.811-7.811 7.811-20.475.0-28.285L284.286 256.002z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="open-menu"><path d="M492 236H20c-11.046.0-20 8.954-20 20s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20zm0-160H20C8.954 76 0 84.954.0 96s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20zm0 320H20c-11.046.0-20 8.954-20 20s8.954 20 20 20h472c11.046.0 20-8.954 20-20s-8.954-20-20-20z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="instagram"><path d="M12 2.163c3.204.0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849.0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204.0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849.0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741.0 8.333.014 7.053.072c-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403.0-6.162 2.759-6.162 6.162S8.597 18.163 12 18.163s6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zM12 16c-2.209.0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796.0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795.0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="youtube"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23.0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23.0C23.512 20.55 23.971 18.196 24 12c-.029-6.185-.484-8.549-4.385-8.816zM9 16V8l8 3.993L9 16z"/></symbol><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="stackoverflow"><path d="M21 27v-8h3v11H0V19h3v8h18z"/><path d="M17.1.2 15 1.8l7.9 10.6 2.1-1.6L17.1.2zm3.7 14.7L10.6 6.4l1.7-2 10.2 8.5-1.7 2zM7.2 12.3l12 5.6 1.1-2.4-12-5.6-1.1 2.4zm-1.8 6.8 13.56 1.96.17-2.38-13.26-2.55-.47 2.97zM19 25H5v-3h14v3z"/></symbol></svg><footer class=footer><div class="footer_inner wrap pale"><img src=https://www.jonathanlin.top/icons/apple-touch-icon.png class="icon icon_2 transparent" alt="Standing on the Shoulder of Giants">
+<span class=copyright>Copyright © 2022 Jonathan Lin. All rights reserved.
+</span><a class=to_top href=#documentTop><svg class="icon"><use xlink:href="#arrow"/></svg></a></div></footer><script type=text/javascript src=https://www.jonathanlin.top/js/bundle.min.b3a64e063a6b898aeac9bfb2e2409159c622a4c66378b743ea225f8597ba68d905542adbfbf2a921ad6be5274e9f5bf5dfc681da26f1c27b7a8e2d12f6781756.js integrity="sha512-s6ZOBjpriYrqyb+y4kCRWcYipMZjeLdD6iJfhZe6aNkFVCrb+/KpIa1r5SdOn1v138aB2ibxwnt6ji0S9ngXVg==" crossorigin=anonymous></script></body></html>
