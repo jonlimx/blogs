@@ -1451,7 +1451,7 @@
 &lt;p>在函数（参数）中传递数组&lt;/p>
 &lt;ul>
 &lt;li>数组时以指针的方式传递。如果数组也通过副本的方式传递，那么会占用大量的内容&lt;/li>
-&lt;li>由于数组时通过指针传递，因此是可以在函数中直接修改参数的值&lt;/li>
+&lt;li>&lt;strong>由于数组时通过指针传递，因此是可以在函数中直接修改参数的值&lt;/strong>&lt;/li>
 &lt;li>为了避免在函数中修改参数的值，应该将数组声明为&lt;code>const&lt;/code>，例如：&lt;code>int sum(const int ar[], int n);&lt;/code>&lt;/li>
 &lt;li>&lt;code>const&lt;/code>并不是要求原数组是常量，而是函数处理数组时将其视为常量。如果不小心在函数中修改了数组的值，编译器会报错&lt;/li>
 &lt;/ul>
@@ -1484,7 +1484,7 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;p>**const的修饰对象：**取决于和谁挨得近。如果和数据类型挨得近，那么是修饰对应的数据类型是const类型；如果和&lt;code>*&lt;/code>挨得近，则修饰指针，即指针本身的值不可以改变（不可以指向别处）&lt;/p>
+&lt;p>**const的修饰对象：**取决于和谁挨得近。如果和数据类型挨得近，那么是修饰对应的数据类型是const类型，即数据类型本身只读，但是指针可以修改指向；如果和&lt;code>*&lt;/code>挨得近，则修饰指针，即指针本身的值不可以改变（不可以指向别处）&lt;/p>
 &lt;p>此外还需要注意：&lt;/p>
 &lt;ul>
 &lt;li>
@@ -1549,19 +1549,19 @@
 &lt;li>
 &lt;p>&lt;code>int (*px)[2]&lt;/code> - 指向一个二维数组，且这个二维数组有两列，即n * 2。**注意：**要和&lt;code>int *px[2]&lt;/code>区分开，因为&lt;code>[]&lt;/code>的优先级高于&lt;code>*&lt;/code>，因此&lt;code>px&lt;/code>先和&lt;code>[]&lt;/code>结合这样就声明为元素个数为2的一维数组，然后该一维数组的元素数据类型是&lt;code>int*&lt;/code>，也就是：含有两个int指针的一维数组&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="n">a1_20&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="p">};&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">a1_21&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="n">a1_21&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span> &lt;span class="p">};&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">a1_3&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span> &lt;span class="p">};&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">a1_5&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">5&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="n">a1_3&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="n">a1_5&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">5&lt;/span> &lt;span class="p">};&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl"> &lt;span class="kt">int&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">a2_1&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="n">a1_3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">a1_5&lt;/span> &lt;span class="p">};&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl"> &lt;span class="kt">int&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">a2_2&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="n">a1_20&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">a1_21&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">a2_1&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="n">a1_3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">a1_5&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">a2_2&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="n">a1_20&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">a1_21&lt;/span> &lt;span class="p">};&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl"> &lt;span class="c1">// 下面这两种都不行。int (*)[2] 表示的指向四个元素的指针，即元素为int[4]的一位数组，也就是n*2的二维数组
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// int (* a2_3)[2] = { a1_20, a1_21 };
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">12&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// int (* a2_4)[2] = {{ 1, 2, }, { 1, 2 }};
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">13&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">a22&lt;/span>&lt;span class="p">[][&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{{&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="p">},&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">4&lt;/span> &lt;span class="p">}};&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">14&lt;/span>&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">a2_5&lt;/span>&lt;span class="p">)[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">a22&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl">&lt;span class="c1">// 下面这两种都不行。int (*)[2] 表示的指向四个元素的指针，即元素为int[2]的一维数组，也就是n*2的二维数组
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl">&lt;span class="c1">// int (* a2_3)[2] = { a1_20, a1_21 };
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">12&lt;/span>&lt;span class="cl">&lt;span class="c1">// int (* a2_4)[2] = {{ 1, 2, }, { 1, 2 }};
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">13&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">a22&lt;/span>&lt;span class="p">[][&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{{&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="p">},&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">4&lt;/span> &lt;span class="p">}};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">14&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">a2_5&lt;/span>&lt;span class="p">)[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">a22&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;li>
 &lt;p>函数声明中的参数是二维数组时，下面两种方式的定义都是等价：&lt;/p>
@@ -3019,7 +3019,7 @@
 &lt;/li>
 &lt;/ul>
 &lt;blockquote>
-&lt;p>TIP - 在构建是否相等的关系表示式的时候，可以如果是比价是否和一个常量相等，这时候可以把常量放左边，这可以避免误把赋值操作当做了比较操作&lt;/p>
+&lt;p>TIP - 在构建是否相等的关系表示式的时候，如果是比较是否和一个常量相等，这时候可以把常量放左边，这可以避免误把赋值操作当做了比较操作&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="mi">5&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">canoes&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 语法错误，编译器不允许这么做
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">canose&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/blockquote>
@@ -4539,7 +4539,7 @@
 &lt;/table>
 &lt;/li>
 &lt;li>
-&lt;p>scanf与printf正好相反，从键盘输入的都是字符串，scanf通过制定数据类型然后将字符串转换成对应的数据类型。注意：&lt;strong>除了字符串类型及char数组，其他所有的类型都要通过指针来接收值&lt;/strong>&lt;/p>
+&lt;p>scanf与printf正好相反，从键盘输入的都是字符串，scanf通过指定数据类型然后将字符串转换成对应的数据类型。注意：&lt;strong>除了字符串类型及char数组，其他所有的类型都要通过指针来接收值&lt;/strong>&lt;/p>
 &lt;/li>
 &lt;li>
 &lt;p>scanf通过空格或者回车将输入分割成多个字段（%c是例外，也会把空字符作为输入存储）&lt;/p>
@@ -4551,7 +4551,7 @@
 &lt;p>*修饰符&lt;/p>
 &lt;ul>
 &lt;li>
-&lt;p>对于printf而言，*修饰符用于代替字段。如下面代码所示，*修饰符用与替换width和precision表示宽度和精度&lt;/p>
+&lt;p>对于printf而言，*修饰符用于代替字段。如下面代码所示，*修饰符用与替换变量width&lt;/p>
 &lt;/li>
 &lt;li>
 &lt;p>对于scanf而言，把*放在%和转换字符之间，则会跳过相应的输入项。下面代码所示，scanf跳过了第一个和第二个输入，把第三个输入赋值给n&lt;/p>
@@ -4559,8 +4559,8 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="n">width&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">6&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">precision&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">number&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">256&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl"> &lt;span class="kt">double&lt;/span> &lt;span class="n">weight&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">242.5&lt;/span>&lt;span class="p">;&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%*d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">width&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">number&lt;/span>&lt;span class="p">);&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%*.*f&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">width&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">precision&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">weight&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%*d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">width&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">number&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// printf(&amp;#34;%6d\n&amp;#34;, width, number);
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%*.*f&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">width&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">precision&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">weight&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl">
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl"> &lt;span class="n">scanf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%*d %*d %d&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">);&lt;/span>
@@ -4590,7 +4590,7 @@
 &lt;p>浮点数除法的结果是浮点数，整数除法的结果是整数（小数部分直接被截断，不会四舍五入 ），整数和浮点数的除法是浮点数&lt;/p>
 &lt;/li>
 &lt;li>
-&lt;p>运算符优先级&lt;/p>
+&lt;p>运算符优先级（从高到低）&lt;/p>
 &lt;table>
 &lt;thead>
 &lt;tr>
