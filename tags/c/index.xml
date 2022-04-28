@@ -1,4 +1,122 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>C on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/c/</link><description>Recent content in C on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 08 Sep 2021 20:14:21 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/c/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus读书笔记（三）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</link><pubDate>Wed, 08 Sep 2021 20:14:21 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>C on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/c/</link><description>Recent content in C on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 27 Apr 2022 08:47:16 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/c/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus读书笔记（四）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-04/</link><pubDate>Wed, 27 Apr 2022 08:47:16 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-04/</guid><description>
+&lt;p>&lt;em>本文是《C Primer Plus》第十二章至第十四章读书笔记，持续更新中。&lt;/em>&lt;/p>
+&lt;h2 id="ch12-存储类别链接和内存管理">ch12. 存储类别、链接和内存管理&lt;/h2>
+&lt;blockquote>
+&lt;ol>
+&lt;li>不同关键字修饰是否对应不同的存储类别&lt;/li>
+&lt;li>怎么管理内存，是否有对应的函数&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>
+&lt;p>标识符 - 一个名称（变量），用于指向内存中的特定对象。&lt;strong>通过作用域和链接来描述标识符的可见性&lt;/strong>。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>左值 - 指定内存对象的标识符或者表达式&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>可修改的左值 - 可以使用左值改变对象中的值&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>const char* pc = &amp;quot;Behold a string literral!&amp;quot;&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>pc - 可以修改的左值，即pc可以指向别的地址&lt;/li>
+&lt;li>*pc - 不可修改的左值，*pc指向'B'，不可修改&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>作用域&lt;/p>
+&lt;ul>
+&lt;li>块作用域 - 花括号括起来的代码区域。以前块作用域的变量必须声明在块的开头。C99放宽了这一标准，允许在块中的任意位置声明变量&lt;/li>
+&lt;li>函数作用域 - &lt;em>仅用于&lt;code>goto&lt;/code>语句的标签，即使出现在函数内层块中，作用域也延伸到整个函数&lt;/em>&lt;/li>
+&lt;li>函数原型作用域 - 函数原型中的形参名，只在变长数组中才用到 &lt;code>void use_a_VLA(int n, int m, ar[n][m])&lt;/code>，后面的形参可以使用前面定义的形参名&lt;/li>
+&lt;li>文件作用域 - 从定义处到该定义所在的文件末尾均可见。文件作用域变量也称为全局变量&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>链接&lt;/p>
+&lt;ul>
+&lt;li>无链接变量 - 具有块作用域、函数作用域或函数原型作用域的变量都是无链接变量。这些变量只属于它们的块作用域、函数作用域或函数原型作用域&lt;/li>
+&lt;li>外部链接变量（全局作用域/程序作用域） - 首先是有文件作用域，并可在多个文件中使用。&lt;/li>
+&lt;li>内部链接变量（文件作用域） - 只能在定义该变量的文件中使用。用&lt;code>static&lt;/code>关键字定义的全局变量就是内部链接变量。&lt;code>static int dodgers = 3;&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>存储期 - 表述通过标识符访问的（内存）对象的生存期&lt;/p>
+&lt;ul>
+&lt;li>静态存储期 - 程序执行期间一直存在&lt;/li>
+&lt;li>线程存储期 - 从被声明到线程结束一直存在。使用&lt;code>_Thread_local&lt;/code>关键字声明&lt;/li>
+&lt;li>自动存储期 - 块作用域的变量，从进入块执行到离开块，变量的存储期自动分配内存和自动释放内存&lt;/li>
+&lt;/ul>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>存储类别&lt;/th>
+&lt;th>存储期&lt;/th>
+&lt;th>作用域&lt;/th>
+&lt;th>链接&lt;/th>
+&lt;th>声明方式&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>自动&lt;/td>
+&lt;td>自动&lt;/td>
+&lt;td>块&lt;/td>
+&lt;td>无&lt;/td>
+&lt;td>块内，可以显式使用&lt;code>auto&lt;/code>关键字&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>寄存器&lt;/td>
+&lt;td>自动&lt;/td>
+&lt;td>块&lt;/td>
+&lt;td>无&lt;/td>
+&lt;td>块内，使用关键字&lt;code>register&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>静态外部链接&lt;/td>
+&lt;td>静态&lt;/td>
+&lt;td>文件&lt;/td>
+&lt;td>外部&lt;/td>
+&lt;td>所有函数外&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>静态内部链接&lt;/td>
+&lt;td>静态&lt;/td>
+&lt;td>文件&lt;/td>
+&lt;td>内部&lt;/td>
+&lt;td>所有函数外，使用关键字&lt;code>static&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>静态无链接&lt;/td>
+&lt;td>静态&lt;/td>
+&lt;td>块&lt;/td>
+&lt;td>无&lt;/td>
+&lt;td>块内，使用关键字&lt;code>static&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;/li>
+&lt;li>
+&lt;p>自动变量 - 可以显式使用&lt;code>auto&lt;/code>关键字。&lt;strong>自动变量不会自动初始化&lt;/strong>，意味着如果没有没有初始化就读取，可能是残留在对应空间里的值&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>寄存器变量 - 其实是一种请求，意味着即使声明为寄存器变量，最终变量也不一样会分配在寄存器上。寄存器变量不能使用地址运算符&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>块作用域的静态变量 - 静态说明在内存中的位置不变，不代表值不变。声明语句在块里，只是限定了作用域在块里，声明语句在程序执行被载入到内存的时候已经执行完毕&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>外部链接的静态变量 - 源文件中使用的外部变量定义在另一个源文件中，那么在该源文件中必须使用&lt;code>extern&lt;/code>关键词再次声明，&lt;code>extern char Coal&lt;/code>。外部变量如果没有初始化，&lt;strong>会被初始化为对应类型的0值&lt;/strong>。&lt;strong>显式初始化不同于自动变量，只能使用常量表达式&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>函数的存储类别&lt;/p>
+&lt;ul>
+&lt;li>外部函数 - 可以被所在文件以及其他文件的函数访问（默认）。通过&lt;code>extern&lt;/code>声明外部函数&lt;/li>
+&lt;li>静态函数 - 只能被当前文件的函数访问。&lt;code>static double beta(int, int)&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item><item><title>C Primer Plus读书笔记（三）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</link><pubDate>Wed, 08 Sep 2021 20:14:21 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第九章至第十一章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch09-函数">ch09. 函数&lt;/h2>
 &lt;blockquote>
