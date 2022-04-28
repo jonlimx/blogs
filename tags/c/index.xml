@@ -116,6 +116,77 @@
 &lt;li>静态函数 - 只能被当前文件的函数访问。&lt;code>static double beta(int, int)&lt;/code>&lt;/li>
 &lt;/ul>
 &lt;/li>
+&lt;li>
+&lt;p>动态分配内存 - &lt;code>malloc&lt;/code>和&lt;code>calloc&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>malloc&lt;/code> - 接收参数：所需的内存的&lt;strong>字节数&lt;/strong>。通常使用n*sizeof(type)&lt;/li>
+&lt;li>&lt;code>calloc&lt;/code> - 接收参数：第1个参数为存储单元的数量，第2个参数为存储单元的大小（以字节为单位），例如：&lt;code>calloc(100, sizeof(long))&lt;/code>&lt;/li>
+&lt;li>返回值指向&lt;code>void&lt;/code>的指针，通常返回值会被&lt;strong>强制转为匹配的配型&lt;/strong>&lt;/li>
+&lt;li>返回的指针指向所分配空间的其实位置，因此可以像&lt;strong>使用数组一样使用&lt;/strong>&lt;/li>
+&lt;li>如果分配内存失败，返回&lt;code>NULL&lt;/code>&lt;/li>
+&lt;li>与变长数组相比，变长数组是自动存储类型，程序离开变长数组所在的块时占用的内存将自动释放&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>释放内存 - &lt;code>free&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>接收参数 - &lt;code>malloc&lt;/code>的返回值&lt;/li>
+&lt;li>只能释放&lt;code>malloc&lt;/code>和&lt;code>calloc&lt;/code>分配的内存&lt;/li>
+&lt;li>同一块内存不能被释放两次&lt;/li>
+&lt;li>内存不及时释放会导致&lt;strong>内存泄露&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>存储类别和内存分配&lt;/p>
+&lt;ul>
+&lt;li>静态数据 - 包括外部链接、内部链接和无链接的静态数据以及字符串字面量，占用一块内存区域&lt;/li>
+&lt;li>自动数据 - 这部分内存通常作为栈来处理&lt;/li>
+&lt;li>动态分配的数据 - 这部分内存通常称为内存&lt;strong>堆&lt;/strong>或者自由内存&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>const类型限定符&lt;/p>
+&lt;ul>
+&lt;li>如果是修饰类型，那么说明该类型的值在初始化以后不能修改&lt;/li>
+&lt;li>如果是修饰指针，取决于&lt;code>const&lt;/code>是在&lt;code>*&lt;/code>左侧还是右侧
+&lt;ul>
+&lt;li>&lt;code>const&lt;/code>在&lt;code>*&lt;/code>左侧 - 限定了指向的数据不能改变，比如：&lt;code>const float * pf&lt;/code> &lt;code>float const * pf&lt;/code> 这两种方式都可以&lt;/li>
+&lt;li>&lt;code>const&lt;/code>在&lt;code>*&lt;/code>右侧 - 限定了指针本身不能改变，即不能再指向别的地址，比如：&lt;code>float * const pf&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>const关键字常用于修饰函数形参&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>volatile类型限定符&lt;/p>
+&lt;ul>
+&lt;li>直接存取原始内存地址&lt;/li>
+&lt;li>编译后的程序每次需要存储或读取这个变量的时候，告诉编译器对该变量不做优化，都会直接从变量内存地址中读取数据，从而可以提供对特殊地址的稳定访问&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>restrict类型限定符&lt;/p>
+&lt;ul>
+&lt;li>只能用于指针，表明该指针是访问数据对象的唯一且初始的访问方式&lt;/li>
+&lt;li>如果使用了&lt;code>restrict&lt;/code>关键字，编译器就可以选择捷径优化计算。即告诉编译器可以自由嘉定一些优化方案&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="n">ar&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="kr">restrict&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl">&lt;span class="n">restar&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="n">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">10&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">par&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">ar&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl"> &lt;span class="n">par&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl"> &lt;span class="n">restar&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl"> &lt;span class="n">ar&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl"> &lt;span class="n">par&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">12&lt;/span>&lt;span class="cl"> &lt;span class="n">restar&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 这里编译器就可能优化为restar[n] +=8
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">13&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>&lt;code>_Atomic&lt;/code>类型限定符 - 原子类型，一个线程对原子类型的对象执行原子操作时，其他线程不能访问该对象&lt;/p>
+&lt;/li>
 &lt;/ul></description></item><item><title>C Primer Plus读书笔记（三）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</link><pubDate>Wed, 08 Sep 2021 20:14:21 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第九章至第十一章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch09-函数">ch09. 函数&lt;/h2>
