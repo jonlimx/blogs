@@ -85,7 +85,7 @@
 &lt;td>静态&lt;/td>
 &lt;td>文件&lt;/td>
 &lt;td>内部&lt;/td>
-&lt;td>所有函数外，使用关键字&lt;code>static&lt;/code>&lt;/td>
+&lt;td>&lt;strong>所有函数外，使用关键字&lt;code>static&lt;/code>&lt;/strong>&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>静态无链接&lt;/td>
@@ -298,6 +298,77 @@
 &lt;li>例如：对于int num = 12345，如果以二进制形式存储则存储的是0011000 00111001；如果以文本形式存储，那么存放是'1' ，'2'，'3'，'4'，'5'这几个字符对应的字符码（取决于编码方式）&lt;/li>
 &lt;li>二进制I/O -&lt;code>fread()&lt;/code>和&lt;code>fwrite()&lt;/code>&lt;/li>
 &lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="ch14-结构和其他数据形式">ch14. 结构和其他数据形式&lt;/h2>
+&lt;blockquote>
+&lt;ol>
+&lt;li>结构体的声明和定义&lt;/li>
+&lt;li>如何访问结构体成员&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>
+&lt;p>结构声明描述了一个结构的组织布局，并未创建实际的数据对象。（结构声明也称为模板）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>结构声明的几种方式&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="cp">#define MAXTITL 41
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl">&lt;span class="cp">#define MAXAUTL 31
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">book1&lt;/span> &lt;span class="cm">/* 结构声明，或者叫结构模板 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="n">title&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">MAXTITL&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="n">author&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">MAXAUTL&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl"> &lt;span class="kt">float&lt;/span> &lt;span class="n">value&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">book2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">12&lt;/span>&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">13&lt;/span>&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="n">title&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">MAXTITL&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">14&lt;/span>&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="n">author&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">MAXAUTL&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">15&lt;/span>&lt;span class="cl"> &lt;span class="kt">float&lt;/span> &lt;span class="n">value&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">16&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span> &lt;span class="n">library2&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">17&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">18&lt;/span>&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="cm">/* 简化声明 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">19&lt;/span>&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">20&lt;/span>&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="n">title&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">MAXTITL&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">21&lt;/span>&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="n">author&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">MAXAUTL&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">22&lt;/span>&lt;span class="cl"> &lt;span class="kt">float&lt;/span> &lt;span class="n">value&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">23&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span> &lt;span class="n">library3&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>初始化结构的两种方式&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">book1&lt;/span> &lt;span class="n">library1_1&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl"> &lt;span class="s">&amp;#34;The Pious Pirate and the Devious Damsel&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl"> &lt;span class="s">&amp;#34;Renee Vivotte&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl"> &lt;span class="mf">1.95&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">book1&lt;/span> &lt;span class="n">library1_2&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">title&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;The Pious Pirate and the Devious Damsel&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">author&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;Renee Vivotte&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">value&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">1.95&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>指向结构的指针&lt;/p>
+&lt;ul>
+&lt;li>声明结构指针：&lt;code>struct book1* book&lt;/code>&lt;/li>
+&lt;li>使用&lt;code>-&amp;gt;&lt;/code>操作符访问成员：&lt;code>book-&amp;gt;title&lt;/code>&lt;/li>
+&lt;li>使用指针解引用的方式访问成员：&lt;code>(*book).title&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>向函数传递结构的三种方式&lt;/p>
+&lt;ul>
+&lt;li>传递结构成员 - 这种和传递某个变量没有差别，传递的是结构成员的值的副本，对于被调函数本身也不会感知传递的是结构的成员&lt;/li>
+&lt;li>传递结构的地址（指针）- 这时候可以通过&lt;code>-&amp;gt;&lt;/code>运算符获取结构成员。另外和数组不一样，需要使用&lt;code>&amp;amp;&lt;/code>原算法获取结构的地址&lt;/li>
+&lt;li>传递结构 - 实参被初始化成被传递参数的相应成员的值的副本&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>结构的赋值 - &lt;code>n_data&lt;/code>和&lt;code>o_data&lt;/code>是两个结构，当运行&lt;code>o_data = n_data&lt;/code>的时候，&lt;code>o_data&lt;/code>的成员的值相应的被赋值成&lt;code>n_data&lt;/code>的成员的值。注意，这种赋值，是成员的值发生的赋值，类似于传参时的值传递&lt;/p>
 &lt;/li>
 &lt;/ul></description></item><item><title>C Primer Plus读书笔记（三）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</link><pubDate>Wed, 08 Sep 2021 20:14:21 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第九章至第十一章读书笔记，持续更新中。&lt;/em>&lt;/p>
