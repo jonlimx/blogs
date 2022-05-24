@@ -305,6 +305,7 @@
 &lt;ol>
 &lt;li>结构体的声明和定义&lt;/li>
 &lt;li>如何访问结构体成员&lt;/li>
+&lt;li>结构体作为函数参数如何传递&lt;/li>
 &lt;/ol>
 &lt;/blockquote>
 &lt;ul>
@@ -369,6 +370,223 @@
 &lt;/li>
 &lt;li>
 &lt;p>结构的赋值 - &lt;code>n_data&lt;/code>和&lt;code>o_data&lt;/code>是两个结构，当运行&lt;code>o_data = n_data&lt;/code>的时候，&lt;code>o_data&lt;/code>的成员的值相应的被赋值成&lt;code>n_data&lt;/code>的成员的值。注意，这种赋值，是成员的值发生的赋值，类似于传参时的值传递&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>结构中的字符串&lt;/p>
+&lt;ul>
+&lt;li>用字符数组 - &lt;strong>这种方式比较简单&lt;/strong>，默认会分配空间，因此赋值的时候比较安全。这种方式，&lt;strong>字符串是存储在结构里面&lt;/strong>&lt;/li>
+&lt;li>用字符指针 - &lt;strong>这种方式比较危险&lt;/strong>，未初始化的情况，指向的可能是未知的区域。这种方式，&lt;strong>字符串不存储在结构里面，结构里只是存放了字符串的地址&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>结构复合字面量&lt;/p>
+&lt;ul>
+&lt;li>创建一个临时结构值，&lt;code>(struct book) {&amp;quot;The Idiot&amp;quot;, &amp;quot;Fyodor Dostoyevsky&amp;quot;, 6.99}&lt;/code>&lt;/li>
+&lt;li>创建在函数外部则具有静态存储期&lt;/li>
+&lt;li>创建在块中，则具有自动存储期&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>伸缩型数组成员&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>伸缩的意思是数组成员的数量在初始化的时候确定&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>伸缩型数组成员必须是结构的最后一个成员，且结构中必须至少有一个其他成员&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>伸缩数组的声明的方括号中是空的&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>应该声明一个指向结构的指针，而不是声明变量。且需要使用&lt;code>malloc&lt;/code>来初始化，不能进行拷贝或者赋值&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>不应该将带有伸缩数组成员的结构作为数组成员或者另一个结构的成员&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">flex&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">count&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl"> &lt;span class="kt">double&lt;/span> &lt;span class="n">average&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl"> &lt;span class="kt">double&lt;/span> &lt;span class="n">scores&lt;/span>&lt;span class="p">[];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">6&lt;/span>&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">7&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">8&lt;/span>&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">flex&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">pf&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="n">flex&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">double&lt;/span>&lt;span class="p">));&lt;/span> &lt;span class="c1">// 该伸缩数组成员包含5个元素
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>匿名结构&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>使用嵌套的匿名结构定义成员&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">person&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">id&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="kt">char&lt;/span> &lt;span class="n">first&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">20&lt;/span>&lt;span class="p">];&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">last&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">20&lt;/span>&lt;span class="p">];};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>访问嵌套结构成员 - 像是直接访问外层结构成员一样访问&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">person&lt;/span> &lt;span class="n">ted&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="mi">8483&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;Ted&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Grass&amp;#34;&lt;/span>&lt;span class="p">}};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="n">puts&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ted&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">first&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>联合union&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>同一个内存空间内存放联合声明中的某个数据。实际上会根据占用空间最大的类型相应的分配内存&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>可以创建联合类型的变量、数组和指针&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="k">union&lt;/span> &lt;span class="n">hold&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">digit&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// int - 2个字节
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">bigfl&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// double - 8个字节，因此该联合为8个字节
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">letter&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// char - 1个字节
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl">&lt;span class="c1">// 不同联合类型的变量
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">union&lt;/span> &lt;span class="n">hold&lt;/span> &lt;span class="n">fit&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl">&lt;span class="k">union&lt;/span> &lt;span class="n">hold&lt;/span> &lt;span class="n">save&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">];&lt;/span> &lt;span class="c1">// 联合类型数组
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">union&lt;/span> &lt;span class="n">hold&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">pu&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 联合类型指针
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">12&lt;/span>&lt;span class="cl">&lt;span class="c1">// 联合的几种初始化方式
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">13&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">union&lt;/span> &lt;span class="n">hold&lt;/span> &lt;span class="n">valA&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">14&lt;/span>&lt;span class="cl">&lt;span class="n">valA&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">letter&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="sc">&amp;#39;R&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">15&lt;/span>&lt;span class="cl">&lt;span class="k">union&lt;/span> &lt;span class="n">hold&lt;/span> &lt;span class="n">valB&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">valA&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 用另一个联合来初始化
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">16&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">union&lt;/span> &lt;span class="n">hold&lt;/span> &lt;span class="n">valC&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="mi">88&lt;/span>&lt;span class="p">};&lt;/span> &lt;span class="c1">// 初始化digit
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">17&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">union&lt;/span> &lt;span class="n">hold&lt;/span> &lt;span class="n">valD&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{.&lt;/span>&lt;span class="n">bigfl&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">118.3&lt;/span>&lt;span class="p">};&lt;/span> &lt;span class="c1">// 指定初始化器
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>联合的一些用法&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="n">fit&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">digit&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">23&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 把23存储在联合中，占用2个字节
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">fit&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">bigfl&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">2.0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 清除23，存储2.0，占用8个字节
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl">&lt;span class="n">pu&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">fit&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 获取联合指针
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">pu&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">digit&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 使用-&amp;gt;操作符访问联合
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>枚举enum&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>声明符号名称表示整型常量，实际上enum常量就是int类型&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="k">enum&lt;/span> &lt;span class="n">spectrum&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="n">red&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">orange&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">yellow&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">green&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">blue&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">violet&lt;/span>&lt;span class="p">};&lt;/span> &lt;span class="c1">// spectrum称为标记名，red/yellow这些称为枚举符
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">enum&lt;/span> &lt;span class="n">spectrum&lt;/span> &lt;span class="n">color&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// enum spectrum作为类型来使用
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>默认情况下，列表中的枚举常量都被赋值0，1，2以此类推，也可以显式赋值&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="k">enum&lt;/span> &lt;span class="n">levels&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="n">low&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">100&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">medium&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">500&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">high&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2000&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="k">enum&lt;/span> &lt;span class="n">feline&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="n">cat&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lynx&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">puma&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tiger&lt;/span>&lt;span class="p">};&lt;/span> &lt;span class="c1">// cat的值是0， lynx、puma和tiger的值分别是10、11、12
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>共享名称空间 - 在同一个作用域中，结构标记、联合标记和枚举标记都共享名称空间，意味着这三者之中的名称标记不能一样；但是可以和变量名一样&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>typedef - 为某一类型自定义名称&lt;/p>
+&lt;ul>
+&lt;li>typedef 实际类型 名称&lt;/li>
+&lt;li>typedef 实际上并没有创建任何新的类型，只是为某个已经存在的类型增加了一个方便使用的标签&lt;/li>
+&lt;li>只能用于类型，不能用于值定义（这个和#define不同）&lt;/li>
+&lt;li>如果定义在函数中，就具有局部作用域；如果定义在函数外面，就具有文件作用域&lt;/li>
+&lt;li>通常typedef定义中用&lt;strong>大写字母&lt;/strong>表示被定义的名称&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>*&lt;/code> &lt;code>()&lt;/code> &lt;code>[]&lt;/code>的优先级规则 - 通常这几个符号的不同组合可以声明出复杂的数据类型&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;code>[]&lt;/code>和&lt;code>()&lt;/code>具有相同的优先级，它们的优先级都比&lt;code>*&lt;/code>高&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>[]&lt;/code>和&lt;code>()&lt;/code>具有相同的优先级，从左往右结合&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>一些典型的例子&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>声明&lt;/th>
+&lt;th>解释&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>int* risks[10]&lt;/code>&lt;/td>
+&lt;td>&lt;code>[]&lt;/code>优先级高于&lt;code>*&lt;/code>，因此&lt;code>[]&lt;/code>先和risk结合，声明一个含有10个元素的数组，元素的类型是&lt;code>int*&lt;/code>指针&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>int(*risks)[10]&lt;/code>&lt;/td>
+&lt;td>&lt;code>()&lt;/code>和&lt;code>[]&lt;/code>优先级相同，因此从左往右结合。这里&lt;code>()&lt;/code>先和&lt;code>*&lt;/code>结合，声明了一个指针，这个指针指向的数据类型是&lt;code>int[10]&lt;/code>即包含10个int元素的数组&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>int goods[12][50]&lt;/code>&lt;/td>
+&lt;td>从左往右结合，&lt;code>[12]&lt;/code>先声明了一个含有12个元素的数组，数组元素的类型是&lt;code>int[50]&lt;/code>，即12*50的二维数组&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>int* oof[3][4]&lt;/code>&lt;/td>
+&lt;td>&lt;code>*&lt;/code>优先级比&lt;code>[]&lt;/code>低，因此先是声明了一个3*4的数组，数组元素是&lt;code>int*&lt;/code>。&lt;strong>需要注意，这时候需要分配的存放12个指针的空间&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>int(* oof)[3][4]&lt;/code>&lt;/td>
+&lt;td>&lt;code>*&lt;/code>先和&lt;code>()&lt;/code>结合声明了一个指针，指针指向的数据是&lt;code>int[3][4]&lt;/code>3*4的二维数组。&lt;strong>需要注意，这时候只需要分配存放1个指针的空间&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>char* fump(int)&lt;/code>&lt;/td>
+&lt;td>定义一个函数，返回值是指向&lt;code>char&lt;/code>的指针&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>char (* frump)(int)&lt;/code>&lt;/td>
+&lt;td>指向函数的指针，该函数的返回类型为&lt;code>char&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>char (* frump[3])(int)&lt;/code>&lt;/td>
+&lt;td>指向函数的指针数组，数组元素指向函数，函数的返回类型为&lt;code>char&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>函数指针 - 顾名思义，指向函数的指针&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>通常用作函数参数，用于在函数内部，根据传入的函数指针相应的调用函数指针指向的函数。例如：&lt;code>void show(void (fp*)(char*), char* str)&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>函数指针存储着函数代码起始处的地址。函数名存放的也是函数地址&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>函数指针定声明的方式 - 先声明一个该类型的函数，然后把函数名替换成&lt;code>(*pf)&lt;/code>形式的表达式，然后&lt;code>pf&lt;/code>就称为了指向该类型的函数指针&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>函数指针的几种用法&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="c1">// 函数指针的声明和赋值
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="nf">ToUpper&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">ToLower&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">round&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">double&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">pf&lt;/span>&lt;span class="p">)(&lt;/span>&lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 声明了一个函数指针，指向的函数的输入为char*类型，返回值为void
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">pf&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">ToUpper&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 有效
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">pf&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">ToLower&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 有效
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">pf&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">round&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 无效，round与指针类型不匹配
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl">&lt;span class="c1">// 通过函数指针调用函数
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kt">char&lt;/span> &lt;span class="n">mis&lt;/span>&lt;span class="p">[]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;Nina Metier&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">12&lt;/span>&lt;span class="cl">&lt;span class="n">pf&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">ToUpper&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">13&lt;/span>&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">pf&lt;/span>&lt;span class="p">)(&lt;/span>&lt;span class="n">mis&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 调用方式1
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">14&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">pf&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">ToLower&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">15&lt;/span>&lt;span class="cl">&lt;span class="n">pf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">mis&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 调用方式2
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">16&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">17&lt;/span>&lt;span class="cl">&lt;span class="c1">// 通过typedef简化函数指针的声明
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">18&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">typedef&lt;/span> &lt;span class="nf">void&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">V_FP_CHARP&lt;/span>&lt;span class="p">)(&lt;/span>&lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">19&lt;/span>&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="n">show&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">V_FP_CHARP&lt;/span> &lt;span class="n">fp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ul>
 &lt;/li>
 &lt;/ul></description></item><item><title>C Primer Plus读书笔记（三）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</link><pubDate>Wed, 08 Sep 2021 20:14:21 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-03/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第九章至第十一章读书笔记，持续更新中。&lt;/em>&lt;/p>
