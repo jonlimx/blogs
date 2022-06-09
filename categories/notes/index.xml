@@ -1,4 +1,163 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Notes on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/categories/notes/</link><description>Recent content in Notes on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 27 Apr 2022 08:47:16 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/categories/notes/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus读书笔记（四）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-04/</link><pubDate>Wed, 27 Apr 2022 08:47:16 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-04/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Notes on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/categories/notes/</link><description>Recent content in Notes on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Tue, 31 May 2022 10:22:11 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/categories/notes/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus读书笔记（五）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-05/</link><pubDate>Tue, 31 May 2022 10:22:11 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-05/</guid><description>
+&lt;p>&lt;em>本文是《C Primer Plus》第十五章至第十七章读书笔记，持续更新中。&lt;/em>&lt;/p>
+&lt;h2 id="ch15-位操作">ch15. 位操作&lt;/h2>
+&lt;blockquote>
+&lt;ol>
+&lt;li>位操作运算符&lt;/li>
+&lt;li>不同进制的数据表示法&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>
+&lt;p>一般系统是使用8bit作为一个字节。C语言中定义的是char类型的位长作为一个字节的长度。C语言中可以通过宏&lt;code>CHAR_BIT&lt;/code>获取char类型的位长&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>八进制 - 一个八进制位对应3个二进制位。例如八进制0377对应二进制000 011 111 111&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>十六进制 - 一个十六进制位对应4个二进制位。因此&lt;strong>两个十六进制位恰好对应一个8位字节&lt;/strong>。例如：0xC2相当于二进制1100 0010&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>按位逻辑运算符号&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>二进制反码或按位取反 &lt;code>~&lt;/code>：按二进制位，把1变成0，把0变成1&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>按位与&lt;code>&amp;amp;&lt;/code>：按二进制位，当运算位都是1时，结果才为1。支持&lt;code>&amp;amp;=&lt;/code>运算符&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>按位或&lt;code>|&lt;/code>：按二进制位，当运算位有一个是1或者两个都是1时，结果就是1。支持&lt;code>|=&lt;/code>运算&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>按位异或&lt;code>^&lt;/code>：按二进制位，当运算位有且只有一个是1时，结果是1。支持&lt;code>^=&lt;/code>运算&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>用法&lt;/th>
+&lt;th>说明&lt;/th>
+&lt;th>示例&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>掩码&lt;/td>
+&lt;td>原始二进制通过&lt;code>&amp;amp;&lt;/code>和掩码运算。保留掩码(mask)中二进制位为1的位，其他位置都置为0，0即为掩码&lt;/td>
+&lt;td>&lt;code>10010110 &amp;amp; 00000010 = 00000010&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>打开位&lt;/td>
+&lt;td>打开特定位，其他位置保持不变。通过设置特定位为1，其他位置为0进行`&lt;/td>
+&lt;td>`运算&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>关闭位（清空位）&lt;/td>
+&lt;td>关闭特定位，其他位置保持不变。通过设定mask（需要关闭的位置为1，其他位置置为0），然后对mask取反后再进行&lt;code>&amp;amp;&lt;/code>运算&lt;/td>
+&lt;td>&lt;code>00001111 &amp;amp; ~(10110110) = 00001001&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>切换位&lt;/td>
+&lt;td>打开已关闭的，或者关闭已打开的位。假设某一位为b，那么0^b为b本身，1^b会对b进行切换，即b原来为1则切换为0，原来为0则切换成1&lt;/td>
+&lt;td>&lt;code>00001111 ^ 10110110 = 10111001&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>检查位的值&lt;/td>
+&lt;td>通过设置掩码而后进行&lt;code>&amp;amp;&lt;/code>运算来判断某个位是否为1或者0&lt;/td>
+&lt;td>&lt;code>if(flags &amp;amp; mask) == mask&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>移位运算符&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>左移&lt;code>&amp;lt;&amp;lt;&lt;/code>：运算对象的每一位向左移动指定的位数。运算对象移出左末端的值丢失，用0填充空出的位置&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>右移&lt;code>&amp;gt;&amp;gt;&lt;/code>：运算对象的每一位向右移动指定的位数。运算对象移出右末端的值丢失，对于无符号数而言用0填充空出的位置；对于有符号数，取决于机器&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>用法&lt;/th>
+&lt;th>说明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>number &amp;lt;&amp;lt; n&lt;/code>&lt;/td>
+&lt;td>number乘以2的n次幂函&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>number &amp;gt;&amp;gt; n&lt;/code>&lt;/td>
+&lt;td>如果number为非负，则用number除以2的n次幂&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>注意：&lt;strong>不管是按位逻辑运算还是移位运算，都是产生新值，而不是改变原始值&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>应用代码解读&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="c1">// 输出数字的二进制字符串
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="nf">itobs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">ps&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl"> &lt;span class="c1">// 计算int类型的二进制位。sizeof计算出int类型的字节数，而CHAR_BIT为一个字节的二进制位数
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="k">static&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">CHAR_BIT&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl"> &lt;span class="c1">// ps是char数组，数组大小为size+1，最后一个存放空字符&amp;#39;\0&amp;#39;表示字符串
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// ps的高索引处，存放数字的二进制地位
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">size&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">&amp;gt;&amp;gt;=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl"> &lt;span class="c1">// 01是八进制位，实际用十进制1也可以。01 &amp;amp; n是的n的二进制第0位解析出二进制形式，而后n往右移1位，进而解析出二进制第1位
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">12&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// 数值 + &amp;#39;0&amp;#39;将数值转化为字符。这里的数值要么是0要么是1，&amp;#39;0&amp;#39; + 数值就是&amp;#39;0&amp;#39;本身或者后面一个字符即&amp;#39;1&amp;#39;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">13&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">ps&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mo">01&lt;/span> &lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="sc">&amp;#39;0&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 这里的01&amp;amp;n必须要用括号，因为&amp;amp;运算的优先级低于+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">14&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">ps&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="sc">&amp;#39;\0&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">15&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">16&lt;/span>&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">ps&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">17&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>位字段&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>位字段是一个&lt;code>signed int&lt;/code>或者&lt;code>unsigned int&lt;/code>类型变量中相邻的位&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>通过结构声明来建立，该结构为每个字段提供标签并确定该字段的宽度&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="k">struct&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nl">autfd&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nl">bldfc&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nl">undln&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">6&lt;/span>&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nl">itals&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">7&lt;/span>&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="n">prnt&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// prnt定义了4个1位的字段，prnt被存储在int大小的内存单元中，prnt占用了一个int的内存空间
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>位字段不限制1位大小，可以按需设置字段的位长。&lt;strong>但是总位数不能超过一个&lt;code>unsigned int&lt;/code>类型的位长&lt;/strong>。如果超过一个&lt;code>unsigned int&lt;/code>的位长，则会用到下一个&lt;code>unsigned int&lt;/code>的的存储位置&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>定义位字段时，可以设置“空洞”或者强制字段与下一个&lt;code>unsigned int&lt;/code>对齐&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="k">struct&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nl">field1&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nl">field2&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// field2和filed1之间隔了2个位的空隙
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">6&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">7&lt;/span>&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nl">field3&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// field3将存储在下一个unsigned int中
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">8&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="n">stuff&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// stuff占用了两个int的内存空间
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>对齐特性 - 类型本身有对齐要求，可以使用&lt;code>_Alignof(type)&lt;/code>来计算某个类型的对齐要求。对齐要求本身是一个数字，代表几个字节。例如，&lt;code>float&lt;/code>的对齐要求是4，那么float类型数据的地址可以被4整除。除了类型本身的对齐要求，可以设置某个数据的对齐要求，&lt;strong>但是不能低于类型本身的对齐要求&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;/ul></description></item><item><title>C Primer Plus读书笔记（四）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-04/</link><pubDate>Wed, 27 Apr 2022 08:47:16 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-04/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第十二章至第十四章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch12-存储类别链接和内存管理">ch12. 存储类别、链接和内存管理&lt;/h2>
 &lt;blockquote>
@@ -436,7 +595,7 @@
 &lt;p>联合union&lt;/p>
 &lt;ul>
 &lt;li>
-&lt;p>同一个内存空间内存放联合声明中的某个数据。实际上会根据占用空间最大的类型相应的分配内存&lt;/p>
+&lt;p>同一个内存空间内存放联合声明中的某个数据（联合中的某一个字段）。实际上会根据占用空间最大的类型相应的分配内存&lt;/p>
 &lt;/li>
 &lt;li>
 &lt;p>可以创建联合类型的变量、数组和指针&lt;/p>
@@ -3722,6 +3881,34 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">63&lt;/span>&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Result: %d.&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">fp&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">index&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="n">left&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">right&lt;/span>&lt;span class="p">));&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">64&lt;/span>&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">65&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="ch15-位操作">ch15. 位操作&lt;/h2>
+&lt;blockquote>
+&lt;ol>
+&lt;li>编写一个函数，把二进制字符串转换为一个数值。例如，&amp;quot;01001001&amp;quot;转化为73&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;stdio.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;string.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl">&lt;span class="cp">#define ZERO &amp;#39;0&amp;#39;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="nf">bstoi&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">bs&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">bstoi&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">bs&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">strlen&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">bs&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="o">++&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl"> &lt;span class="n">result&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">12&lt;/span>&lt;span class="cl"> &lt;span class="n">result&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">bs&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">ZERO&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">13&lt;/span>&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">14&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">15&lt;/span>&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">16&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">17&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">18&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">19&lt;/span>&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">20&lt;/span>&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">bstoi&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;01001001&amp;#34;&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">21&lt;/span>&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">22&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>C Primer Plus读书笔记（二）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</link><pubDate>Mon, 19 Jul 2021 21:24:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-02/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第六章至第八章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch06-c控制语句循环">ch06. C控制语句：循环&lt;/h2>
