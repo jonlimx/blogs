@@ -13,7 +13,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">9&lt;/span>&lt;span class="cl">lrwxr-xr-x &lt;span class="m">1&lt;/span> jonathanlin admin 60B Nov &lt;span class="m">25&lt;/span> 11:48 mosquitto.conf -&amp;gt; ../../Cellar/mosquitto/2.0.10_1/etc/mosquitto/mosquitto.conf
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="配置">配置&lt;/h3>
 &lt;p>修改配置文件，显式关闭匿名访问，同时指定账号密码保存路径：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">allow_anonymous &lt;span class="nb">true&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">allow_anonymous &lt;span class="nb">false&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">password_file /Users/jonathanlin/Workspace/mosquitto/pwd
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>使用&lt;code>mosquitto_passwd&lt;/code>创建两个测试账号：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">➜ mosquitto mosquitto_passwd -c ~/Workspace/mosquitto/pwd admin
