@@ -157,6 +157,134 @@
 &lt;li>
 &lt;p>对齐特性 - 类型本身有对齐要求，可以使用&lt;code>_Alignof(type)&lt;/code>来计算某个类型的对齐要求。对齐要求本身是一个数字，代表几个字节。例如，&lt;code>float&lt;/code>的对齐要求是4，那么float类型数据的地址可以被4整除。除了类型本身的对齐要求，可以设置某个数据的对齐要求，&lt;strong>但是不能低于类型本身的对齐要求&lt;/strong>&lt;/p>
 &lt;/li>
+&lt;/ul>
+&lt;h2 id="ch16-c预处理器和c库">ch16. C预处理器和C库&lt;/h2>
+&lt;blockquote>
+&lt;ol>
+&lt;li>预处理器的作用和用法&lt;/li>
+&lt;li>C提供了哪些预处理指令，对应的含义是什么&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>
+&lt;p>预处理器 - 简单理解的话，基本上是把一些文本转换成另外一些文本。转换的话可能通过包含别的文件，或者把符号缩写替换成其表示的内容&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>#define 指令&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>格式：&lt;code>#define 缩写(宏) 替换体&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>宏的作用域从它在文件中的声明处开始，直到用#undef指令取消为止，或者延伸至文件末尾。如果宏是通过头文件引入，那么宏的位置取决于#include指令的位置&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>宏：可以是类对象宏，可以是类函数宏&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="cp">#define TWO 2
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="cp">#define FOUR TWO*TWO &lt;/span>&lt;span class="c1">// 这里并不会发生乘积运算，乘积发生在编译阶段
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="cp">#define PX printf(&amp;#34;X is %d.\n&amp;#34;, x)
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>宏的名称不允许有空格，要遵循C变量的命名规则&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>宏展开：宏变成最终替换文本的过程称为宏展开。&lt;strong>宏展开是在编译器编译之前发生，只是做替换不做计算&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>宏常量可以定义标准数组的大小和const变量的初始值&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="cp">#define LIMIT 20
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">LIM&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">50&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">data1&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">LIMIT&lt;/span>&lt;span class="p">];&lt;/span> &lt;span class="c1">// 有效
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">static&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">data2&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">LIM&lt;/span>&lt;span class="p">];&lt;/span> &lt;span class="c1">// 无效
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">LIM2&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">LIMIT&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 有效
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">6&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">LIM3&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">LIM&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 无效
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>类函数宏 - 要注意的是，宏参数和函数参数有差别。&lt;strong>宏参数是没有经过计算的，只是替代&lt;/strong>。见下面的例子。&lt;strong>使用类函数宏的时候，要使用足够多的括号来确保运算和结合的正确顺序，并且避免使用++x作为宏参数&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="cp">#define SQUARE(X) X*X
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl">&lt;span class="n">SQUARE&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 这个结果不是25，宏展开：x+2*x+2 = 17，
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="mi">100&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">SQUARE&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 这个结果不是25，宏展开：100/2*2 = 100
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">6&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">SQUARE&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 这个结果不是36，宏展开：++x*++x = 6*7 = 42
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>#运算符 - 替换体中通过#运算符引用宏参数&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="cp">#define PSQR(x) printf(&amp;#34;The square of &amp;#34; #x &amp;#34; is %d.\n&amp;#34;,((x)*(x))) &lt;/span>&lt;span class="c1">// 通过空格串联字符串
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">PSQR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// The square of y is 25.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">PSQR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// The square of 2 + 4 is 36.
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>##运算符(预处理器粘合剂) - 类函数宏替换部分&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="cp">#define XNAME(n) x ## n
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">XNAME&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">14&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 宏展开 int x1 = 14;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="nf">XNAME&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">20&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 宏展开 int x2 = 20;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">6&lt;/span>&lt;span class="cl">&lt;span class="n">PRINT_XN&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 宏展开 printf(&amp;#34;x1 = %d\n&amp;#34;, x1);
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>变参宏：&lt;code>...&lt;/code>和&lt;code>__VA_ARGS__&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="cp">#define PR(X, ...) printf(&amp;#34;Message &amp;#34; #X &amp;#34;: &amp;#34; __VA_ARGS__)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="kt">double&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">48&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">&lt;span class="kt">double&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl">&lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sqrt&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">6&lt;/span>&lt;span class="cl">&lt;span class="n">PR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;x = %g&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 宏展开：printf(&amp;#34;Message &amp;#34; 1 &amp;#34;:&amp;#34; &amp;#34;x = %g\n&amp;#34;, x) Message 1: x = 48
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">7&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">PR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;x = %.2f, y = %.4f&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// Message 2: x = 48.00, y = 6.9282
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>宏和函数的主要区别&lt;/p>
+&lt;ul>
+&lt;li>宏：替换生成内联代码，即在程序中生成语句&lt;/li>
+&lt;li>函数：函数的调用会产生上下文的切换，即会在被调函数和主调函数之间切换&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>#include 指令&lt;/p>
+&lt;ul>
+&lt;li>预处理器将&lt;code>#include&lt;/code>后面的文件的内容包含到当前文件中，替换原来的&lt;code>#include&lt;/code>的位置&lt;/li>
+&lt;li>头文件通过#include执行包含到源文件中。通常头文件中包含：明示常量、宏函数、函数声明、结构模板定义和类型定义(typedef)，&lt;strong>也可以使用头文件声明外部变量供其他文件贡献&lt;/strong>&lt;/li>
+&lt;li>&lt;code>#include &amp;lt;stdio.h&amp;gt;&lt;/code> - 查找系统目录&lt;/li>
+&lt;li>&lt;code>#include &amp;quot;hot.h&amp;quot;&lt;/code> - 优先查找本地目录（根据编译器设定不同，可能是当前目录，也可能是工作目录），而后再查找系统目录&lt;/li>
+&lt;li>通常，头文件(&lt;code>*.h&lt;/code>)里的内容是编译器在创建可执行代码时所需的信息，而不是执行代码。执行代码通常在源文件中(&lt;code>*.c&lt;/code>)&lt;/li>
+&lt;li>通常应该用&lt;code>#ifndef&lt;/code>和&lt;code>#define&lt;/code>防止多重包含头文件&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>#undef 指令 - 取消已定义的#define指令。即使没有定义过，也可以使用#undef指令来取消&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>#ifdef / #else / #endif 条件编译指令&lt;/p>
+&lt;ul>
+&lt;li>如果通过#define定义了某一个标识符，那么执行#ifdef块里内容&lt;/li>
+&lt;li>除了可以用于预处理指令，也可以用于标记C语句块&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="cp">#ifdef MAVIS
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="cp">&lt;/span> &lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;horse.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">&lt;span class="cp">&lt;/span> &lt;span class="cp">#define STABLES 5
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl">&lt;span class="cp">#else
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl">&lt;span class="cp">&lt;/span> &lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;cow.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">6&lt;/span>&lt;span class="cl">&lt;span class="cp">&lt;/span> &lt;span class="cp">#define STABLES 15
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">7&lt;/span>&lt;span class="cl">&lt;span class="cp">#endif
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>#ifndef 指令 - 与#ifdef类似，与 #else / #endif指令配套使用&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>主要用于头文件被多次包含的时候，避免重复定义头文件中的声明&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="cp">#ifndef CLEARN_CH16_NAMES_ST_H_
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="cp">#define CLEARN_CH16_NAMES_ST_H_
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl">&lt;span class="c1">// 此处省略头文件定义
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">6&lt;/span>&lt;span class="cl">&lt;span class="cp">#endif &lt;/span>&lt;span class="c1">//CLEARN_CH16_NAMES_ST_H_
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>&lt;/li>
+&lt;/ul>
+&lt;/li>
 &lt;/ul></description></item><item><title>C Primer Plus读书笔记（四）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-04/</link><pubDate>Wed, 27 Apr 2022 08:47:16 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-04/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第十二章至第十四章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch12-存储类别链接和内存管理">ch12. 存储类别、链接和内存管理&lt;/h2>
