@@ -1,4 +1,67 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/posts/</link><description>Recent content in Posts on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Tue, 31 May 2022 10:22:11 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>C Primer Plus读书笔记（五）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-05/</link><pubDate>Tue, 31 May 2022 10:22:11 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-05/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/posts/</link><description>Recent content in Posts on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 31 Aug 2022 11:10:43 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>UTF-8编码知识点整理</title><link>https://www.jonathanlin.top/posts/unicode-utf/</link><pubDate>Wed, 31 Aug 2022 11:10:43 +0800</pubDate><guid>https://www.jonathanlin.top/posts/unicode-utf/</guid><description>
+&lt;blockquote>
+&lt;p>参考资料：&lt;/p>
+&lt;ol>
+&lt;li>&lt;a href="http://www.ruanyifeng.com/blog/2007/10/ascii_unicode_and_utf-8.html">字符编码笔记：ASCII，Unicode 和 UTF-8 - 阮一峰的网络日志 (ruanyifeng.com)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters">List of Unicode characters - Wikipedia&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;h2 id="相关概念">相关概念&lt;/h2>
+&lt;ul>
+&lt;li>字符：是对文字和符号的总称，例如汉字、拉丁字母、emoji 都是字符&lt;/li>
+&lt;li>Unicode码点（Code Point）：在Unicode字符集中，每个字符都对应一个唯一数，这个唯一数就是Unicode码点。码点范围：U+0000 - U+10FFFF（十六进制）。这个范围可以容纳超过100万个字符&lt;/li>
+&lt;li>字符平面（Plane）：将字符进行分组，每组容纳65536（2^16)个字符，每一组称为一个平面，一共划分了17个平面&lt;/li>
+&lt;li>UTF：Unicode Transformation Format。字面意思就是Unicode转换格式，就是对Unicode码做格式转换（编码）&lt;/li>
+&lt;li>BOM：Byte Order Mark，字节标记顺序，位于文件开始的地方，用于标记高位在前还是低位在前。对于UTF-8而言，其BOM为EF BB BF。&lt;strong>通常来说：Windows系统里的UTF-8编码的文件都带有BOM，而类Unix系统则不带。&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;h2 id="unicode和utf的关系">Unicode和UTF的关系&lt;/h2>
+&lt;p>Unicode是一个字符集合，将二进制编码映射为字符或者符号。每个符号的编码都不一样，比如，&lt;code>U+0639&lt;/code>表示阿拉伯字母&lt;code>Ain&lt;/code> (&lt;code>ع&lt;/code>)，&lt;code>U+0041&lt;/code>表示英语的大写字母&lt;code>A&lt;/code>，&lt;code>U+4E25&lt;/code>表示汉字&lt;code>严&lt;/code>。Unicode字符集只是规定了字符对应的二进制编码，但是没有规定二进制编码如何存储。&lt;/p>
+&lt;p>UTF是Unicode的实现方式，即规定了字符的二进制编码的存储方式（将字符对应的Unicode码编按照一定的规则编排成二进制（字节）形式来来存储。不同的UTF编码方式使用几个字节存储，以及每个字节的含义均不同）。&lt;/p>
+&lt;p>有UTF-8，UTF-16和UTF-32这几种不同的实现方式。&lt;/p>
+&lt;ul>
+&lt;li>UTF-8：&lt;strong>变长&lt;/strong>编码方式，使用1~4个字节表示一个符号&lt;/li>
+&lt;li>UTF-16：&lt;strong>变长&lt;/strong>编码方式，使用2个或者4个字节表示&lt;/li>
+&lt;li>UTF-32：使用4个字节表示&lt;/li>
+&lt;/ul>
+&lt;h2 id="utf-8">UTF-8&lt;/h2>
+&lt;p>UTF-8编码规则简述：&lt;/p>
+&lt;ol>
+&lt;li>对于单字节的符号，字节的第一位设为&lt;code>0&lt;/code>，后面7位为这个符号的 Unicode 码。&lt;strong>因此对于英语字母，UTF-8 编码和 ASCII 码是相同的&lt;/strong> （这个实际上对应Unicode码在127（01111111）以内的字符）&lt;/li>
+&lt;li>对于n字节的符号（n &amp;gt; 1），第一个字节的前&lt;code>n&lt;/code>位都设为1，第n + 1位设为0，后面字节的前两位一律设为10。剩下的没有提及的二进制位，全部为这个符号的 Unicode 码&lt;/li>
+&lt;/ol>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Unicode码范围（十六进制）&lt;/th>
+&lt;th>Unicode码有效位&lt;/th>
+&lt;th>UTF-8编码方式&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>0000 0000-0000 007F&lt;/td>
+&lt;td>0 - 7&lt;/td>
+&lt;td>0xxxxxxx&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>0000 0080-0000 07FF&lt;/td>
+&lt;td>8 - 11&lt;/td>
+&lt;td>110xxxxx 10xxxxxx&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>0000 0800-0000 FFFF&lt;/td>
+&lt;td>12 - 17&lt;/td>
+&lt;td>1110xxxx 10xxxxxx 10xxxxxx&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>0001 0000-0010 FFFF&lt;/td>
+&lt;td>18 - 21&lt;/td>
+&lt;td>11110xxx 10xxxxxx 10xxxxxx 10xxxxxx&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>下面，还是以汉字严为例，演示如何实现 UTF-8 编码。&lt;/p>
+&lt;p>严的 Unicode 码是4E25（100 1110 0010 0101），有效位是15位，根据上表，可以发现4E25处在第三行的范围内（0000 0800 - 0000 FFFF），因此严的 UTF-8 编码需要三个字节，即格式是1110xxxx 10xxxxxx 10xxxxxx。然后，从严的最后一个二进制位开始，依次从后向前填入格式中的x，多出的位补0。这样就得到了，严的 UTF-8 编码是11100100 10111000 10100101，转换成十六进制就是E4B8A5。&lt;/p></description></item><item><title>C Primer Plus读书笔记（五）</title><link>https://www.jonathanlin.top/posts/c-primer-plus-notes-05/</link><pubDate>Tue, 31 May 2022 10:22:11 +0800</pubDate><guid>https://www.jonathanlin.top/posts/c-primer-plus-notes-05/</guid><description>
 &lt;p>&lt;em>本文是《C Primer Plus》第十五章至第十七章读书笔记，持续更新中。&lt;/em>&lt;/p>
 &lt;h2 id="ch15-位操作">ch15. 位操作&lt;/h2>
 &lt;blockquote>
@@ -985,7 +1048,15 @@
 &lt;/ul></description></item><item><title>Mac下安装和配置Mosquitto</title><link>https://www.jonathanlin.top/posts/mqtt-note-02/</link><pubDate>Tue, 22 Feb 2022 14:32:04 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-02/</guid><description>
 &lt;h3 id="安装">安装&lt;/h3>
 &lt;p>Mac下通过&lt;code>brew&lt;/code>安装Mosquitto只需要一条简单的命令：&lt;code>brew install mosquitto&lt;/code>&lt;/p>
-&lt;p>安装完成后，默认情况下可执行文件和配置文件的位置如下：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="nx">mosquitto&lt;/span> &lt;span class="nx">has&lt;/span> &lt;span class="nx">been&lt;/span> &lt;span class="nx">installed&lt;/span> &lt;span class="kd">with&lt;/span> &lt;span class="nx">a&lt;/span> &lt;span class="k">default&lt;/span> &lt;span class="nx">configuration&lt;/span> &lt;span class="nx">file&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="nx">You&lt;/span> &lt;span class="nx">can&lt;/span> &lt;span class="nx">make&lt;/span> &lt;span class="nx">changes&lt;/span> &lt;span class="nx">to&lt;/span> &lt;span class="nx">the&lt;/span> &lt;span class="nx">configuration&lt;/span> &lt;span class="nx">by&lt;/span> &lt;span class="nx">editing&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl"> &lt;span class="err">/usr/local/etc/mosquitto/mosquitto.conf&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl">&lt;span class="nx">To&lt;/span> &lt;span class="nx">restart&lt;/span> &lt;span class="nx">mosquitto&lt;/span> &lt;span class="nx">after&lt;/span> &lt;span class="nx">an&lt;/span> &lt;span class="nx">upgrade&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">6&lt;/span>&lt;span class="cl"> &lt;span class="nx">brew&lt;/span> &lt;span class="nx">services&lt;/span> &lt;span class="nx">restart&lt;/span> &lt;span class="nx">mosquitto&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">7&lt;/span>&lt;span class="cl">&lt;span class="nx">Or&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="nx">you&lt;/span> &lt;span class="nx">don&lt;/span>&lt;span class="err">&amp;#39;&lt;/span>&lt;span class="nx">t&lt;/span> &lt;span class="nx">want&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">need&lt;/span> &lt;span class="nx">a&lt;/span> &lt;span class="nx">background&lt;/span> &lt;span class="nx">service&lt;/span> &lt;span class="nx">you&lt;/span> &lt;span class="nx">can&lt;/span> &lt;span class="nx">just&lt;/span> &lt;span class="nx">run&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">8&lt;/span>&lt;span class="cl"> &lt;span class="err">/usr/local/opt/mosquitto/sbin/mosquitto -c /usr/local/etc/mosquitto/mosquitto.conf&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>安装完成后，默认情况下可执行文件和配置文件的位置如下：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">➜ ~ ll /usr/local/bin &lt;span class="p">|&lt;/span> grep mosquitto
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">lrwxr-xr-x &lt;span class="m">1&lt;/span> jonathanlin admin 47B Nov &lt;span class="m">25&lt;/span> 11:48 mosquitto_ctrl -&amp;gt; ../Cellar/mosquitto/2.0.10_1/bin/mosquitto_ctrl
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">lrwxr-xr-x &lt;span class="m">1&lt;/span> jonathanlin admin 49B Nov &lt;span class="m">25&lt;/span> 11:48 mosquitto_passwd -&amp;gt; ../Cellar/mosquitto/2.0.10_1/bin/mosquitto_passwd

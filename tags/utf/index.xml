@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>UTF on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/utf/</link><description>Recent content in UTF on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 31 Aug 2022 11:10:43 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/utf/index.xml" rel="self" type="application/rss+xml"/><item><title>UTF-8编码知识点整理</title><link>https://www.jonathanlin.top/posts/unicode-utf/</link><pubDate>Wed, 31 Aug 2022 11:10:43 +0800</pubDate><guid>https://www.jonathanlin.top/posts/unicode-utf/</guid><description>
+&lt;blockquote>
+&lt;p>参考资料：&lt;/p>
+&lt;ol>
+&lt;li>&lt;a href="http://www.ruanyifeng.com/blog/2007/10/ascii_unicode_and_utf-8.html">字符编码笔记：ASCII，Unicode 和 UTF-8 - 阮一峰的网络日志 (ruanyifeng.com)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters">List of Unicode characters - Wikipedia&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;h2 id="相关概念">相关概念&lt;/h2>
+&lt;ul>
+&lt;li>字符：是对文字和符号的总称，例如汉字、拉丁字母、emoji 都是字符&lt;/li>
+&lt;li>Unicode码点（Code Point）：在Unicode字符集中，每个字符都对应一个唯一数，这个唯一数就是Unicode码点。码点范围：U+0000 - U+10FFFF（十六进制）。这个范围可以容纳超过100万个字符&lt;/li>
+&lt;li>字符平面（Plane）：将字符进行分组，每组容纳65536（2^16)个字符，每一组称为一个平面，一共划分了17个平面&lt;/li>
+&lt;li>UTF：Unicode Transformation Format。字面意思就是Unicode转换格式，就是对Unicode码做格式转换（编码）&lt;/li>
+&lt;li>BOM：Byte Order Mark，字节标记顺序，位于文件开始的地方，用于标记高位在前还是低位在前。对于UTF-8而言，其BOM为EF BB BF。&lt;strong>通常来说：Windows系统里的UTF-8编码的文件都带有BOM，而类Unix系统则不带。&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;h2 id="unicode和utf的关系">Unicode和UTF的关系&lt;/h2>
+&lt;p>Unicode是一个字符集合，将二进制编码映射为字符或者符号。每个符号的编码都不一样，比如，&lt;code>U+0639&lt;/code>表示阿拉伯字母&lt;code>Ain&lt;/code> (&lt;code>ع&lt;/code>)，&lt;code>U+0041&lt;/code>表示英语的大写字母&lt;code>A&lt;/code>，&lt;code>U+4E25&lt;/code>表示汉字&lt;code>严&lt;/code>。Unicode字符集只是规定了字符对应的二进制编码，但是没有规定二进制编码如何存储。&lt;/p>
+&lt;p>UTF是Unicode的实现方式，即规定了字符的二进制编码的存储方式（将字符对应的Unicode码编按照一定的规则编排成二进制（字节）形式来来存储。不同的UTF编码方式使用几个字节存储，以及每个字节的含义均不同）。&lt;/p>
+&lt;p>有UTF-8，UTF-16和UTF-32这几种不同的实现方式。&lt;/p>
+&lt;ul>
+&lt;li>UTF-8：&lt;strong>变长&lt;/strong>编码方式，使用1~4个字节表示一个符号&lt;/li>
+&lt;li>UTF-16：&lt;strong>变长&lt;/strong>编码方式，使用2个或者4个字节表示&lt;/li>
+&lt;li>UTF-32：使用4个字节表示&lt;/li>
+&lt;/ul>
+&lt;h2 id="utf-8">UTF-8&lt;/h2>
+&lt;p>UTF-8编码规则简述：&lt;/p>
+&lt;ol>
+&lt;li>对于单字节的符号，字节的第一位设为&lt;code>0&lt;/code>，后面7位为这个符号的 Unicode 码。&lt;strong>因此对于英语字母，UTF-8 编码和 ASCII 码是相同的&lt;/strong> （这个实际上对应Unicode码在127（01111111）以内的字符）&lt;/li>
+&lt;li>对于n字节的符号（n &amp;gt; 1），第一个字节的前&lt;code>n&lt;/code>位都设为1，第n + 1位设为0，后面字节的前两位一律设为10。剩下的没有提及的二进制位，全部为这个符号的 Unicode 码&lt;/li>
+&lt;/ol>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Unicode码范围（十六进制）&lt;/th>
+&lt;th>Unicode码有效位&lt;/th>
+&lt;th>UTF-8编码方式&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>0000 0000-0000 007F&lt;/td>
+&lt;td>0 - 7&lt;/td>
+&lt;td>0xxxxxxx&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>0000 0080-0000 07FF&lt;/td>
+&lt;td>8 - 11&lt;/td>
+&lt;td>110xxxxx 10xxxxxx&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>0000 0800-0000 FFFF&lt;/td>
+&lt;td>12 - 17&lt;/td>
+&lt;td>1110xxxx 10xxxxxx 10xxxxxx&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>0001 0000-0010 FFFF&lt;/td>
+&lt;td>18 - 21&lt;/td>
+&lt;td>11110xxx 10xxxxxx 10xxxxxx 10xxxxxx&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>下面，还是以汉字严为例，演示如何实现 UTF-8 编码。&lt;/p>
+&lt;p>严的 Unicode 码是4E25（100 1110 0010 0101），有效位是15位，根据上表，可以发现4E25处在第三行的范围内（0000 0800 - 0000 FFFF），因此严的 UTF-8 编码需要三个字节，即格式是1110xxxx 10xxxxxx 10xxxxxx。然后，从严的最后一个二进制位开始，依次从后向前填入格式中的x，多出的位补0。这样就得到了，严的 UTF-8 编码是11100100 10111000 10100101，转换成十六进制就是E4B8A5。&lt;/p></description></item></channel></rss>
