@@ -1098,7 +1098,7 @@
 &lt;ul>
 &lt;li>&lt;strong>数组名是该数组首元素的地址&lt;/strong>&lt;/li>
 &lt;li>&lt;strong>声明数组将分配存储数组的空间，而声明指针只是分配存储一个地址的空间&lt;/strong>&lt;/li>
-&lt;li>指针加1表示增加一个存储单元。这里的存储单元实际上对应指针所指向对象的数据类型对应的字节数&lt;/li>
+&lt;li>指针加1表示增加一个存储单元（即：指向下一个存储单元的地址）。这里的存储单元实际上对应指针所指向对象的数据类型对应的字节数&lt;/li>
 &lt;li>数组加1后的地址是下一个元素的地址&lt;/li>
 &lt;li>举例来说，定义一个数组&lt;code>ar&lt;/code>：
 &lt;ul>
@@ -1150,7 +1150,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">15&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>几点需要注意：&lt;/p>
 &lt;ul>
-&lt;li>&lt;code>end&lt;/code>实际上是指向数组最后一个元素的后面&lt;/li>
+&lt;li>&lt;code>end&lt;/code>实际上是指向数组&lt;strong>最后一个元素的后面&lt;/strong>&lt;/li>
 &lt;li>C保证在分配数组空间的时候，确保最后一个元素后面的第一个位置的指针仍然有效，&lt;strong>但是对存储在该位置上的值未做保证&lt;/strong>&lt;/li>
 &lt;li>上面例子中，&lt;code>numbers + SIZE&lt;/code>就是指向最后一个元素的后面&lt;/li>
 &lt;/ul>
@@ -1163,7 +1163,7 @@
 &lt;li>赋值：&lt;code>ptr = &amp;amp;val&lt;/code>，把地址付给指针&lt;/li>
 &lt;li>解引用：&lt;code>*&lt;/code>运算符给出指针指向的地址上存储的值。&lt;strong>注意：千万不要解引用未初始化的指针&lt;/strong>&lt;/li>
 &lt;li>取值：&lt;code>ptr2 = &amp;amp;ptr1&lt;/code>，指针变量也有自己的地址和值&lt;/li>
-&lt;li>指针与整数n相加：指针对应的地址+数组元素的数据类型的大小（字节为单位）*n， 实际上相当于数组的下标往后移动几个&lt;/li>
+&lt;li>指针与整数n相加：*&lt;em>指针对应的地址+数组元素的数据类型的大小（字节为单位）&lt;em>n， 实际上相当于数组的下标往后移动几个&lt;/em>&lt;/em>&lt;/li>
 &lt;li>递增指针：实际相当于加1，数组下标往后移动一个&lt;/li>
 &lt;li>指针减去一个整数：与整数相加相反，数组下标往前移动&lt;/li>
 &lt;li>递减指针：数组下标往前移动一个&lt;/li>
@@ -1174,7 +1174,7 @@
 &lt;li>
 &lt;p>在函数（参数）中传递数组&lt;/p>
 &lt;ul>
-&lt;li>数组时以指针的方式传递。如果数组也通过副本的方式传递，那么会占用大量的内容&lt;/li>
+&lt;li>数组是以指针的方式传递。如果数组也通过副本的方式传递，那么会占用大量的内容&lt;/li>
 &lt;li>&lt;strong>由于数组时通过指针传递，因此是可以在函数中直接修改参数的值&lt;/strong>&lt;/li>
 &lt;li>为了避免在函数中修改参数的值，应该将数组声明为&lt;code>const&lt;/code>，例如：&lt;code>int sum(const int ar[], int n);&lt;/code>&lt;/li>
 &lt;li>&lt;code>const&lt;/code>并不是要求原数组是常量，而是函数处理数组时将其视为常量。如果不小心在函数中修改了数组的值，编译器会报错&lt;/li>
@@ -1351,7 +1351,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;li>
-&lt;p>几种字符串输入方式的比较 - 字符串输入首先是需要预留存储该字符串的控件，然后使用输入函数获取字符串&lt;/p>
+&lt;p>几种字符串输入方式的比较 - 字符串输入首先是需要预留存储该字符串的空间，然后使用输入函数获取字符串&lt;/p>
 &lt;ul>
 &lt;li>
 &lt;p>&lt;code>scanf(&amp;quot;%s&amp;quot;, aStr)&lt;/code> - 只能读取一个单词&lt;/p>
@@ -1438,7 +1438,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">13&lt;/span>&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">words&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="sc">&amp;#39;\n&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 长度小于STLEN
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">14&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">words&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="sc">&amp;#39;\0&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">15&lt;/span>&lt;span class="cl"> &lt;span class="k">else&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">16&lt;/span>&lt;span class="cl"> &lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">getchar&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="sc">&amp;#39;\n&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 如果输入长度大于STLEN，则丢弃掉超过STLEN之外的字符
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">16&lt;/span>&lt;span class="cl"> &lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">getchar&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="sc">&amp;#39;\n&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 如果输入长度大于STLEN，则丢弃掉超过STLEN之外的字符，这些字符是存在于缓冲区，如果没丢弃掉还会赋值给words
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">17&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">continue&lt;/span>&lt;span class="p">;&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">18&lt;/span>&lt;span class="cl"> &lt;span class="n">puts&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">words&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">19&lt;/span>&lt;span class="cl"> &lt;span class="p">}&lt;/span>
@@ -1461,7 +1461,7 @@
 &lt;p>空字符和空指针&lt;/p>
 &lt;ul>
 &lt;li>空字符：对应的编码是0，是整数类型&lt;/li>
-&lt;li>空指针：是一个指针类型，指向一个无效的地址，它不会与任何数据的有效地址对应&lt;/li>
+&lt;li>空指针：是一个指针类型，&lt;strong>指向一个无效的地址&lt;/strong>，它不会与任何数据的有效地址对应&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>
@@ -2322,7 +2322,7 @@
 &lt;li>&lt;code>switch&lt;/code>括号表达式中的值应该是一个整数值（包括&lt;code>char&lt;/code>）&lt;/li>
 &lt;li>&lt;code>case&lt;/code>标签必须是整数类型（包括&lt;code>char&lt;/code>)的常量或者整数型常量表达式&lt;/li>
 &lt;li>不能用变量作为&lt;code>case&lt;/code>标签&lt;/li>
-&lt;li>如果没有添加&lt;code>break&lt;/code>，那么匹配到某个标签以及之后所有的&lt;code>case&lt;/code>都会匹配上&lt;/li>
+&lt;li>如果没有添加&lt;code>break&lt;/code>，那么匹配到某个标签以及之后所有的&lt;code>case&lt;/code>都会进行匹配判断&lt;/li>
 &lt;/ul>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="k">switch&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="err">整型表达式&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl">&lt;span class="p">{&lt;/span>
@@ -2410,6 +2410,13 @@
 &lt;li>float至少能表示6位有效数字，double至少能表示10位有效数字&lt;/li>
 &lt;li>表达式中，float会自动转化成double&lt;/li>
 &lt;li>浮点数和整型数在计算机内部，虽然都是二进制表示，但是二进制的表示形式不一样，浮点数是把有效数字和指数部分分别表示。因此，在处理浮点数和整型的时候，计算机会做自动的转换，这个很危险&lt;/li>
+&lt;li>变量的初始化
+&lt;ul>
+&lt;li>定义变量时就会发配一块内存空间，如果没有对这块内存空间赋值（写入），&lt;strong>那么读取出来的可能是残留在这个空间里的值，这个是很危险的&lt;/strong>&lt;/li>
+&lt;li>全局变量：初始化不给值的情况下，默认值为0&lt;/li>
+&lt;li>局部变量：如果不初始化给值，读出来的值不确定，这是危险行为&lt;/li>
+&lt;/ul>
+&lt;/li>
 &lt;/ul>
 &lt;h2 id="ch04-字符串和格式化输入输出">ch04. 字符串和格式化输入/输出&lt;/h2>
 &lt;blockquote>
