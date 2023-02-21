@@ -24,7 +24,7 @@
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">allow_anonymous &lt;span class="nb">false&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">password_file /Users/jonathanlin/Workspace/mosquitto/pwd
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>使用&lt;code>mosquitto_passwd&lt;/code>创建两个测试账号：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">➜ mosquitto mosquitto_passwd -c ~/Workspace/mosquitto/pwd admin
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">➜ mosquitto mosquitto_passwd -c ~/Workspace/mosquitto/pwd admin &lt;span class="c1"># 注意密码不要使用特殊字符@&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">Password:
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">Reenter password:
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl">
@@ -54,11 +54,19 @@
 &lt;li>MQTT Broker - 消息代理服务器&lt;/li>
 &lt;li>MQTT Client - 消息发布者，通过QoS和Topic发布和订阅消息。MQTT Client可以同时是Publisher和Subscriber&lt;/li>
 &lt;/ul>
+&lt;h3 id="订阅">订阅&lt;/h3>
+&lt;ul>
+&lt;li>包含一个主题和QoS&lt;/li>
+&lt;li>订阅与单个会话关联，一个会话可以包含一个或者多个订阅&lt;/li>
+&lt;/ul>
 &lt;h3 id="主题名和主题过滤器">主题名和主题过滤器&lt;/h3>
 &lt;blockquote>
 &lt;p>以下内容多来自MQTT3.1.1规范&lt;/p>
 &lt;/blockquote>
-&lt;p>MQTT Client通过主题发布和订阅消息。主题名可以有不同层级，通过&lt;code>/&lt;/code>划分。主题可能是 管理员在服务端预先定义好的，也可能是服务端收到第一个订阅或使用那个主题名的应用消息时动态添加 的。主题过滤器通过在主题名中引入通配符来匹配一个或者多个主题。&lt;/p>
+&lt;p>MQTT Client通过主题发布和订阅消息。主题名可以有不同层级，通过&lt;code>/&lt;/code>划分。主题可能是管理员在服务端预先定义好的，也可能是服务端收到第一个订阅或使用那个主题名的应用消息时动态添加 的。&lt;strong>主题过滤器通过在主题名中引入通配符来匹配一个或者多个主题。&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>注意：MQTT允许使用主题过滤器进行订阅（匹配）多个主题，但是不允许通过主题过滤器进行发布&lt;/p>
+&lt;/blockquote>
 &lt;h4 id="主题语义和用法">主题语义和用法&lt;/h4>
 &lt;p>主题名和主题过滤器必须符合下列规则：&lt;/p>
 &lt;ul>
@@ -121,14 +129,17 @@
 &lt;p>MQTT 控制报文由三部分组成，按照 下图描述的顺序:&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20220224155932690.png" alt="image-20220224155932690">&lt;/p>
 &lt;p>每个 MQTT 控制报文都包含一个固定报头。下图描述了固定报头的格式：&lt;/p>
 &lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20220224155952188.png" alt="image-20220224155952188">&lt;/p>
-&lt;p>控制报文类型和标志位就不再赘述，请参考MQTT协议规范。这里重点记录一下剩余长度的含义以及计算方式。&lt;/p>
-&lt;p>剩余长度(Remaining Length)表示当前报文剩余部分的字节数，&lt;strong>包括可变报头(Variable header)和负载(Payload)的数据&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>固定报头的第一字节是固定的，用于表示控制报文类型和标志位，不再赘述请参考MQTT协议规范&lt;/li>
+&lt;li>紧接的是&lt;strong>剩余长度&lt;/strong>这里重点记录一下剩余长度的含义以及计算方式&lt;/li>
+&lt;/ul>
+&lt;p>**剩余长度(Remaining Length)**表示当前报文剩余部分的字节数，&lt;strong>包括可变报头(Variable header)和负载(Payload)的数据&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>
-&lt;p>剩余长度字段使用一个变长度编码方案，可能用byte2~byte5来编码表示剩余长度&lt;/p>
+&lt;p>剩余长度字段使用一个变长度编码方案，从byte2开始，最多可达4个字节，也就是说可能用byte2~byte5来编码表示剩余长度&lt;/p>
 &lt;/li>
 &lt;li>
-&lt;p>对于小于128的值使用单字节编码，大于128的值使用低7位编码数据，最到位指示后续是否有更多的字节&lt;/p>
+&lt;p>对于小于128的值使用单字节编码，大于128的值使用低7位编码数据，最高位指示后续是否有更多的字节&lt;/p>
 &lt;blockquote>
 &lt;p>这里第一次读可能不是太好理解，展开来说一下：&lt;/p>
 &lt;table>
@@ -144,7 +155,7 @@
 &lt;tbody>
 &lt;tr>
 &lt;td>byte2&lt;/td>
-&lt;td>0XXX XXX&lt;/td>
+&lt;td>0XXX XXXX&lt;/td>
 &lt;td>高位为0，仅byte2用于编码剩余长度&lt;/td>
 &lt;td>0 (0x00)&lt;/td>
 &lt;td>127 (0x7F)&lt;/td>
@@ -182,10 +193,11 @@
 &lt;/li>
 &lt;li>
 &lt;p>对于byte2~byte5，计算剩余长度数值的时候，遵循以下的算法：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="n">len&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">byte5&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="err">进制&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;~&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mh">0x80&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mi">128&lt;/span>&lt;span class="o">^&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">byte4&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="err">进制&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;~&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mh">0x80&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mi">128&lt;/span>&lt;span class="o">^&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">byte3&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="err">进制&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;~&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mh">0x80&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mi">128&lt;/span>&lt;span class="o">^&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">byte2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="err">进制&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;~&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mh">0x80&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mi">128&lt;/span>&lt;span class="o">^&lt;/span>&lt;span class="mi">0&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="n">len&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">byte5&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="err">进制&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;~&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mh">0x80&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mi">128&lt;/span>&lt;span class="o">^&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nf">byte4&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="err">进制&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;~&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mh">0x80&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mi">128&lt;/span>&lt;span class="o">^&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nf">byte3&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="err">进制&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;~&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mh">0x80&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mi">128&lt;/span>&lt;span class="o">^&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nf">byte2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="err">进制&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;~&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mh">0x80&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mi">128&lt;/span>&lt;span class="o">^&lt;/span>&lt;span class="mi">0&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>以剩余长度最大值0xFF, 0xFF, 0xFF, 0x7F，计算过程如下：&lt;/p>
 &lt;ul>
-&lt;li>0xFF - 这个需要去掉最高位就是0X7F（0111 1111），对应十进制127&lt;/li>
+&lt;li>0xFF - 对于byte2~byte5，最高位是标记位，不能参与计算，去掉最高位就是0X7F（0111 1111），对应十进制127&lt;/li>
+&lt;li>公式里的 bytex(16进制)&amp;amp;~(0x80)目的就是去掉最高位标记位&lt;/li>
 &lt;li>套用上面的公式：&lt;code>127*128^3 + 127*128^2 + 127*128 + 127 = 268435455 bytes = 256MB&lt;/code>&lt;/li>
 &lt;/ul>
 &lt;/li>
