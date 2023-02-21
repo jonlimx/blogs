@@ -1,4 +1,136 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>protobuf on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/protobuf/</link><description>Recent content in protobuf on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Tue, 06 Jul 2021 14:49:22 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/protobuf/index.xml" rel="self" type="application/rss+xml"/><item><title>[译]Protocol Buffer Language Guide (proto3)</title><link>https://www.jonathanlin.top/posts/protocol-buffer-language-guide/</link><pubDate>Tue, 06 Jul 2021 14:49:22 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-language-guide/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>protobuf on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/protobuf/</link><description>Recent content in protobuf on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Mon, 13 Jun 2022 10:01:01 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/protobuf/index.xml" rel="self" type="application/rss+xml"/><item><title>[译]Protocol Buffer Basics Go</title><link>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</link><pubDate>Mon, 13 Jun 2022 10:01:01 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</guid><description>
+&lt;p>原文链接：&lt;a href="https://developers.google.com/protocol-buffers/docs/gotutorial">Protocol Buffer Basics: Go | Protocol Buffers | Google Developers&lt;/a>&lt;/p>
+&lt;p>本教程使用proto3语言为Go程序员介绍了protocol buffers的基本使用。通过一步步创建一个简单的示例应用，你将会了解到：&lt;/p>
+&lt;ul>
+&lt;li>在&lt;code>.proto&lt;/code>文件中定义消息格式&lt;/li>
+&lt;li>使用protocol buffer编译器&lt;/li>
+&lt;li>使用Go protocol buffer API读写消息&lt;/li>
+&lt;/ul>
+&lt;p>这不是一个使用protocol buffers的完全手册。更多更细节的信息，请参看：&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3">Language Guide (proto3)&lt;/a>、&lt;a href="https://pkg.go.dev/google.golang.org/protobuf/proto">Go API Reference&lt;/a>、&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/go-generated">Go Generated Code&lt;/a>和&lt;a href="https://developers.google.com/protocol-buffers/docs/encoding">Encoding Reference&lt;/a>&lt;/p>
+&lt;h2 id="为什么使用protocol-buffers">为什么使用protocol buffers？&lt;/h2>
+&lt;p>我们将要创建一个简单的“地址簿”应用，该应用可以从文件中读和写联系人的信息。地址簿中的每一个联系人有名字，ID和联系电话。&lt;/p>
+&lt;p>你如何序列化和读取这种结构化数据？有这么几种方式可以解决这个问题：&lt;/p>
+&lt;ul>
+&lt;li>使用&lt;a href="https://golang.org/pkg/encoding/gob/">gobs&lt;/a>序列化Go数据结构。对于Go语言本身而言，这是一个很好的方案，但是如果你需要跨语言平台共享数据，那这种方式并不好&lt;/li>
+&lt;li>按照你期望的方式把数据编码成单一的字符串，例如4个int类型的数据编码成“12:3:-23:67”。这是一个简单且灵活的办法，但这要求你编写一次性的编码和转换的代码，同时转化代码会带来一定的运行时消耗。对于比较简单的数据，使用这种方式就比较好&lt;/li>
+&lt;li>将数据序列化成XML。XML对人类可读友好且各种语言都有对应的解析工具使得该方法有点吸引人。XML也能比较好的跨应用/项目共享数据。然而，众所周知，XML占用空间比较大，并且解析XML往往比较耗性能。此外，定位XML DOM树通常比直接访问类字段要复杂的多&lt;/li>
+&lt;/ul>
+&lt;p>Protocol buffers具有灵活、高效、自动化等特点可以解决上述问题。使用Protocol buffer，你需要把数据结构的描述定义在&lt;code>.proto&lt;/code>文件中，然后protocol buffer编译器会为你生成一个类，这个类实现了对protocol buffer二进制数据的编码和解析。这个类提供了对各个字段的getter和setter方法用于读写。protocol buffer很重要的一点是，如果将来数据格式扩展了，那么代码中依然可以读取由旧的格式编码的数据。&lt;/p>
+&lt;h2 id="哪里找示例代码">哪里找示例代码&lt;/h2>
+&lt;p>我们的例子是一系列的命令行程序，这些程序管理了由protocol buffers编码的地址簿数据文件。&lt;code>add_person_go&lt;/code>这个命令添加一条记录到数据文件。&lt;code>list_people_go&lt;/code>解析数据文件并把结果输出到控制台。&lt;/p>
+&lt;p>你可以从Github Repo中找到完整的示例：&lt;a href="https://github.com/protocolbuffers/protobuf/tree/master/examples">protobuf/examples at master · protocolbuffers/protobuf (github.com)&lt;/a>&lt;/p>
+&lt;h2 id="定义你的protocol格式">定义你的protocol格式&lt;/h2>
+&lt;p>创建你的地址簿应用的第一步是定义你的&lt;code>.proto&lt;/code>文件。&lt;code>.proto&lt;/code>文件中的定义很简单：你为你想要序列化的每一个数据结构添加一个消息，然后为消息中的每个字段指定一个名称和对应的类型。在我们的例子中，在&lt;code>.proto&lt;/code>中定义的消息请参考&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/addressbook.proto">addressbook.proto&lt;/a>。&lt;/p>
+&lt;p>&lt;code>.proto&lt;/code>文件是从一个包声明开始的，包声明用来防止在不同项目中的名字冲突。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="n">syntax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;proto3&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nn">tutorial&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;google/protobuf/timestamp.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>go_package&lt;/code>定义了代码生成所在的路径，包名即路径中的最后一个目录。例如，我们的例子的包名就是”tutorialpb“。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="k">option&lt;/span> &lt;span class="n">go_package&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;github.com/protocolbuffers/protobuf/examples/go/tutorialpb&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>接下来，你就可以定义你的消息了。一个消息是包含一组含有类型的字段的集合。许多标准的简单值类型都是支持的，例如&lt;code>bool&lt;/code> 、&lt;code>int32&lt;/code>、 &lt;code>float&lt;/code>、 &lt;code>double&lt;/code> 和&lt;code>string&lt;/code>。你也可以包含其他消息在你要定义的消息里。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="kd">message&lt;/span> &lt;span class="nc">Person&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="n">id&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// Unique ID number for this person.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">email&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kd">enum&lt;/span> &lt;span class="n">PhoneType&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">MOBILE&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">HOME&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">WORK&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">12&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kd">message&lt;/span> &lt;span class="nc">PhoneNumber&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">13&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">number&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">14&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">PhoneType&lt;/span> &lt;span class="n">type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">15&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">16&lt;/span>&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">17&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">repeated&lt;/span> &lt;span class="n">PhoneNumber&lt;/span> &lt;span class="n">phones&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">18&lt;/span>&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">19&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">google.protobuf.Timestamp&lt;/span> &lt;span class="n">last_updated&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">20&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">21&lt;/span>&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">22&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c1">// Our address book file is just one of these.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">23&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">AddressBook&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">24&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">repeated&lt;/span> &lt;span class="n">Person&lt;/span> &lt;span class="n">people&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">25&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>上面的例子中，&lt;code>Person&lt;/code>这个消息里包含了&lt;code>PhoneNumber&lt;/code>这个消息，&lt;code>AddressBook&lt;/code>这个消息包含了&lt;code>Person&lt;/code>这个消息。你甚至可以消息里定义另一个消息 - 正如你看到的，&lt;code>PhoneNumber&lt;/code>是定义在&lt;code>Person&lt;/code>里的。如果你希望你的取值是预先定义的一组值里的一个，那么你可以定义&lt;code>enum&lt;/code>类型 - 上面的例子中，你希望电话号码的类型是&lt;code>MOBILE&lt;/code>、 &lt;code>HOME&lt;/code>或者 &lt;code>WORK&lt;/code>。&lt;/p>
+&lt;p>在每一个字段上诸如&amp;quot;= 1&amp;quot; &amp;quot;= 2&amp;quot;的标记是用于在二进制编码的时候对字段指定一个唯一的标记。相对于更高的标记号码而言，1 -15号在编码的时候占用的空间小于一个字节，因此一个有优化手段是你可以把经常会用到的字段或者重复类型的字段（例如数组）标记为1 - 15，把高于15的留给那些不怎么常用到的字段或者可选的字段。重复类型字段里的每一个元素都需要重新编码标记号码，因此重复类型的字段往往都会用到这种优化 。（&lt;em>&lt;strong>这块后面需要再理解一下是什么意思&lt;/strong>&lt;/em>）&lt;/p>
+&lt;p>如果一个字段的值没有设置，那么将使用对应类型的&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3#default">默认值&lt;/a>：数字类型的默认值是0，字符串默认值是空字符串，布尔类型的默认值是false。对于嵌套的消息，它的默认值是带有各个字段名的默认值。调用访问器（getter）去读取值的时候，如果对应的字段没有明确赋值，那么就返回对应的默认值。&lt;/p>
+&lt;p>如果一个字段是重复类型，那么元素的个数可能是任意数目（包括0个）。元素的顺序在protocol buffer中是被保留下来的。可以想象重复类型字段是动态数组。&lt;/p>
+&lt;p>你将在&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3">Protocol Buffer Language Guide&lt;/a>中找到如何编写&lt;code>.proto&lt;/code>文件的完整教程（包括所有的类型）。至于类似于类继承这种机制就不要找了，protocol buffer不支持。&lt;/p>
+&lt;h2 id="编译protocol-buffers">编译protocol buffers&lt;/h2>
+&lt;p>现在你已经有&lt;code>.proto&lt;/code>文件了，接下来你需要基于这个文件去生成访问&lt;code>AddresBook&lt;/code>消息（&lt;code>Person&lt;/code>和&lt;code>PhoneNumber&lt;/code>也是）的类了。你将要使用protocol buffer编译器&lt;code>protoc&lt;/code>来编译你的&lt;code>.proto&lt;/code>文件：&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>如果你还未安装编译器，请先&lt;a href="https://developers.google.com/protocol-buffers/docs/downloads">Download Protocol Buffers&lt;/a>，然后参考README进行安装&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>运行下面的命令安装Go protocol buffers plugin：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">go get github.com/golang/protobuf/protoc-gen-go
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;p>编译器plugin &lt;code>protoc-gen-to&lt;/code>将被安装在&lt;code>$GOBIN&lt;/code>目录，该目录默认是在&lt;code>$GOPATH/bin&lt;/code>。这个目录必须包含在你的&lt;code>$PATH&lt;/code>中。&lt;/p>
+&lt;ol start="3">
+&lt;li>
+&lt;p>现在你可以运行编译器，指定源目录（就是你的源文件所在的目录，如果没有指定就是指当前目录）和目标目录（生成的代码所在的目录）以及&lt;code>.proto&lt;/code>所在的目录。在我们的例子中，你应该运行下面命令：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">protoc -I&lt;span class="o">=&lt;/span>&lt;span class="nv">$SRC_DIR&lt;/span> --go_out&lt;span class="o">=&lt;/span>&lt;span class="nv">$DST_DIR&lt;/span> &lt;span class="nv">$SRC_DIR&lt;/span>/addressbook.proto
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>由于你是需要生成Go代码，你应该使用&lt;code>--go-out&lt;/code>选项，其他语言则使用对应的选项。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>运行后，你将会在特定的目录看到生成的代码：&lt;code>github.com/protocolbuffers/protobuf/examples/go/tutorialpb/addressbook.pb.go&lt;/code>。&lt;/p>
+&lt;h2 id="protocol-buffer-api">Protocol Buffer API&lt;/h2>
+&lt;p>生成的&lt;code>addressbook.pb.go&lt;/code>提供了以下有用的类型：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>AddressBook&lt;/code>结构体包含了&lt;code>People&lt;/code>类型的字段&lt;/li>
+&lt;li>&lt;code>Person&lt;/code>结构体包含了&lt;code>Name&lt;/code>、&lt;code>Id&lt;/code>、&lt;code>Email&lt;/code>和 &lt;code>Phones&lt;/code>字段&lt;/li>
+&lt;li>&lt;code>Person_PhoneNumber&lt;/code>结构体包含了&lt;code>Number&lt;/code>和&lt;code>Type&lt;/code>字段&lt;/li>
+&lt;li>&lt;code>Person_PhoneType&lt;/code>结构体和&lt;code>Person.PhoneType&lt;/code>枚举&lt;/li>
+&lt;/ul>
+&lt;p>你可以从&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/go-generated">Go Generated Code guide&lt;/a>了解到代码生成的细节，对于大部分代码你只需要像对待Go类型一样。&lt;/p>
+&lt;p>&lt;code>list_people&lt;/code>的单元测试&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people_test.go">command's unit tests&lt;/a>中展示了你应该如何创建&lt;code>Person&lt;/code>的实例：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="nx">p&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Person&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl"> &lt;span class="nx">Id&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1234&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl"> &lt;span class="nx">Name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;John Doe&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl"> &lt;span class="nx">Email&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;jdoe@example.com&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl"> &lt;span class="nx">Phones&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Person_PhoneNumber&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">6&lt;/span>&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="nx">Number&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;555-4321&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">Type&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Person_HOME&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">7&lt;/span>&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">8&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="写消息">写消息&lt;/h2>
+&lt;p>使用proptocol buffers的目的是序列化你的数据，而后能够在任何地方解析。Go语言中，你可以使用&lt;code>proto&lt;/code>库的&lt;a href="https://pkg.go.dev/google.golang.org/protobuf/proto?tab=doc#Marshal">Marshal&lt;/a>方法序列化你的protocol buffer数据。protocol buffer消息的指针类型实现了&lt;code>proto.Message&lt;/code>接口。调用&lt;code>proto.Marshal&lt;/code>返回序列化后的编码成wire格式的protocol buffer数据。例如，我们在&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/add_person.go">&lt;code>add_person&lt;/code> command&lt;/a>中使用了这个方法：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="nx">book&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">AddressBook&lt;/span>&lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl">&lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl">&lt;span class="c1">// Write the new address book back to disk.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="nx">out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">proto&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Marshal&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">book&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl"> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatalln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Failed to encode address book:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ioutil&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">WriteFile&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">fname&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mo">0644&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl"> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatalln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Failed to write address book:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="读数据">读数据&lt;/h2>
+&lt;p>你可以使用&lt;code>proto&lt;/code>库中的&lt;a href="https://pkg.go.dev/google.golang.org/protobuf/proto?tab=doc#Unmarshal">Unmarshal&lt;/a>方法来解析编码过的数据。调用这个方法将&lt;code>buf&lt;/code>中的protocol buffer数据解析出来存放在&lt;code>pb&lt;/code>中。因此我们使用下面的代码在&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people.go">&lt;code>list_people&lt;/code> command&lt;/a>中进行解析：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="c1">// Read the existing address book.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="nx">in&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ioutil&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ReadFile&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">fname&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl"> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatalln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Error reading file:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">6&lt;/span>&lt;span class="cl">&lt;span class="nx">book&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">AddressBook&lt;/span>&lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">7&lt;/span>&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">proto&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Unmarshal&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">in&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">book&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">8&lt;/span>&lt;span class="cl"> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatalln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Failed to parse address book:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">9&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="扩展protocol-buffer">扩展Protocol Buffer&lt;/h2>
+&lt;p>在你使用protocol buffer的代码发布之后，或早或晚你总是希望改进你的protocol buffer定义。如果你希望你新的定义能向后兼容，且你的老的定义能向前兼容（你一定总是希望这样），那么你需要遵循一些规则。在新版本的protocol buffer中：&lt;/p>
+&lt;ul>
+&lt;li>你一定不能修改现在的字段的标签号码&lt;/li>
+&lt;li>你可能会删除某些字段&lt;/li>
+&lt;li>你可能会新增字段，但是新增的字段一定要使用全新的标签号码（一定是没有被使用过的，包括那些被删除的字段曾经使用过的）。&lt;/li>
+&lt;/ul>
+&lt;p>（使用这些规则有一些例外&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3#updating">some exceptions&lt;/a>，但这些很少使用到）&lt;/p>
+&lt;p>如果你遵循了这些规则，你会发现老代码也可以读取新的消息，只是会忽略新的字段。对于老代码，被删除的非数组字段会有它们的默认值，数组类型为空。新的代码可以透明的读取老的消息。&lt;/p>
+&lt;p>需要注意的是，新的字段不会出现在老消息里，因此你需要添加合理的逻辑处理默认值&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3#default">default value&lt;/a>。&lt;/p></description></item><item><title>[译]Protocol Buffer Language Guide (proto3)</title><link>https://www.jonathanlin.top/posts/protocol-buffer-language-guide/</link><pubDate>Mon, 13 Jun 2022 10:01:01 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-language-guide/</guid><description>
 &lt;p>原文链接：&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3">Language Guide (proto3) | Protocol Buffers | Google Developers&lt;/a>&lt;/p>
 &lt;p>本指导文档描述了如何使用protocol buffer语言来构建你的protocol buffer数据，包括&lt;code>.proto&lt;/code>文件的语法规则，包括如何从你的&lt;code>.proto&lt;/code>文件中生成数据访问类。本文介绍的是&lt;strong>proto3&lt;/strong>版本的语言规则，关于&lt;strong>proto2&lt;/strong>版本的信息，请参考： &lt;a href="https://developers.google.com/protocol-buffers/docs/proto">Proto2 Language Guide&lt;/a>。&lt;/p>
 &lt;p>本文是一个指导性的参考文档，关于如何使用本文中提及的特性的例子，请参考&lt;a href="https://developers.google.com/protocol-buffers/docs/tutorials">tutorial&lt;/a> 并选择你想要的特定编程语言的例子。&lt;/p>
@@ -676,136 +808,4 @@
 &lt;li>
 &lt;p>你必须指定一个或者多个&lt;code>.proto&lt;/code>文件作为输入。可以同时指定多个&lt;code>.proto&lt;/code>文件，前提是这些文件都位于&lt;code>IMPORT_PATH&lt;/code>，这样编译器才能根据名字找到这些文件。&lt;/p>
 &lt;/li>
-&lt;/ul></description></item><item><title>[译]Protocol Buffer Basics Go</title><link>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</link><pubDate>Thu, 01 Jul 2021 13:54:58 +0800</pubDate><guid>https://www.jonathanlin.top/posts/protocol-buffer-basics-go/</guid><description>
-&lt;p>原文链接：&lt;a href="https://developers.google.com/protocol-buffers/docs/gotutorial">Protocol Buffer Basics: Go | Protocol Buffers | Google Developers&lt;/a>&lt;/p>
-&lt;p>本教程使用proto3语言为Go程序员介绍了protocol buffers的基本使用。通过一步步创建一个简单的示例应用，你将会了解到：&lt;/p>
-&lt;ul>
-&lt;li>在&lt;code>.proto&lt;/code>文件中定义消息格式&lt;/li>
-&lt;li>使用protocol buffer编译器&lt;/li>
-&lt;li>使用Go protocol buffer API读写消息&lt;/li>
-&lt;/ul>
-&lt;p>这不是一个使用protocol buffers的完全手册。更多更细节的信息，请参看：&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3">Language Guide (proto3)&lt;/a>、&lt;a href="https://pkg.go.dev/google.golang.org/protobuf/proto">Go API Reference&lt;/a>、&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/go-generated">Go Generated Code&lt;/a>和&lt;a href="https://developers.google.com/protocol-buffers/docs/encoding">Encoding Reference&lt;/a>&lt;/p>
-&lt;h2 id="为什么使用protocol-buffers">为什么使用protocol buffers？&lt;/h2>
-&lt;p>我们将要创建一个简单的“地址簿”应用，该应用可以从文件中读和写联系人的信息。地址簿中的每一个联系人有名字，ID和联系电话。&lt;/p>
-&lt;p>你如何序列化和读取这种结构化数据？有这么几种方式可以解决这个问题：&lt;/p>
-&lt;ul>
-&lt;li>使用&lt;a href="https://golang.org/pkg/encoding/gob/">gobs&lt;/a>序列化Go数据结构。对于Go语言本身而言，这是一个很好的方案，但是如果你需要跨语言平台共享数据，那这种方式并不好&lt;/li>
-&lt;li>按照你期望的方式把数据编码成单一的字符串，例如4个int类型的数据编码成“12:3:-23:67”。这是一个简单且灵活的办法，但这要求你编写一次性的编码和转换的代码，同时转化代码会带来一定的运行时消耗。对于比较简单的数据，使用这种方式就比较好&lt;/li>
-&lt;li>将数据序列化成XML。XML对人类可读友好且各种语言都有对应的解析工具使得该方法有点吸引人。XML也能比较好的跨应用/项目共享数据。然而，众所周知，XML占用空间比较大，并且解析XML往往比较耗性能。此外，定位XML DOM树通常比直接访问类字段要复杂的多&lt;/li>
-&lt;/ul>
-&lt;p>Protocol buffers具有灵活、高效、自动化等特点可以解决上述问题。使用Protocol buffer，你需要把数据结构的描述定义在&lt;code>.proto&lt;/code>文件中，然后protocol buffer编译器会为你生成一个类，这个类实现了对protocol buffer二进制数据的编码和解析。这个类提供了对各个字段的getter和setter方法用于读写。protocol buffer很重要的一点是，如果将来数据格式扩展了，那么代码中依然可以读取由旧的格式编码的数据。&lt;/p>
-&lt;h2 id="哪里找示例代码">哪里找示例代码&lt;/h2>
-&lt;p>我们的例子是一系列的命令行程序，这些程序管理了由protocol buffers编码的地址簿数据文件。&lt;code>add_person_go&lt;/code>这个命令添加一条记录到数据文件。&lt;code>list_people_go&lt;/code>解析数据文件并把结果输出到控制台。&lt;/p>
-&lt;p>你可以从Github Repo中找到完整的示例：&lt;a href="https://github.com/protocolbuffers/protobuf/tree/master/examples">protobuf/examples at master · protocolbuffers/protobuf (github.com)&lt;/a>&lt;/p>
-&lt;h2 id="定义你的protocol格式">定义你的protocol格式&lt;/h2>
-&lt;p>创建你的地址簿应用的第一步是定义你的&lt;code>.proto&lt;/code>文件。&lt;code>.proto&lt;/code>文件中的定义很简单：你为你想要序列化的每一个数据结构添加一个消息，然后为消息中的每个字段指定一个名称和对应的类型。在我们的例子中，在&lt;code>.proto&lt;/code>中定义的消息请参考&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/addressbook.proto">addressbook.proto&lt;/a>。&lt;/p>
-&lt;p>&lt;code>.proto&lt;/code>文件是从一个包声明开始的，包声明用来防止在不同项目中的名字冲突。&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="n">syntax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;proto3&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nn">tutorial&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">import&lt;/span> &lt;span class="s">&amp;#34;google/protobuf/timestamp.proto&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>go_package&lt;/code>定义了代码生成所在的路径，包名即路径中的最后一个目录。例如，我们的例子的包名就是”tutorialpb“。&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="k">option&lt;/span> &lt;span class="n">go_package&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;github.com/protocolbuffers/protobuf/examples/go/tutorialpb&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>接下来，你就可以定义你的消息了。一个消息是包含一组含有类型的字段的集合。许多标准的简单值类型都是支持的，例如&lt;code>bool&lt;/code> 、&lt;code>int32&lt;/code>、 &lt;code>float&lt;/code>、 &lt;code>double&lt;/code> 和&lt;code>string&lt;/code>。你也可以包含其他消息在你要定义的消息里。&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="kd">message&lt;/span> &lt;span class="nc">Person&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="n">id&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// Unique ID number for this person.
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">email&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl">&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kd">enum&lt;/span> &lt;span class="n">PhoneType&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">MOBILE&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">HOME&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">WORK&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="p">}&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl">&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">12&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kd">message&lt;/span> &lt;span class="nc">PhoneNumber&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">13&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">number&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">14&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">PhoneType&lt;/span> &lt;span class="n">type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">15&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="p">}&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">16&lt;/span>&lt;span class="cl">&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">17&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">repeated&lt;/span> &lt;span class="n">PhoneNumber&lt;/span> &lt;span class="n">phones&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">18&lt;/span>&lt;span class="cl">&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">19&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">google.protobuf.Timestamp&lt;/span> &lt;span class="n">last_updated&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">20&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">21&lt;/span>&lt;span class="cl">&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">22&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c1">// Our address book file is just one of these.
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">23&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">AddressBook&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">24&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">repeated&lt;/span> &lt;span class="n">Person&lt;/span> &lt;span class="n">people&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">25&lt;/span>&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
-&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>上面的例子中，&lt;code>Person&lt;/code>这个消息里包含了&lt;code>PhoneNumber&lt;/code>这个消息，&lt;code>AddressBook&lt;/code>这个消息包含了&lt;code>Person&lt;/code>这个消息。你甚至可以消息里定义另一个消息 - 正如你看到的，&lt;code>PhoneNumber&lt;/code>是定义在&lt;code>Person&lt;/code>里的。如果你希望你的取值是预先定义的一组值里的一个，那么你可以定义&lt;code>enum&lt;/code>类型 - 上面的例子中，你希望电话号码的类型是&lt;code>MOBILE&lt;/code>、 &lt;code>HOME&lt;/code>或者 &lt;code>WORK&lt;/code>。&lt;/p>
-&lt;p>在每一个字段上诸如&amp;quot;= 1&amp;quot; &amp;quot;= 2&amp;quot;的标记是用于在二进制编码的时候对字段指定一个唯一的标记。相对于更高的标记号码而言，1 -15号在编码的时候占用的空间小于一个字节，因此一个有优化手段是你可以把经常会用到的字段或者重复类型的字段（例如数组）标记为1 - 15，把高于15的留给那些不怎么常用到的字段或者可选的字段。重复类型字段里的每一个元素都需要重新编码标记号码，因此重复类型的字段往往都会用到这种优化 。（&lt;em>&lt;strong>这块后面需要再理解一下是什么意思&lt;/strong>&lt;/em>）&lt;/p>
-&lt;p>如果一个字段的值没有设置，那么将使用对应类型的&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3#default">默认值&lt;/a>：数字类型的默认值是0，字符串默认值是空字符串，布尔类型的默认值是false。对于嵌套的消息，它的默认值是带有各个字段名的默认值。调用访问器（getter）去读取值的时候，如果对应的字段没有明确赋值，那么就返回对应的默认值。&lt;/p>
-&lt;p>如果一个字段是重复类型，那么元素的个数可能是任意数目（包括0个）。元素的顺序在protocol buffer中是被保留下来的。可以想象重复类型字段是动态数组。&lt;/p>
-&lt;p>你将在&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3">Protocol Buffer Language Guide&lt;/a>中找到如何编写&lt;code>.proto&lt;/code>文件的完整教程（包括所有的类型）。至于类似于类继承这种机制就不要找了，protocol buffer不支持。&lt;/p>
-&lt;h2 id="编译protocol-buffers">编译protocol buffers&lt;/h2>
-&lt;p>现在你已经有&lt;code>.proto&lt;/code>文件了，接下来你需要基于这个文件去生成访问&lt;code>AddresBook&lt;/code>消息（&lt;code>Person&lt;/code>和&lt;code>PhoneNumber&lt;/code>也是）的类了。你将要使用protocol buffer编译器&lt;code>protoc&lt;/code>来编译你的&lt;code>.proto&lt;/code>文件：&lt;/p>
-&lt;ol>
-&lt;li>
-&lt;p>如果你还未安装编译器，请先&lt;a href="https://developers.google.com/protocol-buffers/docs/downloads">Download Protocol Buffers&lt;/a>，然后参考README进行安装&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>运行下面的命令安装Go protocol buffers plugin：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">go get github.com/golang/protobuf/protoc-gen-go
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
-&lt;/ol>
-&lt;p>编译器plugin &lt;code>protoc-gen-to&lt;/code>将被安装在&lt;code>$GOBIN&lt;/code>目录，该目录默认是在&lt;code>$GOPATH/bin&lt;/code>。这个目录必须包含在你的&lt;code>$PATH&lt;/code>中。&lt;/p>
-&lt;ol start="3">
-&lt;li>
-&lt;p>现在你可以运行编译器，指定源目录（就是你的源文件所在的目录，如果没有指定就是指当前目录）和目标目录（生成的代码所在的目录）以及&lt;code>.proto&lt;/code>所在的目录。在我们的例子中，你应该运行下面命令：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">protoc -I&lt;span class="o">=&lt;/span>&lt;span class="nv">$SRC_DIR&lt;/span> --go_out&lt;span class="o">=&lt;/span>&lt;span class="nv">$DST_DIR&lt;/span> &lt;span class="nv">$SRC_DIR&lt;/span>/addressbook.proto
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>由于你是需要生成Go代码，你应该使用&lt;code>--go-out&lt;/code>选项，其他语言则使用对应的选项。&lt;/p>
-&lt;/li>
-&lt;/ol>
-&lt;p>运行后，你将会在特定的目录看到生成的代码：&lt;code>github.com/protocolbuffers/protobuf/examples/go/tutorialpb/addressbook.pb.go&lt;/code>。&lt;/p>
-&lt;h2 id="protocol-buffer-api">Protocol Buffer API&lt;/h2>
-&lt;p>生成的&lt;code>addressbook.pb.go&lt;/code>提供了以下有用的类型：&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>AddressBook&lt;/code>结构体包含了&lt;code>People&lt;/code>类型的字段&lt;/li>
-&lt;li>&lt;code>Person&lt;/code>结构体包含了&lt;code>Name&lt;/code>、&lt;code>Id&lt;/code>、&lt;code>Email&lt;/code>和 &lt;code>Phones&lt;/code>字段&lt;/li>
-&lt;li>&lt;code>Person_PhoneNumber&lt;/code>结构体包含了&lt;code>Number&lt;/code>和&lt;code>Type&lt;/code>字段&lt;/li>
-&lt;li>&lt;code>Person_PhoneType&lt;/code>结构体和&lt;code>Person.PhoneType&lt;/code>枚举&lt;/li>
-&lt;/ul>
-&lt;p>你可以从&lt;a href="https://developers.google.com/protocol-buffers/docs/reference/go-generated">Go Generated Code guide&lt;/a>了解到代码生成的细节，对于大部分代码你只需要像对待Go类型一样。&lt;/p>
-&lt;p>&lt;code>list_people&lt;/code>的单元测试&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people_test.go">command's unit tests&lt;/a>中展示了你应该如何创建&lt;code>Person&lt;/code>的实例：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="nx">p&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Person&lt;/span>&lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl"> &lt;span class="nx">Id&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1234&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl"> &lt;span class="nx">Name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;John Doe&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl"> &lt;span class="nx">Email&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;jdoe@example.com&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl"> &lt;span class="nx">Phones&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Person_PhoneNumber&lt;/span>&lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">6&lt;/span>&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="nx">Number&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;555-4321&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">Type&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Person_HOME&lt;/span>&lt;span class="p">},&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">7&lt;/span>&lt;span class="cl"> &lt;span class="p">},&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">8&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="写消息">写消息&lt;/h2>
-&lt;p>使用proptocol buffers的目的是序列化你的数据，而后能够在任何地方解析。Go语言中，你可以使用&lt;code>proto&lt;/code>库的&lt;a href="https://pkg.go.dev/google.golang.org/protobuf/proto?tab=doc#Marshal">Marshal&lt;/a>方法序列化你的protocol buffer数据。protocol buffer消息的指针类型实现了&lt;code>proto.Message&lt;/code>接口。调用&lt;code>proto.Marshal&lt;/code>返回序列化后的编码成wire格式的protocol buffer数据。例如，我们在&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/add_person.go">&lt;code>add_person&lt;/code> command&lt;/a>中使用了这个方法：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="nx">book&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">AddressBook&lt;/span>&lt;span class="p">{}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl">&lt;span class="c1">// ...
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl">&lt;span class="c1">// Write the new address book back to disk.
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="nx">out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">proto&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Marshal&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">book&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl"> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatalln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Failed to encode address book:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ioutil&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">WriteFile&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">fname&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mo">0644&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl"> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatalln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Failed to write address book:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="读数据">读数据&lt;/h2>
-&lt;p>你可以使用&lt;code>proto&lt;/code>库中的&lt;a href="https://pkg.go.dev/google.golang.org/protobuf/proto?tab=doc#Unmarshal">Unmarshal&lt;/a>方法来解析编码过的数据。调用这个方法将&lt;code>buf&lt;/code>中的protocol buffer数据解析出来存放在&lt;code>pb&lt;/code>中。因此我们使用下面的代码在&lt;a href="https://github.com/protocolbuffers/protobuf/blob/master/examples/list_people.go">&lt;code>list_people&lt;/code> command&lt;/a>中进行解析：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="ln">1&lt;/span>&lt;span class="cl">&lt;span class="c1">// Read the existing address book.
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">2&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="nx">in&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ioutil&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ReadFile&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">fname&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">3&lt;/span>&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">4&lt;/span>&lt;span class="cl"> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatalln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Error reading file:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">5&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">6&lt;/span>&lt;span class="cl">&lt;span class="nx">book&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">pb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">AddressBook&lt;/span>&lt;span class="p">{}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">7&lt;/span>&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">proto&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Unmarshal&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">in&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">book&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">8&lt;/span>&lt;span class="cl"> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatalln&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Failed to parse address book:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">9&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="扩展protocol-buffer">扩展Protocol Buffer&lt;/h2>
-&lt;p>在你使用protocol buffer的代码发布之后，或早或晚你总是希望改进你的protocol buffer定义。如果你希望你新的定义能向后兼容，且你的老的定义能向前兼容（你一定总是希望这样），那么你需要遵循一些规则。在新版本的protocol buffer中：&lt;/p>
-&lt;ul>
-&lt;li>你一定不能修改现在的字段的标签号码&lt;/li>
-&lt;li>你可能会删除某些字段&lt;/li>
-&lt;li>你可能会新增字段，但是新增的字段一定要使用全新的标签号码（一定是没有被使用过的，包括那些被删除的字段曾经使用过的）。&lt;/li>
-&lt;/ul>
-&lt;p>（使用这些规则有一些例外&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3#updating">some exceptions&lt;/a>，但这些很少使用到）&lt;/p>
-&lt;p>如果你遵循了这些规则，你会发现老代码也可以读取新的消息，只是会忽略新的字段。对于老代码，被删除的非数组字段会有它们的默认值，数组类型为空。新的代码可以透明的读取老的消息。&lt;/p>
-&lt;p>需要注意的是，新的字段不会出现在老消息里，因此你需要添加合理的逻辑处理默认值&lt;a href="https://developers.google.com/protocol-buffers/docs/proto3#default">default value&lt;/a>。&lt;/p></description></item></channel></rss>
+&lt;/ul></description></item></channel></rss>
