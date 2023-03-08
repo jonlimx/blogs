@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/</link><description>Recent content on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Fri, 24 Feb 2023 21:23:09 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/index.xml" rel="self" type="application/rss+xml"/><item><title>MQTT控制报文</title><link>https://www.jonathanlin.top/posts/mqtt-note-03/</link><pubDate>Fri, 24 Feb 2023 21:23:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-03/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/</link><description>Recent content on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 08 Mar 2023 16:48:37 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/index.xml" rel="self" type="application/rss+xml"/><item><title>MQTT控制报文</title><link>https://www.jonathanlin.top/posts/mqtt-note-03/</link><pubDate>Wed, 08 Mar 2023 16:48:37 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-03/</guid><description>
 &lt;h3 id="控制报文结构">控制报文结构&lt;/h3>
 &lt;p>MQTT 控制报文由三部分组成，按照 下图描述的顺序:&lt;/p>
 &lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20220224155932690.png" alt="image-20220224155932690">&lt;/p>
@@ -72,14 +72,96 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h3 id="可变报头">可变报头&lt;/h3>
+&lt;h3 id="mqtt控制报文">MQTT控制报文&lt;/h3>
 &lt;p>可变报头位于剩余长度和Payload之间。可变不是可选（optional）的意思，可变报头的内容根据报文类型的不同而不同。具体取决于报文类型，有的类型包含可变报头，有的没有。&lt;/p>
-&lt;h4 id="connect---连接服务端broker">Connect - 连接服务端（Broker）&lt;/h4>
-&lt;p>可变报头包括：协议名长度（Protocol Name Length）、 协议名（Protocol Name)、协议级别（Protocol Level），连接标志（Connection Flags）和保持连接（Keep Alive）&lt;/p>
+&lt;h4 id="connect---连接服务端broker">CONNECT - 连接服务端（Broker）&lt;/h4>
+&lt;p>&lt;strong>可变报头&lt;/strong>&lt;/p>
+&lt;p>包括：协议名长度（Protocol Name Length）、 协议名（Protocol Name)、协议级别（Protocol Level/Version），连接标志（Connection Flags）和保持连接（Keep Alive）&lt;/p>
 &lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230224171541298.png" alt="image-20230224171541298">&lt;/p>
 &lt;blockquote>
 &lt;p>由于v3.1.1版本的Version对应的值是4，这也是MQTT5的由来&lt;/p>
-&lt;/blockquote></description></item><item><title>MQTT杂记</title><link>https://www.jonathanlin.top/posts/mqtt-note-01/</link><pubDate>Fri, 24 Feb 2023 21:23:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-01/</guid><description>
+&lt;/blockquote>
+&lt;p>连接标志位（Connection Flags）各bit含义如下：&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230308142402425.png" alt="image-20230308142402425">&lt;/p>
+&lt;blockquote>
+&lt;p>1 - Clean Session：会话清除标志位。当设置为0时，服务端必须基于当前会话（通过客户端标识符识别）的状态恢复与客户端的通信，即持久化会话。持久化会话只对QoS为1或者2 的消息有效，客户端和服务端需要将QoS1和2的消息保存为会话的一部分；当设置为1时，客户端和服务端必须丢弃之前任何会话并开始一个新的会话 (&lt;strong>保留消息不是服务端会话状态的一部分，会话终止时不能删除保留信息&lt;/strong>)&lt;/p>
+&lt;p>2 - Will Flag：遗嘱标志。这个是和Will Retain和Will QoS一起使用的。当遗嘱标志位0时，这几个都要置0，表明网络断开的时候不能发送医嘱信息；当遗嘱标志位设置为1时&lt;/p>
+&lt;p>3/4 - Will QoS：遗嘱消息QoS，值为0,1和2&lt;/p>
+&lt;p>5 - Will Retain：遗嘱保留&lt;/p>
+&lt;p>6 - Password Flag：密码标志，标识有效核载中是否包含用户密码&lt;/p>
+&lt;p>7 - User Name Flag：用户名标志，标识有效核载中是否包含用户名&lt;/p>
+&lt;/blockquote>
+&lt;p>保持连接（Keep Alive）：以秒为单位的时间间隔，是指在客户端传输完成 一个控制报文的时刻到发送下一个报文的时刻，两者之间允许空闲的最大时间间隔&lt;/p>
+&lt;p>&lt;strong>有效核载&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230308154242825.png" alt="image-20230308154242825">&lt;/p>
+&lt;p>客户端标识符（Client ID）：客户端和服务器必须使用Client ID标识两者之间的MQTT会话状态&lt;/p>
+&lt;p>遗嘱主题（Will Topic）：可变报头中的连接标志位中设置了Will Flag时，就必须设置遗嘱主题&lt;/p>
+&lt;p>遗嘱消息（Will Message）：发布到遗嘱主题的消息&lt;/p>
+&lt;p>用户名(User Name) | 密码（Password）：用于连接MQTT的Broker的用户名和密码&lt;/p>
+&lt;h4 id="connack---确认连接请求">CONNACK - 确认连接请求&lt;/h4>
+&lt;p>服务端发送给客户端的第一个报文必须是CONNACK&lt;/p>
+&lt;p>&lt;strong>可变报头&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230308155504193.png" alt="image-20230308155504193">&lt;/p>
+&lt;p>连接确认标志位（Acknowledge Flags）：总共一个字节，7~1位为保留位，值都为0。第零位也叫SP位，其值和ONNECT里的Clean Session有关&lt;/p>
+&lt;ul>
+&lt;li>如果Clean Session为1，那么每次连接都是新的会话，SP的值置为0&lt;/li>
+&lt;li>如果Clean Session为0，服务根据客户端标识判断是否已经有该客户端会话，那么SP的值置为1，否则为0&lt;/li>
+&lt;/ul>
+&lt;p>连接返回码（Return Code）：连接返回码，用于标识连接成功与否。如果连接失败，如下表，根据该值判断连接失败的原因&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;strong>值&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>返回码响应&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>描述&lt;/strong>&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>0&lt;/td>
+&lt;td>0x00连接已接受&lt;/td>
+&lt;td>连接已被服务端接受&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>0x01连接已拒绝，不支持的协议版本&lt;/td>
+&lt;td>服务端不支持客户端请求的MQTT协议级别&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>0x02连接已拒绝，不合格的客户端标识符&lt;/td>
+&lt;td>客户端标识符是正确的UTF-8编码，但服务端不允许使用&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>0x03连接已拒绝，服务端不可用&lt;/td>
+&lt;td>网络连接已建立，但MQTT服务不可用&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>0x04连接已拒绝，无效的用户名或密码&lt;/td>
+&lt;td>用户名或密码的数据格式无效&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>0x05连接已拒绝，未授权&lt;/td>
+&lt;td>客户端未被授权连接到此服务器&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6-255&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>保留&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;blockquote>
+&lt;p>如果认为上表中的所有连接返回码都不太合适，那么服务端必须关闭网络连接，不需要发送 CONNACK 报文&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>有效核载&lt;/strong>&lt;/p>
+&lt;p>无&lt;/p>
+&lt;h4 id="disconnect---断开连接">DISCONNECT - 断开连接&lt;/h4>
+&lt;p>客户端发送给服务端的最后一个控制报文，表示客户端正常断开连接。除了固定头以外，就不包含可变报头和有效负载&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230308164658138.png" alt="image-20230308164658138">&lt;/p></description></item><item><title>MQTT杂记</title><link>https://www.jonathanlin.top/posts/mqtt-note-01/</link><pubDate>Fri, 24 Feb 2023 21:23:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-01/</guid><description>
 &lt;blockquote>
 &lt;p>本文记录一些学些MQTT的过程中的重点和难点，学习材料包括：&lt;/p>
 &lt;ul>
