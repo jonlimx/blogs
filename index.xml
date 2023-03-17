@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/</link><description>Recent content on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Fri, 17 Mar 2023 15:00:49 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/index.xml" rel="self" type="application/rss+xml"/><item><title>MQTT QoS和协议流程</title><link>https://www.jonathanlin.top/posts/mqtt-note-04/</link><pubDate>Fri, 17 Mar 2023 15:00:49 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-04/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/</link><description>Recent content on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Fri, 17 Mar 2023 17:22:14 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/index.xml" rel="self" type="application/rss+xml"/><item><title>MQTT QoS和协议流程</title><link>https://www.jonathanlin.top/posts/mqtt-note-04/</link><pubDate>Fri, 17 Mar 2023 17:22:14 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-04/</guid><description>
 &lt;p>一些容易搞混的概念：&lt;/p>
 &lt;ol>
 &lt;li>QoS是发送者和接受者之间的协议，而不是Publisher和Subscriber之间的协定，Subscriber订阅到的消息的QoS和Publisher没有直接关系&lt;/li>
@@ -8,7 +8,7 @@
 &lt;p>消息的分发依赖于底层网络的能力。接收者不会发送响应，发送者也不会重试。消息可能送达一次也可能根本没送达。&lt;/p>
 &lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230313211928557.png" alt="image-20230313211928557">&lt;/p>
 &lt;h3 id="qos1至少分发一次">QoS1：至少分发一次&lt;/h3>
-&lt;p>服务质量确保消息至少送达一次。QoS 1 的 PUBLISH 报文的可变报头中包含一个报文标识符，需要PUBACK 报文确认。&lt;/p>
+&lt;p>服务质量确保消息至少送达一次。QoS 1 的 PUBLISH 报文的可变报头中包含一个&lt;strong>报文标识符&lt;/strong>，需要PUBACK 报文确认。&lt;strong>QoS1的情况下，接收端收到的消息可能会重复。&lt;/strong>&lt;/p>
 &lt;p>对于&lt;strong>发送者&lt;/strong>：&lt;/p>
 &lt;ul>
 &lt;li>每次发送新的应用消息都必须分配一个未使用的报文标识符&lt;/li>
@@ -19,11 +19,19 @@
 &lt;/ul>
 &lt;p>对于&lt;strong>接收者&lt;/strong>：&lt;/p>
 &lt;ul>
-&lt;li>响应的 PUBACK 报文必须包含一个报文标识符，这个标识符来自接收到的、已经接受所有权的 PUBLISH 报文&lt;/li>
+&lt;li>响应的 PUBACK 报文必须包含一个&lt;strong>报文标识符&lt;/strong>，这个标识符来自接收到的、已经接受所有权的 PUBLISH 报文&lt;/li>
 &lt;li>发送了 PUBACK 报文之后，接收者必须将任何包含相同报文标识符的入站 PUBLISH 报文当作一 个新的消息，并忽略它的 DUP 标志的值&lt;/li>
 &lt;li>不要求接收者在发送 PUBACK 之前完整分发应用消息（如下图所示，4也可能发生在5之后）。原来的发送者收到 PUBACK 报文之后， 应用消息的所有权就会转移给这个接收者&lt;/li>
 &lt;/ul>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230314150355018.png" alt="image-20230314150355018">&lt;/p></description></item><item><title>MQTT控制报文</title><link>https://www.jonathanlin.top/posts/mqtt-note-03/</link><pubDate>Wed, 08 Mar 2023 16:51:33 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-03/</guid><description>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230314150355018.png" alt="image-20230314150355018">&lt;/p>
+&lt;h4 id="为什么qos1可能导致消息重复">为什么QoS1可能导致消息重复？&lt;/h4>
+&lt;p>来看看以下两种情况，如下图所示：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>左边&lt;/strong>：PublishAck传输失败了，因此发送端重发了这个报文（下图左边的3），Msg Id也就是报文标识符保持一致，DUP变为1表示消息重传。实际上，这里面只是一个消息的传输来回，也就是一个QoS1的消息交互&lt;/li>
+&lt;li>&lt;strong>右边&lt;/strong>：在完成了一次QoS1的消息交互后，报文标识符即可释放。后续的消息可以复用已释放的消息标识符，然后再发送Publish报文的时候，因为某种原因失败了发生了重传（下图右边的4），这是DUP变为1&lt;/li>
+&lt;/ul>
+&lt;p>这两种情况，由于Msg Id一致，且DUP均为1，同时Payload一致。对于左边的情况，实际上可以识别出来步骤3传递的是重复消息。但是对于右边的情况，由于接接收端发送了PublishAck，实际上接收端并不知道PublishAck是否送达，接着又收到一个Msg Id一致，且DUP均为1，同时Payload一致消息，实际上是无法区分出来这个消息是属于第一个QoS1 Publish过程中的消息还是全新的。综合来看，只能让接收方将这些 PUBLISH 报文都当作全新的消息来处理。因此当我们使用 QoS 1 时，消息的重复在协议层面上是无法避免的。&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230317165852880.png" alt="image-20230317165852880">&lt;/p></description></item><item><title>MQTT控制报文</title><link>https://www.jonathanlin.top/posts/mqtt-note-03/</link><pubDate>Wed, 08 Mar 2023 16:51:33 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-03/</guid><description>
 &lt;h3 id="控制报文结构">控制报文结构&lt;/h3>
 &lt;p>MQTT 控制报文由三部分组成，按照 下图描述的顺序:&lt;/p>
 &lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20220224155932690.png" alt="image-20220224155932690">&lt;/p>
