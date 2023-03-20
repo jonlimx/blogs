@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MQTT on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/mqtt/</link><description>Recent content in MQTT on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Mon, 20 Mar 2023 09:13:10 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/mqtt/index.xml" rel="self" type="application/rss+xml"/><item><title>MQTT QoS和协议流程</title><link>https://www.jonathanlin.top/posts/mqtt-note-04/</link><pubDate>Mon, 20 Mar 2023 09:13:10 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-04/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MQTT on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/mqtt/</link><description>Recent content in MQTT on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Mon, 20 Mar 2023 09:15:11 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/mqtt/index.xml" rel="self" type="application/rss+xml"/><item><title>MQTT QoS和协议流程</title><link>https://www.jonathanlin.top/posts/mqtt-note-04/</link><pubDate>Mon, 20 Mar 2023 09:15:11 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-04/</guid><description>
 &lt;p>一些容易搞混的概念：&lt;/p>
 &lt;ol>
 &lt;li>QoS是发送者和接受者之间的协议，而不是Publisher和Subscriber之间的协定，Subscriber订阅到的消息的QoS和Publisher没有直接关系&lt;/li>
@@ -6,7 +6,7 @@
 &lt;/ol>
 &lt;h3 id="qos-0最多分发一次">QoS 0：最多分发一次&lt;/h3>
 &lt;p>消息的分发依赖于底层网络的能力。接收者不会发送响应，发送者也不会重试。消息可能送达一次也可能根本没送达。&lt;/p>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230320091231776.png" alt="image-20230320091231776">&lt;/p>
+&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230320091231776.png" alt="image-20230320091231776" style="zoom: 67%;" />
 &lt;h3 id="qos1至少分发一次">QoS1：至少分发一次&lt;/h3>
 &lt;p>服务质量确保消息至少送达一次。QoS 1 的 PUBLISH 报文的可变报头中包含一个&lt;strong>报文标识符&lt;/strong>，需要PUBACK 报文确认。&lt;strong>QoS1的情况下，接收端收到的消息可能会重复。&lt;/strong>&lt;/p>
 &lt;p>对于&lt;strong>发送者&lt;/strong>：&lt;/p>
