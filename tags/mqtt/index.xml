@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MQTT on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/mqtt/</link><description>Recent content in MQTT on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 29 Mar 2023 16:55:20 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/mqtt/index.xml" rel="self" type="application/rss+xml"/><item><title>MQTT QoS和协议流程</title><link>https://www.jonathanlin.top/posts/mqtt-note-04/</link><pubDate>Wed, 29 Mar 2023 16:55:20 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-04/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MQTT on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/mqtt/</link><description>Recent content in MQTT on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 12 Apr 2023 15:35:47 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/mqtt/index.xml" rel="self" type="application/rss+xml"/><item><title>MQTT QoS和协议流程</title><link>https://www.jonathanlin.top/posts/mqtt-note-04/</link><pubDate>Wed, 12 Apr 2023 15:35:47 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-04/</guid><description>
 &lt;p>一些容易搞混的概念：&lt;/p>
 &lt;ol>
 &lt;li>QoS是发送者和接受者之间的协议，而不是Publisher和Subscriber之间的协定，Subscriber订阅到的消息的QoS和Publisher没有直接关系&lt;/li>
@@ -27,7 +27,7 @@
 &lt;h4 id="为什么qos1可能导致消息重复">为什么QoS1可能导致消息重复？&lt;/h4>
 &lt;p>来看看以下两种情况，如下图所示：&lt;/p>
 &lt;ul>
-&lt;li>&lt;strong>左边&lt;/strong>：PUBACK传输失败了，因此发送端重发了这个报文（下图左边的3），Packet Id也就是报文标识符保持一致，DUP变为1表示消息重传。实际上，这里面只是一个QoS1的消息来回&lt;/li>
+&lt;li>&lt;strong>左边&lt;/strong>：PUBACK传输失败了，因此发送端重发了这个报文（下图左边的2），Packet Id也就是报文标识符保持一致，DUP变为1表示消息重传。实际上，这里面只是一个QoS1的消息来回&lt;/li>
 &lt;li>&lt;strong>右边&lt;/strong>：在完成了一次QoS1的消息交互后，报文标识符即可释放。后续的消息可以复用已释放的消息标识符，然后再发送PUBLISH报文的时候，因为某种原因失败了发生了重传（下图右边的4），这是DUP变为1。实际上，这里面是两个QoS1消息的的来回&lt;/li>
 &lt;/ul>
 &lt;p>这两种情况，Packet Id一致，且DUP均为1，同时Payload一致。对于接收方来说，无法区分是重复消息（左边步骤3）还是新消息（右边的4）。综合来看，只能让接收方将这些 PUBLISH 报文都当作全新的消息来处理。因此当我们使用 QoS 1 时，消息的重复在协议层面上是无法避免的。&lt;/p>
@@ -49,13 +49,49 @@
 &lt;li>响应的 PUBREC 报文必须包含报文标识符，这个标识符来自接收到的、已经接受所有权的PUBLISH 报文&lt;/li>
 &lt;li>在收到对应的 PUBREL 报文之前，接收者必须发送 PUBREC 报文确认任何后续的具有相同标识符的 PUBLISH 报文。 在这种情况下，它不能重复分发消息给任何后续的接收者&lt;/li>
 &lt;li>响应 PUBREL 报文的 PUBCOMP 报文必须包含与 PUBREL 报文相同的标识符&lt;/li>
-&lt;li>发送 PUBCOMP 报文之后，接收者必须将包含相同报文标识符的任何后续 PUBLISH 报文当作一 个新的发布&lt;/li>
+&lt;li>发送 PUBCOMP 报文之后，接收者必须将包含相同报文标识符的任何后续 PUBLISH 报文当作一个新的发布&lt;/li>
 &lt;/ul>
 &lt;p>下图中，在完成了步骤3后，说明接收者已经收到PUBLISHB报文，发送者就不再需要重复发送这个PUBLISH报文，因此就可以删除掉本地缓存的PUBLISH报文。&lt;/p>
 &lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230320092715928.png" alt="QoS2消息交互">&lt;/p>
 &lt;h4 id="为什么qos2可以避免重复消息">为什么QoS2可以避免重复消息？&lt;/h4>
 &lt;p>首先QoS2和QoS1类似，当发送者发送了PUBLISH报文以后，是需要接收者的PUBREC报文来告诉发送者PUBLISH已收到。&lt;/p>
-&lt;p>不同的是，对于QoS1来说，在此之后相同的报文标识符又变得可用，这样导致可能的&lt;a href="#%E4%B8%BA%E4%BB%80%E4%B9%88qos1%E5%8F%AF%E8%83%BD%E5%AF%BC%E8%87%B4%E6%B6%88%E6%81%AF%E9%87%8D%E5%A4%8D">消息重复&lt;/a>。对于QoS2而言，释放报文标识符也是需要通过一组PUBREL/PUBCOM使得发送者和接收者双方达成一致以后才能释放报文标识符。发送方只有在收到 PUBREC 报文之前可以重传 PUBLISH 报文。一旦收到 PUBREC 报文并发出 PUBREL 报文，发送方就进入了 Packet ID 释放流程，不可以再使用当前 Packet ID 重传 PUBLISH 报文。同时，在收到对端回复的 PUBCOMP 报文确认双方都完成 Packet ID 释放之前，也不可以使用当前 Packet ID 发送新的消息。&lt;/p></description></item><item><title>MQTT控制报文</title><link>https://www.jonathanlin.top/posts/mqtt-note-03/</link><pubDate>Wed, 08 Mar 2023 16:51:33 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-03/</guid><description>
+&lt;p>不同的是，对于QoS1来说，在此之后相同的报文标识符又变得可用，这样导致可能的&lt;a href="#%E4%B8%BA%E4%BB%80%E4%B9%88qos1%E5%8F%AF%E8%83%BD%E5%AF%BC%E8%87%B4%E6%B6%88%E6%81%AF%E9%87%8D%E5%A4%8D">消息重复&lt;/a>。对于QoS2而言，释放报文标识符也是需要通过一组PUBREL/PUBCOM使得发送者和接收者双方达成一致以后才能释放报文标识符。发送方只有在收到 PUBREC 报文之前可以重传 PUBLISH 报文。一旦收到 PUBREC 报文并发出 PUBREL 报文，发送方就进入了 Packet ID 释放流程，不可以再使用当前 Packet ID 重传 PUBLISH 报文。同时，在收到对端回复的 PUBCOMP 报文确认双方都完成 Packet ID 释放之前，也不可以使用当前 Packet ID 发送新的消息。&lt;/p>
+&lt;h3 id="qos和session">QoS和Session&lt;/h3>
+&lt;p>客户端的会话状态包括:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>已经发送给服务端，但是还没有完成确认的 QoS 1 和 QoS 2 级别的消息&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>已从服务端接收，但是还没有完成确认的 QoS 2 级别的消息。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>服务端的会话状态包括:&lt;/p>
+&lt;ul>
+&lt;li>会话是否存在（即使会话状态的其它部分都是空）&lt;/li>
+&lt;li>客户端的订阅信息&lt;/li>
+&lt;li>已经发送给客户端，但是还没有完成确认的 QoS 1 和 QoS 2 级别的消息&lt;/li>
+&lt;li>即将传输给客户端的 QoS 1 和 QoS 2 级别的消息&lt;/li>
+&lt;li>已从客户端接收，但是还没有完成确认的 QoS 2 级别的消息&lt;/li>
+&lt;li>可选，准备发送给客户端的 QoS 0 级别的消息&lt;/li>
+&lt;/ul>
+&lt;p>保留消息不是服务端会话状态的一部分，会话终止时&lt;strong>不能&lt;/strong>删除保留消息。&lt;/p>
+&lt;h3 id="qos等级的选择">QoS等级的选择&lt;/h3>
+&lt;p>&lt;strong>在以下情况下你可以选择 QoS0&lt;/strong>：&lt;/p>
+&lt;ul>
+&lt;li>Client 和 Broker 之间的网络连接非常稳定，例如一个通过有线网络连接到 Broker 的测试用 Client&lt;/li>
+&lt;li>可以接受丢失部分消息，比如你有一个传感器以非常短的间隔发布状态数据，所以丢一些也可以接受&lt;/li>
+&lt;li>你不需要离线消息&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>在以下情况下你应该选择 QoS1：&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>你需要接收所有的消息，而且你的应用可以接受并处理重复的消息；&lt;/li>
+&lt;li>你无法接受 QoS2 带来的额外开销，QoS1 发送消息的速度比 QoS2 快很多&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>在以下情况下你应该选择 QoS2：&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>你的应用必须接收到所有的消息，而且你的应用在重复的消息下无法正常工作，同时你也能接受 QoS2 带来的额外开销&lt;/li>
+&lt;/ul></description></item><item><title>MQTT控制报文</title><link>https://www.jonathanlin.top/posts/mqtt-note-03/</link><pubDate>Wed, 08 Mar 2023 16:51:33 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-03/</guid><description>
 &lt;h3 id="控制报文结构">控制报文结构&lt;/h3>
 &lt;p>MQTT 控制报文由三部分组成，按照 下图描述的顺序:&lt;/p>
 &lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20220224155932690.png" alt="image-20220224155932690">&lt;/p>
