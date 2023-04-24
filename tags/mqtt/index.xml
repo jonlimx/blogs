@@ -1,4 +1,25 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MQTT on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/mqtt/</link><description>Recent content in MQTT on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 12 Apr 2023 15:35:47 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/mqtt/index.xml" rel="self" type="application/rss+xml"/><item><title>MQTT QoS和协议流程</title><link>https://www.jonathanlin.top/posts/mqtt-note-04/</link><pubDate>Wed, 12 Apr 2023 15:35:47 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-04/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MQTT on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/mqtt/</link><description>Recent content in MQTT on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Mon, 24 Apr 2023 16:58:02 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/mqtt/index.xml" rel="self" type="application/rss+xml"/><item><title>保留消息和最后遗嘱</title><link>https://www.jonathanlin.top/posts/mqtt-note-05/</link><pubDate>Mon, 24 Apr 2023 16:58:02 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-05/</guid><description>
+&lt;h3 id="保留消息retained">保留消息（Retained）&lt;/h3>
+&lt;p>保留消息是指在 PUBLISH 数据包中 Retain 标识设为 1 的消息，Broker 收到这样的 PUBLISH 包以后，将保存这个消息以及它的QoS，当有一个新的订阅者订阅相应主题的时候，Broker 会马上将这个消息发送给订阅者。&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230412164743661.png" alt="Retained Message">&lt;/p>
+&lt;p>保留消息具有以下特点：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>一个 Topic 只能有 1 条保留消息，发布新的保留消息将覆盖老的保留消息&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>如果订阅者使用通配符订阅主题，它会收到所有匹配的主题上的保留消息，如下所示&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230412165634682.png" alt="通配符订阅">&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>保留消息发送到订阅者时，消息的 Retain 标识仍然是 1，订阅者可以判断这个消息是否是保留消息，以做相应的处理。同时，订阅者收到的消息的QoS与保留消息一致&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230412170420371.png" alt="image-20230412170420371">&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>只有新的订阅者才会收到保留消息，如果订阅者重复订阅一个主题，也会被当做新的订阅者，然后收到保留消息&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>注意&lt;/strong>：保留消息和持久性会话没有关系，保留消息是 Broker为每一个Topic单独存储的，而持久性会话是 Broker 为每一个 Client 单独存储的&lt;/p></description></item><item><title>MQTT QoS和协议流程</title><link>https://www.jonathanlin.top/posts/mqtt-note-04/</link><pubDate>Wed, 12 Apr 2023 15:35:47 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-04/</guid><description>
 &lt;p>一些容易搞混的概念：&lt;/p>
 &lt;ol>
 &lt;li>QoS是发送者和接受者之间的协议，而不是Publisher和Subscriber之间的协定，Subscriber订阅到的消息的QoS和Publisher没有直接关系&lt;/li>
