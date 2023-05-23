@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>QoS on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/qos/</link><description>Recent content in QoS on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Wed, 12 Apr 2023 15:35:47 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/qos/index.xml" rel="self" type="application/rss+xml"/><item><title>MQTT QoS和协议流程</title><link>https://www.jonathanlin.top/posts/mqtt-note-04/</link><pubDate>Wed, 12 Apr 2023 15:35:47 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-04/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>QoS on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/tags/qos/</link><description>Recent content in QoS on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Tue, 23 May 2023 22:29:47 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/tags/qos/index.xml" rel="self" type="application/rss+xml"/><item><title>MQTT QoS和协议流程</title><link>https://www.jonathanlin.top/posts/mqtt-note-04/</link><pubDate>Tue, 23 May 2023 22:29:47 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-04/</guid><description>
 &lt;p>一些容易搞混的概念：&lt;/p>
 &lt;ol>
 &lt;li>QoS是发送者和接受者之间的协议，而不是Publisher和Subscriber之间的协定，Subscriber订阅到的消息的QoS和Publisher没有直接关系&lt;/li>
-&lt;li>Subscriber订阅到的消息的QoS：Publisher发布消息的Broker的QoS为QoSA，Subscriber从Broker订阅消息的QoS为QoSB，取QoSA和QoSB这二者的最小值&lt;/li>
+&lt;li>Subscriber订阅到的消息的QoS：Publisher发布消息到Broker的QoS为QoSA，Subscriber从Broker订阅消息的QoS为QoSB，取QoSA和QoSB这二者的最小值&lt;/li>
 &lt;/ol>
 &lt;h3 id="qos-0最多分发一次">QoS 0：最多分发一次&lt;/h3>
 &lt;p>消息的分发依赖于底层网络的能力。接收者不会发送响应，发送者也不会重试。消息可能送达一次也可能根本没送达。&lt;/p>

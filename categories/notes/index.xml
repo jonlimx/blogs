@@ -1,83 +1,8 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Notes on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/categories/notes/</link><description>Recent content in Notes on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Tue, 23 May 2023 11:27:12 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/categories/notes/index.xml" rel="self" type="application/rss+xml"/><item><title>保留消息和最后遗嘱</title><link>https://www.jonathanlin.top/posts/mqtt-note-05/</link><pubDate>Tue, 23 May 2023 11:27:12 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-05/</guid><description>
-&lt;h3 id="保留消息retained">保留消息（Retained）&lt;/h3>
-&lt;p>保留消息是指在 PUBLISH 数据包中 Retain 标识设为 1 的消息，Broker 收到这样的 PUBLISH 包以后，将保存这个消息以及它的QoS，当有一个新的订阅者订阅相应主题的时候，Broker 会马上将这个消息发送给订阅者。&lt;/p>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230412164743661.png" alt="Retained Message">&lt;/p>
-&lt;p>保留消息具有以下特点：&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>一个 Topic 只能有 1 条保留消息，发布新的保留消息将覆盖老的保留消息&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>如果订阅者使用通配符订阅主题，它会收到所有匹配的主题上的保留消息，如下所示&lt;/p>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230412165634682.png" alt="通配符订阅">&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>保留消息发送到订阅者时，消息的 Retain 标识仍然是 1，订阅者可以判断这个消息是否是保留消息，以做相应的处理。同时，订阅者收到的消息的QoS与保留消息一致&lt;/p>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230412170420371.png" alt="image-20230412170420371">&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>只有新的订阅者才会收到保留消息，&lt;strong>如果订阅者重复订阅一个主题，也会被当做新的订阅者，然后收到保留消息&lt;/strong>&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>删除一个 Retained 消息只需要向这个主题发布一个 Payload 长度为 0 的 Retained 消息即可&lt;/strong>&lt;/p>
-&lt;/li>
-&lt;/ul>
-&lt;p>&lt;strong>注意&lt;/strong>：保留消息和持久性会话没有关系，保留消息是 Broker为每一个Topic单独存储的，而持久性会话是 Broker 为每一个 Client 单独存储的&lt;/p>
-&lt;h3 id="最后遗嘱lwt---last-will-and-testament">最后遗嘱（LWT - Last Will and Testament)&lt;/h3>
-&lt;p>遗嘱消息是在客户端连接的时候在CONNETCT报文里设置，详见[CONNECT报文](&lt;a href="https://www.jonathanlin.top/posts/mqtt-note-03/#connect---%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E7%AB%AFbroker">MQTT控制报文 | Standing on the Shoulder of Giants (jonathanlin.top)&lt;/a>)。举例来首，下图的CONNECT报文中：&lt;/p>
-&lt;ul>
-&lt;li>Will Flag标志打开，表明开启使用LWT&lt;/li>
-&lt;li>Will Retain标志打开，表明遗嘱消息作为保留消息发布（即客户端异常断开以后，broker会往遗嘱Topic里写入遗嘱消息，且遗嘱消息以保留消息的方式保存）&lt;/li>
-&lt;li>遗嘱消息的长度，Topic以及内容见下图的红框里的内容&lt;/li>
-&lt;/ul>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230523101516636.png" alt="image-20230523101516636">&lt;/p>
-&lt;p>当客户端&lt;strong>异常断开&lt;/strong>连接的时候，Broker会往遗嘱Topic里发送遗嘱消息，这样订阅遗嘱Topic的客户端就能相应的收到遗嘱消息。&lt;strong>如果客户端通过DISCONNECT报文正常断开连接，那么Broker不会触发LWT机制，同时Broker把遗嘱消息从服务端删除。&lt;/strong>&lt;/p>
-&lt;p>Broker在以下情况认为Client是异常断开连接：&lt;/p>
-&lt;ul>
-&lt;li>服务端检测到了一个 I/O 错误或者网络故障&lt;/li>
-&lt;li>客户端在保持连接(Keep Alive)的时间内未能通讯&lt;/li>
-&lt;li>客户端没有先发送 DISCONNECT 报文直接关闭了网络连接&lt;/li>
-&lt;li>由于协议错误服务端关闭了网络连接&lt;/li>
-&lt;/ul>
-&lt;h3 id="保留消息和最后遗嘱结合使用的场景">保留消息和最后遗嘱结合使用的场景&lt;/h3>
-&lt;p>如果要实现设备上线和离线通知（下线包括正常离线和异常离线），可以结合保留消息和最后遗嘱来实现。参考下面的golang代码：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl"> &lt;span class="nx">clientOption&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">mqtt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewClientOptions&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl"> &lt;span class="nx">clientOption&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">AddBroker&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;tcp://192.168.60.40:1883&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl"> &lt;span class="nx">clientOption&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">SetUsername&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;user&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl"> &lt;span class="nx">clientOption&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">SetPassword&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;1234&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl"> &lt;span class="nx">clientOption&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">SetClientID&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;jonlimx110&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl"> &lt;span class="c1">// 通过CONNECT设置遗嘱消息，这里把遗嘱消息的Will Retian标志位打开，使得订阅mqtttest/status主题的客户端，不论是当前是连接的还是后续连接的都能接收到遗嘱消息
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">clientOption&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">SetWill&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;mqtttest/status&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;lwt - offline&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl"> &lt;span class="nx">client&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">mqtt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewClient&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">clientOption&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">token&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Connect&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="nx">token&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Wait&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="nx">token&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Error&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">token&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Error&lt;/span>&lt;span class="p">())&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">12&lt;/span>&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">13&lt;/span>&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">14&lt;/span>&lt;span class="cl"> &lt;span class="c1">// 客户端上线以后，往mqtttest/status主题发布消息，通知该客户端上线
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">15&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">token&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Publish&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;mqtttest/status&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;online&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">16&lt;/span>&lt;span class="cl"> &lt;span class="nx">token&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Wait&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">17&lt;/span>&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">18&lt;/span>&lt;span class="cl"> &lt;span class="nx">c&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="nx">os&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Signal&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">19&lt;/span>&lt;span class="cl"> &lt;span class="nx">signal&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Notify&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">c&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">os&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Interrupt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">syscall&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">SIGTERM&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">20&lt;/span>&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">21&lt;/span>&lt;span class="cl"> &lt;span class="k">select&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">22&lt;/span>&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">c&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">23&lt;/span>&lt;span class="cl"> &lt;span class="c1">// 这里没有调用client.Disconnect就退出，模拟异常离线的情况
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">24&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// 异常离线后，Broker触发LWT，往mqtttest/status发布遗嘱消息，且是以保留消息的方式发布
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">25&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;exit without disconnect from broker&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">26&lt;/span>&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">After&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Second&lt;/span>&lt;span class="p">):&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">27&lt;/span>&lt;span class="cl"> &lt;span class="c1">// 客户端如果正常离线，发布保留消息通过客户端离线
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">28&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">token&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Publish&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;mqtttest/status&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;retained - offline&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">29&lt;/span>&lt;span class="cl"> &lt;span class="nx">token&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Wait&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">30&lt;/span>&lt;span class="cl"> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Disconnect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">31&lt;/span>&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">32&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>MQTT QoS和协议流程</title><link>https://www.jonathanlin.top/posts/mqtt-note-04/</link><pubDate>Wed, 12 Apr 2023 15:35:47 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-04/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Notes on Standing on the Shoulder of Giants</title><link>https://www.jonathanlin.top/categories/notes/</link><description>Recent content in Notes on Standing on the Shoulder of Giants</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © {year} Jonathan Lin. All rights reserved.</copyright><lastBuildDate>Tue, 23 May 2023 22:29:47 +0800</lastBuildDate><atom:link href="https://www.jonathanlin.top/categories/notes/index.xml" rel="self" type="application/rss+xml"/><item><title>MQTT QoS和协议流程</title><link>https://www.jonathanlin.top/posts/mqtt-note-04/</link><pubDate>Tue, 23 May 2023 22:29:47 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-04/</guid><description>
 &lt;p>一些容易搞混的概念：&lt;/p>
 &lt;ol>
 &lt;li>QoS是发送者和接受者之间的协议，而不是Publisher和Subscriber之间的协定，Subscriber订阅到的消息的QoS和Publisher没有直接关系&lt;/li>
-&lt;li>Subscriber订阅到的消息的QoS：Publisher发布消息的Broker的QoS为QoSA，Subscriber从Broker订阅消息的QoS为QoSB，取QoSA和QoSB这二者的最小值&lt;/li>
+&lt;li>Subscriber订阅到的消息的QoS：Publisher发布消息到Broker的QoS为QoSA，Subscriber从Broker订阅消息的QoS为QoSB，取QoSA和QoSB这二者的最小值&lt;/li>
 &lt;/ol>
 &lt;h3 id="qos-0最多分发一次">QoS 0：最多分发一次&lt;/h3>
 &lt;p>消息的分发依赖于底层网络的能力。接收者不会发送响应，发送者也不会重试。消息可能送达一次也可能根本没送达。&lt;/p>
@@ -166,7 +91,7 @@
 &lt;p>&lt;strong>在以下情况下你应该选择 QoS2：&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>你的应用必须接收到所有的消息，而且你的应用在重复的消息下无法正常工作，同时你也能接受 QoS2 带来的额外开销&lt;/li>
-&lt;/ul></description></item><item><title>MQTT控制报文</title><link>https://www.jonathanlin.top/posts/mqtt-note-03/</link><pubDate>Wed, 08 Mar 2023 16:51:33 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-03/</guid><description>
+&lt;/ul></description></item><item><title>MQTT控制报文</title><link>https://www.jonathanlin.top/posts/mqtt-note-03/</link><pubDate>Tue, 23 May 2023 22:29:47 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-03/</guid><description>
 &lt;h3 id="控制报文结构">控制报文结构&lt;/h3>
 &lt;p>MQTT 控制报文由三部分组成，按照 下图描述的顺序:&lt;/p>
 &lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20220224155932690.png" alt="image-20220224155932690">&lt;/p>
@@ -245,23 +170,23 @@
 &lt;h4 id="connect---连接服务端broker">CONNECT - 连接服务端（Broker）&lt;/h4>
 &lt;p>&lt;strong>可变报头&lt;/strong>&lt;/p>
 &lt;p>包括：协议名长度（Protocol Name Length）、 协议名（Protocol Name)、协议级别（Protocol Level/Version），连接标志（Connection Flags）和保持连接（Keep Alive）&lt;/p>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230224171541298.png" alt="image-20230224171541298">&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230224171541298.png" alt="CONNECT报文">&lt;/p>
 &lt;blockquote>
 &lt;p>由于v3.1.1版本的Version对应的值是4，这也是MQTT5的由来&lt;/p>
 &lt;/blockquote>
 &lt;p>连接标志位（Connection Flags）各bit含义如下：&lt;/p>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230308142402425.png" alt="image-20230308142402425">&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230308142402425.png" alt="Connection Flags">&lt;/p>
 &lt;blockquote>
 &lt;p>1 - Clean Session：会话清除标志位。当设置为0时，服务端必须基于当前会话（通过客户端标识符识别）的状态恢复与客户端的通信，即持久化会话。持久化会话只对QoS为1或者2 的消息有效，客户端和服务端需要将QoS1和2的消息保存为会话的一部分；当设置为1时，客户端和服务端必须丢弃之前任何会话并开始一个新的会话 (&lt;strong>保留消息不是服务端会话状态的一部分，会话终止时不能删除保留信息&lt;/strong>)&lt;/p>
 &lt;p>2 - Will Flag：遗嘱标志。这个是和Will Retain和Will QoS一起使用的。当遗嘱标志位0时，这几个都要置0，表明网络断开的时候不能发送医嘱信息；当遗嘱标志位设置为1时&lt;/p>
 &lt;p>3/4 - Will QoS：遗嘱消息QoS，值为0,1和2&lt;/p>
 &lt;p>5 - Will Retain：遗嘱保留&lt;/p>
-&lt;p>6 - Password Flag：密码标志，标识有效核载中是否包含用户密码&lt;/p>
-&lt;p>7 - User Name Flag：用户名标志，标识有效核载中是否包含用户名&lt;/p>
+&lt;p>6 - Password Flag：密码标志，标识有效载荷中是否包含用户密码&lt;/p>
+&lt;p>7 - User Name Flag：用户名标志，标识有效载荷中是否包含用户名&lt;/p>
 &lt;/blockquote>
 &lt;p>保持连接（Keep Alive）：以秒为单位的时间间隔，是指在客户端传输完成 一个控制报文的时刻到发送下一个报文的时刻，两者之间允许空闲的最大时间间隔&lt;/p>
-&lt;p>&lt;strong>有效核载&lt;/strong>&lt;/p>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230308154242825.png" alt="image-20230308154242825">&lt;/p>
+&lt;p>&lt;strong>有效载荷&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230308154242825.png" alt="Payload">&lt;/p>
 &lt;p>客户端标识符（Client ID）：客户端和服务器必须使用Client ID标识两者之间的MQTT会话状态&lt;/p>
 &lt;p>遗嘱主题（Will Topic）：可变报头中的连接标志位中设置了Will Flag时，就必须设置遗嘱主题&lt;/p>
 &lt;p>遗嘱消息（Will Message）：发布到遗嘱主题的消息&lt;/p>
@@ -269,7 +194,7 @@
 &lt;h4 id="connack---确认连接请求">CONNACK - 确认连接请求&lt;/h4>
 &lt;p>服务端发送给客户端的第一个报文必须是CONNACK&lt;/p>
 &lt;p>&lt;strong>可变报头&lt;/strong>&lt;/p>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230308155504193.png" alt="image-20230308155504193">&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230308155504193.png" alt="CONNACK报文">&lt;/p>
 &lt;p>连接确认标志位（Acknowledge Flags）：总共一个字节，7~1位为保留位，值都为0。第零位也叫SP位，其值和ONNECT里的Clean Session有关&lt;/p>
 &lt;ul>
 &lt;li>如果Clean Session为1，那么每次连接都是新的会话，SP的值置为0&lt;/li>
@@ -325,11 +250,123 @@
 &lt;blockquote>
 &lt;p>如果认为上表中的所有连接返回码都不太合适，那么服务端必须关闭网络连接，不需要发送 CONNACK 报文&lt;/p>
 &lt;/blockquote>
-&lt;p>&lt;strong>有效核载&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>有效载荷&lt;/strong>&lt;/p>
 &lt;p>无&lt;/p>
 &lt;h4 id="disconnect---断开连接">DISCONNECT - 断开连接&lt;/h4>
 &lt;p>客户端发送给服务端的最后一个控制报文，表示客户端正常断开连接。除了固定头以外，就不包含可变报头和有效负载&lt;/p>
-&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230308164658138.png" alt="image-20230308164658138">&lt;/p></description></item><item><title>MQTT杂记</title><link>https://www.jonathanlin.top/posts/mqtt-note-01/</link><pubDate>Fri, 24 Feb 2023 21:23:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-01/</guid><description>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230308164658138.png" alt="DISCONNECT">&lt;/p>
+&lt;h4 id="publish---发布消息">PUBLISH - 发布消息&lt;/h4>
+&lt;p>&lt;strong>固定报头&lt;/strong>&lt;/p>
+&lt;p>大多数MQTT固定报头标志位都是保留位，但是PUBLISH报文的标志位有其特殊的用途，如下图所示：&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230523155106325.png" alt="PUBLISH固定报头">&lt;/p>
+&lt;ul>
+&lt;li>DUP - 如果为0，说明这是第一次发送这个PUBLISH报文；如果为1，则对应的QoS为1或者2，说明这是重发的报文&lt;/li>
+&lt;li>RETAIN - 保留消息标志&lt;/li>
+&lt;/ul>
+&lt;p>当客户端为新接入的客户端，且订阅了匹配保留消息的主题，服务端发送给新客户端的PUBLISH 消息的RETAIN标志位要置为1；否则，如果是一个已存在的客户端且匹配到了保留消息的主题，那么服务发送的PUBLISH消息的RETAIN标志位置0&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230523161923676.png" alt="RETAIN标志位">&lt;/p>
+&lt;p>&lt;strong>可变报头&lt;/strong>&lt;/p>
+&lt;p>可变报头按顺序包含&lt;code>主题名(Topic Name)&lt;/code>和&lt;code>报文标识符(Packet Identifier)&lt;/code>&lt;/p>
+&lt;p>主题名：服务端发送的PUBLISH报文的主题名&lt;strong>不能&lt;/strong>包含通配符&lt;/p>
+&lt;p>报文标识符：当QoS为1或者2的时候，报文标识符才能出现在PUBLISH报文中&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230523163424185.png" alt="报文标识符">&lt;/p>
+&lt;p>报文标识符用来区分报文，特别是在重发的报文中用来标识是否是同一个报文，并在需要应答的场景中用于确定是对哪个发送报文的应答。可变报头的报文标识符（Packet Identifier）字段存在于在多个类型的报文里（占用2个字节）。这些报文是：&lt;code>PUBLISH（QoS &amp;gt; 0时）&lt;/code>， &lt;code>PUBACK&lt;/code>，&lt;code>PUBREC&lt;/code>，&lt;code>PUBREL&lt;/code>，&lt;code>PUBCOMP&lt;/code>，&lt;code>SUBSCRIBE,&lt;/code> &lt;code>SUBACK&lt;/code>，&lt;code>UNSUBSCRIBE&lt;/code>，&lt;code>UNSUBACK&lt;/code>。&lt;/p>
+&lt;p>报文标识符的一些规则：&lt;/p>
+&lt;ul>
+&lt;li>QoS0的PUBLISH报文不能包含报文标识符&lt;/li>
+&lt;li>报文标识符默认是从1(0x01)开始并自增，最大为255(0xff)&lt;/li>
+&lt;li>客户端/服务端每次发送一个新的PUBLISH报文时都必须分配一个当前&lt;strong>未使用的报文标识符&lt;/strong>&lt;/li>
+&lt;li>对于重发的PUBLISH报文，报文标识符需要和之前的保持一致&lt;/li>
+&lt;li>当客户端和服务端完成相应的QoS流程后，报文标识符可以释放被再一次使用&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>有效载荷&lt;/strong>&lt;/p>
+&lt;p>提供给上层应用的具体的消息&lt;/p>
+&lt;h4 id="puback---发布确认报文-qos-1">PUBACK - 发布确认报文 （QoS 1）&lt;/h4>
+&lt;p>PUBACK 报文比较简单，它是对QoS 1等级的PUBLISH报文的响应。PUBACK 报文的组成（没有有效载荷） = 一个固定头(0x40 0x20) + 报文标识符。&lt;/p>
+&lt;h4 id="pubrec--发布收到报文-qos-2第一步">PUBREC – 发布收到报文 （QoS 2，第一步）&lt;/h4>
+&lt;p>PUBREC报文是对QoS等级2的PUBLISH报文的响应。PUBREC 报文的 组成 （没有 有效载荷） = 一个固定头(0x50 0x20) + 报文标识符。&lt;/p>
+&lt;h4 id="pubrel--发布释放qos-2第二步">PUBREL – 发布释放（QoS 2，第二步）&lt;/h4>
+&lt;p>PUBREL报文是对PUBREC报文的响应。PUBREL 报文的 组成 （没有 有效载荷） = 一个固定头(0x62 0x02) + 报文标识符。&lt;/p>
+&lt;blockquote>
+&lt;p>PUBREL控制报文固定报头的第3,2,1,0位是保留位，&lt;strong>必须&lt;/strong>被设置为0,0,1,0。&lt;/p>
+&lt;/blockquote>
+&lt;h4 id="pubcomp--发布完成qos-2第三步">PUBCOMP – 发布完成（QoS 2，第三步）&lt;/h4>
+&lt;p>PUBCOMP报文是对PUBREL报文的响应。PUBCOMP 报文的 组成 （没有 有效载荷） = 一个固定头(0x70 0x02) + 报文标识符。&lt;/p></description></item><item><title>保留消息和最后遗嘱</title><link>https://www.jonathanlin.top/posts/mqtt-note-05/</link><pubDate>Tue, 23 May 2023 11:27:12 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-05/</guid><description>
+&lt;h3 id="保留消息retained">保留消息（Retained）&lt;/h3>
+&lt;p>保留消息是指在 PUBLISH 数据包中 Retain 标识设为 1 的消息，Broker 收到这样的 PUBLISH 包以后，将保存这个消息以及它的QoS，当有一个新的订阅者订阅相应主题的时候，Broker 会马上将这个消息发送给订阅者。&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230412164743661.png" alt="Retained Message">&lt;/p>
+&lt;p>保留消息具有以下特点：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>一个 Topic 只能有 1 条保留消息，发布新的保留消息将覆盖老的保留消息&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>如果订阅者使用通配符订阅主题，它会收到所有匹配的主题上的保留消息，如下所示&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230412165634682.png" alt="通配符订阅">&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>保留消息发送到订阅者时，消息的 Retain 标识仍然是 1，订阅者可以判断这个消息是否是保留消息，以做相应的处理。同时，订阅者收到的消息的QoS与保留消息一致&lt;/p>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230412170420371.png" alt="image-20230412170420371">&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>只有新的订阅者才会收到保留消息，&lt;strong>如果订阅者重复订阅一个主题，也会被当做新的订阅者，然后收到保留消息&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>删除一个 Retained 消息只需要向这个主题发布一个 Payload 长度为 0 的 Retained 消息即可&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>注意&lt;/strong>：保留消息和持久性会话没有关系，保留消息是 Broker为每一个Topic单独存储的，而持久性会话是 Broker 为每一个 Client 单独存储的&lt;/p>
+&lt;h3 id="最后遗嘱lwt---last-will-and-testament">最后遗嘱（LWT - Last Will and Testament)&lt;/h3>
+&lt;p>遗嘱消息是在客户端连接的时候在CONNETCT报文里设置，详见[CONNECT报文](&lt;a href="https://www.jonathanlin.top/posts/mqtt-note-03/#connect---%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E7%AB%AFbroker">MQTT控制报文 | Standing on the Shoulder of Giants (jonathanlin.top)&lt;/a>)。举例来首，下图的CONNECT报文中：&lt;/p>
+&lt;ul>
+&lt;li>Will Flag标志打开，表明开启使用LWT&lt;/li>
+&lt;li>Will Retain标志打开，表明遗嘱消息作为保留消息发布（即客户端异常断开以后，broker会往遗嘱Topic里写入遗嘱消息，且遗嘱消息以保留消息的方式保存）&lt;/li>
+&lt;li>遗嘱消息的长度，Topic以及内容见下图的红框里的内容&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/jonlimx/blogs@main/image/image-20230523101516636.png" alt="image-20230523101516636">&lt;/p>
+&lt;p>当客户端&lt;strong>异常断开&lt;/strong>连接的时候，Broker会往遗嘱Topic里发送遗嘱消息，这样订阅遗嘱Topic的客户端就能相应的收到遗嘱消息。&lt;strong>如果客户端通过DISCONNECT报文正常断开连接，那么Broker不会触发LWT机制，同时Broker把遗嘱消息从服务端删除。&lt;/strong>&lt;/p>
+&lt;p>Broker在以下情况认为Client是异常断开连接：&lt;/p>
+&lt;ul>
+&lt;li>服务端检测到了一个 I/O 错误或者网络故障&lt;/li>
+&lt;li>客户端在保持连接(Keep Alive)的时间内未能通讯&lt;/li>
+&lt;li>客户端没有先发送 DISCONNECT 报文直接关闭了网络连接&lt;/li>
+&lt;li>由于协议错误服务端关闭了网络连接&lt;/li>
+&lt;/ul>
+&lt;h3 id="保留消息和最后遗嘱结合使用的场景">保留消息和最后遗嘱结合使用的场景&lt;/h3>
+&lt;p>如果要实现设备上线和离线通知（下线包括正常离线和异常离线），可以结合保留消息和最后遗嘱来实现。参考下面的golang代码：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="ln"> 1&lt;/span>&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 2&lt;/span>&lt;span class="cl"> &lt;span class="nx">clientOption&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">mqtt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewClientOptions&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 3&lt;/span>&lt;span class="cl"> &lt;span class="nx">clientOption&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">AddBroker&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;tcp://192.168.60.40:1883&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 4&lt;/span>&lt;span class="cl"> &lt;span class="nx">clientOption&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">SetUsername&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;user&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 5&lt;/span>&lt;span class="cl"> &lt;span class="nx">clientOption&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">SetPassword&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;1234&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 6&lt;/span>&lt;span class="cl"> &lt;span class="nx">clientOption&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">SetClientID&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;jonlimx110&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 7&lt;/span>&lt;span class="cl"> &lt;span class="c1">// 通过CONNECT设置遗嘱消息，这里把遗嘱消息的Will Retian标志位打开，使得订阅mqtttest/status主题的客户端，不论是当前是连接的还是后续连接的都能接收到遗嘱消息
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 8&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">clientOption&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">SetWill&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;mqtttest/status&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;lwt - offline&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln"> 9&lt;/span>&lt;span class="cl"> &lt;span class="nx">client&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">mqtt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewClient&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">clientOption&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">10&lt;/span>&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">token&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Connect&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="nx">token&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Wait&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="nx">token&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Error&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">11&lt;/span>&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">token&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Error&lt;/span>&lt;span class="p">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">12&lt;/span>&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">13&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">14&lt;/span>&lt;span class="cl"> &lt;span class="c1">// 客户端上线以后，往mqtttest/status主题发布消息，通知该客户端上线
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">15&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">token&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Publish&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;mqtttest/status&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;online&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">16&lt;/span>&lt;span class="cl"> &lt;span class="nx">token&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Wait&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">17&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">18&lt;/span>&lt;span class="cl"> &lt;span class="nx">c&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="nx">os&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Signal&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">19&lt;/span>&lt;span class="cl"> &lt;span class="nx">signal&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Notify&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">c&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">os&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Interrupt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">syscall&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">SIGTERM&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">20&lt;/span>&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">21&lt;/span>&lt;span class="cl"> &lt;span class="k">select&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">22&lt;/span>&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">c&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">23&lt;/span>&lt;span class="cl"> &lt;span class="c1">// 这里没有调用client.Disconnect就退出，模拟异常离线的情况
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">24&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// 异常离线后，Broker触发LWT，往mqtttest/status发布遗嘱消息，且是以保留消息的方式发布
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">25&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;exit without disconnect from broker&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">26&lt;/span>&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">After&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Second&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">27&lt;/span>&lt;span class="cl"> &lt;span class="c1">// 客户端如果正常离线，发布保留消息通过客户端离线
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">28&lt;/span>&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">token&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Publish&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;mqtttest/status&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;retained - offline&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">29&lt;/span>&lt;span class="cl"> &lt;span class="nx">token&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Wait&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">30&lt;/span>&lt;span class="cl"> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Disconnect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">31&lt;/span>&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="ln">32&lt;/span>&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>MQTT杂记</title><link>https://www.jonathanlin.top/posts/mqtt-note-01/</link><pubDate>Fri, 24 Feb 2023 21:23:09 +0800</pubDate><guid>https://www.jonathanlin.top/posts/mqtt-note-01/</guid><description>
 &lt;blockquote>
 &lt;p>本文记录一些学些MQTT的过程中的重点和难点，学习材料包括：&lt;/p>
 &lt;ul>
